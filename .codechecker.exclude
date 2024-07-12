@@ -1,0 +1,8 @@
+-*external/*
+-*build/*
+-*components/*
++*main/*
++*src/*
++*include/*
++*ports/*
+-*

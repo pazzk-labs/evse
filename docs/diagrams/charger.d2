@@ -1,0 +1,42 @@
+A.shape: circle
+B.shape: circle
+C.shape: circle
+D.shape: circle
+E.shape: circle
+F.shape: circle
+
+A -> B: Plug in
+A -> C -> F: Error
+A -> D -> F: Error
+A -> E -> F: Error
+A -> F: EVSE error
+
+B -> A: Unplug
+B -> C: EV ready to charge
+B -> D: EV ready to charge
+B -> E: EV error or EVSE off
+B -> F: EVSE error
+
+C -> A: Unplug
+C -> B: Stop charging
+C -> D: TBD, doing nothing
+C -> E: EV error or EVSE off
+C -> F: EVSE error
+
+D -> A: Unplug
+D -> B: Stop charging
+D -> C: TBD, doing nothing
+D -> E: EV error or EVSE off
+D -> F: EVSE error
+
+E -> A: Unplug
+E -> B: EV recovery or EVSE on
+E -> C: EV recovery
+E -> D: EV recovery
+E -> F: EVSE unavailable
+
+F -> A: EVSE recovery
+F -> B: EVSE recovery
+F -> C -> F: Error
+F -> D -> F: Error
+F -> E: EVSE on

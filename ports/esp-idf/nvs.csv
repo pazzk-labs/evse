@@ -1,0 +1,4 @@
+key,type,encoding,value
+secret,namespace,,secret
+dfu/image.key,file,binary,secrets/dfu_image.key
+config,namespace,,config

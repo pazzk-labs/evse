@@ -1,0 +1,23 @@
+name: Unit test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  unit-test:
+    name: Unit test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install test framework
+        run: make -C tests install
+      - name: Test
+        run: make -C tests
+

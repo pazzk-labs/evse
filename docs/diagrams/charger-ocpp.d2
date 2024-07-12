@@ -1,0 +1,67 @@
+Booting.shape: circle
+Available.shape: circle
+Preparing.shape: circle
+Charging.shape: circle
+SuspendedEV.shape: circle
+Finishing.shape: circle
+Reserved.shape: circle
+Unavailable.shape: circle
+Faulted.shape: circle
+
+Booting -> Unavailable
+Booting -> Available
+Booting -> Preparing
+
+Available -> Preparing: Plug in
+Available -> Preparing: Present idTag
+Available -> Preparing: Remote start
+Available -> Reserved: Reserve now
+Available -> Unavailable: Availability changed
+Available -> Faulted: EVSE error
+
+Preparing -> Available: Unplug
+Preparing -> Available: Second presentation of idTag
+Preparing -> Available: ConnectionTimeOut
+Preparing -> Charging: Start charging
+Preparing -> Unavailable: Availability changed
+Preparing -> Faulted: EVSE error
+
+Charging -> Finishing: Unplug
+Charging -> Finishing: Second presentation of idTag
+Charging -> Finishing: EVSE error
+Charging -> Finishing: Availability changed
+Charging -> SuspendedEV: Suspended by EV
+
+SuspendedEV -> Finishing: Unplug
+SuspendedEV -> Finishing: Second presentation of idTag
+SuspendedEV -> Finishing: EVSE error
+SuspendedEV -> Finishing: Availability changed
+SuspendedEV -> Charging: Resume charging
+
+Finishing -> Available: Unplug
+Finishing -> Preparing: Restart
+Finishing -> Unavailable: Availability changed
+Finishing -> Faulted: EVSE error
+
+Reserved -> Available: Unplug
+Reserved -> Preparing: Reservation identity is presented
+Reserved -> Unavailable: Scheduled
+Reserved -> Unavailable: Availability changed
+Reserved -> Faulted: EVSE error
+
+Unavailable -> Available
+Unavailable -> Preparing
+Unavailable -> Faulted
+
+Faulted -> Available
+Faulted -> Preparing
+Faulted -> Unavailable
+
+title: pazzk.net {
+  shape: text
+  near: bottom-center
+  style: {
+    font-size: 20
+    italic: true
+  }
+}
