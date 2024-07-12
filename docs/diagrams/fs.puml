@@ -1,0 +1,24 @@
+@startuml
+interface fs {
+    +mount(): int
+    +unmount(): int
+    +open(path: const char *, flags: int): int
+    +close(fd: int): int
+    +read(fd: int, buf: void *, size: size_t): int
+    +write(fd: int, buf: const void *, size: size_t): int
+    +remove(path: const char *): int
+}
+interface flash {
+    +read(offset: uint32_t, buf: void *, size: size_t): int
+    +write(offset: uint32_t, buf: const void *, size: size_t): int
+    +erase(offset: uint32_t, size: size_t): int
+}
+littlefs ..|> fs
+esp32 ..|> flash
+littlefs -> flash
+nvsfs -> fs
+main ..> nvsfs: inject littlefs
+main --> littlefs: create
+main ..> littlefs: inject esp32
+main --> esp32: create
+@enduml

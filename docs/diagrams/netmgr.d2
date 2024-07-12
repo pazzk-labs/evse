@@ -1,0 +1,32 @@
+S0.shape: circle
+S1.shape: circle
+S2.shape: circle
+S3.shape: circle
+S4.shape: circle
+S5.shape: circle
+S6.shape: circle
+
+S0 -> S1: Turn on
+S1 -> S0: Turn off
+S1 -> S0: Initializing error
+S1 -> S0: Initializing timeout
+S1 -> S2: Initialized
+S2 -> S0: Turn off
+S2 -> S3: Enable
+S3 -> S0: Turn off
+S3 -> S2: Enabling error
+S3 -> S2: Enabling timeout
+S3 -> S0: Too many retries
+S3 -> S4: Enabled
+S4 -> S0: Turn off
+S4 -> S2: Disabled
+S4 -> S5: Connect
+S5 -> S0: Turn off
+S5 -> S2: Disabled
+S5 -> S4: Connecting error
+S5 -> S4: Connecting timeout
+S5 -> S0: Too many retries
+S5 -> S6: Connected
+S6 -> S0: Turn off
+S6 -> S2: Disabled
+S6 -> S4: Disconnected

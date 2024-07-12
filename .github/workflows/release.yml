@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Create Release
+    runs-on: ubuntu-latest
+    container: espressif/idf:v5.4
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - name: Prepare
+        run: |
+          git config --system --add safe.directory '*'
+          apt-get update && apt-get install -y bc xxd gh
+      - name: Build Project
+        run: |
+          . $IDF_PATH/export.sh
+          idf.py set-target esp32s3
+          idf.py build -DTARGET_PLATFORM=esp32s3
+          make PLATFORM=esp32s3 -j
+        env:
+          TARGET_PLATFORM: esp32s3
+      - name: Get Version
+        id: get_version
+        run: |
+          echo ::set-output name=HASH::$(cat build/EVSE.sig)
+          echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
+      - name: Create GitHub Release (without assets)
+        run: |
+          gh release create ${{ github.ref_name }} \
+            --title "${{ github.ref_name }}" \
+            --generate-notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: |
+            build/EVSE.elf
+            build/EVSE.bin

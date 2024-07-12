@@ -1,0 +1,67 @@
+@startuml
+title Remote Start
+footer pazzk.net
+
+actor User as user
+participant ChargePoint as cp
+participant CenteralSystem as csms
+
+cp --> csms: BootNotification Request
+cp <-- csms: BootNotification Response
+cp --> csms: StatusNotification Request(0번 커넥터)
+cp <-- csms: StatusNotification Response
+cp --> csms: StatusNotification Request(1번 커넥터)
+cp <-- csms: StatusNotification Response
+activate user
+user --> csms: 앱으로 충전 시작
+csms --> cp: RemoteStartTransaction Request
+csms <-- cp: RemoteStartTransaction Response
+alt 
+	group AuthorizeRemoteTxRequests 가 True 일 때만 전송
+		cp --> csms: Authorize Request
+		cp <-- csms: Authorize Response
+end
+activate cp
+cp --> csms: StatusNotification Request(Preparing)
+cp <-- csms: StatusNotification Response
+user --> cp: 플러그인(Status B1: 9V)
+user --> cp: 카드 태깅
+cp --> csms: StartTransaction Request
+cp <-- csms: StartTransaction Response
+user <-- cp: CP 출력(Status B2: 9V)
+note over cp, csms
+	Charging StatusNotification 은 전력이 공급될 때 전송됨.
+	MeterValue 는 상태와 관계없이 StartTransaction 과
+	StopTransaction 사이 계속 전송됨.
+end note
+cp --> csms: MeterValue Request
+cp <-- csms: MeterValue Response
+user --> cp: 전력 요청(Status C2: 6V)
+cp -> user: 전력 공급
+cp --> csms: StatusNotification Request(Charging)
+cp <-- csms: StatusNotification Response
+cp --> csms: MeterValue Request
+cp <-- csms: MeterValue Response
+... 충전 중 ...
+cp --> csms: MeterValue Request
+cp <-- csms: MeterValue Response
+user --> csms: 앱으로 충전 종료
+csms --> cp: RemoteStopTransaction Request
+csms <-- cp: RemoteStoptTransaction Response
+cp -> user: 전력 차단
+cp --> user: CP 차단(Status B1: 9V)
+cp --> csms: StatusNotification Request(SuspendedEVSE)
+cp <-- csms: StatusNotification Response
+cp --> csms: StopTransaction Request(Remote)
+cp <-- csms: StopTransaction Response
+cp --> csms: StatusNotification Request(Finishing)
+cp <-- csms: StatusNotification Response
+note over cp, csms
+	Finishing 상태일 때 재충전 불가
+end note
+user --> cp: 플러그아웃(Status A1: 12V)
+deactivate user
+deactivate cp
+cp --> csms: StatusNotification Request(Available)
+cp <-- csms: StatusNotification Response
+@enduml

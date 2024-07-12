@@ -1,0 +1,92 @@
+@startuml
+interface charger_api
+interface pilot
+interface relay
+
+enum charger_event {
+	PLUGGED
+	UNPLUGGED
+	CHARGING_STARTED
+	CHARGING_SUSPENDED
+	CHARGING_ENDED
+	ERROR
+	ERROR_RECOVERY
+	REBOOT_REQUIRED
+	CONFIGURATION_CHANGED
+	PARAM_CHANGED
+	BILLING_STARTED
+	BILLING_REALTIME
+	BILLING_ENDED
+}
+
+interface charger_api {
+	create_connector()
+	destroy_connector()
+	step()
+}
+
+class charger {
+	+init()
+	+deinit()
+	+register_event_cb()
+	+create_connector()
+	+step()
+}
+
+class charger_private {
+	-get_connector()
+	-get_connector_by_id()
+	-get_connector_free()
+}
+
+class connector {
+	+connector_validate_param()
+	+error()
+	+set_priority()
+	+status()
+}
+
+class connector_private {
+	-get_state()
+	-get_pwm_duty_set()
+	-read_pwm_duty()
+	-start_pwm()
+	-stop_pwm()
+	-go_fault()
+	-enable_power_supply()
+	-disable_power_supply()
+	-is_state_x()
+	-is_state_x2()
+	-is_supplying_power()
+	-is_emergency_stop()
+	-is_input_power_ok()
+	-is_output_power_ok()
+	-is_early_recovery()
+	-get_event_from_state_change()
+	-stringify_state()
+}
+
+charger "1" *-- "many" connector
+charger --> charger_private
+charger --> charger_event
+charger --> charger_api
+free_connector ..|> connector
+ocpp_connector ..|> connector
+hlc_connector ..|> connector
+free_charger ..|> charger
+ocpp_charger ..|> charger
+hlc_charger ..|> charger
+
+connector --> connector_private
+connector_private --> iec61851
+iec61851 --> pilot
+iec61851 --> relay
+
+free_connector --> fsm
+ocpp_connector --> fsm
+hlc_connector --> fsm
+
+ocpp_charger ..> ocpp
+
+hlc_charger --> plc
+@enduml

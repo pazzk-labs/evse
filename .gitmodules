@@ -1,0 +1,18 @@
+[submodule "external/libmcu"]
+	path = external/libmcu
+	url = https://github.com/libmcu/libmcu.git
+[submodule "external/hlw811x"]
+	path = external/hlw811x
+	url = https://github.com/libmcu/hlw811x.git
+[submodule "external/littlefs"]
+	path = external/littlefs
+	url = https://github.com/littlefs-project/littlefs.git
+[submodule "external/cbor"]
+	path = external/cbor
+	url = https://github.com/libmcu/cbor.git
+[submodule "external/ocpp"]
+	path = external/ocpp
+	url = https://github.com/pazzk-labs/ocpp.git
+[submodule "external/cJSON"]
+	path = external/cJSON
+	url = https://github.com/DaveGamble/cJSON.git

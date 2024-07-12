@@ -1,0 +1,66 @@
+/* OCPP_CONFIG(name, accessibility, type, default value) */
+
+OCPP_CONFIG(AllowOfflineTxForUnknownId,		RW,	BOOL,		false)
+OCPP_CONFIG(AuthorizationCacheEnabled,		RW,	BOOL,		false)
+OCPP_CONFIG(AuthorizeRemoteTxRequests,		RW,	BOOL,		true)
+OCPP_CONFIG(BlinkRepeat,			RW,	INT,		0)
+OCPP_CONFIG(ClockAlignedDataInterval,		RW,	INT,		30)
+OCPP_CONFIG(ConnectionTimeOut,			RW,	INT,		180)
+OCPP_CONFIG(ConnectorPhaseRotation,		R,	CSL,		OCPP_PHASE_ROTATION_NOT_APPLICABLE)
+OCPP_CONFIG(ConnectorPhaseRotationMaxLength,	R,	INT,		0)
+OCPP_CONFIG(GetConfigurationMaxKeys,		R,	INT,		CONFIGURATION_MAX)
+OCPP_CONFIG(HeartbeatInterval,			RW,	INT,		120)
+OCPP_CONFIG(LightIntensity,			RW,	INT,		0)
+OCPP_CONFIG(LocalAuthorizeOffline,		RW,	BOOL,		false)
+OCPP_CONFIG(LocalPreAuthorize,			RW,	BOOL,		false)
+OCPP_CONFIG(MaxEnergyOnInvalidId,		RW,	INT,		0)
+OCPP_CONFIG(MeterValuesAlignedData,		RW,	CSL,		OCPP_MEASURAND_ENERGY_ACTIVE_IMPORT_REGISTER)
+OCPP_CONFIG(MeterValuesAlignedDataMaxLength,	R,	INT,		0)
+OCPP_CONFIG(MeterValuesSampledData,		RW,	CSL,		OCPP_MEASURAND_ENERGY_ACTIVE_IMPORT_REGISTER | OCPP_MEASURAND_VOLTAGE)
+OCPP_CONFIG(MeterValuesSampledDataMaxLength,	R,	INT,		0)
+OCPP_CONFIG(MeterValueSampleInterval,		RW,	INT,		300)
+OCPP_CONFIG(MinimumStatusDuration,		RW,	INT,		0)
+OCPP_CONFIG(NumberOfConnectors,			R,	INT,		1)
+OCPP_CONFIG(ResetRetries,			RW,	INT,		0)
+OCPP_CONFIG(StopTransactionOnEVSideDisconnect,	RW,	BOOL,		true)
+OCPP_CONFIG(StopTransactionOnInvalidId,		RW,	BOOL,		true)
+OCPP_CONFIG(StopTxnAlignedData,			RW,	CSL,		0)
+OCPP_CONFIG(StopTxnAlignedDataMaxLength,	R,	INT,		0)
+OCPP_CONFIG(StopTxnSampledData,			RW,	CSL,		0)
+OCPP_CONFIG(StopTxnSampledDataMaxLength,	R,	INT,		0)
+OCPP_CONFIG(SupportedFeatureProfiles,		R,	CSL,		OCPP_PROFILE_CORE)
+OCPP_CONFIG(SupportedFeatureProfilesMaxLength,	R,	INT,		6)
+OCPP_CONFIG(TransactionMessageAttempts,		RW,	INT,		3)
+OCPP_CONFIG(TransactionMessageRetryInterval,	RW,	INT,		60)
+OCPP_CONFIG(UnlockConnectorOnEVSideDisconnect,	RW,	BOOL,		false)
+OCPP_CONFIG(WebSocketPingInterval,		RW,	INT,		0)
+
+/* Local Auth List Management Profile */
+OCPP_CONFIG(LocalAuthListEnabled,		RW,	BOOL,		false)
+OCPP_CONFIG(LocalAuthListMaxLength,		R,	INT,		0)
+OCPP_CONFIG(SendLocalListMaxLength,		R,	INT,		0)
+
+/* Reservation Profile */
+OCPP_CONFIG(ReserveConnectorZeroSupported,	R,	BOOL,		false)
+
+/* Smart Charging Profile */
+OCPP_CONFIG(ChargeProfileMaxStackLevel,		R,	INT,		0)
+OCPP_CONFIG(ChargingScheduleAllowedChargingRateUnit,	R,	CSL,	0)
+OCPP_CONFIG(ChargingScheduleMaxPeriods,		R,	INT,		0)
+OCPP_CONFIG(ConnectorSwitch3to1PhaseSupported,	R,	BOOL,		false)
+OCPP_CONFIG(MaxChargingProfilesInstalled,	R,	INT,		0)
+
+/* Security */
+OCPP_CONFIG(AdditionalRootCertificateCheck,	R,	BOOL,		false)
+OCPP_CONFIG(AuthorizationKey,			W,	STR(40),	0)
+OCPP_CONFIG(CertificateSignedMaxChainSize,	R,	INT,		0)
+OCPP_CONFIG(CertificateStoreMaxLength,		R,	INT,		0)
+OCPP_CONFIG(CpoName,				RW,	STR(64),	"Pazzk")
+OCPP_CONFIG(SecurityProfile,			RW,	INT,		0)
+
+/* Custom by OCA */
+OCPP_CONFIG(ISO15118PnCEnabled,			RW,	BOOL,		false)
+OCPP_CONFIG(CustomDisplayCostAndPrice,		RW,	BOOL,		false)
+OCPP_CONFIG(DefaultPrice,			RW,	STR(255),	0)
+OCPP_CONFIG(CustomMultiLanguageMessages,	RW,	BOOL,		false)
+OCPP_CONFIG(SupportedLanguages,			R,	STR(32),	"en,ko")

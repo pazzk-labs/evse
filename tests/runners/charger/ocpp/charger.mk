@@ -1,0 +1,69 @@
+# This file is part of PAZZK EVSE project <https://pazzk.net/>.
+# Copyright (c) 2024 Kyunghwan Kwon <k@libmcu.org>.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, version 3.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+COMPONENT_NAME = OcppCharger
+
+SRC_FILES = \
+	../src/charger/ocpp/charger.c \
+	../src/charger/ocpp/connector_private.c \
+	../src/charger/ocpp/lock.c \
+	../src/charger/ocpp/fsm.c \
+	../src/charger/charger.c \
+	../src/charger/connector_private.c \
+	../src/charger/charger_private.c \
+	../src/charger/connector.c \
+	../external/ocpp/src/ocpp.c \
+	../external/ocpp/src/core/configuration.c \
+	../external/libmcu/modules/metrics/src/metrics.c \
+	../external/libmcu/modules/metrics/src/metrics_overrides.c \
+	../external/libmcu/modules/fsm/src/fsm.c \
+
+TEST_SRC_FILES = \
+	src/charger/ocpp/charger_test.cpp \
+	src/test_all.cpp \
+	stubs/logging.c \
+	stubs/logger.c \
+	stubs/ratelim.c \
+	../external/libmcu/tests/mocks/assert.cpp \
+	mocks/iec61851.cpp \
+	mocks/safety.cpp \
+	mocks/metering.cpp \
+
+INCLUDE_DIRS = \
+	$(CPPUTEST_HOME)/include \
+	mocks/ \
+	../include \
+	../src/charger/ocpp \
+	../include/driver \
+	../external/ocpp/include \
+	../external/libmcu/modules/common/include \
+	../external/libmcu/modules/logging/include \
+	../external/libmcu/modules/metrics/include \
+	../external/libmcu/modules/fsm/include \
+	../external/libmcu/modules/ratelim/include \
+	../external/libmcu/interfaces/pwm/include \
+	../external/libmcu/interfaces/spi/include \
+	../external/libmcu/interfaces/gpio/include \
+	../external/libmcu/interfaces/flash/include \
+	../external/libmcu/interfaces/uart/include \
+
+MOCKS_SRC_DIRS =
+CPPUTEST_CPPFLAGS = -include ../include/logger.h \
+	-DMETRICS_USER_DEFINES=\"../include/metrics.def\" \
+	-DOCPP_ERROR=error \
+	-DOCPP_DEBUG=debug \
+	-DOCPP_INFO=info \
+
+include runners/MakefileRunner
