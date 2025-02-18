@@ -44,7 +44,7 @@
 #include "logger.h"
 
 #define DEFAULT_TIMEOUT_MS		(10U/*sec*/ * 1000)
-#define DEFAULT_RECONNECT_TIMEOUT_MS	(1U/*min*/ * 60/*sec*/ * 1000)
+#define DEFAULT_RECONNECT_TIMEOUT_MS	DEFAULT_TIMEOUT_MS
 
 #define DEFAULT_MAX_RETRY		10U
 #define DEFAULT_MAX_BACKOFF_MS		(100U * 1000)
