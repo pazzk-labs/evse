@@ -1,7 +1,7 @@
 PROJECT  := EVSE
 BASEDIR  := $(shell pwd)
 PLATFORM ?= esp32s3
-BUILDIR  := build/$(PLATFORM)
+BUILDIR  := build
 CMAKE    ?= cmake
 
 VERBOSE ?= 0
@@ -18,7 +18,7 @@ export Q
 
 include projects/version.mk
 
-all: build $(BUILDIR)/$(PROJECT).img
+all: compile $(BUILDIR)/$(PROJECT).img
 
 $(BUILDIR)/$(PROJECT).img: $(BUILDIR)/$(PROJECT).hdr $(BUILDIR)/$(PROJECT).bin
 	$(Q)cat $^ > $@
@@ -32,13 +32,13 @@ $(BUILDIR)/$(PROJECT).sig: $(BUILDIR)/$(PROJECT).bin
 	$(Q)openssl dgst -sha256 -binary -out $@.bin $<
 	$(Q)cat $@.bin | xxd -p -c 64 > $@
 
-$(BUILDIR)/$(PROJECT).bin: build
+$(BUILDIR)/$(PROJECT).bin: compile
 
 $(BUILDIR):
 	$(CMAKE) -S . -B $(BUILDIR) -DTARGET_PLATFORM=$(PLATFORM)
 
-.PHONY: build
-build: $(BUILDIR)
+.PHONY: compile
+compile: $(BUILDIR)
 	$(CMAKE) --build $(BUILDIR)
 
 .PHONY: coverage
