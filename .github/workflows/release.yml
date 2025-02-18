@@ -26,14 +26,14 @@ jobs:
         run: |
           . $IDF_PATH/export.sh
           idf.py set-target esp32s3
-          idf.py -B build/esp32s3 build -DTARGET_PLATFORM=esp32s3
+          idf.py build -DTARGET_PLATFORM=esp32s3
           make PLATFORM=esp32s3 -j
         env:
           TARGET_PLATFORM: esp32s3
       - name: Get Version
         id: get_version
         run: |
-          echo ::set-output name=HASH::$(cat build/esp32s3/EVSE.sig)
+          echo ::set-output name=HASH::$(cat build/EVSE.sig)
           echo ::set-output name=VERSION::${GITHUB_REF#refs/tags/}
       - name: Create GitHub Release (without assets)
         run: |
@@ -47,5 +47,5 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           files: |
-            build/esp32s3/EVSE.elf
-            build/esp32s3/EVSE.bin
+            build/EVSE.elf
+            build/EVSE.bin
