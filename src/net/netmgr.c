@@ -52,6 +52,7 @@
 
 #include "net/ntp.h"
 #include "net/ping.h"
+#include "app.h"
 #include "logger.h"
 
 #define STACK_SIZE_BYTES		5120U
@@ -342,6 +343,13 @@ static bool is_static_ip_requested(struct netmgr_entry *entry)
 	return memcmp(&entry->static_ip, &empty, sizeof(empty)) != 0;
 }
 
+static bool is_error(fsm_state_t state, fsm_state_t next_state, void *ctx)
+{
+	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
+	return check_netmgr_enabled() && (retry_exhausted(&entry->retry) ||
+		entry->error_count >= (int)DEFAULT_MAX_RETRY);
+}
+
 static bool is_state_s0(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
@@ -360,9 +368,7 @@ static bool is_state_s0(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_state_s1(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
-	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
-	return check_netmgr_enabled() && !retry_exhausted(&entry->retry) &&
-		entry->error_count < (int)DEFAULT_MAX_RETRY;
+	return check_netmgr_enabled() && !is_error(state, next_state, ctx);
 }
 
 static bool is_state_s2(fsm_state_t state, fsm_state_t next_state, void *ctx)
@@ -632,8 +638,15 @@ static void do_on(fsm_state_t state, fsm_state_t next_state, void *ctx)
 	metrics_increase(NetMgrBootCount);
 }
 
+static void do_reset(fsm_state_t state, fsm_state_t next_state, void *ctx)
+{
+	error("unrecoverable error state. rebooting...");
+	app_reboot();
+}
+
 static const struct fsm_item transitions[] = {
 	FSM_ITEM(S0, is_state_s1, do_on,          S1),
+	FSM_ITEM(S0, is_error,    do_reset,       S0),
 	/* Initializing */
 	FSM_ITEM(S1, is_state_s0, do_off,         S0),
 	FSM_ITEM(S1, is_state_s2, do_initialized, S2),
@@ -666,6 +679,7 @@ static const struct fsm_item transitions[] = {
 static void process_netif_event(struct netmgr_entry *entry,
 		const netif_event_t event)
 {
+	const struct netif_api *api = (const struct netif_api *)entry->netif;
 	ip_info_t *ip_info = &entry->ip_info;
 	uint32_t speed_kbps;
 	bool duplex_enabled;
@@ -678,8 +692,8 @@ static void process_netif_event(struct netmgr_entry *entry,
 		info("netif down");
 		break;
 	case NETIF_EVENT_CONNECTED:
-		((struct netif_api *)entry->netif)->get_speed(entry->netif, &speed_kbps);
-		((struct netif_api *)entry->netif)->get_duplex(entry->netif, &duplex_enabled);
+		api->get_speed(entry->netif, &speed_kbps);
+		api->get_duplex(entry->netif, &duplex_enabled);
 		info("netif connected: %u kbps, %s duplex",
 				speed_kbps, duplex_enabled ? "full" : "half");
 		break;
@@ -687,14 +701,18 @@ static void process_netif_event(struct netmgr_entry *entry,
 		info("netif disconnected");
 		break;
 	case NETIF_EVENT_IP_ACQUIRED:
-		((struct netif_api *)entry->netif)->get_ip_info(entry->netif, ip_info);
-		info("acquired ip %d.%d.%d.%d, netmask %d.%d.%d.%d, gateway %d.%d.%d.%d",
+		api->get_ip_info(entry->netif, ip_info);
+		info("ip %d.%d.%d.%d, netmask %d.%d.%d.%d, gateway %d.%d.%d.%d",
 				ip_info->v4.ip.addr[0], ip_info->v4.ip.addr[1],
 				ip_info->v4.ip.addr[2], ip_info->v4.ip.addr[3],
-				ip_info->v4.netmask.addr[0], ip_info->v4.netmask.addr[1],
-				ip_info->v4.netmask.addr[2], ip_info->v4.netmask.addr[3],
-				ip_info->v4.gateway.addr[0], ip_info->v4.gateway.addr[1],
-				ip_info->v4.gateway.addr[2], ip_info->v4.gateway.addr[3]);
+				ip_info->v4.netmask.addr[0],
+				ip_info->v4.netmask.addr[1],
+				ip_info->v4.netmask.addr[2],
+				ip_info->v4.netmask.addr[3],
+				ip_info->v4.gateway.addr[0],
+				ip_info->v4.gateway.addr[1],
+				ip_info->v4.gateway.addr[2],
+				ip_info->v4.gateway.addr[3]);
 		break;
 	default:
 		entry->restart = true;
@@ -730,7 +748,7 @@ static void process(struct netmgr *netmgr)
 		/* disabled or unavailable */
 		return;
 	} else if (state != S6) {
-		/* it continues to connect until it reaches to S4 or exhausted */
+		/* continues to connect until it reaches to S4 or exhausted */
 		sem_post(&netmgr->event);
 		sleep_ms(10); /* without this, the task will be busy */
 	}
