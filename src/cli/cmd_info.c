@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <time.h>
 #include "libmcu/board.h"
+#include "fs/fs.h"
 #include "uptime.h"
 #include "app.h"
 

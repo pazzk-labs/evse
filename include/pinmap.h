@@ -37,12 +37,12 @@
 extern "C" {
 #endif
 
-#include "libmcu/gpio.h"
-#include "libmcu/i2c.h"
-#include "libmcu/spi.h"
-#include "libmcu/pwm.h"
-#include "libmcu/adc.h"
-#include "libmcu/uart.h"
+struct gpio;
+struct i2c;
+struct spi;
+struct pwm;
+struct adc;
+struct uart;
 
 struct pinmap_periph {
 	struct i2c *i2c0; /* io expander, accelerometer, codec, temperature */

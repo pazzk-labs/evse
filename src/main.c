@@ -35,6 +35,7 @@
 
 #include "libmcu/board.h"
 #include "libmcu/metrics.h"
+#include "libmcu/metricfs.h"
 #include "libmcu/nvs_kvstore.h"
 #include "libmcu/actor.h"
 #include "libmcu/actor_timer.h"
@@ -42,6 +43,7 @@
 #include "libmcu/cleanup.h"
 #include "libmcu/apptmr.h"
 #include "libmcu/ratelim.h"
+#include "libmcu/i2c.h"
 
 #include "logger.h"
 #include "exio.h"
