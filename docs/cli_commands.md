@@ -1,4 +1,4 @@
-## 커맨드 리스트
+## 커맨드 목록
 - command 혹은 subcommand 뒤에 값이 없으면 현재 설정값을 보여줍니다.
 - 커맨드별 세부사항 및 상세 설명은 하단 [커맨드 설명](#커맨드-설명)을 참고하세요.
 
@@ -21,6 +21,21 @@
 
 ## 커맨드 설명
 ### `config`
+
+| subcommand         | Description    | Example               | Note            |
+| ------------------ | -------------- | --------------------- | --------------- |
+| set {chg\|mac\|mode} | 설정 변경      | `config set chg free` | 설정 리스트는 아래 테이블 참고 |
+| get {chg\|mac\|mode\|id} | 설정 확인      | `config get chg`      |                 |
+
+#### 설정 목록
+
+| config | Description    | Options               |
+| ------ | -------------- | --------------------- |
+| chg    | 충전 모드      | `free`, `ocpp`, `hlc` |
+| mac    | netif mac 주소 |                       |
+| mode   | 운영 모드      | `manufacturing`, `installing`, `production`, `development` |
+| id     | 디바이스 ID    | |
+
 ### `exit`
 ### `help`
 ### `info`
@@ -41,6 +56,8 @@
 - 로그 출력 설정(`set`)은 `all`이 디폴트이며, `stdout`로 설정하면 파일로 로그를 출력하지 않습니다. `file`로 설정하면 파일로 로그를 출력하고 `stdout`로 로그를 출력하지 않습니다.
 
 ### `md`
+메모리 덤프를 출력합니다. `md [주소] [길이]` 형식으로 사용합니다. 주소는 16진수로 입력합니다. 길이는 10진수로 입력합니다. 주소와 길이는 생략 가능합니다.
+
 ### `metrics`
 ### `net`
 
@@ -50,7 +67,7 @@
 | ---------- | --------------------------------------- | ------- | ---- |
 | scan_interval | CP 측정주기를 설정 | `pilot scan_interval 10` | 단위: ms |
 | cutoff | 설정 전압보다 높으면 high로 인식 | `pilot cutoff 1996` | 단위: mV |
-| hysteresis {upward|downward} {A|B|C|D|E} | 상태별 전압 히스테리시스 설정 | `pilot hysteresis upward A 3038` | 단위: mV |
+| hysteresis {upward\|downward} {A\|B\|C\|D\|E} | 상태별 전압 히스테리시스 설정 | `pilot hysteresis upward A 3038` | 단위: mV |
 | sample_count | ADC 샘플링 갯수 설정 | `pilot sample_count 500` |      |
 | noise_tolerance | 노이즈 마진 설정 | `pilot noise_tolerance 50` | 단위: mV |
 | transition_clock | 상태 변환 시간 설정 | `pilot transition_clock 15` | 단위: ADC 샘플링 클럭(샘플링 갯수) |
@@ -72,7 +89,7 @@
 
 | subcommand | Description                             | Example | Note |
 | ---------- | --------------------------------------- | ------- | ---- |
-| `dfu {image|sign}` | DFU 암호키 변경 | `sec dfu image 1234567890` |      |
+| `dfu {image\|sign}` | DFU 암호키 변경 | `sec dfu image 1234567890` |      |
 
 - `image`: DFU 이미지 암호화용 AES-128 대칭키
 - `sign`: DFU 서명용 비대칭키
