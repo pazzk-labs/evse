@@ -38,8 +38,10 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include "libmcu/pwm.h"
-#include "adc122s051.h"
+#include <stdbool.h>
+
+struct pwm_channel;
+struct adc122s051;
 
 #if !defined(PILOT_NUMBER_OF_SAMPLES)
 /* 500 samples per 1ms, which is a cycle of 1kHz, at 8MHz 500kSPS ADC. */

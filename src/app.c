@@ -36,11 +36,13 @@
 #include "logger.h"
 
 #include "libmcu/cli.h"
+#include "libmcu/adc.h"
 
 #include "config.h"
 #include "exio.h"
 #include "lis2dw12.h"
 #include "tmp102.h"
+#include "adc122s051.h"
 #include "usrinp.h"
 #include "net/netmgr.h"
 #include "net/eth_w5500.h"

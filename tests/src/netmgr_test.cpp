@@ -10,6 +10,7 @@
 #include "libmcu/metrics.h"
 #include "libmcu/board.h"
 #include "netif_mock.h"
+#include "app.h"
 
 static struct apptmr *ping_timer;
 static uint8_t mac[NETIF_MAC_ADDR_LEN] = {0x00, 0xf2, 0x00, 0x00, 0x00, 0x00};
@@ -23,6 +24,10 @@ static void on_net_event(const netmgr_state_t event, void *ctx) {
 static bool mytask(void *ctx) {
 	return (bool)mock().actualCall(__func__)
 		.withParameter("ctx", ctx).returnBoolValueOrDefault(false);
+}
+
+void app_reboot(void) {
+	mock().actualCall(__func__);
 }
 
 void apptmr_create_hook(struct apptmr *self) {
