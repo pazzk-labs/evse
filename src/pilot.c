@@ -41,7 +41,9 @@
 #include "libmcu/board.h"
 #include "libmcu/wdt.h"
 #include "libmcu/ratelim.h"
+#include "libmcu/pwm.h"
 
+#include "adc122s051.h"
 #include "logger.h"
 
 #define CP_FREQ				1000

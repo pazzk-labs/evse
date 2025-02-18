@@ -37,14 +37,17 @@
 extern "C" {
 #endif
 
+#include <time.h>
+
 #include "pinmap.h"
-#include "relay.h"
 #include "pilot.h"
 
-#include "fs/kvstore.h"
-#include "fs/logfs.h"
-#include "charger/charger.h"
-#include "libmcu/metricfs.h"
+struct kvstore;
+struct logfs;
+struct metricfs;
+
+struct charger;
+struct relay;
 
 #define SYSTEM_TIME_MAX_DRIFT_SEC		(5)
 

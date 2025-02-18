@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include "libmcu/metrics.h"
+#include "libmcu/metricfs.h"
 #include "cbor/cbor.h"
 #include "app.h"
 

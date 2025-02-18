@@ -33,6 +33,13 @@
 #include "pinmap.h"
 #include "pinmap_gpio.h"
 
+#include "libmcu/gpio.h"
+#include "libmcu/i2c.h"
+#include "libmcu/spi.h"
+#include "libmcu/uart.h"
+#include "libmcu/pwm.h"
+#include "libmcu/adc.h"
+
 int pinmap_init(struct pinmap_periph *periph)
 {
 	periph->i2c0 = i2c_create(0, &(struct i2c_pin) {
