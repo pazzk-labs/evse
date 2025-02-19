@@ -51,22 +51,6 @@
 #include "charger/ocpp.h"
 #include "charger/connector.h"
 
-#if !defined(DEFAULT_INPUT_CURRENT)
-#define DEFAULT_INPUT_CURRENT			31818 /* milliampere */
-#endif
-#if !defined(DEFAULT_INPUT_VOLTAGE)
-#define DEFAULT_INPUT_VOLTAGE			220 /* V */
-#endif
-#if !defined(DEFAULT_INPUT_FREQUENCY)
-#define DEFAULT_INPUT_FREQUENCY			60 /* Hz */
-#endif
-#if !defined(DEFAULT_OUTPUT_CURRENT_MIN)
-#define DEFAULT_OUTPUT_CURRENT_MIN		DEFAULT_INPUT_CURRENT
-#endif
-#if !defined(DEFAULT_OUTPUT_CURRENT_MAX)
-#define DEFAULT_OUTPUT_CURRENT_MAX		DEFAULT_OUTPUT_CURRENT_MIN
-#endif
-
 static struct app *app;
 static struct cli cli;
 
@@ -200,13 +184,8 @@ void app_init(struct app *ctx)
 	netmgr_enable();
 
 	char mode[8] = "free";
-	struct charger_param param = {
-		.max_input_current_mA = DEFAULT_INPUT_CURRENT,
-		.input_voltage = DEFAULT_INPUT_VOLTAGE,
-		.input_frequency = DEFAULT_INPUT_FREQUENCY,
-		.max_output_current_mA = DEFAULT_OUTPUT_CURRENT_MAX,
-		.min_output_current_mA = DEFAULT_OUTPUT_CURRENT_MIN,
-	};
+	struct charger_param param;
+	charger_default_param(&param);
 	config_read(CONFIG_KEY_CHARGER_MODE, mode, sizeof(mode));
 	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
 

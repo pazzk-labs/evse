@@ -29,12 +29,20 @@
 
 #### 설정 목록
 
-| config | Description    | Options               |
-| ------ | -------------- | --------------------- |
-| chg    | 충전 모드      | `free`, `ocpp`, `hlc` |
-| mac    | netif mac 주소 |                       |
-| mode   | 운영 모드      | `manufacturing`, `installing`, `production`, `development` |
-| id     | 디바이스 ID    |                       |
+| config | Description    | Options               | Note                  |
+| ------ | -------------- | --------------------- | --------------------- |
+| mode   | 운영 모드      | `manufacturing`, `installing`, `production`, `development` | |
+| chg    | 충전 모드      | `free`, `ocpp`, `hlc` |                       |
+| mac    | netif mac 주소 |   | e.g. `config set mac [11:22:33:44:55:66]` |
+| id     | 디바이스 ID    |                       |                       |
+| input_vol       | 입력 전압      |              | 단위: V               |
+| input_freq      | 입력 주파수    |              | 단위: Hz              |
+| input_max_curr  | 입력 최대 전류 |              | 단위: A               |
+| output_max_curr | 출력 최대 전류 |              | 단위: A               |
+| output_min_curr | 출력 최소 전류 |              | 단위: A               |
+| chg_param | 충전 파라미터(input_vol,input_max_curr,input_freq,output_min_curr,output_max_curr) | | e.g. `config set chg_parm 220 32 60 6 32`|
+| ws_ping | 웹소켓 핑 주기   |              | 단위: ms. 0일 경우 비활성화 |
+| ping    | 네트워크 핑 주기 |              | 단위: ms. 0일 경우 비활성화 |
 
 ### `exit`
 ### `help`

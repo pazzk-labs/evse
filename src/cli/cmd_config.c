@@ -33,7 +33,10 @@
 #include "libmcu/cli.h"
 #include <string.h>
 #include <inttypes.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "config.h"
+#include "charger/charger.h"
 
 static void println(const struct cli_io *io, const char *str)
 {
@@ -58,6 +61,24 @@ static void print_charge_mode(const struct cli_io *io)
 	println(io, mode);
 }
 
+static void print_charge_param(const struct cli_io *io)
+{
+	char buf[64];
+	struct charger_param param;
+	charger_default_param(&param);
+	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	snprintf(buf, sizeof(buf), "Input voltage: %dV", param.input_voltage);
+	println(io, buf);
+	snprintf(buf, sizeof(buf), "Input current: %umA", param.max_input_current_mA);
+	println(io, buf);
+	snprintf(buf, sizeof(buf), "Input frequency: %dHz", param.input_frequency);
+	println(io, buf);
+	snprintf(buf, sizeof(buf), "Output current: %umA ~ %umA",
+			param.min_output_current_mA,
+			param.max_output_current_mA);
+	println(io, buf);
+}
+
 static void change_charge_mode(const struct cli_io *io, const char *str)
 {
 	char mode[16];
@@ -67,7 +88,7 @@ static void change_charge_mode(const struct cli_io *io, const char *str)
 	} else if (strcmp(str, "ocpp") == 0) {
 		strcpy(mode, "ocpp");
 	} else {
-		println(io, "Invalid mode");
+		println(io, "invalid mode");
 		return;
 	}
 
@@ -76,12 +97,116 @@ static void change_charge_mode(const struct cli_io *io, const char *str)
 	}
 }
 
+static void change_input_voltage(const struct cli_io *io, const char *str)
+{
+	long voltage = strtol(str, NULL, 10);
+
+	if (voltage < 100 || voltage > 300) {
+		println(io, "invalid voltage");
+		return;
+	}
+
+	struct charger_param param;
+	charger_default_param(&param);
+	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	param.input_voltage = (int16_t)voltage;
+	config_save(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+}
+
+static void change_input_frequency(const struct cli_io *io, const char *str)
+{
+	long freq = strtol(str, NULL, 10);
+
+	if (freq < 50 || freq > 60) {
+		println(io, "invalid frequency");
+		return;
+	}
+
+	struct charger_param param;
+	charger_default_param(&param);
+	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	param.input_frequency = (int16_t)freq;
+	config_save(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+}
+
+static void change_input_current(const struct cli_io *io, const char *str)
+{
+	long cur = strtol(str, NULL, 10);
+
+	if (cur < 6 || cur > 50) {
+		println(io, "invalid input current");
+		return;
+	}
+
+	struct charger_param param;
+	charger_default_param(&param);
+	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	param.max_input_current_mA = (uint32_t)cur * 1000;
+	config_save(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+}
+
+static void change_output_max_current(const struct cli_io *io, const char *str)
+{
+	struct charger_param param;
+	charger_default_param(&param);
+	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+
+	long cur = strtol(str, NULL, 10);
+
+	if (cur < 6 || cur > 50) {
+		println(io, "invalid output max. current");
+		return;
+	}
+
+	param.max_output_current_mA = (uint32_t)cur * 1000;
+	config_save(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+}
+
+static void change_output_min_current(const struct cli_io *io, const char *str)
+{
+	struct charger_param param;
+	charger_default_param(&param);
+	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+
+	long cur = strtol(str, NULL, 10);
+
+	if (cur < 6 || cur > 50 || cur > param.max_output_current_mA / 1000) {
+		println(io, "invalid output min. current");
+		return;
+	}
+
+	param.min_output_current_mA = (uint32_t)cur * 1000;
+	config_save(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+}
+
 static void set_config(const struct cli_io *io,
 		const char *key, const char *value)
 {
 	if (strcmp(key, "chg") == 0) {
 		change_charge_mode(io, value);
 	} else if (strcmp(key, "mac") == 0) {
+	} else if (strcmp(key, "input_vol") == 0) {
+		change_input_voltage(io, value);
+	} else if (strcmp(key, "input_freq") == 0) {
+		change_input_frequency(io, value);
+	} else if (strcmp(key, "input_max_curr") == 0) {
+		change_input_current(io, value);
+	} else if (strcmp(key, "output_max_curr") == 0) {
+		change_output_max_current(io, value);
+	} else if (strcmp(key, "output_min_curr") == 0) {
+		change_output_min_current(io, value);
+	}
+}
+
+static void set_config_multi_param(const struct cli_io *io,
+		int argc, const char *argv[])
+{
+	if (argc == 8 && strcmp(argv[2], "chg_param") == 0) {
+		change_input_voltage(io, argv[3]);
+		change_input_current(io, argv[4]);
+		change_input_frequency(io, argv[5]);
+		change_output_max_current(io, argv[7]);
+		change_output_min_current(io, argv[6]);
 	}
 }
 
@@ -92,15 +217,19 @@ DEFINE_CLI_CMD(config, "Configurations") {
 		if (argc == 2 && strcmp(argv[1], "reset") == 0) {
 		} else if (argc == 4 && strcmp(argv[1], "set") == 0) {
 			set_config(cli->io, argv[2], argv[3]);
+		} else if (argc > 4 && strcmp(argv[1], "set") == 0) {
+			set_config_multi_param(cli->io, argc, argv);
 		}
 		return CLI_CMD_SUCCESS;
 	} else if (argc != 1) {
 		return CLI_CMD_INVALID_PARAM;
 	}
 
-	println(cli->io, "Charge mode:");
+	println(cli->io, "# Charge mode:");
 	print_charge_mode(cli->io);
-	println(cli->io, "Other configurations:");
+	println(cli->io, "# Charge parameters:");
+	print_charge_param(cli->io);
+	println(cli->io, "# Other configurations:");
 	print_all_keys(cli->io);
 
 	return CLI_CMD_SUCCESS;
