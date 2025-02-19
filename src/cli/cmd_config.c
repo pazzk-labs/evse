@@ -35,28 +35,72 @@
 #include <inttypes.h>
 #include "config.h"
 
+static void println(const struct cli_io *io, const char *str)
+{
+	io->write(str, strlen(str));
+	io->write("\n", 1);
+}
+
 static void print_all_keys(const struct cli_io *io)
 {
 	for (int i = 0; i < CONFIG_KEY_MAX; i++) {
 		const char *key = config_get_keystr(i);
 		if (key) {
-			io->write(key, strlen(key));
-			io->write("\r\n", 2);
+			println(io, key);
 		}
+	}
+}
+
+static void print_charge_mode(const struct cli_io *io)
+{
+	char mode[16] = { 0, };
+	config_read(CONFIG_KEY_CHARGER_MODE, mode, sizeof(mode));
+	println(io, mode);
+}
+
+static void change_charge_mode(const struct cli_io *io, const char *str)
+{
+	char mode[16];
+
+	if (strcmp(str, "free") == 0) {
+		strcpy(mode, "free");
+	} else if (strcmp(str, "ocpp") == 0) {
+		strcpy(mode, "ocpp");
+	} else {
+		println(io, "Invalid mode");
+		return;
+	}
+
+	if (config_save(CONFIG_KEY_CHARGER_MODE, mode, strlen(mode)) == 0) {
+		println(io, "Reboot to apply the changes.");
+	}
+}
+
+static void set_config(const struct cli_io *io,
+		const char *key, const char *value)
+{
+	if (strcmp(key, "chg") == 0) {
+		change_charge_mode(io, value);
+	} else if (strcmp(key, "mac") == 0) {
 	}
 }
 
 DEFINE_CLI_CMD(config, "Configurations") {
 	const struct cli *cli = (struct cli const *)env;
 
-	if (argc == 2) {
-		if (strcmp(argv[1], "reset") == 0) {
+	if (argc >= 2) {
+		if (argc == 2 && strcmp(argv[1], "reset") == 0) {
+		} else if (argc == 4 && strcmp(argv[1], "set") == 0) {
+			set_config(cli->io, argv[2], argv[3]);
 		}
 		return CLI_CMD_SUCCESS;
 	} else if (argc != 1) {
 		return CLI_CMD_INVALID_PARAM;
 	}
 
+	println(cli->io, "Charge mode:");
+	print_charge_mode(cli->io);
+	println(cli->io, "Other configurations:");
 	print_all_keys(cli->io);
 
 	return CLI_CMD_SUCCESS;
