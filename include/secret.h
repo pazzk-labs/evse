@@ -30,51 +30,45 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "net/util.h"
-#include <stdbool.h>
-#include <string.h>
+#ifndef SECRET_H
+#define SECRET_H
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)		(sizeof(x) / sizeof((x)[0]))
+#if defined(__cplusplus)
+extern "C" {
 #endif
 
-struct proto_tbl {
-	net_protocol_t proto;
-	const char *prefix;
-};
+#include "libmcu/kvstore.h"
+#include <stddef.h>
 
-net_protocol_t net_get_protocol_from_url(const char *url)
-{
-	const struct proto_tbl tbl[] = {
-		{ NET_PROTO_HTTP,  "http://" },
-		{ NET_PROTO_HTTPS, "https://" },
-		{ NET_PROTO_WS,    "ws://" },
-		{ NET_PROTO_WSS,   "wss://" },
-		{ NET_PROTO_MQTT,  "mqtt://" },
-		{ NET_PROTO_MQTTS, "mqtts://" },
-		{ NET_PROTO_FTP,   "ftp://" },
-		{ NET_PROTO_FTPS,  "ftps://" },
-		{ NET_PROTO_SFTP,  "sftp://" },
-	};
+typedef enum {
+	SECRET_KEY_IMAGE_AES128_KEY,
+	SECRET_KEY_X509_KEY,
+	SECRET_KEY_X509_KEY_CSR,
+	SECRET_KEY_MAX,
+} secret_key_t;
 
-	for (size_t i = 0; i < ARRAY_SIZE(tbl); i++) {
-		if (strncmp(url, tbl[i].prefix, strlen(tbl[i].prefix)) == 0) {
-			return tbl[i].proto;
-		}
-	}
+/**
+ * @brief Initialize the secret management module.
+ *
+ * @param[in] nvs Pointer to the key-value store structure.
+ *
+ * @return 0 on success, negative error code on failure.
+ */
+int secret_init(struct kvstore *nvs);
 
-	return NET_PROTO_UNKNOWN;
+/**
+ * @brief Read a secret value.
+ *
+ * @param[in] key The secret key to read.
+ * @param[out] buf Buffer to store the read value.
+ * @param[in] bufsize Size of the buffer.
+ *
+ * @return 0 on success, negative error code on failure.
+ */
+int secret_read(secret_key_t key, void *buf, size_t bufsize);
+
+#if defined(__cplusplus)
 }
+#endif
 
-bool net_is_secure_protocol(net_protocol_t proto)
-{
-	const bool secure[NET_PROTO_MAX] = {
-		[NET_PROTO_HTTPS] = true,
-		[NET_PROTO_WSS]   = true,
-		[NET_PROTO_MQTTS] = true,
-		[NET_PROTO_FTPS]  = true,
-		[NET_PROTO_SFTP]  = true,
-	};
-
-	return secure[proto];
-}
+#endif /* SECRET_H */

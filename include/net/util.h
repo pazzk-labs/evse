@@ -37,6 +37,8 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
+
 typedef enum {
 	NET_PROTO_UNKNOWN,
 	NET_PROTO_HTTP,
@@ -48,9 +50,11 @@ typedef enum {
 	NET_PROTO_FTP,
 	NET_PROTO_FTPS,
 	NET_PROTO_SFTP,
+	NET_PROTO_MAX,
 } net_protocol_t;
 
 net_protocol_t net_get_protocol_from_url(const char *url);
+bool net_is_secure_protocol(net_protocol_t proto);
 
 #if defined(__cplusplus)
 }

@@ -30,51 +30,53 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "net/util.h"
-#include <stdbool.h>
+#include "secret.h"
+
 #include <string.h>
+#include <errno.h>
+#include <stdbool.h>
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)		(sizeof(x) / sizeof((x)[0]))
-#endif
+#define NAMESPACE		"secret"
 
-struct proto_tbl {
-	net_protocol_t proto;
-	const char *prefix;
+struct secret {
+	struct kvstore *nvs;
 };
 
-net_protocol_t net_get_protocol_from_url(const char *url)
-{
-	const struct proto_tbl tbl[] = {
-		{ NET_PROTO_HTTP,  "http://" },
-		{ NET_PROTO_HTTPS, "https://" },
-		{ NET_PROTO_WS,    "ws://" },
-		{ NET_PROTO_WSS,   "wss://" },
-		{ NET_PROTO_MQTT,  "mqtt://" },
-		{ NET_PROTO_MQTTS, "mqtts://" },
-		{ NET_PROTO_FTP,   "ftp://" },
-		{ NET_PROTO_FTPS,  "ftps://" },
-		{ NET_PROTO_SFTP,  "sftp://" },
-	};
+static struct secret secret;
 
-	for (size_t i = 0; i < ARRAY_SIZE(tbl); i++) {
-		if (strncmp(url, tbl[i].prefix, strlen(tbl[i].prefix)) == 0) {
-			return tbl[i].proto;
-		}
+static const char *secrets_tbl[] = {
+	/* Do not exceed 15 characters. "123456789012345" */
+	[SECRET_KEY_IMAGE_AES128_KEY] = "dfu/image.key",
+	[SECRET_KEY_X509_KEY]         = "x509/dev.key",
+	[SECRET_KEY_X509_KEY_CSR]     = "x509/dev.csr",
+};
+
+static const char *get_keystr_from_key(secret_key_t key)
+{
+	if (key >= SECRET_KEY_MAX) {
+		return NULL;
 	}
 
-	return NET_PROTO_UNKNOWN;
+	return secrets_tbl[key];
 }
 
-bool net_is_secure_protocol(net_protocol_t proto)
+int secret_read(secret_key_t key, void *buf, size_t bufsize)
 {
-	const bool secure[NET_PROTO_MAX] = {
-		[NET_PROTO_HTTPS] = true,
-		[NET_PROTO_WSS]   = true,
-		[NET_PROTO_MQTTS] = true,
-		[NET_PROTO_FTPS]  = true,
-		[NET_PROTO_SFTP]  = true,
-	};
+	const char *keystr = get_keystr_from_key(key);
 
-	return secure[proto];
+	if (!keystr) {
+		return -ENOENT;
+	}
+
+	return kvstore_read(secret.nvs, keystr, buf, bufsize);
+}
+
+int secret_init(struct kvstore *nvs)
+{
+	memset(&secret, 0, sizeof(secret));
+
+	int err = kvstore_open(nvs, NAMESPACE);
+	secret.nvs = nvs;
+
+	return err;
 }

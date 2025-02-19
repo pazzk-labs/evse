@@ -48,6 +48,7 @@
 #include "logger.h"
 #include "exio.h"
 #include "config.h"
+#include "secret.h"
 #include "buzzer.h"
 #include "safety.h"
 #include "usrinp.h"
@@ -287,6 +288,7 @@ int main(void)
 	cleanup_init();
 	wdt_init(on_watchdog_periodic, NULL);
 	config_init(nvs_kvstore_new());
+	secret_init(nvs_kvstore_new());
 
 	app.fs = fs_create(flash_create(0));
 	fs_mount(app.fs);

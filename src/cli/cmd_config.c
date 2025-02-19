@@ -182,18 +182,18 @@ static void change_output_min_current(const struct cli_io *io, const char *str)
 static void set_config(const struct cli_io *io,
 		const char *key, const char *value)
 {
-	if (strcmp(key, "chg") == 0) {
+	if (strcmp(key, "chg/mode") == 0) {
 		change_charge_mode(io, value);
 	} else if (strcmp(key, "mac") == 0) {
-	} else if (strcmp(key, "input_vol") == 0) {
+	} else if (strcmp(key, "chg/vol") == 0) {
 		change_input_voltage(io, value);
-	} else if (strcmp(key, "input_freq") == 0) {
+	} else if (strcmp(key, "chg/freq") == 0) {
 		change_input_frequency(io, value);
-	} else if (strcmp(key, "input_max_curr") == 0) {
+	} else if (strcmp(key, "chg/input_curr") == 0) {
 		change_input_current(io, value);
-	} else if (strcmp(key, "output_max_curr") == 0) {
+	} else if (strcmp(key, "chg/max_out_curr") == 0) {
 		change_output_max_current(io, value);
-	} else if (strcmp(key, "output_min_curr") == 0) {
+	} else if (strcmp(key, "chg/min_out_curr") == 0) {
 		change_output_min_current(io, value);
 	}
 }
@@ -201,7 +201,7 @@ static void set_config(const struct cli_io *io,
 static void set_config_multi_param(const struct cli_io *io,
 		int argc, const char *argv[])
 {
-	if (argc == 8 && strcmp(argv[2], "chg_param") == 0) {
+	if (argc == 8 && strcmp(argv[2], "chg/param") == 0) {
 		change_input_voltage(io, argv[3]);
 		change_input_current(io, argv[4]);
 		change_input_frequency(io, argv[5]);
@@ -225,11 +225,11 @@ DEFINE_CLI_CMD(config, "Configurations") {
 		return CLI_CMD_INVALID_PARAM;
 	}
 
-	println(cli->io, "# Charge mode:");
+	println(cli->io, "* Charge mode:");
 	print_charge_mode(cli->io);
-	println(cli->io, "# Charge parameters:");
+	println(cli->io, "* Charge parameters:");
 	print_charge_param(cli->io);
-	println(cli->io, "# Other configurations:");
+	println(cli->io, "* Other configurations:");
 	print_all_keys(cli->io);
 
 	return CLI_CMD_SUCCESS;
