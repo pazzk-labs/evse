@@ -22,9 +22,9 @@
 ## 커맨드 설명
 ### `config`
 
-| subcommand         | Description    | Example               | Note            |
-| ------------------ | -------------- | --------------------- | --------------- |
-| set {chg\|mac\|mode} | 설정 변경      | `config set chg free` | 설정 리스트는 아래 테이블 참고 |
+| subcommand               | Description    | Example               | Note            |
+| ------------------------ | -------------- | --------------------- | --------------- |
+| set {chg\|mac\|mode}     | 설정 변경      | `config set chg free` | 설정 리스트는 아래 테이블 참고 |
 | get {chg\|mac\|mode\|id} | 설정 확인      | `config get chg`      |                 |
 
 #### 설정 목록
@@ -34,7 +34,7 @@
 | chg    | 충전 모드      | `free`, `ocpp`, `hlc` |
 | mac    | netif mac 주소 |                       |
 | mode   | 운영 모드      | `manufacturing`, `installing`, `production`, `development` |
-| id     | 디바이스 ID    | |
+| id     | 디바이스 ID    |                       |
 
 ### `exit`
 ### `help`
@@ -59,7 +59,19 @@
 메모리 덤프를 출력합니다. `md [주소] [길이]` 형식으로 사용합니다. 주소는 16진수로 입력합니다. 길이는 10진수로 입력합니다. 주소와 길이는 생략 가능합니다.
 
 ### `metrics`
+
+| subcommand | Description          | Example        | Note |
+| ---------- | -------------------- | -------------- | ---- |
+| `clear`    | 메트릭 데이터 초기화 | `metric clear` |      |
+| `show`     | 메트릭 데이터 보기   | `metric show`  |      |
+
 ### `net`
+
+| subcommand       | Description          | Example                | Note |
+| ---------------- | -------------------- | ---------------------- | ---- |
+| `enable`         | 네트워크 활성화      | `net enable`           |      |
+| `disable`        | 네트워크 비활성화    | `net disable`          |      |
+| `ping {ip addr}` | 네트워크 테스트      | `net ping 192.168.0.1` |      |
 
 ### `pilot`
 
@@ -95,6 +107,22 @@
 - `sign`: DFU 서명용 비대칭키
 
 ### `test`
+
+| subcommand | Description          | Example         | Note |
+| ---------- | -------------------- | --------------- | ---- |
+| `led`      | LED 테스트           | `test led`      |      |
+| `cp`       | Control Pilot 테스트 | `test cp`       |      |
+| `plc`      | PLC 테스트           | `test plc`      |      |
+| `relay`    | Relay 테스트         | `test relay`    |      |
+| `buzzer`   | Buzzer 테스트        | `test buzzer`   |      |
+| `temp`     | 온도 센서 테스트     | `test temp`     |      |
+| `adc`      | ADC 테스트           | `test adc`      |      |
+| `acc`      | 가속도 센서 테스트   | `test acc`      |      |
+| `metering` | 전력량계 테스트      | `test metering` |      |
+| `net`      | 네트워크 테스트      | `test net`      |      |
+| `power`    | 전원 테스트          | `test power`    |      |
+| `all`      | 모든 테스트          | `test all`      |      |
+
 ### `xmodem`
 
 | subcommand | Description                               | Example      | Note |
