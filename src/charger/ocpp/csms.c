@@ -116,13 +116,14 @@ int ocpp_send(const struct ocpp_message *msg)
 	}
 
 	int err = server_send(csms, json, json_len);
-	debug("%.*s", (int)json_len, json);
-	encoder_json_free(json);
 
 	if (err > 0) { /* success */
 		err = 0;
 		metrics_increase(OCPPMessageSentCount);
+		debug("%.*s", (int)json_len, json);
 	}
+
+	encoder_json_free(json);
 
 	info("%s message(%d): %s, %s",
 			(err == 0)? "Sent" : "Failed to send",
