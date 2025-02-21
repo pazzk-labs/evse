@@ -67,6 +67,19 @@ int secret_init(struct kvstore *nvs);
  */
 int secret_read(secret_key_t key, void *buf, size_t bufsize);
 
+/**
+ * @brief Save secret data associated with a given key.
+ *
+ * This function saves the secret data associated with the specified key.
+ *
+ * @param[in] key The key associated with the secret data.
+ * @param[in] data Pointer to the data to be saved.
+ * @param[in] datasize Size of the data to be saved.
+ *
+ * @return int 0 on success, or a negative error code on failure.
+ */
+int secret_save(secret_key_t key, const void *data, size_t datasize);
+
 #if defined(__cplusplus)
 }
 #endif

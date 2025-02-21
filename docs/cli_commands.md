@@ -114,10 +114,13 @@
 | ---------- | --------------------------------------- | ------- | ---- |
 | `dfu {image\|sign}` | DFU 암호키 변경  | `sec dfu image 1234567890` | |
 | `x509/key` | X.509 인증서 비밀키 생성  | `sec x509/key`             | |
-| `x509/key/csr` | X.509 인증서 CSR 읽기 | `sec x509/key/csr`         | |
+| `x509/key/csr` | X.509 인증서 CSR 생성 및 읽기 | `sec x509/key/csr` | 생성할 경우 CN, C, O, E 순으로 입력. e.g. `sec x509/key/csr PZKC12411190001 KR Pazzk op@pazzk.net` |
 
 - `image`: DFU 이미지 암호화용 AES-128 대칭키
 - `sign`: DFU 서명용 비대칭키
+
+> [!WARNING]
+> CSR 생성시 CLI를 통해 입력한 정보는 유효성 검사를 거치지 않습니다. 올바른 정보를 입력하세요.
 
 ### `test`
 

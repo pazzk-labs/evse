@@ -225,11 +225,11 @@ DEFINE_CLI_CMD(config, "Configurations") {
 		return CLI_CMD_INVALID_PARAM;
 	}
 
-	println(cli->io, "* Charge mode:");
+	println(cli->io, "[Charge mode]");
 	print_charge_mode(cli->io);
-	println(cli->io, "* Charge parameters:");
+	println(cli->io, "[Charge parameters]");
 	print_charge_param(cli->io);
-	println(cli->io, "* Other configurations:");
+	println(cli->io, "[Other configurations]");
 	print_all_keys(cli->io);
 
 	return CLI_CMD_SUCCESS;

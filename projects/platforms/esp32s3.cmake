@@ -30,6 +30,7 @@ list(APPEND APP_SRCS
 	${LIBMCU_ROOT}/ports/posix/logging.c
 	${LIBMCU_ROOT}/ports/posix/button.c
 	${LIBMCU_ROOT}/ports/metrics/cbor_encoder.c
+	${LIBMCU_ROOT}/ports/mbedtls/pki.c
 )
 
 if ($ENV{IDF_VERSION} VERSION_LESS "5.1.0")
@@ -57,6 +58,8 @@ target_include_directories(${PROJECT_EXECUTABLE}
 		$ENV{IDF_PATH}/components/freertos/include/freertos
 
 		${CMAKE_SOURCE_DIR}/ports/esp-idf/websocket/include
+
+		${LIBMCU_ROOT}/ports/mbedtls/include
 )
 
 target_link_libraries(${PROJECT_EXECUTABLE}
