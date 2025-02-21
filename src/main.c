@@ -48,6 +48,7 @@
 #include "logger.h"
 #include "exio.h"
 #include "config.h"
+#include "secret.h"
 #include "buzzer.h"
 #include "safety.h"
 #include "usrinp.h"
@@ -276,6 +277,7 @@ int main(void)
 {
 	const board_reboot_reason_t reboot_reason = board_get_reboot_reason();
 	struct pinmap_periph *periph = &app.periph;
+	uint32_t network_healthchk_interval_ms = 0;
 
 	board_init(); /* should be called very first. */
 
@@ -287,6 +289,7 @@ int main(void)
 	cleanup_init();
 	wdt_init(on_watchdog_periodic, NULL);
 	config_init(nvs_kvstore_new());
+	secret_init(nvs_kvstore_new());
 
 	app.fs = fs_create(flash_create(0));
 	fs_mount(app.fs);
@@ -318,7 +321,10 @@ int main(void)
 	safety_init(periph->input_power, periph->output_power);
 	safety_enable();
 
-	netmgr_init();
+	config_read(CONFIG_KEY_NET_HEALTH_CHECK_INTERVAL,
+			&network_healthchk_interval_ms,
+			sizeof(network_healthchk_interval_ms));
+	netmgr_init(network_healthchk_interval_ms);
 	updater_init();
 	updater_set_runner(run_network_updater, NULL);
 

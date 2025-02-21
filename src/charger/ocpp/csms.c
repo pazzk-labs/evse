@@ -40,14 +40,22 @@
 #include "libmcu/metrics.h"
 
 #include "net/server_ws.h"
+#include "net/util.h"
 #include "encoder_json.h"
 #include "decoder_json.h"
 #include "messages.h"
 #include "handler.h"
+#include "config.h"
+#include "secret.h"
 #include "logger.h"
 
-#define RXQUEUE_SIZE		8192
-#define BUFSIZE			4096
+#define RXQUEUE_SIZE			4096
+#define BUFSIZE				2048
+#define PKA_BUFSIZE			2048
+
+#define DEFAULT_WS_PING_INTERVAL_SEC	300
+#define DEFAULT_TX_TIMEOUT_MS		10000
+#define DEFAULT_SERVER_URL		"wss://csms.pazzk.net"
 
 static struct server *csms;
 static struct ringbuf *rxq;
@@ -203,31 +211,56 @@ int csms_reconnect(const uint32_t delay_sec)
 
 int csms_init(void *ctx)
 {
+	struct ws_param param = {
+		.url = DEFAULT_SERVER_URL,
+		.header = "Sec-WebSocket-Protocol: ocpp1.6\r\n",
+		.write_timeout_ms = DEFAULT_TX_TIMEOUT_MS,
+		.rxq_maxsize = RXQUEUE_SIZE,
+		.ping_interval_sec = DEFAULT_WS_PING_INTERVAL_SEC,
+	};
+
 	if (!(rxq = ringbuf_create(RXQUEUE_SIZE))) {
 		return -ENOMEM;
 	}
 
-	csms = ws_create_server(&(const struct ws_param) {
-		.url = "ws://192.168.10.1:9000",
-		.header = "Sec-WebSocket-Protocol: ocpp1.6\r\n",
-		.auth = {
-			.id = "user",
-			.pass = "pass",
-		},
-		.tls = {
-			.cert = NULL,
-			.cert_len = 0,
-			.key = NULL,
-			.key_len = 0,
-			.ca = NULL,
-			.ca_len = 0,
-		},
-		.write_timeout_ms = 10000,
-		.ping_interval_sec = 300,
-		.rxq_maxsize = 8192,
-	}, NULL, NULL);
+	config_read(CONFIG_KEY_SERVER_URL, param.url, sizeof(param.url)-1);
+	config_read(CONFIG_KEY_WS_PING_INTERVAL, &param.ping_interval_sec,
+			sizeof(param.ping_interval_sec));
+	config_read(CONFIG_KEY_SERVER_ID, param.auth.id,
+			sizeof(param.auth.id)-1);
+	config_read(CONFIG_KEY_SERVER_PASS, param.auth.pass,
+			sizeof(param.auth.pass)-1);
 
-	if (!csms) {
+	if (net_is_secure_protocol(net_get_protocol_from_url(param.url))) {
+		/* NOTE: The allocated dynamic memory is not freed because the
+		 * certificate is used throughout the device's lifecycle.
+		 * To minimize RAM usage, consider accessing the flash memory
+		 * directly. */
+		uint8_t *key = (uint8_t *)malloc(PKA_BUFSIZE);
+		uint8_t *cert = (uint8_t *)malloc(PKA_BUFSIZE);
+		uint8_t *ca = (uint8_t *)malloc(PKA_BUFSIZE);
+		int len;
+
+		if (key && (len = secret_read(SECRET_KEY_X509_KEY,
+				key, PKA_BUFSIZE)) > 0) {
+			param.tls.key_len = (size_t)len;
+			param.tls.key = key;
+		}
+		if (cert && (len = config_read(CONFIG_KEY_X509_CERT,
+				cert, PKA_BUFSIZE)) > 0) {
+			param.tls.cert_len = (size_t)len;
+			param.tls.cert = cert;
+		}
+		if (ca && (len = config_read(CONFIG_KEY_X509_CA,
+				ca, PKA_BUFSIZE)) > 0) {
+			param.tls.ca_len = (size_t)len;
+			param.tls.ca = ca;
+		}
+	}
+
+	info("CSMS URL: %s", param.url);
+
+	if (!(csms = ws_create_server(&param, NULL, NULL))) {
 		return -ENOMEM;
 	}
 

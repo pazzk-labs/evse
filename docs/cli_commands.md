@@ -22,19 +22,24 @@
 ## 커맨드 설명
 ### `config`
 
-| subcommand               | Description    | Example               | Note            |
-| ------------------------ | -------------- | --------------------- | --------------- |
-| set {chg\|mac\|mode}     | 설정 변경      | `config set chg free` | 설정 리스트는 아래 테이블 참고 |
-| get {chg\|mac\|mode\|id} | 설정 확인      | `config get chg`      |                 |
+| subcommand          | Description | Example               | Note            |
+| ------------------- | ----------- | --------------------- | --------------- |
+| set {chg\|mode}     | 설정 변경   | `config set chg/mode free` | 설정 리스트는 아래 테이블 참고 |
+| get {chg\|mode\|id} | 설정 확인   | `config get chg`      |                 |
 
 #### 설정 목록
 
-| config | Description    | Options               |
-| ------ | -------------- | --------------------- |
-| chg    | 충전 모드      | `free`, `ocpp`, `hlc` |
-| mac    | netif mac 주소 |                       |
-| mode   | 운영 모드      | `manufacturing`, `installing`, `production`, `development` |
-| id     | 디바이스 ID    |                       |
+| config | Description    | Options               | Note                  |
+| ------ | -------------- | --------------------- | --------------------- |
+| id     | 디바이스 ID    |                       |                       |
+| mode   | 운영 모드      | `manufacturing`, `installing`, `production`, `development` | |
+| chg/mode | 충전 모드    | `free`, `ocpp`, `hlc` |                        |
+| chg/vol          | 입력 전압      |              | 단위: V               |
+| chg/freq         | 입력 주파수    |              | 단위: Hz              |
+| chg/input_curr   | 입력 최대 전류 |              | 단위: A               |
+| chg/max_out_curr | 출력 최대 전류 |              | 단위: A               |
+| chg/min_out_curr | 출력 최소 전류 |              | 단위: A               |
+| chg/param | 충전 파라미터(vol,input_curr,freq,min_out_curr,max_out_curr) | | e.g. `config set chg/param 220 32 60 6 32`|
 
 ### `exit`
 ### `help`
@@ -68,10 +73,16 @@
 ### `net`
 
 | subcommand       | Description          | Example                | Note |
-| ---------------- | -------------------- | ---------------------- | ---- |
-| `enable`         | 네트워크 활성화      | `net enable`           |      |
-| `disable`        | 네트워크 비활성화    | `net disable`          |      |
-| `ping {ip addr}` | 네트워크 테스트      | `net ping 192.168.0.1` |      |
+| ---------------- | ----------------- | ---------------------- | ---- |
+| `enable`         | 네트워크 활성화   | `net enable`           |      |
+| `disable`        | 네트워크 비활성화 | `net disable`          |      |
+| `ping {ip addr}` | 네트워크 테스트   | `net ping 192.168.0.1` |      |
+| `mac`            | MAC 주소          | `net mac 11:22:33:44:55:66` |      |
+| `url`            | 서버 URL 설정     | `net url wss://csms.pazzk.net:9000` | |
+| `id`             | 인증 ID 설정      | `net id id_str`   |      |
+| `pw`             | 인증 PW 설정      | `net pw pass_str` |      |
+| `ws/ping`        | 웹소켓 핑 주기    | `net ws/ping 60`       | 단위: 초. 0일 경우 비활성화 |
+| `health`         | 네트워크 health check 주기 | `net health 60`  | 단위: 초. 0일 경우 비활성화 |
 
 ### `pilot`
 
@@ -101,7 +112,9 @@
 
 | subcommand | Description                             | Example | Note |
 | ---------- | --------------------------------------- | ------- | ---- |
-| `dfu {image\|sign}` | DFU 암호키 변경 | `sec dfu image 1234567890` |      |
+| `dfu {image\|sign}` | DFU 암호키 변경  | `sec dfu image 1234567890` | |
+| `x509/key` | X.509 인증서 비밀키 생성  | `sec x509/key`             | |
+| `x509/key/csr` | X.509 인증서 CSR 읽기 | `sec x509/key/csr`         | |
 
 - `image`: DFU 이미지 암호화용 AES-128 대칭키
 - `sign`: DFU 서명용 비대칭키

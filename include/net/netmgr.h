@@ -99,13 +99,17 @@ typedef void (*netmgr_event_cb_t)(const netmgr_state_t event, void *ctx);
 typedef bool (*netmgr_task_t)(void *ctx);
 
 /**
- * @brief Initialize the network manager.
+ * @brief Initializes the network manager.
  *
- * This function initializes the network manager and prepares it for operation.
+ * This function initializes the network manager with the specified
+ * health check interval. It sets up necessary configurations and
+ * prepares the network manager for operation.
  *
- * @return 0 on success, or a negative error code on failure.
+ * @param[in] healthchk_interval_ms The interval in milliseconds for
+ *                              performing network health checks.
+ * @return int Returns 0 on success, or a negative error code on failure.
  */
-int netmgr_init(void);
+int netmgr_init(uint32_t healthchk_interval_ms);
 
 /**
  * @brief Deinitialize the network manager.
