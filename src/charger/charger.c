@@ -36,6 +36,22 @@
 #include <errno.h>
 #include "logger.h"
 
+#if !defined(DEFAULT_INPUT_CURRENT)
+#define DEFAULT_INPUT_CURRENT			31818 /* milliampere */
+#endif
+#if !defined(DEFAULT_INPUT_VOLTAGE)
+#define DEFAULT_INPUT_VOLTAGE			220 /* V */
+#endif
+#if !defined(DEFAULT_INPUT_FREQUENCY)
+#define DEFAULT_INPUT_FREQUENCY			60 /* Hz */
+#endif
+#if !defined(DEFAULT_OUTPUT_CURRENT_MIN)
+#define DEFAULT_OUTPUT_CURRENT_MIN		DEFAULT_INPUT_CURRENT
+#endif
+#if !defined(DEFAULT_OUTPUT_CURRENT_MAX)
+#define DEFAULT_OUTPUT_CURRENT_MAX		DEFAULT_OUTPUT_CURRENT_MIN
+#endif
+
 static bool validate_charger_param(const struct charger_param *param)
 {
 	if (!param) {
@@ -59,6 +75,19 @@ static void destroy_connectors(struct charger *charger)
 	list_for_each_safe(p, n, &charger->connectors.list) {
 		charger->api.destroy_connector(charger, p);
 		charger->connectors.count--;
+	}
+}
+
+void charger_default_param(struct charger_param *param)
+{
+	if (param) {
+		*param = (struct charger_param) {
+			.max_input_current_mA = DEFAULT_INPUT_CURRENT,
+			.input_voltage = DEFAULT_INPUT_VOLTAGE,
+			.input_frequency = DEFAULT_INPUT_FREQUENCY,
+			.max_output_current_mA = DEFAULT_OUTPUT_CURRENT_MAX,
+			.min_output_current_mA = DEFAULT_OUTPUT_CURRENT_MIN,
+		};
 	}
 }
 

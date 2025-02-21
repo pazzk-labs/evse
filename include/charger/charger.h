@@ -162,6 +162,16 @@ bool charger_create_connector(struct charger *charger,
  */
 int charger_step(struct charger *charger, uint32_t *next_period_ms);
 
+/**
+ * @brief Initializes the charger parameters to their default values.
+ *
+ * This function sets the provided charger_param structure to its default
+ * values. It ensures that all fields are initialized properly before use.
+ *
+ * @param[in] param Pointer to the charger_param structure to be initialized.
+ */
+void charger_default_param(struct charger_param *param);
+
 #if defined(__cplusplus)
 }
 #endif

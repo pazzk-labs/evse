@@ -75,7 +75,7 @@ TEST_GROUP(NetworkManager) {
 
 		set_time(0);
 		metrics_init(true);
-		netmgr_init();
+		netmgr_init(60000);
 		netmgr_register_event_cb(NETMGR_STATE_ANY, on_net_event, NULL);
 	}
 	void teardown(void) {
