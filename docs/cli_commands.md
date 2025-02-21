@@ -24,7 +24,7 @@
 
 | subcommand          | Description | Example               | Note            |
 | ------------------- | ----------- | --------------------- | --------------- |
-| set {chg\|mode}     | 설정 변경   | `config set chg free` | 설정 리스트는 아래 테이블 참고 |
+| set {chg\|mode}     | 설정 변경   | `config set chg/mode free` | 설정 리스트는 아래 테이블 참고 |
 | get {chg\|mode\|id} | 설정 확인   | `config get chg`      |                 |
 
 #### 설정 목록
@@ -79,8 +79,8 @@
 | `ping {ip addr}` | 네트워크 테스트   | `net ping 192.168.0.1` |      |
 | `mac`            | MAC 주소          | `net mac 11:22:33:44:55:66` |      |
 | `url`            | 서버 URL 설정     | `net url wss://csms.pazzk.net:9000` | |
-| `auth/id`        | 인증 ID 설정      | `net auth/id id_str`   |      |
-| `auth/pw`        | 인증 PW 설정      | `net auth/pw pass_str` |      |
+| `id`             | 인증 ID 설정      | `net id id_str`   |      |
+| `pw`             | 인증 PW 설정      | `net pw pass_str` |      |
 | `ws/ping`        | 웹소켓 핑 주기    | `net ws/ping 60`       | 단위: 초. 0일 경우 비활성화 |
 | `health`         | 네트워크 health check 주기 | `net health 60`  | 단위: 초. 0일 경우 비활성화 |
 

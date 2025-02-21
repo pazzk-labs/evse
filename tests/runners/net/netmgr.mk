@@ -26,7 +26,7 @@ SRC_FILES = \
 	../external/libmcu/modules/common/src/bitops.c \
 
 TEST_SRC_FILES = \
-	src/netmgr_test.cpp \
+	src/net/netmgr_test.cpp \
 	src/test_all.cpp \
 	stubs/logging.c \
 	mocks/netif.cpp \

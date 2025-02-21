@@ -46,10 +46,12 @@
 #include "messages.h"
 #include "handler.h"
 #include "config.h"
+#include "secret.h"
 #include "logger.h"
 
-#define RXQUEUE_SIZE			8192
-#define BUFSIZE				4096
+#define RXQUEUE_SIZE			4096
+#define BUFSIZE				2048
+#define PKA_BUFSIZE			2048
 
 #define DEFAULT_WS_PING_INTERVAL_SEC	300
 #define DEFAULT_TX_TIMEOUT_MS		10000
@@ -224,13 +226,39 @@ int csms_init(void *ctx)
 	config_read(CONFIG_KEY_SERVER_URL, param.url, sizeof(param.url)-1);
 	config_read(CONFIG_KEY_WS_PING_INTERVAL, &param.ping_interval_sec,
 			sizeof(param.ping_interval_sec));
+	config_read(CONFIG_KEY_SERVER_ID, param.auth.id,
+			sizeof(param.auth.id)-1);
+	config_read(CONFIG_KEY_SERVER_PASS, param.auth.pass,
+			sizeof(param.auth.pass)-1);
 
 	if (net_is_secure_protocol(net_get_protocol_from_url(param.url))) {
 		/* NOTE: The allocated dynamic memory is not freed because the
 		 * certificate is used throughout the device's lifecycle.
 		 * To minimize RAM usage, consider accessing the flash memory
 		 * directly. */
+		uint8_t *key = (uint8_t *)malloc(PKA_BUFSIZE);
+		uint8_t *cert = (uint8_t *)malloc(PKA_BUFSIZE);
+		uint8_t *ca = (uint8_t *)malloc(PKA_BUFSIZE);
+		int len;
+
+		if (key && (len = secret_read(SECRET_KEY_X509_KEY,
+				key, PKA_BUFSIZE)) > 0) {
+			param.tls.key_len = (size_t)len;
+			param.tls.key = key;
+		}
+		if (cert && (len = config_read(CONFIG_KEY_X509_CERT,
+				cert, PKA_BUFSIZE)) > 0) {
+			param.tls.cert_len = (size_t)len;
+			param.tls.cert = cert;
+		}
+		if (ca && (len = config_read(CONFIG_KEY_X509_CA,
+				ca, PKA_BUFSIZE)) > 0) {
+			param.tls.ca_len = (size_t)len;
+			param.tls.ca = ca;
+		}
 	}
+
+	info("CSMS URL: %s", param.url);
 
 	if (!(csms = ws_create_server(&param, NULL, NULL))) {
 		return -ENOMEM;

@@ -58,15 +58,9 @@
 #define STACK_SIZE_BYTES		5120U
 
 #define DEFAULT_CONNECT_TIMEOUT_MS	NETMGR_CONNECT_TIMEOUT_MS
-#define DEFAULT_PING_INTERVAL_MS	(1U/*min*/ * 60U/*sec*/ * 1000U/*ms*/)
 #define DEFAULT_PING_TIMEOUT_MS		100
 
 #define DEFAULT_REENABLE_DELAY_MS	1000 /* netif re-enable delay */
-
-#if !defined(NETMGR_WDT_TIMEOUT_MS)
-#define NETMGR_WDT_TIMEOUT_MS		\
-	(DEFAULT_PING_INTERVAL_MS + DEFAULT_CONNECT_TIMEOUT_MS)
-#endif
 
 #define DEFAULT_MAX_RETRY		NETMGR_MAX_RETRY
 #define DEFAULT_MAX_BACKOFF_MS		NETMGR_MAX_BACKOFF_MS
@@ -136,6 +130,7 @@ struct netmgr {
 	struct msgq *msgq;
 
 	time_t time_ntp_synced;
+	uint32_t healthchk_interval_ms;
 
 	bool enabled;
 	bool selftest_ping_requested;
@@ -259,7 +254,8 @@ static void dispatch_event(const netmgr_state_t event)
 
 static void start_ping_timer(void)
 {
-	apptmr_start(m.timer, DEFAULT_PING_INTERVAL_MS);
+	apptmr_start(m.timer, m.healthchk_interval_ms? m.healthchk_interval_ms
+			: DEFAULT_CONNECT_TIMEOUT_MS / 2);
 }
 
 static void stop_ping_timer(void)
@@ -324,7 +320,11 @@ static void on_netif_event(struct netif *netif,
 static void on_periodic_timer(struct apptmr *timer, void *arg)
 {
 	struct netmgr *netmgr = (struct netmgr *)arg;
-	request_selftest_ping();
+
+	if (netmgr->healthchk_interval_ms) {
+		request_selftest_ping();
+	}
+
 	sem_post(&netmgr->event);
 	metrics_increase(NetMgrPingTimerCount);
 }
@@ -914,7 +914,7 @@ int netmgr_disable(void)
 	return 0;
 }
 
-int netmgr_init(void)
+int netmgr_init(uint32_t healthchk_interval_ms)
 {
 	memset(&m, 0, sizeof(m));
 
@@ -923,7 +923,11 @@ int netmgr_init(void)
 	list_init(&m.task_list);
 	sem_init(&m.event, 0, 0);
 
-	if ((m.wdt = wdt_new("net", NETMGR_WDT_TIMEOUT_MS, 0, 0)) == NULL) {
+	m.healthchk_interval_ms = healthchk_interval_ms;
+
+	if ((m.wdt = wdt_new("net",
+			healthchk_interval_ms + DEFAULT_CONNECT_TIMEOUT_MS,
+			0, 0)) == NULL) {
 		return -ENOMEM;
 	}
 	if ((m.timer = apptmr_create(true, on_periodic_timer, &m)) == NULL) {

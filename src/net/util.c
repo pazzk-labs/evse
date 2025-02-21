@@ -31,8 +31,11 @@
  */
 
 #include "net/util.h"
+
 #include <stdbool.h>
 #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #if !defined(ARRAY_SIZE)
 #define ARRAY_SIZE(x)		(sizeof(x) / sizeof((x)[0]))
@@ -42,6 +45,13 @@ struct proto_tbl {
 	net_protocol_t proto;
 	const char *prefix;
 };
+
+static bool is_hex(char c)
+{
+	return (c >= '0' && c <= '9') ||
+		(c >= 'A' && c <= 'F') ||
+		(c >= 'a' && c <= 'f');
+}
 
 net_protocol_t net_get_protocol_from_url(const char *url)
 {
@@ -77,4 +87,77 @@ bool net_is_secure_protocol(net_protocol_t proto)
 	};
 
 	return secure[proto];
+}
+
+bool net_is_ipv4_str_valid(const char *ipstr)
+{
+	int i = 0;
+	int num = 0;
+	int dots = 0;
+
+	while (ipstr[i]) {
+		if (ipstr[i] == '.') {
+			if (num < 0 || num > 255) {
+				return false;
+			}
+			num = 0;
+			dots++;
+		} else if (ipstr[i] >= '0' && ipstr[i] <= '9') {
+			num = num * 10 + (ipstr[i] - '0');
+		} else {
+			return false;
+		}
+		i++;
+	}
+
+	if (num < 0 || num > 255 || dots != 3) {
+		return false;
+	}
+
+	return true;
+}
+
+bool net_get_mac_from_str(const char *str, uint8_t mac[MAC_ADDR_LEN])
+{
+	const size_t len = strlen(str);
+
+	if (len != 17 && len != 12) {
+		return false;
+	}
+
+	for (size_t i = 0; len == 17 && i < len; i++) { /* XX:XX:XX:XX:XX:XX */
+		if (i % 3 == 2) {
+			if (str[i] != ':') {
+				return false;
+			}
+		} else {
+			if (!is_hex(str[i])) {
+				return false;
+			}
+		}
+
+		if (i < MAC_ADDR_LEN) {
+			mac[i] = (uint8_t)strtol(str + i * 3, NULL, 16);
+		}
+	}
+
+	for (size_t i = 0; len == 12 && i < len; i++) { /* XXXXXXXXXXXX */
+		if (!is_hex(str[i])) {
+			return false;
+		}
+
+		if (i < MAC_ADDR_LEN) {
+			char n[3] = { str[i*2], str[i*2+1], '\0' };
+			mac[i] = (uint8_t)strtol(n, NULL, 16);
+		}
+	}
+
+	return true;
+}
+
+bool net_stringify_mac(const uint8_t mac[MAC_ADDR_LEN],
+		char *buf, size_t bufsize)
+{
+	return snprintf(buf, bufsize, "%02x:%02x:%02x:%02x:%02x:%02x",
+			mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]) == 17;
 }
