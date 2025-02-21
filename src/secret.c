@@ -60,6 +60,15 @@ static const char *get_keystr_from_key(secret_key_t key)
 	return secrets_tbl[key];
 }
 
+static bool is_writable(secret_key_t key)
+{
+	if (key == SECRET_KEY_X509_KEY || key == SECRET_KEY_X509_KEY_CSR) {
+		return true;
+	}
+
+	return false;
+}
+
 int secret_read(secret_key_t key, void *buf, size_t bufsize)
 {
 	const char *keystr = get_keystr_from_key(key);
@@ -69,6 +78,19 @@ int secret_read(secret_key_t key, void *buf, size_t bufsize)
 	}
 
 	return kvstore_read(secret.nvs, keystr, buf, bufsize);
+}
+
+int secret_save(secret_key_t key, const void *data, size_t datasize)
+{
+	const char *keystr = get_keystr_from_key(key);
+
+	if (!keystr) {
+		return -ENOENT;
+	} else if (!is_writable(key)) {
+		return -EPERM;
+	}
+
+	return kvstore_write(secret.nvs, keystr, data, datasize);
 }
 
 int secret_init(struct kvstore *nvs)
