@@ -31,7 +31,14 @@
  */
 
 #include "libmcu/cli.h"
+
 #include <string.h>
+#include <stdlib.h>
+
+#include "libmcu/pki.h"
+#include "secret.h"
+
+#define ECBUF_MAXLEN		512
 
 static void println(const struct cli_io *io, const char *str)
 {
@@ -55,10 +62,59 @@ static void process_dfu(int argc, const char *argv[], const struct cli_io *io)
 
 static void generate_x509_key(const struct cli_io *io)
 {
+	uint8_t key[ECBUF_MAXLEN];
+
+	if (pki_generate_prikey(key, sizeof(key)) != 0) {
+		println(io, "Failed to generate a private key");
+		return;
+	}
+
+	if (secret_save(SECRET_KEY_X509_KEY, key, strlen((char *)key)+1) < 0) {
+		println(io, "Failed to save the private key");
+		return;
+	}
+
+	println(io, "Private key newly generated");
+}
+
+static void generate_x509_csr(const struct cli_io *io, const char *cn,
+		const char *country, const char *org, const char *email)
+{
+	uint8_t key[ECBUF_MAXLEN];
+	uint8_t csr[ECBUF_MAXLEN];
+
+	if (secret_read(SECRET_KEY_X509_KEY, key, sizeof(key)) < 0) {
+		println(io, "Failed to read the private key");
+		return;
+	}
+
+	if (pki_generate_csr(csr, sizeof(csr), key, strlen((char *)key),
+			&(struct pki_csr_params) {
+				.common_name = cn,
+				.country = country,
+				.organization = org,
+				.email = email,
+			}) != 0) {
+		println(io, "Failed to generate a CSR");
+	}
+
+	if (secret_save(SECRET_KEY_X509_KEY_CSR, csr,
+			strlen((char *)csr)+1) < 0) {
+		println(io, "Failed to save the CSR");
+		return;
+	}
+
+	println(io, (char *)csr);
 }
 
 static void print_x509_key_csr(const struct cli_io *io)
 {
+	uint8_t csr[ECBUF_MAXLEN];
+	if (secret_read(SECRET_KEY_X509_KEY_CSR, csr, sizeof(csr)) < 0) {
+		println(io, "Failed to read the CSR");
+		return;
+	}
+	println(io, (char *)csr);
 }
 
 DEFINE_CLI_CMD(sec, "Secret commands") {
@@ -68,6 +124,8 @@ DEFINE_CLI_CMD(sec, "Secret commands") {
 		process_dfu(argc, argv, cli->io);
 	} else if (argc == 2 && strcmp(argv[1], "x509/key") == 0) {
 		generate_x509_key(cli->io);
+	} else if (argc == 6 && strcmp(argv[1], "x509/key/csr") == 0) {
+		generate_x509_csr(cli->io, argv[2], argv[3], argv[4], argv[5]);
 	} else if (argc == 2 && strcmp(argv[1], "x509/key/csr") == 0) {
 		print_x509_key_csr(cli->io);
 	}
