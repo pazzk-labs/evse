@@ -31,9 +31,16 @@
  */
 
 #include "libmcu/cli.h"
+
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <pthread.h>
+
+#include "libmcu/timext.h"
+
+#define STACK_SIZE_BYTES	5376U
+#define INPUT_SCAN_INTERVAL_MS	5
 
 static int do_read(void *buf, size_t bufsize)
 {
@@ -50,6 +57,27 @@ static int do_write(const void *data, size_t datasize)
 	}
 
 	return rc;
+}
+
+static void *cli_task(void *e)
+{
+	struct cli *cli = (struct cli *)e;
+
+	while (1) {
+		cli_step(cli);
+		sleep_ms(INPUT_SCAN_INTERVAL_MS);
+	}
+
+	return 0;
+}
+
+void cli_start(struct cli *cli)
+{
+	pthread_t thread;
+	pthread_attr_t attr;
+	pthread_attr_init(&attr);
+	pthread_attr_setstacksize(&attr, STACK_SIZE_BYTES);
+	pthread_create(&thread, &attr, cli_task, cli);
 }
 
 const struct cli_io *cli_io_create(void)

@@ -119,9 +119,8 @@ int app_process(uint32_t *next_period_ms)
 #define DEFAULT_STEP_INTERVAL_MS	50
 	const uint32_t interval_ms = DEFAULT_STEP_INTERVAL_MS;
 
-	cli_step(&cli);
-
 	charger_step(app->charger, next_period_ms);
+
 	if (next_period_ms) {
 		*next_period_ms = interval_ms;
 	}
@@ -177,6 +176,7 @@ void app_init(struct app *ctx)
 
 	cli_init(&cli, cli_io_create(), buf, sizeof(buf), app);
 	cli_register_cmdlist(&cli, commands);
+	cli_start(&cli);
 
 	uint8_t mac[NETIF_MAC_ADDR_LEN];
 	config_read(CONFIG_KEY_NET_MAC, mac, sizeof(mac));

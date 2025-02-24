@@ -31,12 +31,19 @@
  */
 
 #include "libmcu/cli.h"
+
 #include <string.h>
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "config.h"
 #include "charger/charger.h"
+#include "libmcu/timext.h"
+#include "libmcu/pki.h"
+
+#define ECBUF_MAXLEN		512
+#define PKA_BUFSIZE		2048
 
 static void println(const struct cli_io *io, const char *str)
 {
@@ -77,6 +84,28 @@ static void print_charge_param(const struct cli_io *io)
 			param.min_output_current_mA,
 			param.max_output_current_mA);
 	println(io, buf);
+}
+
+static void print_x509_ca(const struct cli_io *io)
+{
+	char *buf = malloc(PKA_BUFSIZE);
+	if (buf) {
+		buf[0] = '\0';
+		config_read(CONFIG_KEY_X509_CA, buf, PKA_BUFSIZE);
+		println(io, buf);
+		free(buf);
+	}
+}
+
+static void print_x509_cert(const struct cli_io *io)
+{
+	char *buf = malloc(PKA_BUFSIZE);
+	if (buf) {
+		buf[0] = '\0';
+		config_read(CONFIG_KEY_X509_CERT, buf, PKA_BUFSIZE);
+		println(io, buf);
+		free(buf);
+	}
 }
 
 static void change_charge_mode(const struct cli_io *io, const char *str)
@@ -179,6 +208,91 @@ static void change_output_min_current(const struct cli_io *io, const char *str)
 	config_save(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
 }
 
+static size_t read_until_eot(const struct cli_io *io,
+		char *buf, size_t bufsize, uint32_t timeout_ms)
+{
+	uint32_t tout;
+	size_t i = 0;
+
+	timeout_set(&tout, timeout_ms);
+
+	while (i < bufsize && !timeout_is_expired(tout)) {
+		char c;
+		if (io->read(&c, 1) == 1) {
+			if (c == 0x04/*EOT*/) {
+				break;
+			} else if (c == '\r') {
+				c = '\n';
+				if (i > 0 && buf[i-1] == '\n') {
+					continue;
+				}
+			}
+
+			buf[i++] = c;
+			io->write(&c, 1);
+		}
+	}
+
+	buf[i] = '\0';
+
+	return timeout_is_expired(tout)? 0 : i;
+}
+
+static void change_ca(const struct cli_io *io)
+{
+	uint8_t *buf = malloc(PKA_BUFSIZE);
+
+	if (!buf) {
+		return;
+	}
+
+	size_t len = read_until_eot(io, (char *)buf, PKA_BUFSIZE, 10000);
+
+	if (len <= 0 || pki_verify_cert(buf, len, buf, len) != 0) {
+		println(io, "Failed to verify the certificate");
+		goto out_free;
+	}
+
+	if (config_save(CONFIG_KEY_X509_CA, buf, len+1/*null*/) < 0) {
+		println(io, "Failed to save the CA");
+	}
+
+out_free:
+	free(buf);
+}
+
+static void change_cert(const struct cli_io *io)
+{
+	uint8_t *ca;
+	uint8_t *buf;
+
+	if ((buf = malloc(PKA_BUFSIZE)) == NULL) {
+		println(io, "Failed to allocate buf");
+		return;
+	}
+	if ((ca = malloc(PKA_BUFSIZE)) == NULL) {
+		println(io, "Failed to allocate ca");
+		free(buf);
+		return;
+	}
+
+	size_t len = read_until_eot(io, (char *)buf, PKA_BUFSIZE, 10000);
+	int ca_len = config_read(CONFIG_KEY_X509_CA, ca, PKA_BUFSIZE);
+
+	if (ca_len <= 0 || pki_verify_cert(ca, (size_t)ca_len, buf, len) != 0) {
+		println(io, "Failed to verify the certificate");
+		goto out_free;
+	}
+
+	if (config_save(CONFIG_KEY_X509_CERT, buf, len+1/*null*/) < 0) {
+		println(io, "Failed to save the certificate");
+	}
+
+out_free:
+	free(ca);
+	free(buf);
+}
+
 static void set_config(const struct cli_io *io,
 		const char *key, const char *value)
 {
@@ -195,6 +309,15 @@ static void set_config(const struct cli_io *io,
 		change_output_max_current(io, value);
 	} else if (strcmp(key, "chg/min_out_curr") == 0) {
 		change_output_min_current(io, value);
+	}
+}
+
+static void read_and_set_config(const struct cli_io *io, const char *key)
+{
+	if (strcmp(key, "x509/ca") == 0) {
+		change_ca(io);
+	} else if (strcmp(key, "x509/cert") == 0) {
+		change_cert(io);
 	}
 }
 
@@ -215,6 +338,8 @@ DEFINE_CLI_CMD(config, "Configurations") {
 
 	if (argc >= 2) {
 		if (argc == 2 && strcmp(argv[1], "reset") == 0) {
+		} else if (argc == 3 && strcmp(argv[1], "set") == 0) {
+			read_and_set_config(cli->io, argv[2]);
 		} else if (argc == 4 && strcmp(argv[1], "set") == 0) {
 			set_config(cli->io, argv[2], argv[3]);
 		} else if (argc > 4 && strcmp(argv[1], "set") == 0) {
@@ -231,6 +356,10 @@ DEFINE_CLI_CMD(config, "Configurations") {
 	print_charge_param(cli->io);
 	println(cli->io, "[Other configurations]");
 	print_all_keys(cli->io);
+	println(cli->io, "[X.509 CA]");
+	print_x509_ca(cli->io);
+	println(cli->io, "[X.509 Cert]");
+	print_x509_cert(cli->io);
 
 	return CLI_CMD_SUCCESS;
 }

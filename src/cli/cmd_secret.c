@@ -117,10 +117,12 @@ static void print_x509_key_csr(const struct cli_io *io)
 	println(io, (char *)csr);
 }
 
-DEFINE_CLI_CMD(sec, "Secret commands") {
+DEFINE_CLI_CMD(sec, "sec {dfu|x509/key|x509/key/csr}") {
 	struct cli const *cli = (struct cli const *)env;
 
-	if (strcmp(argv[1], "dfu") == 0) {
+	if (argc == 1) {
+		return CLI_CMD_INVALID_PARAM;
+	} else if (argc >= 2 && strcmp(argv[1], "dfu") == 0) {
 		process_dfu(argc, argv, cli->io);
 	} else if (argc == 2 && strcmp(argv[1], "x509/key") == 0) {
 		generate_x509_key(cli->io);

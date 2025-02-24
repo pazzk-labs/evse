@@ -35,7 +35,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <pthread.h>
 
 #include "libmcu/xmodem.h"
 #include "libmcu/board.h"
@@ -43,23 +42,10 @@
 #include "libmcu/dfu.h"
 
 #include "fs/fs.h"
-#include "app.h"
-
-#define STACK_SIZE_BYTES		4096U
 
 #define DATA_BLOCK_SIZE			1024U
 #define DOWNLOAD_TIMEOUT_MS		300000U
 #define STRBUF_MAXLEN			256U
-
-typedef enum {
-	DOWNLOAD_TYPE_TEST,
-	DOWNLOAD_TYPE_DFU,
-} download_t;
-
-struct download_thread_ctx {
-	void *env;
-	download_t type;
-};
 
 struct download_ctx {
 	struct fs *fs;
@@ -208,58 +194,18 @@ static void update_firmware(const struct cli_io *io)
 	dfu_delete(dfu);
 }
 
-static void *download_task(void *e)
-{
-	struct download_thread_ctx *ctx = (struct download_thread_ctx *)e;
-	struct cli *cli = (struct cli *)ctx->env;
-	struct app *app = (struct app *)cli->env;
-
-	cli->pause = true;
-
-	switch (ctx->type) {
-	case DOWNLOAD_TYPE_TEST:
-		test_download(cli->io);
-		break;
-	case DOWNLOAD_TYPE_DFU:
-		update_firmware(cli->io);
-		break;
-	default:
-		break;
-	}
-
-	cli->pause = false;
-	free(e);
-
-	return NULL;
-}
-
 DEFINE_CLI_CMD(xmodem, "XMODEM") {
-	if (argc == 2) {
-		download_t type = DOWNLOAD_TYPE_TEST;
+	struct cli *cli = (struct cli *)env;
 
+	if (argc == 2) {
 		if (strcmp(argv[1], "test") == 0) {
+			test_download(cli->io);
 		} else if (strcmp(argv[1], "dfu") == 0) {
-			type = DOWNLOAD_TYPE_DFU;
+			update_firmware(cli->io);
 		} else {
 			return CLI_CMD_INVALID_PARAM;
 		}
-
-		struct download_thread_ctx *ctx =
-			(struct download_thread_ctx *)malloc(sizeof(*ctx));
-
-		if (ctx) {
-			ctx->env = env;
-			ctx->type = type;
-
-			pthread_t thread;
-			pthread_attr_t attr;
-			pthread_attr_init(&attr);
-			pthread_attr_setstacksize(&attr, STACK_SIZE_BYTES);
-			pthread_create(&thread, &attr, download_task, ctx);
-		}
-	} else {
-		return CLI_CMD_SUCCESS;
 	}
 
-	return CLI_CMD_EXIT;
+	return CLI_CMD_SUCCESS;
 }
