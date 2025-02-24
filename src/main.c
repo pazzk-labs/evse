@@ -333,7 +333,7 @@ int main(void)
 	gpio_enable(periph->io_expander_int);
 
 	/* NOTE: around 3kHz and 9kHz will be the most high-pitched sound on our
-	 * buzzer. which is G note in octave 7 and B bote in octave 8. */
+	 * buzzer. which is G note in octave 7 and B note in octave 8. */
 	buzzer_init(periph->pwm2_ch2_buzzer, 0, 0);
 	buzzer_play(&melody_booting);
 

@@ -40,6 +40,11 @@
 | chg/max_out_curr | 출력 최대 전류 |              | 단위: A               |
 | chg/min_out_curr | 출력 최소 전류 |              | 단위: A               |
 | chg/param | 충전 파라미터(vol,input_curr,freq,min_out_curr,max_out_curr) | | e.g. `config set chg/param 220 32 60 6 32`|
+| x509/ca          | CA 인증서       |             |                      |
+| x509/cert        | 디바이스 인증서 |             |                      |
+
+> ![NOTE]
+> 디바이스 인증서 업데이트시 저장된 CA 인증서로 인증서 유효성 검사를 수행합니다. 따라서 CA 인증서를 먼저 업데이트하세요.
 
 ### `exit`
 ### `help`
