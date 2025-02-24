@@ -31,9 +31,10 @@
  */
 
 #include "app.h"
+
 #include <string.h>
 #include <sys/time.h>
-#include "logger.h"
+#include <stdlib.h>
 
 #include "libmcu/cli.h"
 #include "libmcu/adc.h"
@@ -50,6 +51,8 @@
 #include "charger/free.h"
 #include "charger/ocpp.h"
 #include "charger/connector.h"
+#include "ocpp/ocpp.h"
+#include "logger.h"
 
 static struct app *app;
 static struct cli cli;
@@ -79,6 +82,16 @@ static void on_charger_event(struct charger *charger,
 		config_save(CONFIG_KEY_OCPP_PARAM,
 				ocpp_charger_get_param(charger),
 				sizeof(struct ocpp_charger_param));
+	}
+
+	if (event & CHARGER_EVENT_CONFIGURATION_CHANGED) {
+		const size_t len = ocpp_compute_configuration_size();
+		void *p = (void *)calloc(1, len);
+		if (p) {
+			ocpp_copy_configuration_to(p, len);
+			config_save(CONFIG_KEY_OCPP_CONFIG, p, len);
+			free(p);
+		}
 	}
 
 	if (event & CHARGER_EVENT_REBOOT_REQUIRED) {
