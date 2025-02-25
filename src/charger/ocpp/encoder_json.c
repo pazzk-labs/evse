@@ -173,104 +173,14 @@ static bool do_fw_staus_noti(const struct ocpp_message *msg, cJSON *json)
 	return true;
 }
 
-static void pack_csl_connector_phase_rotation(cJSON *json, const int value)
-{
-	if (value < 0 || value > OCPP_PHASE_ROTATION_TSR) {
-		return;
-	}
-
-	const char *str[] = {
-		[OCPP_PHASE_ROTATION_NOT_APPLICABLE] = "NotApplicable",
-		[OCPP_PHASE_ROTATION_UNKNOWN] = "Unknown",
-		[OCPP_PHASE_ROTATION_RST] = "RST",
-		[OCPP_PHASE_ROTATION_RTS] = "RTS",
-		[OCPP_PHASE_ROTATION_SRT] = "SRT",
-		[OCPP_PHASE_ROTATION_STR] = "STR",
-		[OCPP_PHASE_ROTATION_TRS] = "TRS",
-		[OCPP_PHASE_ROTATION_TSR] = "TSR",
-	};
-
-	cJSON_AddItemToObject(json, "value", cJSON_CreateString(str[value]));
-}
-
-static void pack_csl_meter_data(cJSON *json, const int value)
-{
-	const size_t maxlen = 512;
-	char *buf;
-
-	if ((buf = malloc(maxlen)) == NULL) {
-		return;
-	}
-
-	if (ocpp_stringify_measurand(buf, maxlen, (ocpp_measurand_t)value)) {
-		cJSON_AddItemToObject(json, "value", cJSON_CreateString(buf));
-	}
-
-	free(buf);
-}
-
-static void pack_csl_profile(cJSON *json, const int value)
-{
-	char buf[128] = { 0, };
-	if (ocpp_stringify_profile(buf, sizeof(buf), (ocpp_profile_t)value)) {
-		cJSON_AddItemToObject(json, "value", cJSON_CreateString(buf));
-	}
-}
-
-static void pack_csl_charging_rate_unit(cJSON *json, const int value)
-{
-	/* TODO: Implement */
-}
-
-static void pack_configuration_value(cJSON *json, const char *key,
-		const uint8_t *value, const size_t value_size)
-{
-	const struct {
-		const char *key;
-		void (*fn)(cJSON *json, const int value);
-	} csl_handler[] = {
-		{ "ConnectorPhaseRotation", pack_csl_connector_phase_rotation },
-		{ "MeterValuesAlignedData", pack_csl_meter_data },
-		{ "MeterValuesSampledData", pack_csl_meter_data },
-		{ "StopTxnAlignedData", pack_csl_meter_data },
-		{ "StopTxnSampledData", pack_csl_meter_data },
-		{ "SupportedFeatureProfiles", pack_csl_profile },
-		{ "ChargingScheduleAllowedChargingRateUnit", pack_csl_charging_rate_unit },
-	};
-	const ocpp_configuration_data_t value_type =
-		ocpp_get_configuration_data_type(key);
-	int ival;
-
-	if (value_type == OCPP_CONF_TYPE_STR) {
-		cJSON_AddItemToObject(json, "value",
-				cJSON_CreateString((const char *)value));
-	} else if (value_type == OCPP_CONF_TYPE_BOOL) {
-		char buf[8] = { 0, };
-		snprintf(buf, sizeof(buf), "%s",
-				*(const bool *)value? "true" : "false");
-		cJSON_AddItemToObject(json, "value", cJSON_CreateString(buf));
-	} else if (value_type == OCPP_CONF_TYPE_CSL) {
-		for (size_t i = 0; i < ARRAY_SIZE(csl_handler); i++) {
-			if (strcmp(key, csl_handler[i].key) == 0) {
-				memcpy(&ival, value, sizeof(ival));
-				csl_handler[i].fn(json, ival);
-				break;
-			}
-		}
-	} else {
-		char buf[16] = { 0, };
-		memcpy(&ival, value, sizeof(ival));
-		snprintf(buf, sizeof(buf), "%d", ival);
-		cJSON_AddItemToObject(json, "value", cJSON_CreateString(buf));
-	}
-}
-
 static bool pack_configuration(const char *key, cJSON *known, cJSON *unknown)
 {
+#define CFGVAL_STR_MAXLEN		256
 	const size_t value_size = ocpp_get_configuration_size(key);
 	uint8_t value[value_size];
 	bool readonly;
 	cJSON *obj;
+	char buf[CFGVAL_STR_MAXLEN];
 
 	if (value_size == 0) {
 		cJSON_AddItemToArray(unknown, cJSON_CreateString(key));
@@ -287,8 +197,8 @@ static bool pack_configuration(const char *key, cJSON *known, cJSON *unknown)
 	cJSON_AddItemToArray(known, obj);
 	cJSON_AddItemToObject(obj, "key", cJSON_CreateString(key));
 	cJSON_AddItemToObject(obj, "readonly", cJSON_CreateBool(readonly));
-
-	pack_configuration_value(obj, key, value, value_size);
+	cJSON_AddItemToObject(obj, "value", cJSON_CreateString(
+		ocpp_stringify_configuration_value(key, buf, sizeof(buf))));
 
 	return true;
 }
@@ -394,9 +304,8 @@ static cJSON *create_sample_value(const struct ocpp_SampledValue *sample)
 				ocpp_stringify_context(sample->context)));
 	}
 	if (sample->measurand) {
-		char buf[32] = { 0, };
-		ocpp_stringify_measurand(buf, sizeof(buf), sample->measurand);
-		cJSON_AddItemToObject(value, "measurand", cJSON_CreateString(buf));
+		cJSON_AddItemToObject(value, "measurand", cJSON_CreateString(
+				ocpp_stringify_measurand(sample->measurand)));
 	}
 	if (sample->unit) {
 		cJSON_AddItemToObject(value, "unit", cJSON_CreateString(
