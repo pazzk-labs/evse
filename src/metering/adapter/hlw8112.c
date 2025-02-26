@@ -129,6 +129,8 @@ static int enable(struct metering *self)
 		error("hlw8112 %d", err);
 	}
 
+	info("initial metering %llu, %llu", self->energy.wh, self->energy.varh);
+
 	return err? -EIO: 0;
 }
 

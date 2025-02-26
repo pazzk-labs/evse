@@ -90,8 +90,8 @@ static void on_state_change(struct fsm *fsm,
 			stringify_status(new_state),
 			c->base.time_last_state_change);
 
-	const connector_state_t cp_new = s2cp(new_state);
-	const connector_state_t cp_prev = s2cp(prev_state);
+	const connector_state_t cp_new = (connector_state_t)s2cp(new_state);
+	const connector_state_t cp_prev = (connector_state_t)s2cp(prev_state);
 
 	if (cp_new != cp_prev) {
 		const charger_event_t events =
