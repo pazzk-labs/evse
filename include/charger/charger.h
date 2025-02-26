@@ -42,6 +42,8 @@ extern "C" {
 
 #include "charger/event.h"
 
+#define CHARGER_EVENT_STRING_MAXLEN		128
+
 struct charger;
 struct connector;
 struct connector_param;
@@ -171,6 +173,19 @@ int charger_step(struct charger *charger, uint32_t *next_period_ms);
  * @param[in] param Pointer to the charger_param structure to be initialized.
  */
 void charger_default_param(struct charger_param *param);
+
+/**
+ * Converts a charger event into its string representation
+ *
+ * @param[in]  event    The charger event to convert
+ * @param[out] buf      Buffer to store the string representation
+ * @param[in]  bufsize  Size of the provided buffer
+ *
+ * @return The number of characters written to the buffer (excluding null
+ *         terminator)
+ */
+size_t charger_stringify_event(const charger_event_t event,
+		char *buf, size_t bufsize);
 
 #if defined(__cplusplus)
 }

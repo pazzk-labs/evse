@@ -89,6 +89,15 @@ static void on_state_change(struct fsm *fsm,
 			stringify_status(prev_state),
 			stringify_status(new_state),
 			c->base.time_last_state_change);
+
+	const connector_state_t cp_new = s2cp(new_state);
+	const connector_state_t cp_prev = s2cp(prev_state);
+
+	if (cp_new != cp_prev) {
+		const charger_event_t events =
+			get_event_from_state_change(cp_new, cp_prev);
+		dispatch_event(c->base.charger, NULL, events);
+	}
 }
 
 static void on_updater_event(updater_event_t event, void *ctx)

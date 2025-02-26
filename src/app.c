@@ -60,9 +60,11 @@ static struct cli cli;
 static void on_charger_event(struct charger *charger,
 		struct connector *connector,
 		const charger_event_t event, void *ctx) {
-	info("charger event: %x", event);
-
+	char evtstr[CHARGER_EVENT_STRING_MAXLEN];
 	bool param_updated = false;
+
+	charger_stringify_event(event, evtstr, sizeof(evtstr));
+	info("charger event: \"%s\"", evtstr);
 
 	if (event & CHARGER_EVENT_PARAM_CHANGED) { /* availability changed */
 		param_updated = true;

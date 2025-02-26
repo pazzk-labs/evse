@@ -255,3 +255,15 @@ TEST(Charger, ShouldReturnTrue_WhenDutyIsNominal) {
 	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_B);
 	LONGS_EQUAL(true, is_state_x2(&c, B));
 }
+
+TEST(Charger, ShouldReturnEventString) {
+	char buf[CHARGER_EVENT_STRING_MAXLEN];
+	charger_stringify_event(CHARGER_EVENT_PLUGGED, buf, sizeof(buf));
+	STRCMP_EQUAL("Plugged", buf);
+	charger_stringify_event(CHARGER_EVENT_BILLING_ENDED, buf, sizeof(buf));
+	STRCMP_EQUAL("Billing Ended", buf);
+	charger_stringify_event((charger_event_t)(CHARGER_EVENT_BILLING_ENDED |
+			CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_UNPLUGGED),
+			buf, sizeof(buf));
+	STRCMP_EQUAL("Billing Ended,Charging Ended,Unplugged", buf);
+}
