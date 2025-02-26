@@ -46,18 +46,24 @@ static void println(const struct cli_io *io, const char *str)
 static void print_key(const struct cli_io *io, const char *key)
 {
 	io->write(key, strlen(key));
-	io->write(": ", 2);
+	io->write("=", 2);
 }
 
 static void print_value(const struct cli_io *io, const char *value)
 {
-	println(io, value);
+	if (value[0] == '\0') {
+		println(io, "null");
+	} else {
+		println(io, value);
+	}
 }
 
 static void print_ocpp_configurations(const struct cli_io *io)
 {
 #define CFGVAL_STR_MAXLEN		256
 	char buf[CFGVAL_STR_MAXLEN];
+
+	println(io, "[OCPP Configurations]");
 
 	for (size_t i = 0; i < ocpp_count_configurations(); i++) {
 		const char *key;
