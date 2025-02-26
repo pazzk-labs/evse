@@ -50,6 +50,9 @@ struct metering {
 	struct hlw811x *hlw811x;
 	struct uart *uart;
 
+	metering_save_cb_t save_cb;
+	void *save_cb_ctx;
+
 	uint32_t ts_read; /* timestamp of last read */
 };
 
@@ -139,7 +142,7 @@ static int step(struct metering *self)
 		return -EIO;
 	}
 
-	self->param.wh += Wh;
+	self->param.energy.wh += Wh;
 	self->ts_read = now;
 
 	return 0;
@@ -234,9 +237,21 @@ static int get_energy(struct metering *self, uint64_t *wh, uint64_t *varh)
 		return -EINVAL;
 	}
 
-	*wh = self->param.wh;
+	*wh = self->param.energy.wh;
 
 	return 0;
+}
+
+static int save_energy(struct metering *self)
+{
+	bool success = true;
+
+	if (self->save_cb) {
+		success = (*self->save_cb)(self,
+				&self->param.energy, self->save_cb_ctx);
+	}
+
+	return success? 0: -EIO;
 }
 
 static int get_power(struct metering *self, int32_t *watt, int32_t *var)
@@ -267,6 +282,7 @@ static const struct metering_api *get_api(void)
 		.destroy = destroy,
 		.enable = enable,
 		.disable = disable,
+		.save_energy = save_energy,
 		.step = step,
 		.get_voltage = get_voltage,
 		.get_current = get_current,
@@ -281,17 +297,20 @@ static const struct metering_api *get_api(void)
 }
 
 struct metering *metering_create_hlw8112(const struct metering_param *param,
-		struct metering_io *io)
+		metering_save_cb_t save_cb, void *save_cb_ctx)
 {
 	static struct metering metering;
 
-	if (!(metering.hlw811x = hlw811x_create(HLW811X_UART, io->uart))) {
+	if (!(metering.hlw811x =
+			hlw811x_create(HLW811X_UART, param->io->uart))) {
 		return NULL;
 	}
 
 	memcpy(&metering.param, param, sizeof(metering.param));
 	metering.api = *get_api();
-	metering.uart = io->uart;
+	metering.uart = param->io->uart;
+	metering.save_cb = save_cb;
+	metering.save_cb_ctx = save_cb_ctx;
 
 	return &metering;
 }

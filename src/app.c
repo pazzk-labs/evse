@@ -50,7 +50,7 @@
 
 #include "charger/free.h"
 #include "charger/ocpp.h"
-#include "charger/connector.h"
+#include "charger/connector_private.h"
 #include "ocpp/ocpp.h"
 #include "logger.h"
 
@@ -96,6 +96,10 @@ static void on_charger_event(struct charger *charger,
 		}
 	}
 
+	if (event & CHARGER_EVENT_CHARGING_ENDED) {
+		metering_save_energy(connector->param.metering);
+	}
+
 	if (event & CHARGER_EVENT_REBOOT_REQUIRED) {
 		bool reboot_manually = false;
 		config_read(CONFIG_KEY_DFU_REBOOT_MANUAL,
@@ -104,6 +108,13 @@ static void on_charger_event(struct charger *charger,
 			app_reboot();
 		}
 	}
+}
+
+static bool on_metering_save(const struct metering *metering,
+		const struct metering_energy *energy, void *ctx)
+{
+	config_key_t key = (config_key_t)(uintptr_t)ctx;
+	return config_save(key, energy, sizeof(*energy)) >= 0;
 }
 
 void app_adjust_time_on_drift(const time_t unixtime, const uint32_t drift)
@@ -232,17 +243,22 @@ void app_init(struct app *ctx)
 	});
 	uart_enable(app->periph.uart1, METERING_UART_BAUDRATE);
 
-	struct metering_param conn1 = { 0, };
 	struct metering_io conn1_io = {
 		.uart = app->periph.uart1,
 	};
-	config_read(CONFIG_KEY_CHARGER_METERING_1, &conn1, sizeof(conn1));
+	struct metering_param conn1 = {
+		.io = &conn1_io,
+	};
+	config_read(CONFIG_KEY_CHARGER_METERING_1,
+			&conn1.energy, sizeof(conn1.energy));
 
 	charger_create_connector(app->charger, &(struct connector_param) {
 			.max_output_current_mA = param.max_output_current_mA,
 			.min_output_current_mA = param.min_output_current_mA,
 			.iec61851 = iec61851_create(app->pilot, app->relay),
-			.metering = metering_create(METERING_HLW811X, &conn1, &conn1_io),
+			.metering = metering_create(METERING_HLW811X, &conn1,
+					on_metering_save, (void *)(uintptr_t)
+					CONFIG_KEY_CHARGER_METERING_1),
 			.name = "connector1",
 			.priority = 1,
 	});
