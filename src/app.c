@@ -113,6 +113,8 @@ static void on_charger_event(struct charger *charger,
 static bool on_metering_save(const struct metering *metering,
 		const struct metering_energy *energy, void *ctx)
 {
+	debug("metering save: %luWh", (uint32_t)energy->wh);
+
 	config_key_t key = (config_key_t)(uintptr_t)ctx;
 	return config_save(key, energy, sizeof(*energy)) >= 0;
 }

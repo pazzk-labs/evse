@@ -41,6 +41,21 @@ extern "C" {
 #include <stdbool.h>
 #include "libmcu/uart.h"
 
+#if !defined(METERING_ENERGY_SAVE_THRESHOLD_WH)
+/**
+ * Energy accumulation threshold in watt-hours that triggers a save
+ * Energy data will be saved if accumulated delta exceeds this value
+ */
+#define METERING_ENERGY_SAVE_THRESHOLD_WH	1800 /* 1.8 kWh */
+#endif
+#if !defined(METERING_ENERGY_SAVE_INTERVAL_MIN)
+/**
+ * Minimum interval in minutes between energy data saves
+ * Energy data will be saved if this time has elapsed since last save
+ */
+#define METERING_ENERGY_SAVE_INTERVAL_MIN	10 /* 10 minutes */
+#endif
+
 typedef enum {
 	METERING_HLW811X,
 } metering_t;
@@ -150,6 +165,10 @@ int metering_save_energy(struct metering *self);
  * This function performs a metering process using the `step` method
  * of the `metering_api` structure associated with the given `metering`
  * instance. This function is intended to be called periodically.
+ *
+ * @note Energy data is saved when either of these conditions is met:
+ * - Accumulated energy delta exceeds METERING_ENERGY_SAVE_THRESHOLD_WH
+ * - Time since last save exceeds METERING_ENERGY_SAVE_INTERVAL_MIN
  *
  * @param[in] self A pointer to the `metering` instance.
  *

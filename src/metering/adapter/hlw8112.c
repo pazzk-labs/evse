@@ -46,6 +46,17 @@
 struct metering {
 	struct metering_api api;
 	struct metering_param param;
+	/**
+	 * Runtime energy accumulator that tracks total energy measurements
+	 *
+	 * This value represents the most recent energy measurement state:
+	 * - Continuously accumulates during runtime
+	 * - Can be saved to non-volatile storage at any point
+	 * - Always greater than or equal to param.energy
+	 *
+	 * param.energy represents the last saved value in non-volatile storage
+	 **/
+	struct metering_energy energy;
 
 	struct hlw811x *hlw811x;
 	struct uart *uart;
@@ -54,6 +65,7 @@ struct metering {
 	void *save_cb_ctx;
 
 	uint32_t ts_read; /* timestamp of last read */
+	uint32_t ts_saved; /* timestamp of last saved */
 };
 
 int hlw811x_ll_write(const uint8_t *data, size_t datalen, void *ctx)
@@ -123,29 +135,6 @@ static int enable(struct metering *self)
 static int disable(struct metering *self)
 {
 	return exio_set_metering_power(false);
-}
-
-static int step(struct metering *self)
-{
-	const uint32_t now = board_get_time_since_boot_ms();
-	const uint32_t elapsed = now - self->ts_read;
-	hlw811x_error_t err;
-	int32_t Wh;
-
-	if (elapsed < MIN_INTERVAL_MS) {
-		return -EAGAIN;
-	}
-
-	if ((err = hlw811x_get_energy(self->hlw811x, HLW811X_CHANNEL_A, &Wh))
-			!= HLW811X_ERROR_NONE) {
-		error("can't get energy: %d", err);
-		return -EIO;
-	}
-
-	self->param.energy.wh += Wh;
-	self->ts_read = now;
-
-	return 0;
 }
 
 static int get_voltage(struct metering *self, int32_t *millivolt)
@@ -237,18 +226,23 @@ static int get_energy(struct metering *self, uint64_t *wh, uint64_t *varh)
 		return -EINVAL;
 	}
 
-	*wh = self->param.energy.wh;
+	*wh = self->energy.wh;
 
 	return 0;
 }
 
 static int save_energy(struct metering *self)
 {
+	const struct metering_energy updated = self->energy;
+	struct metering_energy *saved = &self->param.energy;
 	bool success = true;
 
-	if (self->save_cb) {
-		success = (*self->save_cb)(self,
-				&self->param.energy, self->save_cb_ctx);
+	if (self->save_cb && memcmp(&updated, saved, sizeof(updated))) {
+		if ((success = (*self->save_cb)(self, &updated,
+				self->save_cb_ctx))) {
+			memcpy(saved, &updated, sizeof(updated));
+			self->ts_saved = board_get_time_since_boot_ms();
+		}
 	}
 
 	return success? 0: -EIO;
@@ -265,6 +259,37 @@ static int get_power(struct metering *self, int32_t *watt, int32_t *var)
 	if (err != HLW811X_ERROR_NONE) {
 		error("can't get power: %d", err);
 		return -EIO;
+	}
+
+	return 0;
+}
+
+static int step(struct metering *self)
+{
+	const uint32_t now = board_get_time_since_boot_ms();
+	const uint32_t elapsed = now - self->ts_read;
+	hlw811x_error_t err;
+	int32_t Wh;
+
+	if (elapsed < MIN_INTERVAL_MS) {
+		return -EAGAIN;
+	}
+
+	if ((err = hlw811x_get_energy(self->hlw811x, HLW811X_CHANNEL_A, &Wh))
+			!= HLW811X_ERROR_NONE) {
+		error("can't get energy: %d", err);
+		return -EIO;
+	}
+
+	self->energy.wh += Wh;
+	self->ts_read = now;
+
+	const uint32_t ms = now - self->ts_saved;
+	const uint32_t wh = (uint32_t)(self->energy.wh - self->param.energy.wh);
+
+	if (wh >= METERING_ENERGY_SAVE_THRESHOLD_WH ||
+			ms >= METERING_ENERGY_SAVE_INTERVAL_MIN * 60 * 1000) {
+		save_energy(self);
 	}
 
 	return 0;
@@ -307,6 +332,7 @@ struct metering *metering_create_hlw8112(const struct metering_param *param,
 	}
 
 	memcpy(&metering.param, param, sizeof(metering.param));
+	memcpy(&metering.energy, &param->energy, sizeof(metering.energy));
 	metering.api = *get_api();
 	metering.uart = param->io->uart;
 	metering.save_cb = save_cb;
