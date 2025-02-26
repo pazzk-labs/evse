@@ -12,6 +12,7 @@
 | `md`      | 메모리 덤프                             |
 | `metrics` | 메트릭 정보                             |
 | `net`     | 네트워크 정보                           |
+| `ocpp`    | OCPP 설정 정보                          |
 | `pilot`   | Control Pilot                           |
 | `plc`     | PLC 모뎀 설정 확인 및 변경              |
 | `reboot`  | 시스템 재부팅                           |
@@ -88,6 +89,8 @@
 | `pw`             | 인증 PW 설정      | `net pw pass_str` |      |
 | `ws/ping`        | 웹소켓 핑 주기    | `net ws/ping 60`       | 단위: 초. 0일 경우 비활성화 |
 | `health`         | 네트워크 health check 주기 | `net health 60`  | 단위: 초. 0일 경우 비활성화 |
+
+### `ocpp`
 
 ### `pilot`
 

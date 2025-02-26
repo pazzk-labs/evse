@@ -60,6 +60,60 @@
 static struct server *csms;
 static struct ringbuf *rxq;
 
+static int initialize_server(void)
+{
+	struct ws_param param = {
+		.url = DEFAULT_SERVER_URL,
+		.header = "Sec-WebSocket-Protocol: ocpp1.6\r\n",
+		.write_timeout_ms = DEFAULT_TX_TIMEOUT_MS,
+		.rxq_maxsize = RXQUEUE_SIZE,
+		.ping_interval_sec = DEFAULT_WS_PING_INTERVAL_SEC,
+	};
+
+	config_read(CONFIG_KEY_SERVER_URL, param.url, sizeof(param.url)-1);
+	config_read(CONFIG_KEY_WS_PING_INTERVAL, &param.ping_interval_sec,
+			sizeof(param.ping_interval_sec));
+	config_read(CONFIG_KEY_SERVER_ID, param.auth.id,
+			sizeof(param.auth.id)-1);
+	config_read(CONFIG_KEY_SERVER_PASS, param.auth.pass,
+			sizeof(param.auth.pass)-1);
+
+	if (net_is_secure_protocol(net_get_protocol_from_url(param.url))) {
+		/* NOTE: The allocated dynamic memory is not freed because the
+		 * certificate is used throughout the device's lifecycle.
+		 * To minimize RAM usage, consider accessing the flash memory
+		 * directly. */
+		uint8_t *key = (uint8_t *)malloc(PKA_BUFSIZE);
+		uint8_t *cert = (uint8_t *)malloc(PKA_BUFSIZE);
+		uint8_t *ca = (uint8_t *)malloc(PKA_BUFSIZE);
+		int len;
+
+		if (key && (len = secret_read(SECRET_KEY_X509_KEY,
+				key, PKA_BUFSIZE)) > 0) {
+			param.tls.key_len = (size_t)len;
+			param.tls.key = key;
+		}
+		if (cert && (len = config_read(CONFIG_KEY_X509_CERT,
+				cert, PKA_BUFSIZE)) > 0) {
+			param.tls.cert_len = (size_t)len;
+			param.tls.cert = cert;
+		}
+		if (ca && (len = config_read(CONFIG_KEY_X509_CA,
+				ca, PKA_BUFSIZE)) > 0) {
+			param.tls.ca_len = (size_t)len;
+			param.tls.ca = ca;
+		}
+	}
+
+	info("CSMS URL: %s", param.url);
+
+	if (!(csms = ws_create_server(&param, NULL, NULL))) {
+		return -ENOMEM;
+	}
+
+	return 0;
+}
+
 static void on_ocpp_event(ocpp_event_t event_type,
 		const struct ocpp_message *message, void *ctx)
 {
@@ -211,58 +265,29 @@ int csms_reconnect(const uint32_t delay_sec)
 
 int csms_init(void *ctx)
 {
-	struct ws_param param = {
-		.url = DEFAULT_SERVER_URL,
-		.header = "Sec-WebSocket-Protocol: ocpp1.6\r\n",
-		.write_timeout_ms = DEFAULT_TX_TIMEOUT_MS,
-		.rxq_maxsize = RXQUEUE_SIZE,
-		.ping_interval_sec = DEFAULT_WS_PING_INTERVAL_SEC,
-	};
-
 	if (!(rxq = ringbuf_create(RXQUEUE_SIZE))) {
 		return -ENOMEM;
 	}
 
-	config_read(CONFIG_KEY_SERVER_URL, param.url, sizeof(param.url)-1);
-	config_read(CONFIG_KEY_WS_PING_INTERVAL, &param.ping_interval_sec,
-			sizeof(param.ping_interval_sec));
-	config_read(CONFIG_KEY_SERVER_ID, param.auth.id,
-			sizeof(param.auth.id)-1);
-	config_read(CONFIG_KEY_SERVER_PASS, param.auth.pass,
-			sizeof(param.auth.pass)-1);
+	int err = initialize_server();
 
-	if (net_is_secure_protocol(net_get_protocol_from_url(param.url))) {
-		/* NOTE: The allocated dynamic memory is not freed because the
-		 * certificate is used throughout the device's lifecycle.
-		 * To minimize RAM usage, consider accessing the flash memory
-		 * directly. */
-		uint8_t *key = (uint8_t *)malloc(PKA_BUFSIZE);
-		uint8_t *cert = (uint8_t *)malloc(PKA_BUFSIZE);
-		uint8_t *ca = (uint8_t *)malloc(PKA_BUFSIZE);
-		int len;
+	if (!err) {
+		const size_t len = ocpp_compute_configuration_size();
+		void *p = (void *)calloc(1, len);
+		if (p == NULL) {
+			return -ENOMEM;
+		}
 
-		if (key && (len = secret_read(SECRET_KEY_X509_KEY,
-				key, PKA_BUFSIZE)) > 0) {
-			param.tls.key_len = (size_t)len;
-			param.tls.key = key;
+		if (config_read(CONFIG_KEY_OCPP_CONFIG, p, len) == (int)len) {
+			ocpp_copy_configuration_from(p, len);
+		} else {
+			warn("Failed to load OCPP configuration");
 		}
-		if (cert && (len = config_read(CONFIG_KEY_X509_CERT,
-				cert, PKA_BUFSIZE)) > 0) {
-			param.tls.cert_len = (size_t)len;
-			param.tls.cert = cert;
-		}
-		if (ca && (len = config_read(CONFIG_KEY_X509_CA,
-				ca, PKA_BUFSIZE)) > 0) {
-			param.tls.ca_len = (size_t)len;
-			param.tls.ca = ca;
-		}
+
+		free(p);
+
+		err = ocpp_init(on_ocpp_event, ctx);
 	}
 
-	info("CSMS URL: %s", param.url);
-
-	if (!(csms = ws_create_server(&param, NULL, NULL))) {
-		return -ENOMEM;
-	}
-
-	return ocpp_init(on_ocpp_event, ctx);
+	return err;
 }
