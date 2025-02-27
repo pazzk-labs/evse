@@ -165,77 +165,41 @@ TEST(Charger, ShouldReturnString_WhenStateGiven) {
 	STRCMP_EQUAL("F", stringify_state(F));
 }
 TEST(Charger, ShouldReturnNoneEvent_WhenStateChangedFromEToA) {
-	mock().expectOneCall("iec61851_is_occupied_state")
-		.ignoreOtherParameters().andReturnValue(false);
 	LONGS_EQUAL(CHARGER_EVENT_NONE, get_event_from_state_change(A, E));
 }
 TEST(Charger, ShouldReturnPluggedEvent_WhenStateChangedFromAToB) {
-	mock().expectOneCall("iec61851_is_occupied_state")
-		.ignoreOtherParameters().andReturnValue(true);
-	mock().expectOneCall("iec61851_is_charging_state")
-		.ignoreOtherParameters().andReturnValue(false);
 	LONGS_EQUAL(CHARGER_EVENT_PLUGGED, get_event_from_state_change(B, A));
 }
 TEST(Charger, ShouldReturnErrorEvent_WhenStateChangedFromAToF) {
-	mock().expectOneCall("iec61851_is_occupied_state")
-		.ignoreOtherParameters().andReturnValue(false);
 	LONGS_EQUAL(CHARGER_EVENT_ERROR, get_event_from_state_change(F, A));
 }
 TEST(Charger, ShouldReturnUnpluggedEvent_WhenStateChangedFromBToA) {
-	mock().expectOneCall("iec61851_is_occupied_state")
-		.ignoreOtherParameters().andReturnValue(true);
-	mock().expectOneCall("iec61851_is_charging_state")
-		.ignoreOtherParameters().andReturnValue(false);
 	LONGS_EQUAL(CHARGER_EVENT_UNPLUGGED, get_event_from_state_change(A, B));
 }
 TEST(Charger, ShouldReturnErrorEvent_WhenStateChangedFromBToF) {
-	mock().expectOneCall("iec61851_is_occupied_state")
-		.ignoreOtherParameters().andReturnValue(true);
-	mock().expectOneCall("iec61851_is_charging_state")
-		.ignoreOtherParameters().andReturnValue(false);
 	LONGS_EQUAL(CHARGER_EVENT_ERROR, get_event_from_state_change(F, B));
 }
 TEST(Charger, ShouldReturnChargingStartedEvent_WhenStateChangedFromBToC) {
-	mock().expectOneCall("iec61851_is_occupied_state")
-		.ignoreOtherParameters().andReturnValue(true);
-	mock().expectOneCall("iec61851_is_charging_state")
-		.ignoreOtherParameters().andReturnValue(false);
 	LONGS_EQUAL(CHARGER_EVENT_CHARGING_STARTED,
 			get_event_from_state_change(C, B));
 }
 TEST(Charger, ShouldReturnChargingSuspendedEvent_WhenStateChangedFromCToB) {
-	mock().expectOneCall("iec61851_is_occupied_state")
-		.ignoreOtherParameters().andReturnValue(true);
-	mock().expectOneCall("iec61851_is_charging_state")
-		.ignoreOtherParameters().andReturnValue(true);
-	LONGS_EQUAL(CHARGER_EVENT_CHARGING_SUSPENDED,
+	LONGS_EQUAL(CHARGER_EVENT_CHARGING_ENDED,
 			get_event_from_state_change(B, C));
 }
 TEST(Charger, ShouldReturnUnpluggedEvent_WhenStateChangedFromCToA) {
-	mock().expectOneCall("iec61851_is_occupied_state")
-		.ignoreOtherParameters().andReturnValue(true);
-	mock().expectOneCall("iec61851_is_charging_state")
-		.ignoreOtherParameters().andReturnValue(true);
 	LONGS_EQUAL(CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_UNPLUGGED,
 			get_event_from_state_change(A, C));
 }
 TEST(Charger, ShouldReturnErrorEvent_WhenStateChangedFromCToF) {
-	mock().expectOneCall("iec61851_is_occupied_state")
-		.ignoreOtherParameters().andReturnValue(true);
-	mock().expectOneCall("iec61851_is_charging_state")
-		.ignoreOtherParameters().andReturnValue(true);
 	LONGS_EQUAL(CHARGER_EVENT_ERROR | CHARGER_EVENT_CHARGING_ENDED,
 			get_event_from_state_change(F, C));
 }
 TEST(Charger, ShouldReturnRecoveryEvent_WhenStateChangedFromFToA) {
-	mock().expectOneCall("iec61851_is_occupied_state")
-		.ignoreOtherParameters().andReturnValue(false);
 	LONGS_EQUAL(CHARGER_EVENT_ERROR_RECOVERY,
 			get_event_from_state_change(A, F));
 }
 TEST(Charger, ShouldReturnRecoveryEvent_WhenStateChangedFromFToB) {
-	mock().expectOneCall("iec61851_is_occupied_state")
-		.ignoreOtherParameters().andReturnValue(false);
 	LONGS_EQUAL(CHARGER_EVENT_ERROR_RECOVERY | CHARGER_EVENT_PLUGGED,
 			get_event_from_state_change(B, F));
 }
@@ -254,4 +218,16 @@ TEST(Charger, ShouldReturnTrue_WhenDutyIsNominal) {
 	mock().expectOneCall("iec61851_get_pwm_duty_set").andReturnValue(53);
 	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_B);
 	LONGS_EQUAL(true, is_state_x2(&c, B));
+}
+
+TEST(Charger, ShouldReturnEventString) {
+	char buf[CHARGER_EVENT_STRING_MAXLEN];
+	charger_stringify_event(CHARGER_EVENT_PLUGGED, buf, sizeof(buf));
+	STRCMP_EQUAL("Plugged", buf);
+	charger_stringify_event(CHARGER_EVENT_BILLING_ENDED, buf, sizeof(buf));
+	STRCMP_EQUAL("Billing Ended", buf);
+	charger_stringify_event((charger_event_t)(CHARGER_EVENT_BILLING_ENDED |
+			CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_UNPLUGGED),
+			buf, sizeof(buf));
+	STRCMP_EQUAL("Billing Ended,Charging Ended,Unplugged", buf);
 }

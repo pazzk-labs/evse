@@ -52,6 +52,10 @@
 #define DEFAULT_OUTPUT_CURRENT_MAX		DEFAULT_OUTPUT_CURRENT_MIN
 #endif
 
+#if !defined(MIN)
+#define MIN(a, b)				(((a) > (b))? (b) : (a))
+#endif
+
 static bool validate_charger_param(const struct charger_param *param)
 {
 	if (!param) {
@@ -140,6 +144,48 @@ bool charger_create_connector(struct charger *charger,
 int charger_step(struct charger *self, uint32_t *next_period_ms)
 {
 	return self->api.step(self, next_period_ms);
+}
+
+size_t charger_stringify_event(const charger_event_t event,
+		char *buf, size_t bufsize)
+{
+	const char *tbl[] = {
+		"Plugged",
+		"Unplugged",
+		"Charging Started",
+		"Charging Suspended",
+		"Charging Ended",
+		"Error",
+		"Recovery",
+		"Reboot Required",
+		"Configuration Changed",
+		"Parameter Updated",
+		"Billing Started",
+		"Billing Updated",
+		"Billing Ended",
+		"Occupied",
+		"Unoccupied",
+		"Authorization Rejected",
+		"Reserved",
+	};
+
+	size_t len = 0;
+
+	for (charger_event_t e = CHARGER_EVENT_RESERVED; e; e >>= 1) {
+		if (e & event) {
+			const char *str = tbl[__builtin_ctz(e)];
+			if (len) {
+				strncpy(&buf[len], ",", bufsize - len - 1);
+				len = MIN(len + 1, bufsize - 1);
+			}
+			strncpy(&buf[len], str, bufsize - len - 1);
+			len = MIN(len + strlen(str), bufsize - 1);
+		}
+	}
+
+	buf[len] = '\0';
+
+	return len;
 }
 
 int charger_init(struct charger *charger, const struct charger_param *param)

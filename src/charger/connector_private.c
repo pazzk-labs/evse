@@ -42,6 +42,10 @@
  * not cause charging interruption. */
 #define INITIAL_STABILIZATION_SEC	(1*2)
 
+#if !defined(ARRAY_SIZE)
+#define ARRAY_SIZE(x)			(sizeof(x) / sizeof((x)[0]))
+#endif
+
 static bool is_charging(connector_state_t state)
 {
 	return state == C || state == D;
@@ -56,19 +60,6 @@ static connector_state_t get_state_from_iec61851(const iec61851_state_t state)
 		[IEC61851_STATE_D] = D,
 		[IEC61851_STATE_E] = E,
 		[IEC61851_STATE_F] = F,
-	};
-	return tbl[state];
-}
-
-static iec61851_state_t get_iec61851_from_state(const connector_state_t state)
-{
-	const iec61851_state_t tbl[] = {
-		[A] = IEC61851_STATE_A,
-		[B] = IEC61851_STATE_B,
-		[C] = IEC61851_STATE_C,
-		[D] = IEC61851_STATE_D,
-		[E] = IEC61851_STATE_E,
-		[F] = IEC61851_STATE_F,
 	};
 	return tbl[state];
 }
@@ -185,33 +176,39 @@ bool is_early_recovery(uint32_t elapsed_sec)
 charger_event_t get_event_from_state_change(const connector_state_t new_state,
 		const connector_state_t old_state)
 {
-	const charger_event_t tbl[] = {
-		[A] = CHARGER_EVENT_NONE,
-		[B] = CHARGER_EVENT_PLUGGED,
-		[C] = CHARGER_EVENT_CHARGING_STARTED,
-		[D] = CHARGER_EVENT_CHARGING_STARTED,
-		[E] = CHARGER_EVENT_ERROR,
-		[F] = CHARGER_EVENT_ERROR,
+	struct {
+		connector_state_t from;
+		connector_state_t to;
+		uint32_t event;
+	} tbl[] = {
+		{ A, B, CHARGER_EVENT_PLUGGED },
+		{ A, F, CHARGER_EVENT_ERROR },
+		{ B, A, CHARGER_EVENT_UNPLUGGED },
+		{ B, C, CHARGER_EVENT_CHARGING_STARTED },
+		{ B, D, CHARGER_EVENT_CHARGING_STARTED },
+		{ B, F, CHARGER_EVENT_ERROR },
+		{ C, A, CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_UNPLUGGED },
+		{ C, B, CHARGER_EVENT_CHARGING_ENDED },
+		{ C, D, CHARGER_EVENT_NONE },
+		{ C, E, CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_ERROR },
+		{ C, F, CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_ERROR },
+		{ D, A, CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_UNPLUGGED },
+		{ D, B, CHARGER_EVENT_CHARGING_ENDED },
+		{ D, C, CHARGER_EVENT_NONE },
+		{ D, E, CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_ERROR },
+		{ D, F, CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_ERROR },
+		{ E, F, CHARGER_EVENT_ERROR },
+		{ F, A, CHARGER_EVENT_ERROR_RECOVERY },
+		{ F, B, CHARGER_EVENT_ERROR_RECOVERY | CHARGER_EVENT_PLUGGED },
 	};
-	charger_event_t events = tbl[new_state];
-	const iec61851_state_t prev = get_iec61851_from_state(old_state);
 
-	if (iec61851_is_occupied_state(prev)) {
-		if (new_state == A) {
-			events |= CHARGER_EVENT_UNPLUGGED;
+	for (size_t i = 0; i < ARRAY_SIZE(tbl); i++) {
+		if (tbl[i].from == old_state && tbl[i].to == new_state) {
+			return (charger_event_t)tbl[i].event;
 		}
-		if (iec61851_is_charging_state(prev)) {
-			if (new_state == B) {
-				events = CHARGER_EVENT_CHARGING_SUSPENDED;
-			} else {
-				events |= CHARGER_EVENT_CHARGING_ENDED;
-			}
-		}
-	} else if (old_state == F) {
-		events |= CHARGER_EVENT_ERROR_RECOVERY;
 	}
 
-	return events;
+	return CHARGER_EVENT_NONE;
 }
 
 const char *stringify_state(const connector_state_t state)
