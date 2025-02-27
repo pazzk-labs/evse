@@ -58,7 +58,8 @@ int metering_disable(struct metering *self) {
 }
 
 struct metering *metering_create(const metering_t type,
-		const struct metering_param *param, struct metering_io *io) {
+		const struct metering_param *param,
+		metering_save_cb_t save_cb, void *save_cb_ctx) {
 	return (struct metering *)mock().actualCall(__func__).returnPointerValue();
 }
 

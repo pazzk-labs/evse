@@ -40,7 +40,7 @@ extern "C" {
 #include "metering.h"
 
 struct metering *metering_create_hlw8112(const struct metering_param *param,
-		struct metering_io *io);
+		metering_save_cb_t save_cb, void *save_cb_ctx);
 
 #if defined(__cplusplus)
 }

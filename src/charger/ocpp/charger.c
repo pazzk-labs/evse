@@ -43,6 +43,10 @@
 
 #define DEFAULT_PROCESSING_INTERVAL_MS		10
 
+#if !defined(ARRAY_SIZE)
+#define ARRAY_SIZE(x)				(sizeof(x) / sizeof((x)[0]))
+#endif
+
 static void dispatch_event(struct charger *charger, struct connector *c,
 		const charger_event_t event)
 {
@@ -79,6 +83,53 @@ static void process_event(struct ocpp_charger *charger, const bool charging)
 	}
 }
 
+static charger_event_t get_event_from_state(fsm_state_t new_state,
+		fsm_state_t prev_state, bool plugged)
+{
+	struct {
+		fsm_state_t from;
+		fsm_state_t to;
+		bool plugged;
+		uint32_t event;
+	} tbl[] = {
+		{ Available,   Preparing,   true,  CHARGER_EVENT_PLUGGED },
+		{ Available,   Preparing,   false, CHARGER_EVENT_OCCUPIED },
+		{ Available,   Reserved,    false, CHARGER_EVENT_RESERVED },
+		{ Available,   Unavailable, false, CHARGER_EVENT_PARAM_CHANGED },
+		{ Available,   Faulted,     false, CHARGER_EVENT_ERROR },
+		{ Preparing,   Available,   false, CHARGER_EVENT_UNPLUGGED },
+		{ Preparing,   Charging,    true,  CHARGER_EVENT_CHARGING_STARTED },
+		{ Preparing,   SuspendedEV, true,  CHARGER_EVENT_CHARGING_SUSPENDED },
+		{ Preparing,   Unavailable, true,  CHARGER_EVENT_PARAM_CHANGED },
+		{ Preparing,   Faulted,     true,  CHARGER_EVENT_ERROR },
+		{ Charging,    Available,   false, CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_UNPLUGGED },
+		{ Charging,    Finishing,   false, CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_UNPLUGGED },
+		{ Charging,    Finishing,   true,  CHARGER_EVENT_CHARGING_ENDED },
+		{ Charging,    SuspendedEV, true,  CHARGER_EVENT_CHARGING_SUSPENDED },
+		{ Charging,    Faulted,     true,  CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_ERROR },
+		{ SuspendedEV, Charging,    true,  CHARGER_EVENT_CHARGING_STARTED },
+		{ SuspendedEV, Finishing,   true,  CHARGER_EVENT_CHARGING_ENDED },
+		{ SuspendedEV, Finishing,   false, CHARGER_EVENT_CHARGING_ENDED },
+		{ SuspendedEV, Faulted,     true,  CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_ERROR },
+		{ Finishing,   Available,   false, CHARGER_EVENT_UNPLUGGED },
+		{ Reserved,    Available,   false, CHARGER_EVENT_UNOCCUPIED },
+		{ Reserved,    Preparing,   true,  CHARGER_EVENT_PLUGGED },
+		{ Unavailable, Available,   false, CHARGER_EVENT_PARAM_CHANGED },
+		{ Unavailable, Preparing,   true,  CHARGER_EVENT_PARAM_CHANGED },
+		{ Faulted,     Available,   false, CHARGER_EVENT_ERROR_RECOVERY },
+		{ Faulted,     Preparing,   true,  CHARGER_EVENT_ERROR_RECOVERY },
+	};
+
+	for (size_t i = 0; i < ARRAY_SIZE(tbl); i++) {
+		if (tbl[i].from == prev_state && tbl[i].to == new_state &&
+				tbl[i].plugged == plugged) {
+			return (charger_event_t)tbl[i].event;
+		}
+	}
+
+	return CHARGER_EVENT_NONE;
+}
+
 static void on_state_change(struct fsm *fsm,
 		fsm_state_t new_state, fsm_state_t prev_state, void *ctx)
 {
@@ -89,6 +140,10 @@ static void on_state_change(struct fsm *fsm,
 			stringify_status(prev_state),
 			stringify_status(new_state),
 			c->base.time_last_state_change);
+
+	const charger_event_t event = get_event_from_state(new_state,
+			prev_state, get_state(&c->base) > A);
+	dispatch_event(c->base.charger, &c->base, event);
 }
 
 static void on_updater_event(updater_event_t event, void *ctx)

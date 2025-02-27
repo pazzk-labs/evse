@@ -35,7 +35,7 @@
 #include "adapter/hlw8112.h"
 
 typedef struct metering *(*metering_ctor)(const struct metering_param *param,
-		struct metering_io *io);
+		metering_save_cb_t save_cb, void *save_cb_ctx);
 
 static const metering_ctor ctors[] = {
 	[METERING_HLW811X] = metering_create_hlw8112,
@@ -76,6 +76,11 @@ int metering_get_power(struct metering *self, int32_t *watt, int32_t *var)
 	return ((struct metering_api *)self)->get_power(self, watt, var);
 }
 
+int metering_save_energy(struct metering *self)
+{
+	return ((struct metering_api *)self)->save_energy(self);
+}
+
 int metering_step(struct metering *self)
 {
 	return ((struct metering_api *)self)->step(self);
@@ -92,9 +97,10 @@ int metering_disable(struct metering *self)
 }
 
 struct metering *metering_create(const metering_t type,
-		const struct metering_param *param, struct metering_io *io)
+		const struct metering_param *param,
+		metering_save_cb_t save_cb, void *save_cb_ctx)
 {
-	return ctors[type](param, io);
+	return ctors[type](param, save_cb, save_cb_ctx);
 }
 
 void metering_destroy(struct metering *self)

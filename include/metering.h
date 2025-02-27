@@ -38,21 +38,55 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
 #include "libmcu/uart.h"
+
+#if !defined(METERING_ENERGY_SAVE_THRESHOLD_WH)
+/**
+ * Energy accumulation threshold in watt-hours that triggers a save
+ * Energy data will be saved if accumulated delta exceeds this value
+ */
+#define METERING_ENERGY_SAVE_THRESHOLD_WH	1000 /* 1 kWh */
+#endif
+#if !defined(METERING_ENERGY_SAVE_INTERVAL_MIN)
+/**
+ * Minimum interval in minutes between energy data saves
+ * Energy data will be saved if this time has elapsed since last save
+ */
+#define METERING_ENERGY_SAVE_INTERVAL_MIN	5 /* 5 minutes */
+#endif
 
 typedef enum {
 	METERING_HLW811X,
 } metering_t;
 
 struct metering;
+struct metering_energy;
 
-struct metering_param {
+/**
+ * @brief Callback function type for saving metering energy data
+ *
+ * @param[in] self    Pointer to the metering instance
+ * @param[in] energy  Energy data to be saved
+ * @param[in] ctx     User context pointer passed during registration
+ *
+ * @return true if save operation was successful, false otherwise
+ */
+typedef bool (*metering_save_cb_t)(const struct metering *self,
+		const struct metering_energy *energy, void *ctx);
+
+struct metering_io {
+	struct uart *uart;
+};
+
+struct metering_energy {
 	uint64_t wh; /**< energy in watt-hour */
 	uint64_t varh; /**< reactive energy in volt-ampere-reactive-hour */
 };
 
-struct metering_io {
-	struct uart *uart;
+struct metering_param {
+	struct metering_io *io; /**< I/O configuration */
+	struct metering_energy energy; /**< initial energy */
 };
 
 struct metering_api {
@@ -60,6 +94,7 @@ struct metering_api {
 	int (*enable)(struct metering *self);
 	int (*disable)(struct metering *self);
 	int (*step)(struct metering *self);
+	int (*save_energy)(struct metering *self);
 	int (*get_voltage)(struct metering *self, int32_t *millivolt);
 	int (*get_current)(struct metering *self, int32_t *milliamp);
 	int (*get_power_factor)(struct metering *self, int32_t *centi);
@@ -70,19 +105,18 @@ struct metering_api {
 };
 
 /**
- * @brief Creates a metering instance.
+ * @brief Creates a new metering instance
  *
- * This function initializes a metering instance based on the specified type,
- * parameters, and I/O configuration.
+ * @param[in] type         Type of metering to create (see metering_t enum)
+ * @param[in] param        Metering parameters configuration
+ * @param[in] save_cb      Callback function for saving metering data
+ * @param[in] save_cb_ctx  Context pointer passed to save callback
  *
- * @param[in] type The type of metering to be created.
- * @param[in] param A pointer to the metering parameters.
- * @param[in] io A pointer to the metering I/O configuration.
- *
- * @return A pointer to the created metering instance.
+ * @return Pointer to created metering instance, NULL on failure
  */
 struct metering *metering_create(const metering_t type,
-		const struct metering_param *param, struct metering_io *io);
+		const struct metering_param *param,
+		metering_save_cb_t save_cb, void *save_cb_ctx);
 
 /**
  * @brief Destroys a metering instance.
@@ -117,11 +151,24 @@ int metering_enable(struct metering *self);
 int metering_disable(struct metering *self);
 
 /**
+ * @brief Saves the current metering energy data to non-volatile storage
+ *
+ * @param self  Pointer to the metering instance
+ *
+ * @return 0 on success, negative errno on failure
+ */
+int metering_save_energy(struct metering *self);
+
+/**
  * @brief Executes a metering step.
  *
  * This function performs a metering process using the `step` method
  * of the `metering_api` structure associated with the given `metering`
  * instance. This function is intended to be called periodically.
+ *
+ * @note Energy data is saved when either of these conditions is met:
+ * - Accumulated energy delta exceeds METERING_ENERGY_SAVE_THRESHOLD_WH
+ * - Time since last save exceeds METERING_ENERGY_SAVE_INTERVAL_MIN
  *
  * @param[in] self A pointer to the `metering` instance.
  *

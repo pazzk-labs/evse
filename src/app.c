@@ -50,7 +50,7 @@
 
 #include "charger/free.h"
 #include "charger/ocpp.h"
-#include "charger/connector.h"
+#include "charger/connector_private.h"
 #include "ocpp/ocpp.h"
 #include "logger.h"
 
@@ -60,9 +60,11 @@ static struct cli cli;
 static void on_charger_event(struct charger *charger,
 		struct connector *connector,
 		const charger_event_t event, void *ctx) {
-	info("charger event: %x", event);
-
+	char evtstr[CHARGER_EVENT_STRING_MAXLEN];
 	bool param_updated = false;
+
+	charger_stringify_event(event, evtstr, sizeof(evtstr));
+	info("charger event: \"%s\"", evtstr);
 
 	if (event & CHARGER_EVENT_PARAM_CHANGED) { /* availability changed */
 		param_updated = true;
@@ -94,6 +96,10 @@ static void on_charger_event(struct charger *charger,
 		}
 	}
 
+	if (event & CHARGER_EVENT_CHARGING_ENDED) {
+		metering_save_energy(connector->param.metering);
+	}
+
 	if (event & CHARGER_EVENT_REBOOT_REQUIRED) {
 		bool reboot_manually = false;
 		config_read(CONFIG_KEY_DFU_REBOOT_MANUAL,
@@ -102,6 +108,15 @@ static void on_charger_event(struct charger *charger,
 			app_reboot();
 		}
 	}
+}
+
+static bool on_metering_save(const struct metering *metering,
+		const struct metering_energy *energy, void *ctx)
+{
+	debug("metering save: %lluWh", energy->wh);
+
+	config_key_t key = (config_key_t)(uintptr_t)ctx;
+	return config_save(key, energy, sizeof(*energy)) >= 0;
 }
 
 void app_adjust_time_on_drift(const time_t unixtime, const uint32_t drift)
@@ -219,7 +234,7 @@ void app_init(struct app *ctx)
 		});
 	}
 
-#define METERING_RX_TIMEOUT_MS		1000
+#define METERING_RX_TIMEOUT_MS		200 /* 768 bytes @ 38400bps */
 #define METERING_UART_BAUDRATE		38400
 	uart_configure(app->periph.uart1, &(struct uart_config) {
 		.databit = 8,
@@ -230,17 +245,22 @@ void app_init(struct app *ctx)
 	});
 	uart_enable(app->periph.uart1, METERING_UART_BAUDRATE);
 
-	struct metering_param conn1 = { 0, };
 	struct metering_io conn1_io = {
 		.uart = app->periph.uart1,
 	};
-	config_read(CONFIG_KEY_CHARGER_METERING_1, &conn1, sizeof(conn1));
+	struct metering_param conn1 = {
+		.io = &conn1_io,
+	};
+	config_read(CONFIG_KEY_CHARGER_METERING_1,
+			&conn1.energy, sizeof(conn1.energy));
 
 	charger_create_connector(app->charger, &(struct connector_param) {
 			.max_output_current_mA = param.max_output_current_mA,
 			.min_output_current_mA = param.min_output_current_mA,
 			.iec61851 = iec61851_create(app->pilot, app->relay),
-			.metering = metering_create(METERING_HLW811X, &conn1, &conn1_io),
+			.metering = metering_create(METERING_HLW811X, &conn1,
+					on_metering_save, (void *)(uintptr_t)
+					CONFIG_KEY_CHARGER_METERING_1),
 			.name = "connector1",
 			.priority = 1,
 	});
