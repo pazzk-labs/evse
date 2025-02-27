@@ -163,11 +163,15 @@ size_t charger_stringify_event(const charger_event_t event,
 		"Billing Started",
 		"Billing Updated",
 		"Billing Ended",
+		"Occupied",
+		"Unoccupied",
+		"Authorization Rejected",
+		"Reserved",
 	};
 
 	size_t len = 0;
 
-	for (charger_event_t e = CHARGER_EVENT_BILLING_ENDED; e; e >>= 1) {
+	for (charger_event_t e = CHARGER_EVENT_RESERVED; e; e >>= 1) {
 		if (e & event) {
 			const char *str = tbl[__builtin_ctz(e)];
 			if (len) {

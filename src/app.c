@@ -234,7 +234,7 @@ void app_init(struct app *ctx)
 		});
 	}
 
-#define METERING_RX_TIMEOUT_MS		1000
+#define METERING_RX_TIMEOUT_MS		200 /* 768 bytes @ 38400bps */
 #define METERING_UART_BAUDRATE		38400
 	uart_configure(app->periph.uart1, &(struct uart_config) {
 		.databit = 8,

@@ -86,7 +86,9 @@ static int enable(struct metering *self)
 		return -EIO;
 	}
 
+	struct hlw811x_coeff coeff;
 	const uint8_t hfconst[] = { 0x38, 0xa4 }; /* EC: 3200/kWh */
+	uint16_t reg = 0;
 	hlw811x_error_t err = hlw811x_reset(self->hlw811x);
 	sleep_ms(60); /* at least 60ms delay is required after reset. */
 
@@ -125,10 +127,19 @@ static int enable(struct metering *self)
 
 	err |= hlw811x_select_channel(self->hlw811x, HLW811X_CHANNEL_A);
 
+	err |= hlw811x_read_coeff(self->hlw811x, &coeff);
+	err |= hlw811x_read_reg(self->hlw811x, HLW811X_REG_SYS_CTRL,
+			(uint8_t *)&reg, sizeof(reg));
+
 	if (err) {
 		error("hlw8112 %d", err);
 	}
 
+	debug("coeff: %x, %x, %x, %x, %x, %x, %x, %x",
+			coeff.rms.A, coeff.rms.B, coeff.rms.U,
+			coeff.power.A, coeff.power.B, coeff.power.S,
+			coeff.energy.A, coeff.energy.B);
+	debug("hfconst: %x, syscon: %x", coeff.hfconst, reg);
 	info("initial metering %llu, %llu", self->energy.wh, self->energy.varh);
 
 	return err? -EIO: 0;
@@ -256,7 +267,7 @@ static int get_power(struct metering *self, int32_t *watt, int32_t *var)
 		return -EINVAL;
 	}
 
-	int err = hlw811x_get_power(self->hlw811x, HLW811X_CHANNEL_A, watt);
+	int err = hlw811x_get_power(self->hlw811x, HLW811X_CHANNEL_U, watt);
 
 	if (err != HLW811X_ERROR_NONE) {
 		error("can't get power: %d", err);
@@ -309,8 +320,8 @@ static const struct metering_api *get_api(void)
 		.destroy = destroy,
 		.enable = enable,
 		.disable = disable,
-		.save_energy = save_energy,
 		.step = step,
+		.save_energy = save_energy,
 		.get_voltage = get_voltage,
 		.get_current = get_current,
 		.get_power_factor = get_power_factor,

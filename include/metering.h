@@ -46,14 +46,14 @@ extern "C" {
  * Energy accumulation threshold in watt-hours that triggers a save
  * Energy data will be saved if accumulated delta exceeds this value
  */
-#define METERING_ENERGY_SAVE_THRESHOLD_WH	1800 /* 1.8 kWh */
+#define METERING_ENERGY_SAVE_THRESHOLD_WH	1000 /* 1 kWh */
 #endif
 #if !defined(METERING_ENERGY_SAVE_INTERVAL_MIN)
 /**
  * Minimum interval in minutes between energy data saves
  * Energy data will be saved if this time has elapsed since last save
  */
-#define METERING_ENERGY_SAVE_INTERVAL_MIN	10 /* 10 minutes */
+#define METERING_ENERGY_SAVE_INTERVAL_MIN	5 /* 5 minutes */
 #endif
 
 typedef enum {
@@ -93,8 +93,8 @@ struct metering_api {
 	void (*destroy)(struct metering *self);
 	int (*enable)(struct metering *self);
 	int (*disable)(struct metering *self);
-	int (*save_energy)(struct metering *self);
 	int (*step)(struct metering *self);
+	int (*save_energy)(struct metering *self);
 	int (*get_voltage)(struct metering *self, int32_t *millivolt);
 	int (*get_current)(struct metering *self, int32_t *milliamp);
 	int (*get_power_factor)(struct metering *self, int32_t *centi);

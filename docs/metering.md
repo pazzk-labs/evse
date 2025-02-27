@@ -11,13 +11,24 @@ The metering system maintains two energy values:
 ### Storage Strategy
 
 Energy data is saved to non-volatile storage when either condition is met:
-- Accumulated delta exceeds `METERING_ENERGY_SAVE_THRESHOLD_WH` (1.7kWh)
-- Time since last save exceeds `METERING_ENERGY_SAVE_INTERVAL_MIN` (10 minutes)
+- Accumulated delta exceeds `METERING_ENERGY_SAVE_THRESHOLD_WH` (1kWh)
+- Time since last save exceeds `METERING_ENERGY_SAVE_INTERVAL_MIN` (5 minutes)
 
 These thresholds are chosen to balance:
-- Data loss risk (max ~550원 at 11kW charging)
+- Data loss risk (max ~275원 at 11kW charging)
 - Flash memory write cycles
 - System reliability
+
+### Cost Analysis
+
+Assumptions:
+- Energy cost: 300원 per kWh
+- Charging power: 11kW AC charging
+
+At these rates:
+- 5 minutes charging = 0.92kWh ≈ 275원
+- 1kWh threshold = 300원
+- Maximum potential loss on power failure: ~300원
 
 ### Storage Mechanisms
 
@@ -36,17 +47,17 @@ Energy data can be saved in two ways:
 
 1. 11kW AC charging:
    - Energy per minute: 183Wh
-   - 10 minutes = 1.83kWh ≈ 550원
-   - 1.7kWh threshold reached in ~9.3 minutes
+   - 5 minutes = 0.92kWh ≈ 275원
+   - 1kWh threshold reached in ~5.5 minutes
 
 2. 7kW AC charging:
    - Energy per minute: 117Wh
-   - 10 minutes = 1.17kWh ≈ 350원
-   - 1.7kWh threshold reached in ~14.5 minutes
+   - 5 minutes = 0.58kWh ≈ 175원
+   - 1kWh threshold reached in ~8.5 minutes
 
 In both cases:
-- Time-based save (10 min) may trigger before threshold
-- Maximum potential loss limited to ~550원 (11kW) or ~350원 (7kW)
+- Time-based save (5 min) may trigger before threshold
+- Maximum potential loss limited to ~275원 (11kW) or ~175원 (7kW)
 - System maintains balance between data protection and storage wear
 
 ### Implementation Details
@@ -62,12 +73,13 @@ In both cases:
    - Serves as recovery point after power loss
 
 3. Save Operation
-   ```c
-   if (current_time - last_save_time >= METERING_ENERGY_SAVE_INTERVAL_MIN ||
-       energy.wh - param.energy.wh >= METERING_ENERGY_SAVE_THRESHOLD_WH) {
-       // Save energy to non-volatile storage
-   }
-   ```
+
+```c
+if (current_time - last_save_time >= METERING_ENERGY_SAVE_INTERVAL_MIN ||
+    energy.wh - param.energy.wh >= METERING_ENERGY_SAVE_THRESHOLD_WH) {
+    // Save energy to non-volatile storage
+}
+```
 
 ### Example Scenarios
 
