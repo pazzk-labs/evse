@@ -1,92 +1,70 @@
 @startuml
-interface charger_api
+
+interface connector {
+}
+
+interface connector_api {
+}
+
+interface ocpp_api
+interface hlc_api
+
+interface fsm
+interface metering
+interface safety
 interface pilot
 interface relay
-
-enum charger_event {
-	PLUGGED
-	UNPLUGGED
-	CHARGING_STARTED
-	CHARGING_SUSPENDED
-	CHARGING_ENDED
-	ERROR
-	ERROR_RECOVERY
-	REBOOT_REQUIRED
-	CONFIGURATION_CHANGED
-	PARAM_CHANGED
-	BILLING_STARTED
-	BILLING_REALTIME
-	BILLING_ENDED
-}
-
-interface charger_api {
-	create_connector()
-	destroy_connector()
-	step()
-}
+interface pp
+interface server
+interface adc
+interface pwm
+interface uart
 
 class charger {
-	+init()
-	+deinit()
-	+register_event_cb()
-	+create_connector()
-	+step()
 }
 
-class charger_private {
-	-get_connector()
-	-get_connector_by_id()
-	-get_connector_free()
-}
+pilot --> adc
+pilot --> pwm
+relay --> pwm
+metering --> uart
 
-class connector {
-	+connector_validate_param()
-	+error()
-	+set_priority()
-	+status()
-}
+hlw8112 ..|> metering
 
-class connector_private {
-	-get_state()
-	-get_pwm_duty_set()
-	-read_pwm_duty()
-	-start_pwm()
-	-stop_pwm()
-	-go_fault()
-	-enable_power_supply()
-	-disable_power_supply()
-	-is_state_x()
-	-is_state_x2()
-	-is_supplying_power()
-	-is_emergency_stop()
-	-is_input_power_ok()
-	-is_output_power_ok()
-	-is_early_recovery()
-	-get_event_from_state_change()
-	-stringify_state()
-}
+adc122s051 ..|> adc
 
-charger "1" *-- "many" connector
-charger --> charger_private
-charger --> charger_event
-charger --> charger_api
-free_connector ..|> connector
-ocpp_connector ..|> connector
-hlc_connector ..|> connector
-free_charger ..|> charger
-ocpp_charger ..|> charger
-hlc_charger ..|> charger
-
-connector --> connector_private
-connector_private --> iec61851
 iec61851 --> pilot
 iec61851 --> relay
+iec61851 --> pp
 
-free_connector --> fsm
-ocpp_connector --> fsm
-hlc_connector --> fsm
+connector --> fsm
+connector --> iec61851
+connector "1" *-- "many" safety
+connector --> metering
+free_connector ..|> connector
+free_connector ..|> connector_api
+ocpp_connector ..|> connector
+ocpp_connector ..|> ocpp_api
+hlc_connector ..|> connector
+hlc_connector ..|> hlc_api
 
-ocpp_charger ..> ocpp
+ocpp_api --|> connector_api
+hlc_api --|> ocpp_api
 
-hlc_charger --> plc
+free_fsm ..|> fsm
+ocpp_fsm ..|> fsm
+
+ocpp_connector ---> ocpp
+ocpp_connector ---> csms
+csms --> websocket
+websocket ..|> server
+
+hlc_connector --> plc
+
+input_power ..|> safety
+output_power ..|> safety
+temperature ..|> safety
+emergency_stop ..|> safety
+
+charger "1" *--- "many" connector
+
 @enduml
