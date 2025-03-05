@@ -27,6 +27,7 @@ TEST_SRC_FILES = \
 	stubs/logging.c \
 	mocks/ocpp_connector.cpp \
 	mocks/connector.cpp \
+	../external/libmcu/tests/stubs/bitops.cpp \
 
 INCLUDE_DIRS = \
 	$(CPPUTEST_HOME)/include \

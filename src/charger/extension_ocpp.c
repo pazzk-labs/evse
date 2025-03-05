@@ -31,12 +31,12 @@
  */
 
 #include "charger/ocpp.h"
-#include "ocpp_connector_internal.h"
-#include "../charger_internal.h"
+#include "ocpp/ocpp_connector_internal.h"
+#include "charger_internal.h"
 
 #include <string.h>
 
-#include "csms.h"
+#include "ocpp/csms.h"
 #include "updater.h"
 #include "config.h"
 #include "libmcu/compiler.h"
