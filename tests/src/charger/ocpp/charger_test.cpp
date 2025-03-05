@@ -47,9 +47,7 @@ TEST(OcppCharger, ShouldSaveCheckpoint_WhenSetCheckpoint) {
 			{.transaction_id = 0x5678, .unavailable = true},
 		},
 	};
-	struct ocpp_checkpoint checkpoint = {0, };
-	LONGS_EQUAL(0, ocpp_charger_get_checkpoint(charger, &checkpoint));
-	LONGS_EQUAL(0, ocpp_charger_set_checkpoint(charger, &expected));
-	LONGS_EQUAL(0, ocpp_charger_get_checkpoint(charger, &checkpoint));
-	MEMCMP_EQUAL(&expected, &checkpoint, sizeof(expected));
+	ocpp_charger_set_checkpoint(charger, &expected);
+	struct ocpp_checkpoint *actual = ocpp_charger_get_checkpoint(charger);
+	MEMCMP_EQUAL(&expected, actual, sizeof(expected));
 }

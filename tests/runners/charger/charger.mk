@@ -23,10 +23,12 @@ TEST_SRC_FILES = \
 	src/test_all.cpp \
 	stubs/logging.c \
 	mocks/connector.cpp \
+	mocks/connector_internal.cpp \
 
 INCLUDE_DIRS = \
 	$(CPPUTEST_HOME)/include \
 	../include \
+	../src/charger \
 	../external/libmcu/modules/common/include \
 	../external/libmcu/modules/logging/include \
 	../external/libmcu/modules/fsm/include \

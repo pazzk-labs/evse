@@ -31,8 +31,8 @@
  */
 
 #include "charger/free.h"
+#include "../charger_internal.h"
 #include <stdlib.h>
-#include "charger/charger_internal.h"
 
 struct charger *free_charger_create(void)
 {

@@ -31,12 +31,12 @@
  */
 
 #include "charger/ocpp.h"
+#include "charger/ocpp_connector.h"
+#include "../charger_internal.h"
 
 #include <stdlib.h>
 #include <string.h>
 
-#include "charger/ocpp_connector.h"
-#include "charger/charger_internal.h"
 #include "libmcu/msgq.h"
 
 #define MAX_MESSAGES		4
@@ -146,8 +146,7 @@ int ocpp_charger_mq_recv(struct charger *charger, struct ocpp_charger_msg *msg)
 	return msgq_pop(ocpp_charger->msgq, msg, sizeof(*msg));
 }
 
-struct ocpp_checkpoint *
-ocpp_charger_get_checkpoint(const struct charger *charger)
+struct ocpp_checkpoint *ocpp_charger_get_checkpoint(struct charger *charger)
 {
 	struct ocpp_charger *ocpp_charger = (struct ocpp_charger *)charger;
 	return &ocpp_charger->checkpoint;

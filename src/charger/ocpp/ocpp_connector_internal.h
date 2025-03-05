@@ -38,6 +38,7 @@ extern "C" {
 #endif
 
 #include "charger/ocpp_connector.h"
+#include "../connector_internal.h"
 #include "ocpp/ocpp.h"
 
 struct auth {

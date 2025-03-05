@@ -193,160 +193,61 @@ int connector_register_event_cb(struct connector *self,
 connector_state_t connector_state(const struct connector *self);
 
 /**
- * @brief Get the target duty cycle of the connector.
+ * @brief Set the priority of the connector.
+ *
+ * @param[in] self Pointer to the connector structure.
+ * @param[in] priority The priority to set.
+ *
+ * @return 0 on success, or a negative error code on failure.
+ */
+int connector_set_priority(struct connector *self, const int priority);
+
+/**
+ * @brief Get the priority of the connector.
+ *
+ * @param[in] connector Pointer to the connector structure.
+ *
+ * @return The priority of the connector.
+ */
+int connector_priority(const struct connector *connector);
+
+/**
+ * @brief Get the name of the connector.
+ *
+ * This function returns the name of the connector as a string.
  *
  * @param[in] self Pointer to the connector structure.
  *
- * @return The target duty cycle as a uint8_t.
+ * @return The name of the connector.
  */
-uint8_t connector_get_target_duty(const struct connector *self);
+const char *connector_name(const struct connector *self);
 
 /**
- * @brief Get the actual duty cycle of the connector.
+ * @brief Get the metering information of the connector.
+ *
+ * Returns an instance of the meter module.
  *
  * @param[in] self Pointer to the connector structure.
  *
- * @return The actual duty cycle as a uint8_t.
+ * @return Pointer to the metering structure.
  */
-uint8_t connector_get_actual_duty(const struct connector *self);
+struct metering *connector_meter(const struct connector *self);
 
 /**
- * @brief Start the duty cycle of the connector.
+ * @brief Convert a connector event to a string representation.
  *
- * Sets an appropriate duty cycle according to the configuration and outputs
- * PWM.
+ * This function converts the given connector event to its string representation
+ * and stores it in the provided buffer.
  *
- * @param[in] self Pointer to the connector structure.
+ * @param[in] event The connector event to convert.
+ * @param[out] buf The buffer to store the string representation.
+ * @param[in] bufsize The size of the buffer.
+ *
+ * @return The number of characters written to the buffer, excluding the null
+ *         terminator.
  */
-void connector_start_duty(struct connector *self);
-
-/**
- * @brief Stop the duty cycle of the connector.
- *
- * Sets the duty cycle to 100% and outputs PWM.
- *
- * @param[in] self Pointer to the connector structure.
- */
-void connector_stop_duty(struct connector *self);
-
-/**
- * @brief Transition the connector to a fault state.
- *
- * This function sets the connector to a fault state, indicating an error
- * condition.
- *
- * @param[in] self Pointer to the connector structure.
- */
-void connector_go_fault(struct connector *self);
-
-/**
- * @brief Enable the power supply for the connector.
- *
- * @param[in] self Pointer to the connector structure.
- */
-void connector_enable_power_supply(struct connector *self);
-
-/**
- * @brief Disable the power supply for the connector.
- *
- * @param[in] self Pointer to the connector structure.
- */
-void connector_disable_power_supply(struct connector *self);
-
-/**
- * @brief Check if the connector is supplying power.
- *
- * @param[in] self Pointer to the connector structure.
- *
- * @return true if the connector is supplying power, false otherwise.
- */
-bool connector_is_supplying_power(const struct connector *self);
-
-/**
- * @brief Check if the connector is in a specific state.
- *
- * @param[in] self Pointer to the connector structure.
- * @param[in] state The state to check against.
- *
- * @return true if the connector is in the specified state, false otherwise.
- */
-bool connector_is_state_x(const struct connector *self,
-		connector_state_t state);
-
-/**
- * @brief Check if the connector is in a specific state.
- *
- * @param[in] self Pointer to the connector structure.
- * @param[in] state The state to check against.
- *
- * @return true if the connector is in the specified state, false otherwise.
- */
-bool connector_is_state_x2(const struct connector *self,
-		connector_state_t state);
-
-/**
- * @brief Checks if the given state indicates an occupied connector.
- *
- * This function determines if the provided connector state indicates
- * that the connector is currently occupied.
- *
- * @param state The state of the connector to check.
- *
- * @return true if the state indicates the connector is occupied, false
- *         otherwise.
- */
-bool connector_is_occupied_state(const connector_state_t state);
-
-/**
- * @brief Check if the connector is in an EVSE error state.
- *
- * @param[in] self Pointer to the connector structure.
- * @param[in] state The state to check against.
- *
- * @return true if the connector is in an EVSE error state, false otherwise.
- */
-bool connector_is_evse_error(struct connector *self, connector_state_t state);
-
-/**
- * @brief Check if the connector is in an emergency stop state.
- *
- * @param[in] self Pointer to the connector structure.
- *
- * @return true if the connector is in an emergency stop state, false otherwise.
- */
-bool connector_is_emergency_stop(const struct connector *self);
-
-/**
- * @brief Check if the input power is OK for the connector.
- *
- * @param[in] self Pointer to the connector structure.
- *
- * @return true if the input power is OK, false otherwise.
- */
-bool connector_is_input_power_ok(struct connector *self);
-
-/**
- * @brief Check if the output power is OK for the connector.
- *
- * @param[in] self Pointer to the connector structure.
- *
- * @return true if the output power is OK, false otherwise.
- */
-bool connector_is_output_power_ok(struct connector *self);
-
-/**
- * @brief Check if there is an EV response timeout.
- *
- * This function checks if the elapsed time since the last EV response exceeds
- * the timeout threshold.
- *
- * @param[in] self Pointer to the connector structure.
- * @param[in] elapsed_sec The elapsed time in seconds.
- *
- * @return true if there is an EV response timeout, false otherwise.
- */
-bool connector_is_ev_response_timeout(const struct connector *self,
-		uint32_t elapsed_sec);
+size_t connector_stringify_event(const connector_event_t event,
+		char *buf, size_t bufsize);
 
 /**
  * @brief Check if the connector is enabled.
@@ -369,119 +270,6 @@ bool connector_is_enabled(const struct connector *self);
  * @return true if the connector is reserved, false otherwise.
  */
 bool connector_is_reserved(const struct connector *self);
-
-/**
- * @brief Set the connector as reserved.
- *
- * @param[in] self Pointer to the connector structure.
- *
- * @return true on success, false otherwise.
- */
-bool connector_set_reserved(struct connector *self);
-
-/**
- * @brief Clear the reserved status of the connector.
- *
- * @param[in] self Pointer to the connector structure.
- *
- * @return true on success, false otherwise.
- */
-bool connector_clear_reserved(struct connector *self);
-
-/**
- * @brief Validate the connector parameters.
- *
- * @param[in] param Pointer to the connector parameter structure.
- *
- * @return true if the parameters are valid, false otherwise.
- */
-bool connector_validate_param(const struct connector_param *param);
-
-/**
- * @brief Convert the connector state to a string representation.
- *
- * @param[in] state The connector state.
- *
- * @return The string representation of the state.
- */
-const char *connector_stringify_state(const connector_state_t state);
-
-/**
- * @brief Get the error state of the connector.
- *
- * @param[in] self Pointer to the connector structure.
- *
- * @return The error state of the connector.
- */
-connector_error_t connector_error(const struct connector *self);
-
-/**
- * @brief Set the priority of the connector.
- *
- * @param[in] self Pointer to the connector structure.
- * @param[in] priority The priority to set.
- *
- * @return 0 on success, or a negative error code on failure.
- */
-int connector_set_priority(struct connector *self, const int priority);
-
-/**
- * @brief Get the priority of the connector.
- *
- * @param[in] connector Pointer to the connector structure.
- *
- * @return The priority of the connector.
- */
-int connector_priority(const struct connector *connector);
-
-/**
- * @brief Get the metering information of the connector.
- *
- * Returns an instance of the meter module.
- *
- * @param[in] self Pointer to the connector structure.
- *
- * @return Pointer to the metering structure.
- */
-struct metering *connector_meter(const struct connector *self);
-
-/**
- * @brief Get the name of the connector.
- *
- * This function returns the name of the connector as a string.
- *
- * @param[in] self Pointer to the connector structure.
- *
- * @return The name of the connector.
- */
-const char *connector_name(const struct connector *self);
-
-/**
- * @brief Convert a connector event to a string representation.
- *
- * This function converts the given connector event to its string representation
- * and stores it in the provided buffer.
- *
- * @param[in] event The connector event to convert.
- * @param[out] buf The buffer to store the string representation.
- * @param[in] bufsize The size of the buffer.
- *
- * @return The number of characters written to the buffer, excluding the null
- *         terminator.
- */
-size_t connector_stringify_event(const connector_event_t event,
-		char *buf, size_t bufsize);
-
-/**
- * @brief Updates the metrics for the given connector state.
- *
- * This function updates various metrics based on the current state
- * of the connector. It should be called whenever the state of the
- * connector changes to ensure metrics are accurately maintained.
- *
- * @param state The current state of the connector.
- */
-void connector_update_metrics(const connector_state_t state);
 
 #if defined(__cplusplus)
 }

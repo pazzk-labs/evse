@@ -1,7 +1,7 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
-#include "charger/charger_internal.h"
+#include "charger_internal.h"
 #include "charger/connector.h"
 
 TEST_GROUP(Charger) {

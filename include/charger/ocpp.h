@@ -127,8 +127,7 @@ int ocpp_charger_request_reboot(struct charger *charger,
  *
  * @return A pointer to the current checkpoint.
  */
-struct ocpp_checkpoint *
-ocpp_charger_get_checkpoint(const struct charger *charger);
+struct ocpp_checkpoint *ocpp_charger_get_checkpoint(struct charger *charger);
 
 /**
  * @brief Sets the checkpoint for the given charger.

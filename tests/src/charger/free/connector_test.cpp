@@ -2,6 +2,7 @@
 #include "CppUTestExt/MockSupport.h"
 
 #include "charger/free_connector.h"
+#include "connector_internal.h"
 #include "iec61851.h"
 #include "safety.h"
 

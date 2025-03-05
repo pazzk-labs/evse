@@ -31,9 +31,9 @@
  */
 
 #include "charger/free_connector.h"
+#include "../connector_internal.h"
 
 #include <stdlib.h>
-#include <errno.h>
 
 #include "libmcu/fsm.h"
 #include "libmcu/metrics.h"

@@ -30,14 +30,14 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "charger/charger_internal.h"
+#include "charger_internal.h"
+#include "charger/connector.h"
 
 #include <stdbool.h>
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
 
-#include "charger/connector.h"
 #include "logger.h"
 
 #if !defined(DEFAULT_INPUT_CURRENT)

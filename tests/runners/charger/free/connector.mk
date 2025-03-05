@@ -34,7 +34,6 @@ SRC_FILES = \
 	../src/charger/free/free_connector.c \
 	../src/charger/connector.c \
 	../external/libmcu/modules/fsm/src/fsm.c \
-	../external/libmcu/modules/metrics/src/metrics.c \
 	../external/libmcu/modules/ratelim/src/ratelim.c \
 
 TEST_SRC_FILES = \
@@ -50,6 +49,7 @@ TEST_SRC_FILES = \
 INCLUDE_DIRS = \
 	$(CPPUTEST_HOME)/include \
 	../include \
+	../src/charger \
 	../external/libmcu/modules/common/include \
 	../external/libmcu/modules/fsm/include \
 	../external/libmcu/modules/metrics/include \

@@ -30,7 +30,7 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "charger/connector.h"
+#include "connector_internal.h"
 
 #include <string.h>
 #include <errno.h>

@@ -20,8 +20,6 @@ SRC_FILES = \
 	../src/charger/ocpp/ocpp_connector_internal.c \
 	../src/charger/connector.c \
 	../external/libmcu/modules/fsm/src/fsm.c \
-	../external/libmcu/modules/metrics/src/metrics.c \
-	../external/libmcu/modules/metrics/src/metrics_overrides.c \
 	../external/libmcu/modules/ratelim/src/ratelim.c \
 
 TEST_SRC_FILES = \
@@ -34,6 +32,8 @@ TEST_SRC_FILES = \
 	mocks/safety.cpp \
 	mocks/csms.cpp \
 	mocks/ocpp.cpp \
+	../external/libmcu/tests/mocks/assert.cpp \
+	../external/libmcu/tests/stubs/metrics.cpp \
 
 INCLUDE_DIRS = \
 	$(CPPUTEST_HOME)/include \

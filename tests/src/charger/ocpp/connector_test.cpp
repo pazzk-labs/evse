@@ -66,6 +66,10 @@ TEST(OcppConnector, ShouldGoAvailable_WhenBooted) {
 	mock().expectNCalls(2, "iec61851_state").andReturnValue(IEC61851_STATE_A);
 	mock().expectOneCall("csms_request")
 		.withParameter("msgtype", OCPP_MSG_STATUS_NOTIFICATION);
+	// on_state_change()
+	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_A);
+	mock().expectOneCall("iec61851_is_occupied_state")
+		.withParameter("state", IEC61851_STATE_A).andReturnValue(false);
 
 	connector_process(c);
 }
@@ -74,6 +78,10 @@ TEST(OcppConnector, ShouldGoPreparing_WhenBootedWithPlugged) {
 	mock().expectNCalls(4, "iec61851_state").andReturnValue(IEC61851_STATE_B);
 	mock().expectOneCall("csms_request")
 		.withParameter("msgtype", OCPP_MSG_STATUS_NOTIFICATION);
+	// on_state_change()
+	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_B);
+	mock().expectOneCall("iec61851_is_occupied_state")
+		.withParameter("state", IEC61851_STATE_B).andReturnValue(true);
 
 	connector_process(c);
 }
@@ -82,6 +90,10 @@ TEST(OcppConnector, ShouldGoUnavailable_WhenBooted) {
 	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_A);
 	mock().expectOneCall("csms_request")
 		.withParameter("msgtype", OCPP_MSG_STATUS_NOTIFICATION);
+	// on_state_change()
+	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_A);
+	mock().expectOneCall("iec61851_is_occupied_state")
+		.withParameter("state", IEC61851_STATE_A).andReturnValue(false);
 
 	ocpp_connector_set_availability(oc, false);
 	connector_process(c);
