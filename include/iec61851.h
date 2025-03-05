@@ -121,13 +121,16 @@ void iec61851_set_state_f(struct iec61851 *self);
 uint8_t iec61851_get_pwm_duty(struct iec61851 *self);
 
 /**
- * @brief Get the set PWM duty cycle.
- * 
- * @param[in] self Pointer to the IEC 61851 instance.
+ * @brief Get the PWM duty cycle target for the IEC 61851 protocol.
  *
- * @return Set PWM duty cycle percentage.
+ * This function retrieves the target duty cycle for the Pulse Width Modulation
+ * (PWM) signal used in the IEC 61851 protocol.
+ *
+ * @param[in] self Pointer to the iec61851 structure.
+ *
+ * @return uint8_t The target PWM duty cycle.
  */
-uint8_t iec61851_get_pwm_duty_set(struct iec61851 *self);
+uint8_t iec61851_get_pwm_duty_target(struct iec61851 *self);
 
 /**
  * @brief Start the power supply.

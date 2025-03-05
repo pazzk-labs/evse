@@ -1,9 +1,27 @@
 @startuml
 
 interface connector {
+	+enable()
+	+disable()
+	+process()
 }
 
 interface connector_api {
+	+state()
+	+get_target_duty()
+	+get_actual_duty()
+	+start_duty()
+	+stop_duty()
+	+go_fault()
+	+enable_power_supply()
+	+disable_power_supply()
+	+is_supplying_power()
+	+is_state_x()
+	+is_state_x2()
+	+is_evse_error()
+	+is_emergency_stop()
+	+is_input_power_ok()
+	+is_output_power_ok()
 }
 
 interface ocpp_api
@@ -20,17 +38,32 @@ interface adc
 interface pwm
 interface uart
 
+interface charger_extension {
+	+init()
+	+deinit()
+	+pre_process()
+	+post_process()
+}
+
 class charger {
+	+init()
+	+deinit()
+	+attach_connector(connector)
+	+detach_connector(connector)
+	+process()
+	+get_connector(name)
+	+get_connector_available()
+	+get_connector_by_id(id)
 }
 
 pilot --> adc
 pilot --> pwm
 relay --> pwm
+
 metering --> uart
+metering <|.. hlw8112
 
-hlw8112 ..|> metering
-
-adc122s051 ..|> adc
+adc <|.. adc122s051
 
 iec61851 --> pilot
 iec61851 --> relay
@@ -38,20 +71,22 @@ iec61851 --> pp
 
 connector --> fsm
 connector --> iec61851
-connector "1" *-- "many" safety
+safety "many" *-- "1" connector
 connector --> metering
+
 free_connector ..|> connector
-free_connector ..|> connector_api
 ocpp_connector ..|> connector
-ocpp_connector ..|> ocpp_api
 hlc_connector ..|> connector
+
+free_connector ...|> connector_api
+ocpp_connector ...|> ocpp_api
 hlc_connector ..|> hlc_api
 
 ocpp_api --|> connector_api
 hlc_api --|> ocpp_api
 
-free_fsm ..|> fsm
-ocpp_fsm ..|> fsm
+fsm <|.. free_fsm
+fsm <|.. ocpp_fsm
 
 ocpp_connector ---> ocpp
 ocpp_connector ---> csms
@@ -60,11 +95,15 @@ websocket ..|> server
 
 hlc_connector --> plc
 
-input_power ..|> safety
-output_power ..|> safety
-temperature ..|> safety
-emergency_stop ..|> safety
+safety <|.. input_power
+safety <|.. output_power
+safety <|.. temperature
+safety <|.. emergency_stop
 
 charger "1" *--- "many" connector
+charger -> charger_extension
+
+ocpp_charger ..|> charger_extension
+hlc_charger ..|> charger_extension
 
 @enduml

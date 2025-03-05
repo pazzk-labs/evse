@@ -30,85 +30,90 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "../connector_private.h"
+#include "charger/free_connector.h"
 
-#include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #include "libmcu/fsm.h"
 #include "libmcu/metrics.h"
 #include "logger.h"
 
 #if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)			(sizeof(x) / sizeof((x)[0]))
+#define ARRAY_SIZE(x)		(sizeof(x) / sizeof((x)[0]))
 #endif
 
 static bool is_initial(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	return state == E && get_pwm_duty_set(c) == 0 && read_pwm_duty(c) == 0;
+	/* NOTE: Even if an E state occurs such as diode fault, since EVSE
+	 * transitions to F state, the following condition is only satisfied
+	 * during initial boot */
+	return state == E &&
+		connector_get_target_duty(c) == 0 &&
+		connector_get_actual_duty(c) == 0;
 }
 
 static bool is_state_a(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	return is_state_x(c, A);
+	return connector_is_state_x(c, A);
 }
 
 static bool is_state_b(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	return is_state_x(c, B);
+	return connector_is_state_x(c, B);
 }
 
 static bool is_state_c(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	return is_state_x(c, C);
+	return connector_is_state_x(c, C);
 }
 
 static bool is_state_c2(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	return is_state_x2(c, C);
+	return connector_is_state_x2(c, C);
 }
 
 static bool is_state_d2(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	return is_state_x2(c, D);
+	return connector_is_state_x2(c, D);
 }
 
 static bool is_state_d(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	return is_state_x(c, D);
+	return connector_is_state_x(c, D);
 }
 
 static bool is_state_e(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	return is_state_x(c, E);
+	return connector_is_state_x(c, E);
 }
 
 static bool is_state_f(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	return is_evse_error(c, (connector_state_t)state);
+	return connector_is_evse_error(c, (connector_state_t)state);
 }
 
 static bool is_recovered(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
 
-	if (!is_input_power_ok(c) || is_emergency_stop(c)) {
+	if (!connector_is_input_power_ok(c) || connector_is_emergency_stop(c)) {
 		return false;
 	}
 
 	const time_t now = time(NULL);
 	const uint32_t elapsed = (uint32_t)(now - c->time_last_state_change);
 
-	if (is_early_recovery(elapsed)) {
+	if (!connector_is_ev_response_timeout(c, elapsed)) {
 		return false;
 	}
 
@@ -117,41 +122,41 @@ static bool is_recovered(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_error(struct connector *c, connector_state_t state)
 {
-	if (is_supplying_power(c)) {
-		disable_power_supply(c);
+	if (connector_is_supplying_power(c)) {
+		connector_disable_power_supply(c);
 	}
 
-	go_fault(c);
+	connector_go_fault(c);
 
-	error("error state change: %s to %s",
-			stringify_state(state), stringify_state(get_state(c)));
+	error("error state change: %s to %s", connector_stringify_state(state),
+			connector_stringify_state(connector_state(c)));
 }
 
 static void do_stop_pwm(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	stop_pwm(c);
+	connector_stop_duty(c);
 }
 
 static void do_start_pwm(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	start_pwm(c);
+	connector_start_duty(c);
 }
 
 static void do_supply_power(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	if (!is_supplying_power(c)) {
-		enable_power_supply(c);
+	if (!connector_is_supplying_power(c)) {
+		connector_enable_power_supply(c);
 	}
 }
 
 static void do_stop_power(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	if (is_supplying_power(c)) {
-		disable_power_supply(c);
+	if (connector_is_supplying_power(c)) {
+		connector_disable_power_supply(c);
 	}
 }
 
@@ -164,13 +169,13 @@ static void do_stop_all(fsm_state_t state, fsm_state_t next_state, void *ctx)
 static void do_unexpected(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct connector *c = (struct connector *)ctx;
-	go_fault(c);
+	connector_go_fault(c);
 	c->error = CONNECTOR_ERROR_EVSE_SIDE;
 
 	metrics_increase(ChargerUnexpectedCount);
 	error("unexpected state change: %s to %s",
-			stringify_state((connector_state_t)state),
-			stringify_state(get_state(c)));
+			connector_stringify_state((connector_state_t)state),
+			connector_stringify_state(connector_state(c)));
 }
 
 static void do_evse_error(fsm_state_t state, fsm_state_t next_state, void *ctx)
@@ -178,18 +183,13 @@ static void do_evse_error(fsm_state_t state, fsm_state_t next_state, void *ctx)
 	struct connector *c = (struct connector *)ctx;
 
 	do_error(c, (connector_state_t)state);
-	c->error = is_emergency_stop(c)?
+	c->error = connector_is_emergency_stop(c)?
 		CONNECTOR_ERROR_EMERGENCY_STOP : CONNECTOR_ERROR_EVSE_SIDE;
-
-	if (!is_input_power_ok(c) ||
-			(c->error != CONNECTOR_ERROR_EMERGENCY_STOP &&
-					!is_output_power_ok(c))) {
-		log_power_failure(c);
-	}
 
 	if (state == E || state == F) {
 		error("unexpected evse error in %s state",
-				stringify_state((connector_state_t)state));
+				connector_stringify_state((connector_state_t)
+						state));
 	}
 }
 
@@ -202,7 +202,8 @@ static void do_ev_error(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 	if (state == A || state == E || state == F) {
 		error("unexpected ev error in %s state",
-				stringify_state((connector_state_t)state));
+				connector_stringify_state((connector_state_t)
+						state));
 	}
 }
 
@@ -241,11 +242,135 @@ static const struct fsm_item transitions[] = {
 	FSM_ITEM(F, is_recovered, do_stop_pwm,     A), /* EVSE recovery */
 };
 
-const struct fsm_item *get_fsm_table(size_t *transition_count)
+static connector_event_t
+get_event_from_state_change(const connector_state_t new_state,
+		const connector_state_t old_state)
 {
-	if (transition_count) {
-		*transition_count = ARRAY_SIZE(transitions);
+	const struct {
+		connector_state_t from;
+		connector_state_t to;
+		uint32_t event;
+	} tbl[] = {
+		{ A, B, CONNECTOR_EVENT_PLUGGED },
+		{ A, F, CONNECTOR_EVENT_ERROR },
+		{ B, A, CONNECTOR_EVENT_UNPLUGGED },
+		{ B, C, CONNECTOR_EVENT_CHARGING_STARTED },
+		{ B, D, CONNECTOR_EVENT_CHARGING_STARTED },
+		{ B, F, CONNECTOR_EVENT_ERROR },
+		{ C, A, CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_UNPLUGGED },
+		{ C, B, CONNECTOR_EVENT_CHARGING_ENDED },
+		{ C, D, CONNECTOR_EVENT_NONE },
+		{ C, E, CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_ERROR },
+		{ C, F, CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_ERROR },
+		{ D, A, CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_UNPLUGGED },
+		{ D, B, CONNECTOR_EVENT_CHARGING_ENDED },
+		{ D, C, CONNECTOR_EVENT_NONE },
+		{ D, E, CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_ERROR },
+		{ D, F, CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_ERROR },
+		{ E, F, CONNECTOR_EVENT_ERROR },
+		{ F, A, CONNECTOR_EVENT_ERROR_RECOVERY },
+		{ F, B, CONNECTOR_EVENT_ERROR_RECOVERY | CONNECTOR_EVENT_PLUGGED },
+	};
+
+	for (size_t i = 0; i < ARRAY_SIZE(tbl); i++) {
+		if (tbl[i].from == old_state && tbl[i].to == new_state) {
+			return (connector_event_t)tbl[i].event;
+		}
 	}
 
-	return transitions;
+	return CONNECTOR_EVENT_NONE;
+}
+
+static void update_metrics(const fsm_state_t state)
+{
+	const metric_key_t tbl[Sn] = {
+		[A] = ChargerStateACount,
+		[B] = ChargerStateBCount,
+		[C] = ChargerStateCCount,
+		[D] = ChargerStateDCount,
+		[E] = ChargerStateECount,
+		[F] = ChargerStateFCount,
+	};
+	metrics_increase(tbl[state]);
+}
+
+static void on_state_change(struct fsm *fsm,
+		fsm_state_t new_state, fsm_state_t prev_state, void *ctx)
+{
+	struct connector *c = (struct connector *)ctx;
+	c->time_last_state_change = time(NULL);
+
+	info("connector \"%s\" state changed: %s to %s at %ld", c->param.name,
+			connector_stringify_state((connector_state_t)prev_state),
+			connector_stringify_state((connector_state_t)new_state),
+			c->time_last_state_change);
+
+	const connector_event_t events =
+		get_event_from_state_change((connector_state_t)new_state,
+				(connector_state_t)prev_state);
+
+	if (events && c->event_cb) {
+		(*c->event_cb)(c, events, c->event_cb_ctx);
+	}
+
+	update_metrics(new_state);
+}
+
+static int process(struct connector *self)
+{
+	fsm_step(&self->fsm);
+	return 0;
+}
+
+static int enable(struct connector *self)
+{
+	(void)self;
+	return 0;
+}
+
+static int disable(struct connector *self)
+{
+	(void)self;
+	return 0;
+}
+
+static const struct connector_api *get_api(void)
+{
+	static struct connector_api api = {
+		.enable = enable,
+		.disable = disable,
+		.process = process,
+	};
+
+	return &api;
+}
+
+struct connector *free_connector_create(const struct connector_param *param)
+{
+	struct connector *c;
+
+	if (!param || !connector_validate_param(param) ||
+			(c = malloc(sizeof(*c))) == NULL) {
+		return NULL;
+	}
+
+	*c = (struct connector) {
+		.api = get_api(),
+		.param = *param,
+	};
+
+	fsm_init(&c->fsm, transitions, ARRAY_SIZE(transitions), c);
+	fsm_set_state_change_cb(&c->fsm, on_state_change, c);
+
+	ratelim_init(&c->log_ratelim, RATELIM_UNIT_SECOND,
+			CONNECTOR_LOG_RATE_CAP, CONNECTOR_LOG_RATE_SEC);
+
+	info("connector \"%s\" created", param->name);
+
+	return c;
+}
+
+void free_connector_destroy(struct connector *c)
+{
+	free(c);
 }

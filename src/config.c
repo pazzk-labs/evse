@@ -67,7 +67,7 @@ static const char *cfgstr_tbl[CONFIG_KEY_MAX] = {
 	[CONFIG_KEY_SERVER_ID]                 = "net/srv/id",
 	[CONFIG_KEY_SERVER_PASS]               = "net/srv/pass",
 	[CONFIG_KEY_PLC_MAC]                   = "net/plc/mac",
-	[CONFIG_KEY_OCPP_PARAM]                = "ocpp/param",
+	[CONFIG_KEY_OCPP_CHECKPOINT]           = "ocpp/checkpoint",
 	[CONFIG_KEY_OCPP_CONFIG]               = "ocpp/config",
 	/* Do not exceed 15 characters.          "123456789012345" */
 };

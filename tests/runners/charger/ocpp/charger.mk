@@ -16,54 +16,27 @@
 COMPONENT_NAME = OcppCharger
 
 SRC_FILES = \
-	../src/charger/ocpp/charger.c \
-	../src/charger/ocpp/connector_private.c \
-	../src/charger/ocpp/lock.c \
-	../src/charger/ocpp/fsm.c \
+	../src/charger/ocpp/ocpp_charger.c \
 	../src/charger/charger.c \
-	../src/charger/connector_private.c \
-	../src/charger/charger_private.c \
-	../src/charger/connector.c \
-	../external/ocpp/src/ocpp.c \
-	../external/ocpp/src/core/configuration.c \
-	../external/libmcu/modules/metrics/src/metrics.c \
-	../external/libmcu/modules/metrics/src/metrics_overrides.c \
-	../external/libmcu/modules/fsm/src/fsm.c \
+	../external/libmcu/modules/common/src/msgq.c \
+	../external/libmcu/modules/common/src/ringbuf.c \
 
 TEST_SRC_FILES = \
 	src/charger/ocpp/charger_test.cpp \
 	src/test_all.cpp \
 	stubs/logging.c \
-	stubs/logger.c \
-	stubs/ratelim.c \
-	../external/libmcu/tests/mocks/assert.cpp \
-	mocks/iec61851.cpp \
-	mocks/safety.cpp \
-	mocks/metering.cpp \
+	mocks/ocpp_connector.cpp \
+	mocks/connector.cpp \
 
 INCLUDE_DIRS = \
 	$(CPPUTEST_HOME)/include \
-	mocks/ \
 	../include \
-	../src/charger/ocpp \
-	../include/driver \
-	../external/ocpp/include \
 	../external/libmcu/modules/common/include \
 	../external/libmcu/modules/logging/include \
-	../external/libmcu/modules/metrics/include \
 	../external/libmcu/modules/fsm/include \
 	../external/libmcu/modules/ratelim/include \
-	../external/libmcu/interfaces/pwm/include \
-	../external/libmcu/interfaces/spi/include \
-	../external/libmcu/interfaces/gpio/include \
-	../external/libmcu/interfaces/flash/include \
-	../external/libmcu/interfaces/uart/include \
 
 MOCKS_SRC_DIRS =
-CPPUTEST_CPPFLAGS = -include ../include/logger.h \
-	-DMETRICS_USER_DEFINES=\"../include/metrics.def\" \
-	-DOCPP_ERROR=error \
-	-DOCPP_DEBUG=debug \
-	-DOCPP_INFO=info \
+CPPUTEST_CPPFLAGS = -include ../include/logger.h
 
 include runners/MakefileRunner

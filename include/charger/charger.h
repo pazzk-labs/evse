@@ -38,19 +38,14 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include <stdbool.h>
-
-#include "charger/event.h"
-
-#define CHARGER_EVENT_STRING_MAXLEN		128
 
 struct charger;
 struct connector;
-struct connector_param;
 
-typedef void (*charger_event_cb_t)(struct charger *charger,
-		struct connector *connector,
-		const charger_event_t event, void *ctx);
+typedef uint32_t charger_event_t;
+typedef void (*charger_event_cb_t)(struct charger *charger, struct connector *c,
+		charger_event_t event, void *ctx);
+typedef void (*charger_iterate_cb_t)(struct connector *c, void *ctx);
 
 struct charger_param {
 	uint32_t max_input_current_mA; /* maximum input current in mA */
@@ -61,108 +56,127 @@ struct charger_param {
 	uint32_t min_output_current_mA; /* minimum output current in mA */
 };
 
-/**
- * @brief Initialize the charger with the given parameters.
- *
- * @param[in] charger Pointer to the charger structure to be initialized.
- * @param[in] param Pointer to the charger parameters structure.
- *
- * @return int Returns 0 on success, or a negative error code on failure.
- */
-int charger_init(struct charger *charger, const struct charger_param *param);
+struct charger_extension {
+	int (*init)(struct charger *self);
+	void (*deinit)(struct charger *self);
+	int (*pre_process)(struct charger *self);
+	int (*post_process)(struct charger *self);
+};
 
 /**
- * @brief Deinitializes the charger.
+ * @brief Initializes the charger with the given parameters and extension.
  *
- * This function deinitializes the charger, releasing any resources
- * that were allocated during its initialization and operation.
+ * @param[in] self Pointer to the charger instance to initialize.
+ * @param[in] param Pointer to the charger parameters.
+ * @param[in] extension Pointer to the charger extension.
  *
- * @param[in] charger Pointer to the charger structure.
- *
- * @return int 0 on success, or a negative error code on failure.
+ * @return 0 on success, or a negative error code on failure.
  */
-int charger_deinit(struct charger *charger);
+int charger_init(struct charger *self, const struct charger_param *param,
+		const struct charger_extension *extension);
+
+/**
+ * @brief Deinitialize the charger.
+ *
+ * @param[in] self Pointer to the charger instance to initialize.
+ */
+void charger_deinit(struct charger *self);
+
+/**
+ * @brief Attach a connector to the charger.
+ *
+ * @param[in] self Pointer to the charger instance to initialize.
+ * @param[in] connector Pointer to the connector structure.
+ *
+ * @return 0 on success, or a negative error code on failure.
+ */
+int charger_attach_connector(struct charger *self, struct connector *connector);
+
+/**
+ * @brief Detach a connector from the charger.
+ *
+ * @param[in] self Pointer to the charger instance to initialize.
+ * @param[in] connector Pointer to the connector structure.
+ *
+ * @return 0 on success, or a negative error code on failure.
+ */
+int charger_detach_connector(struct charger *self, struct connector *connector);
 
 /**
  * @brief Register an event callback for the charger.
  *
- * @param[in] charger Pointer to the charger structure.
- * @param[in] cb Event callback function.
- * @param[in] cb_ctx Context to be passed to the callback function.
+ * This function registers a callback function that will be called when an event
+ * occurs on the charger.
  *
- * @return int Returns 0 on success, or a negative error code on failure.
- */
-int charger_register_event_cb(struct charger *charger,
-		charger_event_cb_t cb, void *cb_ctx);
-
-/**
- * @brief Retrieves a charger connector by name.
- *
- * This function returns a pointer to the charger connector structure
- * that matches the given connector name.
- *
- * @param[in] charger Pointer to the charger structure.
- * @param[in] connector_name Name of the charger connector.
- *
- * @return struct connector* Pointer to the charger connector structure.
- */
-struct connector *charger_get_connector(struct charger *charger,
-		const char *connector_name);
-
-/**
- * @brief Function to get an unused connector.
- *
- * This function retrieves an unused connector from the specified charger.
- *
- * @param[in] charger A pointer to the charger from which to get an unused
- *            connector.
- * @return A pointer to an unused connector, or NULL if no unused connector is
- *         available.
- */
-struct connector *charger_get_connector_free(struct charger *charger);
-
-/**
- * @brief Retrieves a charger connector by ID.
- *
- * This function returns a pointer to the charger connector structure
- * that matches the given connector ID.
- *
- * @param[in] charger Pointer to the charger structure.
- * @param[in] id ID of the charger connector.
- *
- * @return struct connector* Pointer to the charger connector structure.
- */
-struct connector *charger_get_connector_by_id(struct charger *charger,
-		const int id);
-
-/**
- * @brief Creates a new charger connector.
- *
- * This function initializes and creates a new charger connector based on
- * the provided parameters. It takes a pointer to the charger structure
- * and a pointer to the charger connector parameters structure.
- *
- * @param[in] charger Pointer to the charger structure.
- * @param[in] param Pointer to the charger connector parameters structure.
- *
- * @return bool True if the connector was successfully created, false otherwise.
- */
-bool charger_create_connector(struct charger *charger,
-		const struct connector_param *param);
-
-/**
- * @brief Perform a step in the charger process.
- *
- * This function performs a step in the charger process and determines
- * the next period in milliseconds.
- *
- * @param[in] charger Pointer to the charger structure.
- * @param[out] next_period_ms Pointer to the variable to store the next period
- *             in milliseconds.
+ * @param[in] self Pointer to the charger instance to initialize.
+ * @param[in] cb The callback function to register.
+ * @param[in] cb_ctx User-defined context to pass to the callback function.
  *
  * @return 0 on success, or a negative error code on failure.
  */
-int charger_step(struct charger *charger, uint32_t *next_period_ms);
+int charger_register_event_cb(struct charger *self,
+		charger_event_cb_t cb, void *cb_ctx);
+
+/**
+ * @brief Get the count of connectors attached to the charger.
+ *
+ * @param[in] self Pointer to the charger instance to initialize.
+ *
+ * @return The number of connectors attached to the charger.
+ */
+int charger_count_connectors(const struct charger *self);
+
+/**
+ * @brief Process the charger state.
+ *
+ * @param[in] self Pointer to the charger instance to initialize.
+ *
+ * @return 0 on success, or a negative error code on failure.
+ */
+int charger_process(struct charger *self);
+
+/**
+ * @brief Get a connector by its name.
+ *
+ * @param[in] self Pointer to the charger instance to initialize.
+ * @param[in] connector_name_str The name of the connector.
+ *
+ * @return Pointer to the connector structure, or NULL if not found.
+ */
+struct connector *charger_get_connector(const struct charger *self,
+		const char *connector_name_str);
+
+/**
+ * @brief Get an available connector.
+ *
+ * @param[in] self Pointer to the charger instance to initialize.
+ *
+ * @return Pointer to an available connector structure, or NULL if none are
+ *         available.
+ */
+struct connector *charger_get_connector_available(const struct charger *self);
+
+/**
+ * @brief Get a connector by its ID.
+ *
+ * @param[in] self Pointer to the charger instance to initialize.
+ * @param[in] id The ID of the connector.
+ *
+ * @return Pointer to the connector structure, or NULL if not found.
+ */
+struct connector *charger_get_connector_by_id(const struct charger *self,
+		const int id);
+
+/**
+ * Iterates over all connectors of the charger and applies the given callback
+ * function.
+ *
+ * @param[in] self Pointer to the charger instance.
+ * @param[in] cb Callback function to be applied to each connector.
+ * @param[in] ctx User-defined context to be passed to the callback function.
+ */
+void charger_iterate_connectors(struct charger *self,
+		charger_iterate_cb_t cb, void *cb_ctx);
 
 /**
  * @brief Initializes the charger parameters to their default values.
@@ -175,17 +189,16 @@ int charger_step(struct charger *charger, uint32_t *next_period_ms);
 void charger_default_param(struct charger_param *param);
 
 /**
- * Converts a charger event into its string representation
+ * @brief Get the connector ID for a given charger and connector.
  *
- * @param[in]  event    The charger event to convert
- * @param[out] buf      Buffer to store the string representation
- * @param[in]  bufsize  Size of the provided buffer
+ * @param[in] self Pointer to the charger structure.
+ * @param[in] connector Pointer to the connector structure.
+ * @param[out] id Pointer to an integer where the connector ID will be stored.
  *
- * @return The number of characters written to the buffer (excluding null
- *         terminator)
+ * @return 0 on success, or a negative error code on failure.
  */
-size_t charger_stringify_event(const charger_event_t event,
-		char *buf, size_t bufsize);
+int charger_get_connector_id(const struct charger *self,
+		const struct connector *connector, int *id);
 
 #if defined(__cplusplus)
 }

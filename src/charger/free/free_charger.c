@@ -30,21 +30,17 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#ifndef OCPP_MESSAGE_HANDLER_PRIVATE_H
-#define OCPP_MESSAGE_HANDLER_PRIVATE_H
+#include "charger/free.h"
+#include <stdlib.h>
+#include "charger/charger_internal.h"
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-#include "charger/ocpp.h"
-#include "ocpp/ocpp.h"
-
-void handler_process(struct ocpp_charger *charger,
-		const struct ocpp_message *message);
-
-#if defined(__cplusplus)
+struct charger *free_charger_create(void)
+{
+	struct charger *free_charger = malloc(sizeof(*free_charger));
+	return free_charger;
 }
-#endif
 
-#endif /* OCPP_MESSAGE_HANDLER_PRIVATE_H */
+void free_charger_destroy(struct charger *charger)
+{
+	free(charger);
+}

@@ -17,33 +17,20 @@ COMPONENT_NAME = Charger
 
 SRC_FILES = \
 	../src/charger/charger.c \
-	../src/charger/charger_private.c \
-	../src/charger/connector.c \
-	../src/charger/connector_private.c \
 
 TEST_SRC_FILES = \
 	src/charger/charger_test.cpp \
 	src/test_all.cpp \
 	stubs/logging.c \
-	stubs/logger.c \
-	stubs/ratelim.c \
-	mocks/safety.c \
-	mocks/iec61851.c \
+	mocks/connector.cpp \
 
 INCLUDE_DIRS = \
 	$(CPPUTEST_HOME)/include \
 	../include \
-	../include/driver \
-	../src/charger \
 	../external/libmcu/modules/common/include \
 	../external/libmcu/modules/logging/include \
 	../external/libmcu/modules/fsm/include \
 	../external/libmcu/modules/ratelim/include \
-	../external/libmcu/interfaces/flash/include \
-	../external/libmcu/interfaces/pwm/include \
-	../external/libmcu/interfaces/spi/include \
-	../external/libmcu/interfaces/gpio/include \
-	../external/libmcu/interfaces/uart/include \
 
 MOCKS_SRC_DIRS =
 CPPUTEST_CPPFLAGS = -include ../include/logger.h

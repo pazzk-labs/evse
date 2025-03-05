@@ -36,7 +36,8 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#include "connector_private.h"
+#include "charger/ocpp.h"
+#include "ocpp_connector_internal.h"
 #include "csms.h"
 #include "app.h"
 #include "updater.h"
@@ -59,27 +60,35 @@ struct handler_entry {
 	handler_fn_t handler;
 };
 
+struct availability_ctx {
+	bool unavailable;
+	ocpp_availability_status_t status;
+};
+
 static void do_auth(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
-	struct ocpp_connector *c = get_connector_by_message_id(charger,
+	struct ocpp_connector *oc = (struct ocpp_connector *)
+		ocpp_charger_get_connector_by_mid((struct charger *)charger,
 			(const uint8_t *)message->id, strlen(message->id));
 	const struct ocpp_Authorize_conf *p =
 		(const struct ocpp_Authorize_conf *)
 		message->payload.fmt.response;
 
-	if (!c) {
+	if (!oc) {
 		error("connector not found for message id %s", message->id);
 	} else if (p->idTagInfo.status == OCPP_AUTH_STATUS_ACCEPTED) {
-		if (!is_session_established(c)) {
-			accept_session_trial_id(c);
-			set_session_current_expiry(c, p->idTagInfo.expiryDate);
-			set_session_parent_id(c, p->idTagInfo.parentIdTag);
+		if (!ocpp_connector_is_session_established(oc)) {
+			ocpp_connector_accept_session_trial_id(oc);
+			ocpp_connector_set_session_current_expiry(oc,
+					p->idTagInfo.expiryDate);
+			ocpp_connector_set_session_parent_id(oc,
+					p->idTagInfo.parentIdTag);
 			return;
 		}
 		error("session already established");
 	} else {
-		clear_session(c);
+		ocpp_connector_clear_session(oc);
 		error("session cleared: authorization failure");
 	}
 }
@@ -87,9 +96,6 @@ static void do_auth(struct ocpp_charger *charger,
 static void do_bootnoti(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
-	/* connector doen't really matter here because it will not be used to
-	 * send bootnotification. but hand over it for future use. */
-	struct connector *c = charger_get_connector_by_id(&charger->base, 1);
 	const struct ocpp_BootNotification_conf *p =
 		(const struct ocpp_BootNotification_conf *)
 		message->payload.fmt.response;
@@ -99,11 +105,11 @@ static void do_bootnoti(struct ocpp_charger *charger,
 			&p->interval, sizeof(p->interval));
 
 	if (p->status == OCPP_BOOT_STATUS_ACCEPTED) {
-		charger->csms_up = true;
-		csms_request(OCPP_MSG_STATUS_NOTIFICATION, c, CONNECTOR_0);
+		ocpp_charger_mq_send((struct charger *)charger,
+				OCPP_CHARGER_MSG_CSMS_UP, NULL);
 	} else {
 		csms_request_defer(OCPP_MSG_BOOTNOTIFICATION,
-				c, NULL, (uint32_t)p->interval);
+				NULL, NULL, (uint32_t)p->interval);
 
 		if (p->status == OCPP_BOOT_STATUS_REJECTED) {
 			csms_reconnect((uint32_t)p->interval);
@@ -152,24 +158,17 @@ static int change_csl_configuration(const char *key, const char *value)
 	return 0;
 }
 
-static ocpp_availability_status_t
-change_availability(struct ocpp_connector *c, const ocpp_availability_t type)
+static void on_each_connector_availability(struct connector *c, void *ctx)
 {
-	ocpp_availability_status_t status = OCPP_AVAILABILITY_STATUS_REJECTED;
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+	struct availability_ctx *p = (struct availability_ctx *)ctx;
 
-	if (c) {
-		status = OCPP_AVAILABILITY_STATUS_ACCEPTED;
-
-		if (type == OCPP_INOPERATIVE &&
-				(get_status(c) == Charging ||
-				get_status(c) == SuspendedEV)) {
-			status = OCPP_AVAILABILITY_STATUS_SCHEDULED;
-		}
-
-		*c->unavailable = (type == OCPP_INOPERATIVE);
+	if (p->unavailable && (ocpp_connector_state(oc) == Charging ||
+			ocpp_connector_state(oc) == SuspendedEV)) {
+		p->status = OCPP_AVAILABILITY_STATUS_SCHEDULED;
 	}
 
-	return status;
+	ocpp_connector_set_availability(oc, !p->unavailable);
 }
 
 static void do_change_availability(struct ocpp_charger *charger,
@@ -178,39 +177,34 @@ static void do_change_availability(struct ocpp_charger *charger,
 	const struct ocpp_ChangeAvailability *p =
 		(const struct ocpp_ChangeAvailability *)
 		message->payload.fmt.request;
-	ocpp_availability_status_t res = OCPP_AVAILABILITY_STATUS_ACCEPTED;
-	bool pre_status = charger->param.unavailability.charger;
-	const bool *post_status = &charger->param.unavailability.charger;
+	struct charger *base = (struct charger *)charger;
+	struct availability_ctx ctx = {
+		.unavailable = (p->type == OCPP_INOPERATIVE),
+		.status = OCPP_AVAILABILITY_STATUS_ACCEPTED,
+	};
+	const struct ocpp_checkpoint *checkpoint =
+		ocpp_charger_get_checkpoint(base);
 
 	if (p->connectorId == 0) { /* all connectors */
-		struct list *i;
-		list_for_each(i, &charger->base.connectors.list) {
-			struct ocpp_connector *c = list_entry(i,
-				struct ocpp_connector, base.link);
-			if (change_availability(c, p->type)
-					== OCPP_AVAILABILITY_STATUS_SCHEDULED) {
-				res = OCPP_AVAILABILITY_STATUS_SCHEDULED;
-			}
-		}
+		charger_iterate_connectors(base,
+				on_each_connector_availability, &ctx);
 
-		charger->param.unavailability.charger =
-			p->type == OCPP_INOPERATIVE;
+		ocpp_charger_set_availability(base, !ctx.unavailable);
 	} else {
 		struct ocpp_connector *c = (struct ocpp_connector *)
-			charger_get_connector_by_id(&charger->base, p->connectorId);
-		pre_status = *c->unavailable;
-		post_status = c->unavailable;
-		res = change_availability(c, p->type);
-	}
-
-	if (pre_status != *post_status) {
-		charger->param_changed = true; /* to keep persistent */
-		if (post_status == &charger->param.unavailability.charger) {
-			charger->status_report_required = true;
+			charger_get_connector_by_id(base, p->connectorId);
+		if (c) {
+			ocpp_connector_set_availability(c, !ctx.unavailable);
 		}
 	}
 
-	csms_response(OCPP_MSG_CHANGE_AVAILABILITY, message, NULL, (void *)res);
+	if (!ocpp_charger_is_checkpoint_equal(base, checkpoint)) {
+		ocpp_charger_mq_send(base,
+				OCPP_CHARGER_MSG_AVAILABILITY_CHANGED, NULL);
+	}
+
+	csms_response(OCPP_MSG_CHANGE_AVAILABILITY, message, NULL,
+			(void *)ctx.status);
 }
 
 static void do_change_configuration(struct ocpp_charger *charger,
@@ -256,7 +250,8 @@ static void do_change_configuration(struct ocpp_charger *charger,
 		if (csms_is_configuration_reboot_required(p->key)) {
 			status = OCPP_CONFIG_STATUS_REBOOT_REQUIRED;
 		}
-		charger->configuration_changed = true;
+		ocpp_charger_mq_send((struct charger *)charger,
+				OCPP_CHARGER_MSG_CONFIGURATION_CHANGED, NULL);
 	}
 
 	csms_response(OCPP_MSG_CHANGE_CONFIGURATION,
@@ -295,30 +290,32 @@ static void do_remote_start(struct ocpp_charger *charger,
 		(const struct ocpp_RemoteStartTransaction *)
 		message->payload.fmt.request;
 	struct connector *c;
-	struct ocpp_connector *cc;
+	struct ocpp_connector *oc;
 
 	if (p->connectorId == 0) {
-		if ((c = charger_get_connector_free(&charger->base)) == NULL) {
+		if ((c = charger_get_connector_available((struct charger *)
+				charger)) == NULL) {
 			error("no available connector");
 			goto out;
 		}
 	}
-	if ((c = charger_get_connector_by_id(&charger->base, p->connectorId))
-			== NULL) {
+	if ((c = charger_get_connector_by_id((struct charger *)charger,
+			p->connectorId)) == NULL) {
 		error("connector %d not found", p->connectorId);
 		goto out;
 	}
 
-	cc = (struct ocpp_connector *)c;
+	oc = (struct ocpp_connector *)c;
 
-	if (is_session_active(cc) || is_session_trial_id_exist(cc)) {
+	if (ocpp_connector_is_session_active(oc) ||
+			ocpp_connector_is_session_trial_id_exist(oc)) {
 		error("connector %d is already occupied", p->connectorId);
 		goto out;
 	}
 
-	ocpp_connector_status_t status = get_status(cc);
+	ocpp_connector_state_t state = ocpp_connector_state(oc);
 
-	if (status == Available || status == Preparing) {
+	if (state == Available || state == Preparing) {
 		csms_response(OCPP_MSG_REMOTE_START_TRANSACTION, message, c,
 				(void *)OCPP_REMOTE_STATUS_ACCEPTED);
 
@@ -326,9 +323,9 @@ static void do_remote_start(struct ocpp_charger *charger,
 		ocpp_get_configuration("AuthorizeRemoteTxRequests",
 				&auth_required, sizeof(auth_required), NULL);
 		if (!auth_required) {
-			set_session_current_id(cc, p->idTag);
+			ocpp_connector_set_session_current_id(oc, p->idTag);
 		} else {
-			set_session_trial_id(cc, p->idTag);
+			ocpp_connector_set_session_trial_id(oc, p->idTag);
 			csms_request(OCPP_MSG_AUTHORIZE, c, NULL);
 		}
 		return;
@@ -345,8 +342,9 @@ static void do_remote_stop(struct ocpp_charger *charger,
 	const struct ocpp_RemoteStopTransaction *p =
 		(const struct ocpp_RemoteStopTransaction *)
 		message->payload.fmt.request;
-	struct ocpp_connector *c = get_connector_by_transaction_id(
-		charger, (ocpp_charger_transaction_id_t)p->transactionId);
+	struct ocpp_connector *c = (struct ocpp_connector *)
+		ocpp_charger_get_connector_by_tid((struct charger *)charger,
+				(ocpp_transaction_id_t)p->transactionId);
 
 	if (!c) {
 		csms_response(OCPP_MSG_REMOTE_STOP_TRANSACTION, message, c,
@@ -354,12 +352,13 @@ static void do_remote_stop(struct ocpp_charger *charger,
 		error("connector not found for transaction id %d",
 				p->transactionId);
 	} else {
-		if (get_status(c) != Charging && get_status(c) != SuspendedEV) {
+		ocpp_connector_state_t state = ocpp_connector_state(c);
+		if (state != Charging && state != SuspendedEV) {
 			error("connector %d is not charging", c->base.id);
 		}
-		set_session_trial_id(c,
+		ocpp_connector_set_session_trial_id(c,
 				(const char *)c->session.auth.current.id);
-		clear_session_id(&c->session.auth.current);
+		ocpp_connector_clear_session_id(&c->session.auth.current);
 		c->session.remote_stop = true;
 		csms_response(OCPP_MSG_REMOTE_STOP_TRANSACTION, message, c,
 				(void *)OCPP_REMOTE_STATUS_ACCEPTED);
@@ -371,15 +370,18 @@ static void do_reset(struct ocpp_charger *charger,
 {
 	const struct ocpp_Reset *p = (const struct ocpp_Reset *)
 		message->payload.fmt.request;
-	struct ocpp_connector *c = (struct ocpp_connector *)
-		charger_get_connector_by_id(&charger->base, 1);
+	struct ocpp_connector *oc = (struct ocpp_connector *)
+		ocpp_charger_get_connector_by_mid((struct charger *)charger,
+				(const uint8_t *)message->id,
+				strlen(message->id));
 
-	charger->reboot_required = (p->type == OCPP_RESET_HARD)?
-		OCPP_CHARGER_REBOOT_FORCED :
-		OCPP_CHARGER_REBOOT_REQUIRED_REMOTELY;
-	charger->remote_request = true;
+	ocpp_charger_mq_send((struct charger *)charger,
+			OCPP_CHARGER_MSG_REMOTE_RESET,
+			(p->type == OCPP_RESET_HARD)?
+				(void *)OCPP_CHARGER_REBOOT_FORCED :
+				(void *)OCPP_CHARGER_REBOOT_REQUIRED_REMOTELY);
 
-	csms_response(OCPP_MSG_RESET, message, c, NULL);
+	csms_response(OCPP_MSG_RESET, message, oc, NULL);
 }
 
 static void do_start_transaction(struct ocpp_charger *charger,
@@ -388,32 +390,41 @@ static void do_start_transaction(struct ocpp_charger *charger,
 	const struct ocpp_StartTransaction_conf *p =
 		(const struct ocpp_StartTransaction_conf *)
 		message->payload.fmt.response;
-	struct ocpp_connector *c = get_connector_by_message_id(charger,
+	struct ocpp_connector *oc = (struct ocpp_connector *)
+		ocpp_charger_get_connector_by_mid((struct charger *)charger,
 			(const uint8_t *)message->id, strlen(message->id));
 
-	if (c == NULL) {
+	if (oc == NULL) {
 		error("connector not found for message id %s", message->id);
 		return;
 	} else if (p->idTagInfo.status != OCPP_AUTH_STATUS_ACCEPTED) {
-		clear_session(c);
+		ocpp_connector_clear_session(oc);
 		error("session cleared: transaction start failure");
 		return;
 	}
 
-	set_session_current_expiry(c, p->idTagInfo.expiryDate);
-	set_session_parent_id(c, p->idTagInfo.parentIdTag);
-	set_transaction_id(c, (ocpp_charger_transaction_id_t)p->transactionId);
+	ocpp_connector_set_session_current_expiry(oc, p->idTagInfo.expiryDate);
+	ocpp_connector_set_session_parent_id(oc, p->idTagInfo.parentIdTag);
+	ocpp_connector_set_tid(oc, (ocpp_transaction_id_t)p->transactionId);
 
-	raise_event(c, CHARGER_EVENT_BILLING_STARTED);
+	ocpp_charger_mq_send((struct charger *)charger,
+			OCPP_CHARGER_MSG_BILLING_STARTED, oc);
 }
 
 static void do_stop_transaction(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
-	struct ocpp_connector *c = get_connector_by_message_id(charger,
+	struct ocpp_connector *oc = (struct ocpp_connector *)
+		ocpp_charger_get_connector_by_mid((struct charger *)charger,
 			(const uint8_t *)message->id, strlen(message->id));
 
-	raise_event(c, CHARGER_EVENT_BILLING_ENDED);
+	if (oc == NULL) {
+		error("connector not found for message id %s", message->id);
+		return;
+	}
+
+	ocpp_charger_mq_send((struct charger *)charger,
+			OCPP_CHARGER_MSG_BILLING_ENDED, oc);
 }
 
 static void do_updatefirmware(struct ocpp_charger *charger,
@@ -422,7 +433,8 @@ static void do_updatefirmware(struct ocpp_charger *charger,
 	const struct ocpp_UpdateFirmware *p =
 		(const struct ocpp_UpdateFirmware *)
 		message->payload.fmt.request;
-	struct connector *c = charger_get_connector_by_id(&charger->base, 1);
+	struct connector *c =
+		charger_get_connector_by_id((struct charger *)charger, 1);
 
         /* NOTE: it will be dropped if already downloading, or overwritten if
          * pending. */

@@ -30,56 +30,45 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#ifndef CHARGER_PRIVATE_H
-#define CHARGER_PRIVATE_H
+#ifndef CHARGER_FACTORY_H
+#define CHARGER_FACTORY_H
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 #include "charger/charger.h"
+#include "charger/connector.h"
 
-#include <stdint.h>
+/**
+ * @brief Creates a charger instance based on the provided parameters.
+ *
+ * @param[in] param Pointer to the charger parameters.
+ * @param[in] extension Pointer to the charger extension.
+ *
+ * @return Pointer to the created charger instance.
+ */
+struct charger *charger_factory_create(struct charger_param *param,
+		struct charger_extension **extension);
 
-#include "libmcu/list.h"
-#include "libmcu/ratelim.h"
+/**
+ * @brief Creates a connector instance based on the provided parameters.
+ *
+ * @param[in] param Pointer to the connector parameters.
+ *
+ * @return Pointer to the created connector instance.
+ */
+struct connector *connector_factory_create(const struct connector_param *param);
 
-#define CHARGER_LOG_RATE_CAP		10
-#define CHARGER_LOG_RATE_SEC		2
-
-struct charger_api {
-	struct connector *(*create_connector)(struct charger *charger,
-			const struct connector_param *param);
-	void (*destroy_connector)(struct charger *charger, struct list *link);
-	int (*step)(struct charger *self, uint32_t *next_period_ms);
-};
-
-struct charger {
-	struct charger_api api;
-	struct charger_param param;
-	const char *name;
-
-	struct {
-		struct list list;
-		uint8_t count;
-	} connectors;
-
-	charger_event_cb_t event_cb;
-	void *event_cb_ctx;
-
-	struct ratelim log_ratelim; /* rate limiter for logging */
-};
-
-struct connector *get_connector(struct charger *charger,
-		const char *connector_name);
-struct connector *get_connector_free(struct charger *charger);
-struct connector *get_connector_by_id(struct charger *charger, const int id);
-
-void register_connector(struct connector *c,
-		const struct connector_param *param, struct charger *charger);
+/**
+ * @brief Retrieves the current mode of the charger factory.
+ *
+ * @return String representing the current mode of the charger factory.
+ */
+const char *charger_factory_mode(void);
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* CHARGER_PRIVATE_H */
+#endif /* CHARGER_FACTORY_H */

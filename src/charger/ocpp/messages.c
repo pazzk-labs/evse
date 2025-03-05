@@ -39,6 +39,7 @@
 #include <inttypes.h>
 
 #include "charger/ocpp.h"
+#include "ocpp_connector_internal.h"
 #include "libmcu/metrics.h"
 #include "libmcu/board.h"
 #include "logger.h"
@@ -434,9 +435,7 @@ static int do_reset(struct ocpp_connector *c,
 		return -ENOMEM;
 	}
 
-	const struct ocpp_charger *charger =
-		(const struct ocpp_charger *)c->base.charger;
-	if (charger->reboot_required) {
+	if (ocpp_connector_is_remote_reset_requested(c, NULL)) {
 		p->status = OCPP_REMOTE_STATUS_ACCEPTED;
 	} else {
 		p->status = OCPP_REMOTE_STATUS_REJECTED;
@@ -485,22 +484,21 @@ static int do_statusnotification(struct ocpp_connector *c,
 
 	*p = (struct ocpp_StatusNotification) {
 		.connectorId = c->base.id,
-		.errorCode = e2ocpp(c->base.error),
-		.status = s2ocpp(get_status(c)),
+		.errorCode = ocpp_connector_map_error_to_ocpp(c->base.error),
 		.timestamp = c->now, /* optional */
 	};
 
-	if (ctx) {
-		if (ctx == CONNECTOR_0) {
-			struct ocpp_charger *charger =
-				(struct ocpp_charger *)c->base.charger;
-			p->status = charger->param.unavailability.charger?
-				OCPP_STATUS_UNAVAILABLE : OCPP_STATUS_AVAILABLE;
-			p->connectorId = 0;
-		} else { /* optional */
+	if (ctx == CONNECTOR_0) {
+		p->status = ocpp_connector_is_unavailable(c)?
+			OCPP_STATUS_UNAVAILABLE : OCPP_STATUS_AVAILABLE;
+	} else {
+		p->status = ocpp_connector_map_state_to_ocpp(
+				ocpp_connector_state(c));
+		if (ctx) { /* optional */
 			strcpy(p->info, ctx);
 		}
 	}
+
 	if (c->ocpp_info.vendor_error_code) { /* optional */
 		strcpy(p->vendorErrorCode, c->ocpp_info.vendor_error_code);
 		strcpy(p->vendorId, CHARGER_VENDOR);
@@ -528,7 +526,7 @@ static int do_stoptransaction(struct ocpp_connector *c,
 		.reason = (ocpp_stop_reason_t)(uintptr_t)ctx, /* optional */
 	};
 
-	if (is_session_trial_id_exist(c)) {
+	if (ocpp_connector_is_session_trial_id_exist(c)) {
 		memcpy(p->idTag, c->session.auth.trial.id, sizeof(p->idTag));
 	} else {
 		memcpy(p->idTag, c->session.auth.current.id, sizeof(p->idTag));

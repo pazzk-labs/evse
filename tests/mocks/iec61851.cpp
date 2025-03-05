@@ -25,7 +25,7 @@ uint8_t iec61851_get_pwm_duty(struct iec61851 *self) {
 	return (uint8_t)mock().actualCall(__func__).returnUnsignedIntValue();
 }
 
-uint8_t iec61851_get_pwm_duty_set(struct iec61851 *self) {
+uint8_t iec61851_get_pwm_duty_target(struct iec61851 *self) {
 	return (uint8_t)mock().actualCall(__func__).returnUnsignedIntValue();
 }
 

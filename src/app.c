@@ -38,55 +38,45 @@
 
 #include "libmcu/cli.h"
 #include "libmcu/adc.h"
+#include "libmcu/uart.h"
+#include "libmcu/assert.h"
 
 #include "config.h"
 #include "exio.h"
 #include "lis2dw12.h"
 #include "tmp102.h"
 #include "adc122s051.h"
+#include "metering.h"
+#include "relay.h"
+#include "iec61851.h"
 #include "usrinp.h"
 #include "net/netmgr.h"
 #include "net/eth_w5500.h"
 
-#include "charger/free.h"
+#include "charger/factory.h"
 #include "charger/ocpp.h"
-#include "charger/connector_private.h"
+#include "charger/ocpp_connector.h"
 #include "ocpp/ocpp.h"
 #include "logger.h"
 
-static struct app *app;
-static struct cli cli;
+static struct {
+	struct cli cli;
+	struct charger *charger;
+} m;
 
-static void on_charger_event(struct charger *charger,
-		struct connector *connector,
-		const charger_event_t event, void *ctx) {
-	char evtstr[CHARGER_EVENT_STRING_MAXLEN];
-	bool param_updated = false;
-
-	charger_stringify_event(event, evtstr, sizeof(evtstr));
-	info("charger event: \"%s\"", evtstr);
-
-	if (event & CHARGER_EVENT_PARAM_CHANGED) { /* availability changed */
-		param_updated = true;
-	}
-	if (event & CHARGER_EVENT_BILLING_STARTED) {
-		/* save transaction id for power loss recovery */
-		ocpp_charger_backup_tid(connector);
-		param_updated = true;
-	}
-	if (event & CHARGER_EVENT_BILLING_ENDED) {
-		/* clear transaction id */
-		ocpp_charger_clear_backup_tid(connector);
-		param_updated = true;
+static void on_charger_event(struct charger *charger, struct connector *c,
+		charger_event_t event, void *ctx)
+{
+	if (event & OCPP_CHARGER_EVENT_AVAILABILITY_CHANGED) {
+		/* Availability changes are saved in non-volatile memory to keep
+		 * them persistent. */
+		const struct ocpp_checkpoint *checkpoint =
+			ocpp_charger_get_checkpoint(charger);
+		config_save(CONFIG_KEY_OCPP_CHECKPOINT,
+					checkpoint, sizeof(*checkpoint));
 	}
 
-	if (param_updated) {
-		config_save(CONFIG_KEY_OCPP_PARAM,
-				ocpp_charger_get_param(charger),
-				sizeof(struct ocpp_charger_param));
-	}
-
-	if (event & CHARGER_EVENT_CONFIGURATION_CHANGED) {
+	if (event & OCPP_CHARGER_EVENT_CONFIGURATION_CHANGED) {
 		const size_t len = ocpp_compute_configuration_size();
 		void *p = (void *)calloc(1, len);
 		if (p) {
@@ -96,16 +86,50 @@ static void on_charger_event(struct charger *charger,
 		}
 	}
 
-	if (event & CHARGER_EVENT_CHARGING_ENDED) {
-		metering_save_energy(connector->param.metering);
-	}
-
-	if (event & CHARGER_EVENT_REBOOT_REQUIRED) {
+	if (event & OCPP_CHARGER_EVENT_REBOOT_REQUIRED) {
 		bool reboot_manually = false;
 		config_read(CONFIG_KEY_DFU_REBOOT_MANUAL,
 				&reboot_manually, sizeof(reboot_manually));
 		if (!reboot_manually) {
 			app_reboot();
+		}
+	}
+}
+
+static void on_connector_event(struct connector *self,
+		connector_event_t event, void *ctx) {
+	char evtstr[CONNECTOR_EVENT_STRING_MAXLEN];
+	struct charger *charger = (struct charger *)ctx;
+
+	connector_stringify_event(event, evtstr, sizeof(evtstr));
+	info("charger event: \"%s\"", evtstr);
+
+	if (event & CONNECTOR_EVENT_CHARGING_ENDED) {
+		metering_save_energy(connector_meter(self));
+	}
+
+	/* The following are OCPP-specific events */
+	if (strcmp(charger_factory_mode(), "ocpp") != 0) {
+		return;
+	}
+
+	struct ocpp_checkpoint *checkpoint =
+		ocpp_charger_get_checkpoint(charger);
+
+	if (event & (CONNECTOR_EVENT_BILLING_STARTED |
+			CONNECTOR_EVENT_BILLING_ENDED)) {
+		/* The transaction ID will be saved or cleared in non-volatile
+		 * memory in case of a power failure */
+		config_save(CONFIG_KEY_OCPP_CHECKPOINT,
+				checkpoint, sizeof(*checkpoint));
+	}
+
+	if (event & CONNECTOR_EVENT_ENABLED) {
+		int cid;
+		if (charger_get_connector_id(charger, self, &cid) == 0) {
+			assert(cid > 0 && cid <= OCPP_CONNECTOR_MAX);
+			ocpp_connector_link_checkpoint(self,
+					&checkpoint->connector[cid-1]);
 		}
 	}
 }
@@ -117,6 +141,72 @@ static bool on_metering_save(const struct metering *metering,
 
 	config_key_t key = (config_key_t)(uintptr_t)ctx;
 	return config_save(key, energy, sizeof(*energy)) >= 0;
+}
+
+static void setup_charger_components(struct app *app)
+{
+#define METERING_RX_TIMEOUT_MS		200 /* 768 bytes @ 38400bps */
+#define METERING_UART_BAUDRATE		38400
+	struct pinmap_periph *periph = &app->periph;
+	struct pilot_params cp_params;
+
+	if (config_read(CONFIG_KEY_PILOT_PARAM,
+			&cp_params, sizeof(cp_params)) <= 0) {
+		pilot_default_params(&cp_params);
+	}
+
+	app->relay = relay_create(periph->pwm0_ch0_relay);
+	app->pilot = pilot_create(&cp_params,
+			adc122s051_create(periph->cpadc,
+				app->adc.buffer.tx, sizeof(app->adc.buffer.tx)),
+				periph->pwm1_ch1_cp, app->adc.buffer.rx);
+
+	uart_configure(app->periph.uart1, &(struct uart_config) {
+		.databit = 8,
+		.parity = UART_PARITY_EVEN,
+		.stopbit = UART_STOPBIT_1,
+		.flowctrl = UART_FLOWCTRL_NONE,
+		.rx_timeout_ms = METERING_RX_TIMEOUT_MS,
+	});
+
+	exio_set_metering_power(true);
+	relay_enable(app->relay);
+	pilot_enable(app->pilot);
+	uart_enable(app->periph.uart1, METERING_UART_BAUDRATE);
+}
+
+static void start_charger(struct app *app)
+{
+	struct charger_param param;
+	struct charger_extension *extension;
+	m.charger = charger_factory_create(&param, &extension);
+	charger_init(m.charger, &param, extension);
+
+	struct metering_io conn1_io = {
+		.uart = app->periph.uart1,
+	};
+	struct metering_param conn1 = {
+		.io = &conn1_io,
+	};
+	config_read(CONFIG_KEY_CHARGER_METERING_1,
+			&conn1.energy, sizeof(conn1.energy));
+
+	struct connector_param conn_param = {
+		.max_output_current_mA = param.max_output_current_mA,
+		.min_output_current_mA = param.min_output_current_mA,
+		.input_frequency = param.input_frequency,
+		.iec61851 = iec61851_create(app->pilot, app->relay),
+		.metering = metering_create(METERING_HLW811X, &conn1,
+				on_metering_save, (void *)(uintptr_t)
+				CONFIG_KEY_CHARGER_METERING_1),
+		.name = "c1",
+		.priority = 0,
+	};
+
+	struct connector *c = connector_factory_create(&conn_param);
+	charger_attach_connector(m.charger, c);
+	connector_register_event_cb(c, on_connector_event, m.charger);
+	connector_enable(c);
 }
 
 void app_adjust_time_on_drift(const time_t unixtime, const uint32_t drift)
@@ -145,38 +235,20 @@ void app_reboot(void)
 int app_process(uint32_t *next_period_ms)
 {
 #define DEFAULT_STEP_INTERVAL_MS	50
-	const uint32_t interval_ms = DEFAULT_STEP_INTERVAL_MS;
-
-	charger_step(app->charger, next_period_ms);
+	charger_process(m.charger);
 
 	if (next_period_ms) {
-		*next_period_ms = interval_ms;
+		*next_period_ms = DEFAULT_STEP_INTERVAL_MS;
 	}
 
 	return 0;
 }
 
-void app_init(struct app *ctx)
+void app_init(struct app *app)
 {
-	struct pinmap_periph *periph;
-	struct pilot_params cp_params;
-
-	app = ctx;
-	periph = &app->periph;
-
-	if (config_read(CONFIG_KEY_PILOT_PARAM,
-			&cp_params, sizeof(cp_params)) <= 0) {
-		pilot_default_params(&cp_params);
-	}
-
-	app->relay = relay_create(periph->pwm0_ch0_relay);
-	app->pilot = pilot_create(&cp_params,
-			adc122s051_create(periph->cpadc,
-				app->adc.buffer.tx, sizeof(app->adc.buffer.tx)),
-				periph->pwm1_ch1_cp, app->adc.buffer.rx);
+	struct pinmap_periph *periph = &app->periph;
 
 	exio_set_sensor_power(true);
-	exio_set_metering_power(true);
 	exio_set_w5500_reset(true);
 	exio_set_qca7005_reset(true);
 
@@ -190,9 +262,6 @@ void app_init(struct app *ctx)
 	lis2dw12_init(periph->acc);
 	tmp102_init(periph->temp);
 
-	relay_enable(app->relay);
-	pilot_enable(app->pilot);
-
 	usrinp_register_event_cb(USRINP_USB_CONNECT, NULL, NULL);
 	usrinp_raise(USRINP_USB_CONNECT); /* in case of already connected */
 
@@ -202,67 +271,15 @@ void app_init(struct app *ctx)
 	DEFINE_CLI_CMD_LIST(commands, config, help, config, info, log, net,
 			ocpp, reboot, metric, sec, xmodem);
 
-	cli_init(&cli, cli_io_create(), buf, sizeof(buf), app);
-	cli_register_cmdlist(&cli, commands);
-	cli_start(&cli);
+	cli_init(&m.cli, cli_io_create(), buf, sizeof(buf), app);
+	cli_register_cmdlist(&m.cli, commands);
+	cli_start(&m.cli);
 
 	uint8_t mac[NETIF_MAC_ADDR_LEN];
 	config_read(CONFIG_KEY_NET_MAC, mac, sizeof(mac));
 	netmgr_register_iface(eth_w5500_create(periph->w5500), 0, mac, NULL);
 	netmgr_enable();
 
-	char mode[8] = "free";
-	struct charger_param param;
-	charger_default_param(&param);
-	config_read(CONFIG_KEY_CHARGER_MODE, mode, sizeof(mode));
-	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
-
-	if (strcmp(mode, "ocpp") == 0) {
-		struct ocpp_charger_param ocpp = { 0, };
-		config_read(CONFIG_KEY_OCPP_PARAM, &ocpp, sizeof(ocpp));
-
-		app->charger = ocpp_charger_create(&(struct charger_param) {
-			.max_input_current_mA = param.max_input_current_mA,
-			.input_voltage = param.input_voltage,
-			.input_frequency = param.input_frequency,
-		}, &ocpp);
-	} else {
-		app->charger = free_charger_create(&(struct charger_param) {
-			.max_input_current_mA = param.max_input_current_mA,
-			.input_voltage = param.input_voltage,
-			.input_frequency = param.input_frequency,
-		});
-	}
-
-#define METERING_RX_TIMEOUT_MS		200 /* 768 bytes @ 38400bps */
-#define METERING_UART_BAUDRATE		38400
-	uart_configure(app->periph.uart1, &(struct uart_config) {
-		.databit = 8,
-		.parity = UART_PARITY_EVEN,
-		.stopbit = UART_STOPBIT_1,
-		.flowctrl = UART_FLOWCTRL_NONE,
-		.rx_timeout_ms = METERING_RX_TIMEOUT_MS,
-	});
-	uart_enable(app->periph.uart1, METERING_UART_BAUDRATE);
-
-	struct metering_io conn1_io = {
-		.uart = app->periph.uart1,
-	};
-	struct metering_param conn1 = {
-		.io = &conn1_io,
-	};
-	config_read(CONFIG_KEY_CHARGER_METERING_1,
-			&conn1.energy, sizeof(conn1.energy));
-
-	charger_create_connector(app->charger, &(struct connector_param) {
-			.max_output_current_mA = param.max_output_current_mA,
-			.min_output_current_mA = param.min_output_current_mA,
-			.iec61851 = iec61851_create(app->pilot, app->relay),
-			.metering = metering_create(METERING_HLW811X, &conn1,
-					on_metering_save, (void *)(uintptr_t)
-					CONFIG_KEY_CHARGER_METERING_1),
-			.name = "connector1",
-			.priority = 1,
-	});
-	charger_register_event_cb(app->charger, on_charger_event, app);
+	setup_charger_components(app);
+	start_charger(app);
 }

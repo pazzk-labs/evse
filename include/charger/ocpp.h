@@ -37,67 +37,185 @@
 extern "C" {
 #endif
 
+#include <stdbool.h>
 #include "charger/charger.h"
+#include "charger/ocpp_checkpoint.h"
 
-#if !defined(OCPP_CHARGER_MAX_CONNECTORS)
-#define OCPP_CHARGER_MAX_CONNECTORS		2
-#endif
+/* connector 0 is a special connector that represents the charger itself in
+ * OCPP */
+#define CONNECTOR_0				((void *)-1)
 
-typedef uint32_t ocpp_charger_transaction_id_t;
+typedef enum {
+	OCPP_CHARGER_EVENT_BASE                  = 0x20000000UL,
+	OCPP_CHARGER_EVENT_REBOOT_REQUIRED       = OCPP_CHARGER_EVENT_BASE + 1,
+	OCPP_CHARGER_EVENT_CONFIGURATION_CHANGED = OCPP_CHARGER_EVENT_BASE + 2,
+	OCPP_CHARGER_EVENT_AVAILABILITY_CHANGED  = OCPP_CHARGER_EVENT_BASE + 3,
+} ocpp_charger_event_t;
 
-struct ocpp_charger_unavailability {
-	bool charger; /* true: unavailable, false: available */
-	bool connector[OCPP_CHARGER_MAX_CONNECTORS];
+typedef enum {
+	OCPP_CHARGER_REBOOT_NONE,
+	OCPP_CHARGER_REBOOT_REQUIRED, /* will wait for charging to be ended */
+	OCPP_CHARGER_REBOOT_REQUIRED_REMOTELY, /* charging will be stopped */
+	OCPP_CHARGER_REBOOT_FORCED, /* immediate reboot */
+} ocpp_charger_reboot_t;
+
+typedef enum {
+	OCPP_CHARGER_MSG_AVAILABILITY_CHANGED, /* when connector 0 changed */
+	OCPP_CHARGER_MSG_CONFIGURATION_CHANGED,
+	OCPP_CHARGER_MSG_BILLING_STARTED,
+	OCPP_CHARGER_MSG_BILLING_ENDED,
+	OCPP_CHARGER_MSG_CSMS_UP,
+	OCPP_CHARGER_MSG_REMOTE_RESET,
+	OCPP_CHARGER_MSG_MAX,
+} ocpp_charger_msg_t;
+
+struct ocpp_charger_msg {
+	ocpp_charger_msg_t type;
+	void *value;
 };
 
-struct ocpp_charger_param {
-	ocpp_charger_transaction_id_t missing_transaction_id; /* power loss recovery */
-	struct ocpp_charger_unavailability unavailability;
-};
+struct ocpp_charger;
 
-struct charger *ocpp_charger_create(const struct charger_param *param,
-		const struct ocpp_charger_param *ocpp_param);
+/**
+ * @brief Creates a new OCPP charger instance.
+ *
+ * @return Pointer to the newly created charger instance.
+ */
+struct charger *ocpp_charger_create(void);
+
+/**
+ * @brief Destroys an OCPP charger instance.
+ *
+ * @param[in] charger Pointer to the charger instance to be destroyed.
+ */
 void ocpp_charger_destroy(struct charger *charger);
 
 /**
- * @brief Backs up the transaction ID to a user-provided parameter.
+ * @brief Creates a new OCPP charger extension.
  *
- * This function saves the transaction ID to a user-provided parameter to ensure
- * it can be recovered in case of a power failure or system reset. It should be
- * called when a transaction starts. The user is responsible for saving this
- * parameter to flash memory if needed.
- *
- * @param[in] connector Pointer to the connector structure containing the
- * transaction ID.
+ * @return Pointer to the newly created charger extension.
  */
-void ocpp_charger_backup_tid(struct connector *connector);
+struct charger_extension *ocpp_charger_extension(void);
 
 /**
- * @brief Clears the backed-up transaction ID from the user-provided parameter.
+ * @brief Gets the pending reboot type for the given charger.
  *
- * This function deletes the transaction ID from the user-provided parameter
- * after a transaction has successfully completed. It should be called to
- * prevent duplication of the transaction ID. The user is responsible for
- * clearing this parameter from flash memory if needed.
+ * @param[in] charger Pointer to the charger instance.
  *
- * @param[in] connector Pointer to the connector structure containing the
- * transaction ID.
+ * @return The pending reboot type.
  */
-void ocpp_charger_clear_backup_tid(struct connector *connector);
+ocpp_charger_reboot_t
+ocpp_charger_get_pending_reboot_type(const struct charger *charger);
 
 /**
- * @brief Retrieves the OCPP charger parameters.
+ * @brief Requests a reboot for the given charger.
  *
- * This function returns a pointer to the OCPP charger parameters associated
- * with the specified charger. These parameters can be used to manage and
- * configure the charger, including handling transaction IDs for backup and
- * recovery purposes.
+ * @param[in] charger Pointer to the charger instance.
+ * @param[in] type The type of reboot to request.
  *
- * @param[in] charger Pointer to the charger structure.
- *
- * @return Pointer to the OCPP charger parameters.
+ * @return 0 on success, or a negative error code on failure.
  */
-const struct ocpp_charger_param *ocpp_charger_get_param(struct charger *charger);
+int ocpp_charger_request_reboot(struct charger *charger,
+		ocpp_charger_reboot_t type);
+
+/**
+ * @brief Retrieves the checkpoint for the OCPP charger.
+ *
+ * This function returns the current checkpoint for the specified OCPP charger.
+ *
+ * @param[in] charger A pointer to the charger.
+ *
+ * @return A pointer to the current checkpoint.
+ */
+struct ocpp_checkpoint *
+ocpp_charger_get_checkpoint(const struct charger *charger);
+
+/**
+ * @brief Sets the checkpoint for the given charger.
+ *
+ * @param[in] charger Pointer to the charger instance.
+ * @param[in] checkpoint Pointer to the checkpoint structure to be set.
+ *
+ * @return 0 on success, or a negative error code on failure.
+ */
+int ocpp_charger_set_checkpoint(struct charger *charger,
+		const struct ocpp_checkpoint *checkpoint);
+
+/**
+ * @brief Checks if the checkpoint of the given charger is equal to the
+ * specified checkpoint.
+ *
+ * @param[in] charger Pointer to the charger instance.
+ * @param[in] checkpoint Pointer to the checkpoint to compare against.
+ *
+ * @return True if the checkpoints are equal, false otherwise.
+ */
+bool ocpp_charger_is_checkpoint_equal(const struct charger *charger,
+		const struct ocpp_checkpoint *checkpoint);
+
+/**
+ * @brief Sends a message through the given charger.
+ *
+ * @param[in] charger Pointer to the charger instance.
+ * @param[in] type The type of the message to be sent.
+ * @param[in] value Pointer to the value associated with the message.
+ *
+ * @return 0 on success, or a negative error code on failure.
+ */
+int ocpp_charger_mq_send(struct charger *charger,
+		ocpp_charger_msg_t type, void *value);
+
+/**
+ * @brief Receives a message for the given charger.
+ *
+ * @param[in] charger Pointer to the charger instance.
+ * @param[in] msg Pointer to the message received.
+ *
+ * @return 0 on success, or a negative error code on failure.
+ */
+int ocpp_charger_mq_recv(struct charger *charger, struct ocpp_charger_msg *msg);
+
+/**
+ * @brief Gets the connector associated with the given message ID.
+ *
+ * @param[in] charger Pointer to the charger instance.
+ * @param[in] msgid Pointer to the message ID.
+ * @param[in] msgid_len Length of the message ID.
+ *
+ * @return Pointer to the connector associated with the given message ID, or
+ *         NULL if not found.
+ */
+struct connector *ocpp_charger_get_connector_by_mid(struct charger *charger,
+		const uint8_t *msgid, const size_t msgid_len);
+
+/**
+ * @brief Gets the connector associated with the given transaction ID.
+ *
+ * @param[in] charger Pointer to the charger instance.
+ * @param[in] transaction_id The transaction ID.
+ *
+ * @return Pointer to the connector associated with the given transaction ID, or
+ *         NULL if not found.
+ */
+struct connector *ocpp_charger_get_connector_by_tid(struct charger *charger,
+		const ocpp_transaction_id_t transaction_id);
+
+/**
+ * @brief Sets the availability of the given charger.
+ *
+ * @param[in] charger Pointer to the charger instance.
+ * @param[in] available Boolean indicating whether the charger is available.
+ */
+void ocpp_charger_set_availability(struct charger *charger, bool available);
+
+/**
+ * @brief Gets the availability of the given charger.
+ *
+ * @param[in] charger Pointer to the charger instance.
+ *
+ * @return Boolean indicating whether the charger is available.
+ */
+bool ocpp_charger_get_availability(const struct charger *charger);
 
 #if defined(__cplusplus)
 }

@@ -20,7 +20,9 @@
 #include "esp_http_client.h"
 #include "logger.h"
 
+#if !defined(MIN)
 #define MIN(a, b)		(((a) > (b))? (b) : (a))
+#endif
 
 struct http_client {
 	esp_http_client_handle_t handle;

@@ -35,6 +35,7 @@
 #include <string.h>
 #include <errno.h>
 
+#include "libmcu/uart.h"
 #include "libmcu/board.h"
 #include "libmcu/timext.h"
 #include "hlw811x.h"

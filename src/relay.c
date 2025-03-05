@@ -31,7 +31,10 @@
  */
 
 #include "relay.h"
+
 #include <string.h>
+
+#include "libmcu/pwm.h"
 #include "libmcu/apptmr.h"
 #include "libmcu/metrics.h"
 

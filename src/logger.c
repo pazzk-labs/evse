@@ -41,6 +41,7 @@
 
 #include "libmcu/board.h"
 #include "libmcu/cleanup.h"
+#include "fs/logfs.h"
 #include "config.h"
 
 struct logger {

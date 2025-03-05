@@ -30,14 +30,14 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#ifndef OCPP_MESSAGES_PRIVATE_H
-#define OCPP_MESSAGES_PRIVATE_H
+#ifndef OCPP_MESSAGE_ADAPTER_H
+#define OCPP_MESSAGE_ADAPTER_H
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#include "connector_private.h"
+#include "charger/ocpp_connector.h"
 #include "ocpp/ocpp.h"
 
 int message_push_request(struct ocpp_connector *connector,
@@ -53,4 +53,4 @@ int message_push_response(struct ocpp_connector *connector,
 }
 #endif
 
-#endif /* OCPP_MESSAGES_PRIVATE_H */
+#endif /* OCPP_MESSAGE_ADAPTER_H */

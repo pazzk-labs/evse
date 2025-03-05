@@ -30,55 +30,20 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "charger_private.h"
-#include "connector_private.h"
-#include <string.h>
-#include "logger.h"
+#ifndef FREE_CONNECTOR_H
+#define FREE_CONNECTOR_H
 
-struct connector *get_connector(struct charger *charger,
-		const char *connector_name)
-{
-	struct list *p;
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
-	list_for_each(p, &charger->connectors.list) {
-		struct connector *c = list_entry(p, struct connector, link);
-		if (strcmp(c->param.name, connector_name) == 0) {
-			return c;
-		}
-	}
+#include "charger/connector.h"
 
-	return NULL;
+struct connector *free_connector_create(const struct connector_param *param);
+void free_connector_destroy(struct connector *c);
+
+#if defined(__cplusplus)
 }
+#endif
 
-struct connector *get_connector_free(struct charger *charger)
-{
-	/* TODO: Implement this function */
-	return NULL;
-}
-
-struct connector *get_connector_by_id(struct charger *charger, const int id)
-{
-	struct list *p;
-
-	list_for_each(p, &charger->connectors.list) {
-		struct connector *c = list_entry(p, struct connector, link);
-		if (c->id == id) {
-			return c;
-		}
-	}
-
-	return NULL;
-}
-
-void register_connector(struct connector *c,
-		const struct connector_param *param, struct charger *charger)
-{
-	list_add_tail(&c->link, &charger->connectors.list);
-
-	c->param = *param;
-	c->charger = charger;
-	c->id = charger->connectors.count + 1;
-	c->time_last_state_change = time(NULL);
-
-	debug("connector registered(%d): %s", c->id, c->param.name);
-}
+#endif /* FREE_CONNECTOR_H */

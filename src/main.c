@@ -54,6 +54,7 @@
 #include "usrinp.h"
 #include "uptime.h"
 #include "fs/kvstore.h"
+#include "fs/logfs.h"
 #include "net/netmgr.h"
 #include "updater.h"
 #include "app.h"

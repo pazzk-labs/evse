@@ -30,39 +30,42 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#ifndef OCPP_CHARGER_PRIVATE_H
-#define OCPP_CHARGER_PRIVATE_H
+#ifndef OCPP_CHECKPOINT_H
+#define OCPP_CHECKPOINT_H
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#include "charger/ocpp.h"
-#include "../charger_private.h"
+#include <stdbool.h>
+#include "libmcu/compiler.h"
 
-typedef enum {
-	OCPP_CHARGER_REBOOT_NONE,
-	OCPP_CHARGER_REBOOT_REQUIRED,
-	OCPP_CHARGER_REBOOT_REQUIRED_REMOTELY,
-	OCPP_CHARGER_REBOOT_FORCED,
-} ocpp_charger_reboot_t;
+#if !defined(OCPP_CONNECTOR_MAX)
+#define OCPP_CONNECTOR_MAX		2
+#endif
 
-struct ocpp_charger {
-	struct charger base;
-	struct ocpp_charger_param param;
+typedef uint32_t ocpp_transaction_id_t;
 
-	bool param_changed; /* set when availability changed or
-			transaction_id acquired */
-	bool configuration_changed; /* set when configuration changed */
-	bool status_report_required; /* set when conn0 availability changed */
-	bool csms_up; /* set when BootNotification.conf: Accepted */
-	bool remote_request; /* set when remote reset requested */
-
-	ocpp_charger_reboot_t reboot_required;
+struct ocpp_connector_checkpoint {
+	/* The following fields are used for power loss recovery. */
+	ocpp_transaction_id_t transaction_id;
+	bool unavailable; /* connector availability */
+	uint8_t padding[3]; /* padding to ensure 8-byte alignment */
 };
+static_assert(sizeof(struct ocpp_connector_checkpoint) == 8,
+		"Incorrect size of struct ocpp_connector_checkpoint");
+
+struct ocpp_checkpoint {
+	struct ocpp_connector_checkpoint connector[OCPP_CONNECTOR_MAX];
+
+	bool unavailable; /* charger availability */
+	uint8_t padding[7];
+};
+static_assert(sizeof(struct ocpp_checkpoint) == OCPP_CONNECTOR_MAX * 8 + 8,
+		"Incorrect size of struct ocpp_checkpoint");
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* OCPP_CHARGER_PRIVATE_H */
+#endif /* OCPP_CHECKPOINT_H */
