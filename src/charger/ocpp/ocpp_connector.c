@@ -409,11 +409,56 @@ static const struct fsm_item transitions[] = {
 	FSM_ITEM(Faulted,     is_preparing,     do_preparing,   Preparing),
 };
 
+static connector_event_t get_event_from_state_change(fsm_state_t new_state,
+		fsm_state_t prev_state, bool plugged)
+{
+	const struct {
+		const fsm_state_t from;
+		const fsm_state_t to;
+		const bool plugged;
+		const uint32_t event;
+	} tbl[] = {
+		{ Available,   Preparing,   true,  CONNECTOR_EVENT_PLUGGED },
+		{ Available,   Preparing,   false, CONNECTOR_EVENT_OCCUPIED },
+		{ Available,   Reserved,    false, CONNECTOR_EVENT_RESERVED },
+		{ Available,   Faulted,     false, CONNECTOR_EVENT_ERROR },
+		{ Preparing,   Available,   false, CONNECTOR_EVENT_UNPLUGGED },
+		{ Preparing,   Charging,    true,  CONNECTOR_EVENT_CHARGING_STARTED },
+		{ Preparing,   SuspendedEV, true,  CONNECTOR_EVENT_CHARGING_SUSPENDED },
+		{ Preparing,   Faulted,     true,  CONNECTOR_EVENT_ERROR },
+		{ Charging,    Available,   false, CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_UNPLUGGED },
+		{ Charging,    Finishing,   false, CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_UNPLUGGED },
+		{ Charging,    Finishing,   true,  CONNECTOR_EVENT_CHARGING_ENDED },
+		{ Charging,    SuspendedEV, true,  CONNECTOR_EVENT_CHARGING_SUSPENDED },
+		{ Charging,    Faulted,     true,  CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_ERROR },
+		{ SuspendedEV, Charging,    true,  CONNECTOR_EVENT_CHARGING_STARTED },
+		{ SuspendedEV, Finishing,   true,  CONNECTOR_EVENT_CHARGING_ENDED },
+		{ SuspendedEV, Finishing,   false, CONNECTOR_EVENT_CHARGING_ENDED },
+		{ SuspendedEV, Faulted,     true,  CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_ERROR },
+		{ Finishing,   Available,   false, CONNECTOR_EVENT_UNPLUGGED },
+		{ Reserved,    Available,   false, CONNECTOR_EVENT_UNOCCUPIED },
+		{ Reserved,    Preparing,   true,  CONNECTOR_EVENT_PLUGGED },
+		{ Faulted,     Available,   false, CONNECTOR_EVENT_ERROR_RECOVERY },
+		{ Faulted,     Preparing,   true,  CONNECTOR_EVENT_ERROR_RECOVERY },
+	};
+
+	for (size_t i = 0; i < ARRAY_SIZE(tbl); i++) {
+		if (tbl[i].from == prev_state && tbl[i].to == new_state &&
+				tbl[i].plugged == plugged) {
+			return (connector_event_t)tbl[i].event;
+		}
+	}
+
+	return CONNECTOR_EVENT_NONE;
+}
+
 static void on_state_change(struct fsm *fsm,
 		fsm_state_t new_state, fsm_state_t prev_state, void *ctx)
 {
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
+	const connector_state_t cp_state = connector_state(c);
+
 	c->time_last_state_change = time(NULL);
 
 	info("connector \"%s\" state changed: %s to %s at %ld",
@@ -423,6 +468,15 @@ static void on_state_change(struct fsm *fsm,
 			ocpp_connector_stringify_state(
 					(ocpp_connector_state_t)new_state),
 			c->time_last_state_change);
+
+	const connector_event_t events = get_event_from_state_change(new_state,
+			prev_state, connector_is_occupied_state(cp_state));
+
+	if (events && c->event_cb) {
+		(*c->event_cb)(c, events, c->event_cb_ctx);
+	}
+
+	connector_update_metrics(cp_state);
 }
 
 static int process(struct connector *self)

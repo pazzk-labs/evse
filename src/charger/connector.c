@@ -38,6 +38,8 @@
 #include "iec61851.h"
 #include "safety.h"
 #include "metering.h"
+#include "libmcu/metrics.h"
+#include "libmcu/compiler.h"
 #include "logger.h"
 
 /* 1-second delay is required for initial stabilization of the power line safety
@@ -48,6 +50,10 @@
 
 #if !defined(MIN)
 #define MIN(a, b)			(((a) > (b))? (b) : (a))
+#endif
+
+#if !defined(ARRAY_SIZE)
+#define ARRAY_SIZE(x)			(sizeof(x) / sizeof((x)[0]))
 #endif
 
 static bool is_charging(connector_state_t state)
@@ -176,6 +182,20 @@ bool connector_is_state_x2(const struct connector *self,
 {
 	const uint8_t duty = get_target_duty(self);
 	return get_state(self) == state && duty > 0 && duty < 100;
+}
+
+bool connector_is_occupied_state(const connector_state_t state)
+{
+	const iec61851_state_t tbl[] = {
+		[A] = IEC61851_STATE_A,
+		[B] = IEC61851_STATE_B,
+		[C] = IEC61851_STATE_C,
+		[D] = IEC61851_STATE_D,
+		[E] = IEC61851_STATE_E,
+		[F] = IEC61851_STATE_F,
+	};
+	static_assert(ARRAY_SIZE(tbl) == Sn, "table size mismatch");
+	return iec61851_is_occupied_state(tbl[state]);
 }
 
 bool connector_is_evse_error(struct connector *self, connector_state_t state)
@@ -329,6 +349,20 @@ size_t connector_stringify_event(const connector_event_t event,
 	buf[len] = '\0';
 
 	return len;
+}
+
+void connector_update_metrics(const connector_state_t state)
+{
+	const metric_key_t tbl[] = {
+		[A] = ChargerStateACount,
+		[B] = ChargerStateBCount,
+		[C] = ChargerStateCCount,
+		[D] = ChargerStateDCount,
+		[E] = ChargerStateECount,
+		[F] = ChargerStateFCount,
+	};
+	static_assert(ARRAY_SIZE(tbl) == Sn, "table size mismatch");
+	metrics_increase(tbl[state]);
 }
 
 int connector_register_event_cb(struct connector *self,

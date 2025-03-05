@@ -285,6 +285,19 @@ bool connector_is_state_x2(const struct connector *self,
 		connector_state_t state);
 
 /**
+ * @brief Checks if the given state indicates an occupied connector.
+ *
+ * This function determines if the provided connector state indicates
+ * that the connector is currently occupied.
+ *
+ * @param state The state of the connector to check.
+ *
+ * @return true if the state indicates the connector is occupied, false
+ *         otherwise.
+ */
+bool connector_is_occupied_state(const connector_state_t state);
+
+/**
  * @brief Check if the connector is in an EVSE error state.
  *
  * @param[in] self Pointer to the connector structure.
@@ -458,6 +471,17 @@ const char *connector_name(const struct connector *self);
  */
 size_t connector_stringify_event(const connector_event_t event,
 		char *buf, size_t bufsize);
+
+/**
+ * @brief Updates the metrics for the given connector state.
+ *
+ * This function updates various metrics based on the current state
+ * of the connector. It should be called whenever the state of the
+ * connector changes to ensure metrics are accurately maintained.
+ *
+ * @param state The current state of the connector.
+ */
+void connector_update_metrics(const connector_state_t state);
 
 #if defined(__cplusplus)
 }

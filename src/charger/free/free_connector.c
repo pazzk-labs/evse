@@ -242,14 +242,13 @@ static const struct fsm_item transitions[] = {
 	FSM_ITEM(F, is_recovered, do_stop_pwm,     A), /* EVSE recovery */
 };
 
-static connector_event_t
-get_event_from_state_change(const connector_state_t new_state,
-		const connector_state_t old_state)
+static connector_event_t get_event_from_state_change(fsm_state_t new_state,
+		fsm_state_t old_state)
 {
 	const struct {
-		connector_state_t from;
-		connector_state_t to;
-		uint32_t event;
+		const fsm_state_t from;
+		const fsm_state_t to;
+		const uint32_t event;
 	} tbl[] = {
 		{ A, B, CONNECTOR_EVENT_PLUGGED },
 		{ A, F, CONNECTOR_EVENT_ERROR },
@@ -281,19 +280,6 @@ get_event_from_state_change(const connector_state_t new_state,
 	return CONNECTOR_EVENT_NONE;
 }
 
-static void update_metrics(const fsm_state_t state)
-{
-	const metric_key_t tbl[Sn] = {
-		[A] = ChargerStateACount,
-		[B] = ChargerStateBCount,
-		[C] = ChargerStateCCount,
-		[D] = ChargerStateDCount,
-		[E] = ChargerStateECount,
-		[F] = ChargerStateFCount,
-	};
-	metrics_increase(tbl[state]);
-}
-
 static void on_state_change(struct fsm *fsm,
 		fsm_state_t new_state, fsm_state_t prev_state, void *ctx)
 {
@@ -306,14 +292,13 @@ static void on_state_change(struct fsm *fsm,
 			c->time_last_state_change);
 
 	const connector_event_t events =
-		get_event_from_state_change((connector_state_t)new_state,
-				(connector_state_t)prev_state);
+		get_event_from_state_change(new_state, prev_state);
 
 	if (events && c->event_cb) {
 		(*c->event_cb)(c, events, c->event_cb_ctx);
 	}
 
-	update_metrics(new_state);
+	connector_update_metrics((connector_state_t)new_state);
 }
 
 static int process(struct connector *self)
