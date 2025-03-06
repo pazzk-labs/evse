@@ -16,12 +16,12 @@
 COMPONENT_NAME = OcppMessage
 
 SRC_FILES = \
-	../src/charger/ocpp/messages.c \
+	../src/charger/ocpp/adapter.c \
 	../external/libmcu/modules/metrics/src/metrics.c \
 	../external/libmcu/modules/metrics/src/metrics_overrides.c \
 
 TEST_SRC_FILES = \
-	src/charger/ocpp/message_test.cpp \
+	src/charger/ocpp/adapter_test.cpp \
 	src/test_all.cpp \
 	stubs/logging.c \
 	stubs/logger.c \

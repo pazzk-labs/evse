@@ -32,8 +32,3 @@ int csms_reconnect(const uint32_t delay_sec) {
 		.withParameter("delay_sec", delay_sec)
 		.returnIntValueOrDefault(0);
 }
-bool csms_is_configuration_reboot_required(const char *key) {
-	return mock().actualCall("csms_is_configuration_reboot_required")
-		.withParameter("key", key)
-		.returnBoolValueOrDefault(false);
-}
