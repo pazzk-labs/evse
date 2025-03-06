@@ -91,21 +91,6 @@ int ocpp_connector_link_checkpoint(struct connector *c,
 		struct ocpp_connector_checkpoint *checkpoint);
 
 /**
- * @brief Checks if the OCPP connector has a specific message.
- *
- * This function checks if the given OCPP connector has a message with the
- * specified ID.
- *
- * @param[in] c A pointer to the connector.
- * @param[in] mid A pointer to the message ID.
- * @param[in] mid_len The length of the message ID.
- *
- * @return A boolean indicating whether the message is present.
- */
-bool ocpp_connector_has_message(struct connector *c,
-		const uint8_t *mid, size_t mid_len);
-
-/**
  * @brief Checks if the OCPP connector has a specific transaction.
  *
  * This function checks if the given OCPP connector has a transaction with the

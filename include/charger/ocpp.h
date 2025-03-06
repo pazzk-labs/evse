@@ -175,19 +175,6 @@ int ocpp_charger_mq_send(struct charger *charger,
 int ocpp_charger_mq_recv(struct charger *charger, struct ocpp_charger_msg *msg);
 
 /**
- * @brief Gets the connector associated with the given message ID.
- *
- * @param[in] charger Pointer to the charger instance.
- * @param[in] msgid Pointer to the message ID.
- * @param[in] msgid_len Length of the message ID.
- *
- * @return Pointer to the connector associated with the given message ID, or
- *         NULL if not found.
- */
-struct connector *ocpp_charger_get_connector_by_mid(struct charger *charger,
-		const uint8_t *msgid, const size_t msgid_len);
-
-/**
  * @brief Gets the connector associated with the given transaction ID.
  *
  * @param[in] charger Pointer to the charger instance.

@@ -57,34 +57,12 @@ struct iterator_ctx {
 	const ocpp_transaction_id_t tid;
 };
 
-static void on_each_connector_mid(struct connector *c, void *ctx)
-{
-	struct iterator_ctx *p = (struct iterator_ctx *)ctx;
-	if (ocpp_connector_has_message(c, p->mid, p->mid_len)) {
-		p->connector = c;
-	}
-}
-
 static void on_each_connector_tid(struct connector *c, void *ctx)
 {
 	struct iterator_ctx *p = (struct iterator_ctx *)ctx;
 	if (ocpp_connector_has_transaction(c, p->tid)) {
 		p->connector = c;
 	}
-}
-
-struct connector *ocpp_charger_get_connector_by_mid(struct charger *charger,
-		const uint8_t *msgid, const size_t msgid_len)
-{
-	struct iterator_ctx ctx = {
-		.connector = NULL,
-		.mid = msgid,
-		.mid_len = msgid_len,
-	};
-
-	charger_iterate_connectors(charger, on_each_connector_mid, &ctx);
-
-	return ctx.connector;
 }
 
 struct connector *ocpp_charger_get_connector_by_tid(struct charger *charger,

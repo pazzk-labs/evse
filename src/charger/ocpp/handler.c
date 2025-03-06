@@ -68,9 +68,8 @@ struct availability_ctx {
 static void do_auth(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
-	struct ocpp_connector *oc = (struct ocpp_connector *)
-		ocpp_charger_get_connector_by_mid((struct charger *)charger,
-			(const uint8_t *)message->id, strlen(message->id));
+	const struct ocpp_message *req = ocpp_get_message_by_id(message->id);
+	struct ocpp_connector *oc = req? req->ctx : NULL;
 	const struct ocpp_Authorize_conf *p =
 		(const struct ocpp_Authorize_conf *)
 		message->payload.fmt.response;
@@ -376,10 +375,6 @@ static void do_reset(struct ocpp_charger *charger,
 {
 	const struct ocpp_Reset *p = (const struct ocpp_Reset *)
 		message->payload.fmt.request;
-	struct ocpp_connector *oc = (struct ocpp_connector *)
-		ocpp_charger_get_connector_by_mid((struct charger *)charger,
-				(const uint8_t *)message->id,
-				strlen(message->id));
 
 	ocpp_charger_mq_send((struct charger *)charger,
 			OCPP_CHARGER_MSG_REMOTE_RESET,
@@ -387,7 +382,7 @@ static void do_reset(struct ocpp_charger *charger,
 				(void *)OCPP_CHARGER_REBOOT_FORCED :
 				(void *)OCPP_CHARGER_REBOOT_REQUIRED_REMOTELY);
 
-	csms_response(OCPP_MSG_RESET, message, oc, NULL);
+	csms_response(OCPP_MSG_RESET, message, NULL, charger);
 }
 
 static void do_start_transaction(struct ocpp_charger *charger,
@@ -396,11 +391,10 @@ static void do_start_transaction(struct ocpp_charger *charger,
 	const struct ocpp_StartTransaction_conf *p =
 		(const struct ocpp_StartTransaction_conf *)
 		message->payload.fmt.response;
-	struct ocpp_connector *oc = (struct ocpp_connector *)
-		ocpp_charger_get_connector_by_mid((struct charger *)charger,
-			(const uint8_t *)message->id, strlen(message->id));
+	const struct ocpp_message *req = ocpp_get_message_by_id(message->id);
+	struct ocpp_connector *oc = req? req->ctx : NULL;
 
-	if (oc == NULL) {
+	if (!oc) {
 		error("connector not found for message id %s", message->id);
 		return;
 	} else if (p->idTagInfo.status != OCPP_AUTH_STATUS_ACCEPTED) {
@@ -420,11 +414,10 @@ static void do_start_transaction(struct ocpp_charger *charger,
 static void do_stop_transaction(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
-	struct ocpp_connector *oc = (struct ocpp_connector *)
-		ocpp_charger_get_connector_by_mid((struct charger *)charger,
-			(const uint8_t *)message->id, strlen(message->id));
+	const struct ocpp_message *req = ocpp_get_message_by_id(message->id);
+	struct ocpp_connector *oc = req? req->ctx : NULL;
 
-	if (oc == NULL) {
+	if (!oc) {
 		error("connector not found for message id %s", message->id);
 		return;
 	}

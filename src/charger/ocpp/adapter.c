@@ -93,29 +93,30 @@ static void *alloc_message(const size_t msg_size)
 
 static int request(const ocpp_message_t type, const struct ocpp_message *req,
 		const void *data, const size_t datasize,
-		const uint32_t delay_sec, const bool force_or_error,
-		struct ocpp_message **created)
+		const uint32_t delay_sec, const bool force_or_error, void *ctx)
 {
 	if (req) {
-		return ocpp_push_response(req, data, datasize, force_or_error);
+		return ocpp_push_response(req, data, datasize,
+				force_or_error, ctx);
 	} else if (delay_sec) {
-		return ocpp_push_request_defer(type, data, datasize, delay_sec);
+		return ocpp_push_request_defer(type, data, datasize,
+				delay_sec, ctx);
 	}
 
 	if (force_or_error) {
-		return ocpp_push_request_force(type, data, datasize, created);
+		return ocpp_push_request_force(type, data, datasize, ctx);
 	}
-	return ocpp_push_request(type, data, datasize, created);
+
+	return ocpp_push_request(type, data, datasize, ctx);
 }
 
 static int request_free_if_fail(const ocpp_message_t type,
 		const struct ocpp_message *req,
 		void *data, const size_t datasize,
-		const uint32_t delay_sec, const bool force_or_error,
-		struct ocpp_message **created)
+		const uint32_t delay_sec, const bool force_or_error, void *ctx)
 {
-	int err = request(type, req, data, datasize, delay_sec, force_or_error,
-			created);
+	int err = request(type, req, data, datasize,
+			delay_sec, force_or_error, ctx);
 
 	if (err) {
 		free(data);
@@ -130,7 +131,7 @@ static int do_empty(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	return request(msg_type, req, NULL, 0, delay_sec, false, NULL);
+	return request(msg_type, req, NULL, 0, delay_sec, false, c);
 }
 
 static int do_authorize(struct ocpp_connector *c,
@@ -138,7 +139,6 @@ static int do_authorize(struct ocpp_connector *c,
 		void *ctx, const uint32_t delay_sec)
 {
 	struct ocpp_Authorize *p = alloc_message(sizeof(*p));
-	struct ocpp_message *created;
 
 	if (!p) {
 		return -ENOMEM;
@@ -146,12 +146,8 @@ static int do_authorize(struct ocpp_connector *c,
 
 	strcpy(p->idTag, (const char *)c->session.auth.trial.id);
 
-	int err = request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, false, &created);
-	if (!err && created) {
-		memcpy(c->ocpp_info.msgid, created->id, sizeof(created->id));
-	}
-	return err;
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, false, c);
 }
 
 static int do_bootnotification(struct ocpp_connector *c,
@@ -172,8 +168,8 @@ static int do_bootnotification(struct ocpp_connector *c,
 
 	strcpy(p->chargePointSerialNumber, board_get_serial_number_string());
 
-	return request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, true, NULL);
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, true, c);
 }
 
 static int do_change_availability(struct ocpp_connector *c,
@@ -188,8 +184,8 @@ static int do_change_availability(struct ocpp_connector *c,
 
 	p->status = (ocpp_availability_status_t)(uintptr_t)ctx;
 
-	return request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, false, NULL);
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, false, c);
 }
 
 static int do_change_configuration(struct ocpp_connector *c,
@@ -204,8 +200,8 @@ static int do_change_configuration(struct ocpp_connector *c,
 
 	p->status = (ocpp_config_status_t)(uintptr_t)ctx;
 
-	return request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, false, NULL);
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, false, c);
 }
 
 static int do_clear_cache(struct ocpp_connector *c,
@@ -220,8 +216,8 @@ static int do_clear_cache(struct ocpp_connector *c,
 
 	p->status = (ocpp_remote_status_t)(uintptr_t)ctx;
 
-	return request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, false, NULL);
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, false, c);
 }
 
 static int do_datatransfer(struct ocpp_connector *c,
@@ -246,8 +242,8 @@ static int do_datatransfer(struct ocpp_connector *c,
 				c->ocpp_info.datatransfer.datasize);
 	}
 
-	return request_free_if_fail(msg_type,
-			req, p, total_size, delay_sec, false, NULL);
+	return request_free_if_fail(msg_type, req, p, total_size,
+			delay_sec, false, c);
 }
 
 static int do_diagnostic_status_noti(struct ocpp_connector *c,
@@ -264,8 +260,8 @@ static int do_diagnostic_status_noti(struct ocpp_connector *c,
 		.status = (ocpp_comm_status_t)(uintptr_t)ctx,
 	};
 
-	return request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, false, NULL);
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, false, c);
 }
 
 static int do_fw_status_noti(struct ocpp_connector *c,
@@ -282,8 +278,8 @@ static int do_fw_status_noti(struct ocpp_connector *c,
 		.status = (ocpp_comm_status_t)(uintptr_t)ctx,
 	};
 
-	return request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, false, NULL);
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, false, c);
 }
 
 static int do_get_configuration(struct ocpp_connector *c,
@@ -309,8 +305,8 @@ static int do_get_configuration(struct ocpp_connector *c,
 		strcpy(p, req->payload.fmt.data);
 	}
 
-	return request_free_if_fail(msg_type,
-			req, p, total_size, delay_sec, false, NULL);
+	return request_free_if_fail(msg_type, req, p, total_size,
+			delay_sec, false, c);
 }
 
 static size_t count_measurands(ocpp_measurand_t measurands)
@@ -416,8 +412,8 @@ static int do_metervalue(struct ocpp_connector *c,
 				measurand, &c->session.metering);
 	}
 
-	return request_free_if_fail(msg_type,
-			req, p, total_size, delay_sec, false, NULL);
+	return request_free_if_fail(msg_type, req, p, total_size,
+			delay_sec, false, c);
 }
 
 static int do_remote_start_stop(struct ocpp_connector *c,
@@ -432,8 +428,8 @@ static int do_remote_start_stop(struct ocpp_connector *c,
 
 	p->status = (ocpp_remote_status_t)(uintptr_t)ctx;
 
-	return request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, false, NULL);
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, false, c);
 }
 
 static int do_reset(struct ocpp_connector *c,
@@ -441,19 +437,21 @@ static int do_reset(struct ocpp_connector *c,
 		void *ctx, const uint32_t delay_sec)
 {
 	struct ocpp_Reset_conf *p = alloc_message(sizeof(*p));
+	struct charger *charger = (struct charger *)ctx;
 
 	if (!p) {
 		return -ENOMEM;
 	}
 
-	if (ocpp_connector_is_remote_reset_requested(c, NULL)) {
+	if (charger && ocpp_charger_get_pending_reboot_type(charger)
+			> OCPP_CHARGER_REBOOT_NONE) {
 		p->status = OCPP_REMOTE_STATUS_ACCEPTED;
 	} else {
 		p->status = OCPP_REMOTE_STATUS_REJECTED;
 	}
 
-	return request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, false, NULL);
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, false, NULL);
 }
 
 static int do_starttransaction(struct ocpp_connector *c,
@@ -461,7 +459,6 @@ static int do_starttransaction(struct ocpp_connector *c,
 		void *ctx, const uint32_t delay_sec)
 {
 	struct ocpp_StartTransaction *p = alloc_message(sizeof(*p));
-	struct ocpp_message *created;
 
 	if (!p) {
 		return -ENOMEM;
@@ -475,12 +472,8 @@ static int do_starttransaction(struct ocpp_connector *c,
 	};
 	memcpy(p->idTag, c->session.auth.current.id, sizeof(p->idTag));
 
-	int err = request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, true, &created);
-	if (!err && created) {
-		memcpy(c->ocpp_info.msgid, created->id, sizeof(created->id));
-	}
-	return err;
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, true, c);
 }
 
 static int do_statusnotification(struct ocpp_connector *c,
@@ -515,8 +508,8 @@ static int do_statusnotification(struct ocpp_connector *c,
 		strcpy(p->vendorId, CHARGER_VENDOR);
 	}
 
-	return request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, false, NULL);
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, false, c);
 }
 
 static int do_stoptransaction(struct ocpp_connector *c,
@@ -524,7 +517,6 @@ static int do_stoptransaction(struct ocpp_connector *c,
 		void *ctx, const uint32_t delay_sec)
 {
 	struct ocpp_StopTransaction *p = alloc_message(sizeof(*p));
-	struct ocpp_message *created;
 
 	if (!p) {
 		return -ENOMEM;
@@ -543,12 +535,8 @@ static int do_stoptransaction(struct ocpp_connector *c,
 		memcpy(p->idTag, c->session.auth.current.id, sizeof(p->idTag));
 	}
 
-	int err = request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, true, &created);
-	if (!err && created) {
-		memcpy(c->ocpp_info.msgid, created->id, sizeof(created->id));
-	}
-	return err;
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, true, c);
 }
 
 static int do_unlock(struct ocpp_connector *c,
@@ -565,8 +553,8 @@ static int do_unlock(struct ocpp_connector *c,
 		.status = OCPP_UNLOCK_NOT_SUPPORTED,
 	};
 
-	return request_free_if_fail(msg_type,
-			req, p, sizeof(*p), delay_sec, false, NULL);
+	return request_free_if_fail(msg_type, req, p, sizeof(*p),
+			delay_sec, false, c);
 }
 
 static const struct message_entry requests[] = {

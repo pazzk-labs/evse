@@ -10,25 +10,26 @@ int ocpp_step(void) {
 		.returnIntValueOrDefault(0);
 }
 int ocpp_push_request(ocpp_message_t type, const void *data, size_t datasize,
-		struct ocpp_message **created) {
+		void *ctx) {
 	return mock().actualCall("ocpp_push_request")
 		.withParameter("type", type)
 		.returnIntValueOrDefault(0);
 }
 int ocpp_push_request_force(ocpp_message_t type, const void *data,
-		size_t datasize, struct ocpp_message **created) {
+		size_t datasize, void *ctx) {
 	return mock().actualCall("ocpp_push_request_force")
 		.withParameter("type", type)
 		.returnIntValueOrDefault(0);
 }
 int ocpp_push_request_defer(ocpp_message_t type,
-		const void *data, size_t datasize, uint32_t timer_sec) {
+		const void *data, size_t datasize, uint32_t timer_sec,
+		void *ctx) {
 	return mock().actualCall("ocpp_push_request_defer")
 		.withParameter("type", type)
 		.returnIntValueOrDefault(0);
 }
 int ocpp_push_response(const struct ocpp_message *req,
-		const void *data, size_t datasize, bool err) {
+		const void *data, size_t datasize, bool err, void *ctx) {
 	return mock().actualCall("ocpp_push_response")
 		.returnIntValueOrDefault(0);
 }

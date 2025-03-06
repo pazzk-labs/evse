@@ -16,12 +16,6 @@ int ocpp_connector_link_checkpoint(struct connector *c,
 		.returnIntValueOrDefault(0);
 }
 
-bool ocpp_connector_has_message(struct connector *c,
-		const uint8_t *mid, size_t mid_len) {
-	return mock().actualCall("ocpp_connector_has_message")
-		.returnBoolValueOrDefault(false);
-}
-
 bool ocpp_connector_has_transaction(struct connector *c,
 		const ocpp_transaction_id_t tid) {
 	return mock().actualCall("ocpp_connector_has_transaction")

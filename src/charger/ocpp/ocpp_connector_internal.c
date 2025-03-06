@@ -34,10 +34,6 @@
 #include <string.h>
 #include "metering.h"
 
-#if !defined(MIN)
-#define MIN(a, b)		(((a) > (b))? (b) : (a))
-#endif
-
 static bool is_time_expired(const struct ocpp_connector *c)
 {
 	return c->session.timestamp.expiry <= c->now;
@@ -357,22 +353,6 @@ ocpp_connector_update_metering_clock_aligned(struct ocpp_connector *oc)
 	}
 
 	return (ocpp_measurand_t)clock_data_type;
-}
-
-int ocpp_connector_record_mid(struct ocpp_connector *oc, const char *mid)
-{
-	if (mid) {
-		strncpy(oc->ocpp_info.msgid, mid, sizeof(oc->ocpp_info.msgid));
-	}
-	return 0;
-}
-
-bool ocpp_connector_has_message(struct connector *c,
-		const uint8_t *mid, size_t mid_len)
-{
-	struct ocpp_connector *oc = (struct ocpp_connector *)c;
-	return memcmp(oc->ocpp_info.msgid, mid,
-			MIN(mid_len, sizeof(oc->ocpp_info.msgid))) == 0;
 }
 
 bool ocpp_connector_has_transaction(struct connector *c,

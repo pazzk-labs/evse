@@ -87,12 +87,6 @@ struct charging_session {
 };
 
 struct charger_ocpp_info {
-	/* The latest message ID sent. Used to find and process the connector
-	 * by message ID. Although multiple message IDs could be handled using
-	 * an LRU approach, the OCPP protocol operates in a request/response
-	 * manner, making single message ID handling sufficient. */
-	char msgid[OCPP_MESSAGE_ID_MAXLEN];
-
 	struct {
 		char id[OCPP_CiString50];
 		char *data;
@@ -326,19 +320,6 @@ bool ocpp_connector_has_missing_transaction(struct ocpp_connector *oc);
  */
 void ocpp_connector_raise_event(struct ocpp_connector *oc,
 		const connector_event_t event);
-
-/**
- * @brief Records a message ID for the OCPP connector.
- *
- * @note The message ID is a unique identifier for an OCPP message. This
- *       function links the message with the connector.
- *
- * @param[in] oc Pointer to the OCPP connector structure.
- * @param[in] mid The message ID to record.
- *
- * @return 0 on success, or a negative error code on failure.
- */
-int ocpp_connector_record_mid(struct ocpp_connector *oc, const char *mid);
 
 /**
  * @brief Checks if a charging session is established for a given user on the

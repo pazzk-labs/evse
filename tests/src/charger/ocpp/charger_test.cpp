@@ -22,9 +22,6 @@ TEST_GROUP(OcppCharger) {
 };
 
 TEST(OcppCharger, ShouldReturnNullConnector_WhenNoConnectorAttached) {
-	uint8_t mid[] = {0x01, 0x02, 0x03};
-	LONGS_EQUAL(NULL, ocpp_charger_get_connector_by_mid(charger,
-			mid, sizeof(mid)));
 	LONGS_EQUAL(NULL, ocpp_charger_get_connector_by_tid(charger, 0));
 }
 TEST(OcppCharger, ShouldReturnPendingRebootType) {
