@@ -40,8 +40,8 @@
 #include "net/util.h"
 #include "config.h"
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)		(sizeof(x) / sizeof((x)[0]))
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
 #endif
 
 static void println(const struct cli_io *io, const char *str)
@@ -289,7 +289,7 @@ DEFINE_CLI_CMD(net, "Network commands") {
 		return CLI_CMD_SUCCESS;
 	}
 
-	for (size_t i = 0; i < ARRAY_SIZE(cmds); i++) {
+	for (size_t i = 0; i < ARRAY_COUNT(cmds); i++) {
 		if (argc == cmds[i].argc &&
 				strcmp(argv[1], cmds[i].cmd) == 0) {
 			if (cmds[i].run(cli->io, cmds[i].check, cmds[i].key,

@@ -40,12 +40,14 @@ extern "C" {
 #include "charger/ocpp_connector.h"
 #include "ocpp/ocpp.h"
 
-int message_push_request(struct ocpp_connector *connector,
+struct server;
+void adapter_init(struct server *server, size_t rxqueue_size);
+int adapter_push_request(struct ocpp_connector *connector,
 		const ocpp_message_t msg_type, void *ctx);
-int message_push_request_defer(struct ocpp_connector *connector,
+int adapter_push_request_defer(struct ocpp_connector *connector,
 		const ocpp_message_t msg_type, void *ctx,
 		const uint32_t delay_sec);
-int message_push_response(struct ocpp_connector *connector,
+int adapter_push_response(struct ocpp_connector *connector,
 		const ocpp_message_t msg_type,
 		const struct ocpp_message *req, void *ctx);
 

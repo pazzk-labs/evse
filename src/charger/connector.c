@@ -52,8 +52,8 @@
 #define MIN(a, b)			(((a) > (b))? (b) : (a))
 #endif
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)			(sizeof(x) / sizeof((x)[0]))
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)			(sizeof(x) / sizeof((x)[0]))
 #endif
 
 static bool is_charging(connector_state_t state)
@@ -194,7 +194,7 @@ bool connector_is_occupied_state(const connector_state_t state)
 		[E] = IEC61851_STATE_E,
 		[F] = IEC61851_STATE_F,
 	};
-	static_assert(ARRAY_SIZE(tbl) == Sn, "table size mismatch");
+	static_assert(ARRAY_COUNT(tbl) == Sn, "table size mismatch");
 	return iec61851_is_occupied_state(tbl[state]);
 }
 
@@ -361,7 +361,7 @@ void connector_update_metrics(const connector_state_t state)
 		[E] = ChargerStateECount,
 		[F] = ChargerStateFCount,
 	};
-	static_assert(ARRAY_SIZE(tbl) == Sn, "table size mismatch");
+	static_assert(ARRAY_COUNT(tbl) == Sn, "table size mismatch");
 	metrics_increase(tbl[state]);
 }
 

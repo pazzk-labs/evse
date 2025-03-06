@@ -39,8 +39,8 @@
 #include "libmcu/metrics.h"
 #include "logger.h"
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)		(sizeof(x) / sizeof((x)[0]))
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
 #endif
 
 static bool is_initial(fsm_state_t state, fsm_state_t next_state, void *ctx)
@@ -271,7 +271,7 @@ static connector_event_t get_event_from_state_change(fsm_state_t new_state,
 		{ F, B, CONNECTOR_EVENT_ERROR_RECOVERY | CONNECTOR_EVENT_PLUGGED },
 	};
 
-	for (size_t i = 0; i < ARRAY_SIZE(tbl); i++) {
+	for (size_t i = 0; i < ARRAY_COUNT(tbl); i++) {
 		if (tbl[i].from == old_state && tbl[i].to == new_state) {
 			return (connector_event_t)tbl[i].event;
 		}
@@ -344,7 +344,7 @@ struct connector *free_connector_create(const struct connector_param *param)
 		.param = *param,
 	};
 
-	fsm_init(&c->fsm, transitions, ARRAY_SIZE(transitions), c);
+	fsm_init(&c->fsm, transitions, ARRAY_COUNT(transitions), c);
 	fsm_set_state_change_cb(&c->fsm, on_state_change, c);
 
 	ratelim_init(&c->log_ratelim, RATELIM_UNIT_SECOND,

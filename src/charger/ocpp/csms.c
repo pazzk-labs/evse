@@ -36,21 +36,17 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#include "libmcu/ringbuf.h"
 #include "libmcu/metrics.h"
 
 #include "net/server_ws.h"
 #include "net/util.h"
-#include "encoder_json.h"
-#include "decoder_json.h"
-#include "messages.h"
+#include "adapter.h"
 #include "handler.h"
 #include "config.h"
 #include "secret.h"
 #include "logger.h"
 
 #define RXQUEUE_SIZE			4096
-#define BUFSIZE				2048
 #define PKA_BUFSIZE			2048
 
 #define DEFAULT_WS_PING_INTERVAL_SEC	300
@@ -58,7 +54,6 @@
 #define DEFAULT_SERVER_URL		"wss://csms.pazzk.net"
 
 static struct server *csms;
-static struct ringbuf *rxq;
 
 static int initialize_server(void)
 {
@@ -138,115 +133,26 @@ static void on_ocpp_event(ocpp_event_t event_type,
 	}
 }
 
-/* A time-based message ID is used by default rather than a UUID.
- *
- * Time-based ID was chosen because:
- * 1. shorter message length than UUID.
- * 2. additional information beyond the ID(time difference or order between
- *    messages).
- * 3. intuitive
- * 4. ease of implementation
- *
- * Note that the main premise is that you don't need a unique ID for every
- * message on every device, but only need to maintain a unique ID within a
- * single device. However, if considering distributed systems or addressing
- * predictability-related security vulnerabilities, it is recommended to use
- * a UUID-based approach. */
-static void generate_message_id_by_time(char *buf, size_t bufsize)
-{
-	static uint8_t nonce;
-	const time_t ts = time(NULL);
-	snprintf(buf, bufsize, "%d-%03u", (int32_t)ts, (uint8_t)nonce++);
-}
-
-void ocpp_generate_message_id(void *buf, size_t bufsize)
-{
-#if defined(USE_UUID_MESSAGE_ID)
-	generate_message_id_by_uuid(buf, bufsize);
-#else
-	generate_message_id_by_time(buf, bufsize);
-#endif
-}
-
-int ocpp_send(const struct ocpp_message *msg)
-{
-	size_t json_len = 0;
-	char *json = encoder_json_encode(msg, &json_len);
-
-	if (!json || !json_len) {
-		return -ENOMEM;
-	}
-
-	int err = server_send(csms, json, json_len);
-
-	if (err > 0) { /* success */
-		err = 0;
-		metrics_increase(OCPPMessageSentCount);
-		debug("%.*s", (int)json_len, json);
-	}
-
-	encoder_json_free(json);
-
-	info("%s message(%d): %s, %s",
-			(err == 0)? "Sent" : "Failed to send",
-			err, ocpp_stringify_type(msg->type), msg->id);
-
-	return err;
-}
-
-int ocpp_recv(struct ocpp_message *msg)
-{
-	static uint8_t buf[BUFSIZE];
-	size_t cap = ringbuf_capacity(rxq) - ringbuf_length(rxq);
-
-	while (cap > sizeof(buf)) {
-		int len = server_recv(csms, buf, sizeof(buf));
-		if (len <= 0) {
-			break;
-		}
-
-		ringbuf_write(rxq, buf, (size_t)len);
-		cap -= (size_t)len;
-	}
-
-	size_t decoded_len = 0;
-	const size_t len = ringbuf_peek(rxq, 0, buf, sizeof(buf));
-	int err = decoder_json_decode(msg, (char *)buf, len, &decoded_len);
-	ringbuf_consume(rxq, decoded_len);
-
-	if (!err || err == -ENOTSUP) {
-		debug("%.*s", (int)decoded_len, buf);
-		info("Received %zu bytes, decoded %zu bytes", len, decoded_len);
-	}
-
-	return err;
-}
-
 bool csms_is_up(void)
 {
 	return server_connected(csms);
 }
 
-bool csms_is_configuration_reboot_required(const char *key)
-{
-	return false;
-}
-
 int csms_request(const ocpp_message_t msgtype, void *ctx, void *opt)
 {
-	return message_push_request(ctx, msgtype, opt);
+	return adapter_push_request(ctx, msgtype, opt);
 }
 
 int csms_request_defer(const ocpp_message_t msgtype, void *ctx, void *opt,
 		const uint32_t delay_sec)
 {
-	return message_push_request_defer(ctx, msgtype, opt, delay_sec);
+	return adapter_push_request_defer(ctx, msgtype, opt, delay_sec);
 }
 
 int csms_response(const ocpp_message_t msgtype,
 		const struct ocpp_message *req, void *ctx, void *opt)
 {
-	return message_push_response(ctx, msgtype, req, opt);
+	return adapter_push_response(ctx, msgtype, req, opt);
 }
 
 int csms_reconnect(const uint32_t delay_sec)
@@ -265,10 +171,6 @@ int csms_reconnect(const uint32_t delay_sec)
 
 int csms_init(void *ctx)
 {
-	if (!(rxq = ringbuf_create(RXQUEUE_SIZE))) {
-		return -ENOMEM;
-	}
-
 	int err = initialize_server();
 
 	if (!err) {
@@ -286,6 +188,7 @@ int csms_init(void *ctx)
 
 		free(p);
 
+		adapter_init(csms, RXQUEUE_SIZE);
 		err = ocpp_init(on_ocpp_event, ctx);
 	}
 

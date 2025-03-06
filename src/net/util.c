@@ -37,8 +37,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)		(sizeof(x) / sizeof((x)[0]))
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
 #endif
 
 struct proto_tbl {
@@ -67,7 +67,7 @@ net_protocol_t net_get_protocol_from_url(const char *url)
 		{ NET_PROTO_SFTP,  "sftp://" },
 	};
 
-	for (size_t i = 0; i < ARRAY_SIZE(tbl); i++) {
+	for (size_t i = 0; i < ARRAY_COUNT(tbl); i++) {
 		if (strncmp(url, tbl[i].prefix, strlen(tbl[i].prefix)) == 0) {
 			return tbl[i].proto;
 		}

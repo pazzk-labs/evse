@@ -45,8 +45,8 @@
 
 #define MSG_IDSTR_MAXLEN		64
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)			(sizeof(x) / sizeof((x)[0]))
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)			(sizeof(x) / sizeof((x)[0]))
 #endif
 
 typedef bool (*encoder_handler_t)(const struct ocpp_message *msg, cJSON *json);
@@ -542,7 +542,7 @@ static bool encode(const struct ocpp_message *msg, cJSON *json)
 		return do_empty(msg, json);
 	}
 
-	for (size_t i = 0; i < ARRAY_SIZE(encoders); i++) {
+	for (size_t i = 0; i < ARRAY_COUNT(encoders); i++) {
 		if (encoders[i].msg_type == msg->type) {
 			return encoders[i].handler(msg, json);
 		}

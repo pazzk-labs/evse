@@ -40,8 +40,8 @@
 #include "metering.h"
 #include "logger.h"
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)			(sizeof(x) / sizeof((x)[0]))
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)			(sizeof(x) / sizeof((x)[0]))
 #endif
 
 static bool is_booting(fsm_state_t state, fsm_state_t next_state, void *ctx)
@@ -442,7 +442,7 @@ static connector_event_t get_event_from_state_change(fsm_state_t new_state,
 		{ Faulted,     Preparing,   true,  CONNECTOR_EVENT_ERROR_RECOVERY },
 	};
 
-	for (size_t i = 0; i < ARRAY_SIZE(tbl); i++) {
+	for (size_t i = 0; i < ARRAY_COUNT(tbl); i++) {
 		if (tbl[i].from == prev_state && tbl[i].to == new_state &&
 				tbl[i].plugged == plugged) {
 			return (connector_event_t)tbl[i].event;
@@ -546,7 +546,7 @@ struct connector *ocpp_connector_create(const struct connector_param *param)
 		},
 	};
 
-	fsm_init(&oc->base.fsm, transitions, ARRAY_SIZE(transitions), oc);
+	fsm_init(&oc->base.fsm, transitions, ARRAY_COUNT(transitions), oc);
 	fsm_set_state_change_cb(&oc->base.fsm, on_state_change, oc);
 
 	ratelim_init(&oc->base.log_ratelim, RATELIM_UNIT_SECOND,

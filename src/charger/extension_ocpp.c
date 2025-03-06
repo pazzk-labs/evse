@@ -41,8 +41,8 @@
 #include "config.h"
 #include "libmcu/compiler.h"
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)		(sizeof(x) / sizeof((x)[0]))
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
 #endif
 
 typedef void (*msg_handler_t)(struct charger *charger,
@@ -204,7 +204,7 @@ static int ext_pre_process(struct charger *self)
 		[OCPP_CHARGER_MSG_CSMS_UP] = proc_csms_up,
 		[OCPP_CHARGER_MSG_REMOTE_RESET] = proc_remote_reset,
 	};
-	static_assert(ARRAY_SIZE(msg_handlers) == OCPP_CHARGER_MSG_MAX,
+	static_assert(ARRAY_COUNT(msg_handlers) == OCPP_CHARGER_MSG_MAX,
 			"msg_handlers size mismatch");
 
 	struct ocpp_charger_msg msg = { 0, };

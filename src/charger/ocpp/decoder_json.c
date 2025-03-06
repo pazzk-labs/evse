@@ -47,8 +47,8 @@
 #define MIN(a, b)		((a) > (b)? (b) : (a))
 #endif
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)		(sizeof(x) / sizeof((x)[0]))
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
 #endif
 
 typedef int (*decoder_handler_t)(struct ocpp_message *msg, cJSON *json);
@@ -424,7 +424,7 @@ static struct decoder_entry decoders[] = {
 
 static decoder_handler_t decoder(ocpp_message_t msgtype)
 {
-	for (size_t i = 0; i < ARRAY_SIZE(decoders); i++) {
+	for (size_t i = 0; i < ARRAY_COUNT(decoders); i++) {
 		if (decoders[i].msg_type == msgtype) {
 			return decoders[i].handler;
 		}

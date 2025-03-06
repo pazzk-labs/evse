@@ -47,7 +47,6 @@ int csms_response(const ocpp_message_t msgtype,
 		const struct ocpp_message *req, void *ctx, void *opt);
 bool csms_is_up(void);
 int csms_reconnect(const uint32_t delay_sec);
-bool csms_is_configuration_reboot_required(const char *key);
 
 #if defined(__cplusplus)
 }

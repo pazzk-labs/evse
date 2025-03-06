@@ -47,8 +47,8 @@
 #include "libmcu/strext.h"
 #include "ocpp/strconv.h"
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)		(sizeof(x) / sizeof((x)[0]))
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
 #endif
 
 typedef void (*handler_fn_t)(struct ocpp_charger *charger,
@@ -137,7 +137,7 @@ static int change_csl_configuration(const char *key, const char *value)
 	};
 	const char *selected = NULL;
 
-	for (size_t i = 0; i < ARRAY_SIZE(keys); i++) {
+	for (size_t i = 0; i < ARRAY_COUNT(keys); i++) {
 		if (strcmp(key, keys[i]) == 0) {
 			selected = keys[i];
 			break;
@@ -207,6 +207,12 @@ static void do_change_availability(struct ocpp_charger *charger,
 			(void *)ctx.status);
 }
 
+static bool is_configuration_reboot_required(const char *key)
+{
+	/* TODO: implement */
+	return false;
+}
+
 static void do_change_configuration(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
@@ -247,7 +253,7 @@ static void do_change_configuration(struct ocpp_charger *charger,
 		status = OCPP_CONFIG_STATUS_REJECTED;
 		error("failed to set configuration %s", p->key);
 	} else {
-		if (csms_is_configuration_reboot_required(p->key)) {
+		if (is_configuration_reboot_required(p->key)) {
 			status = OCPP_CONFIG_STATUS_REBOOT_REQUIRED;
 		}
 		ocpp_charger_mq_send((struct charger *)charger,
@@ -474,7 +480,7 @@ static struct handler_entry handlers[] = {
 void handler_process(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
-	for (size_t i = 0; i < ARRAY_SIZE(handlers); i++) {
+	for (size_t i = 0; i < ARRAY_COUNT(handlers); i++) {
 		if (handlers[i].role == message->role &&
 				handlers[i].type == message->type) {
 			handlers[i].handler(charger, message);

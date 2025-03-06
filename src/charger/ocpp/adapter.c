@@ -30,7 +30,7 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "messages.h"
+#include "adapter.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,10 +38,16 @@
 #include <errno.h>
 #include <inttypes.h>
 
-#include "charger/ocpp.h"
-#include "ocpp_connector_internal.h"
 #include "libmcu/metrics.h"
 #include "libmcu/board.h"
+#include "libmcu/ringbuf.h"
+#include "libmcu/assert.h"
+
+#include "charger/ocpp.h"
+#include "ocpp_connector_internal.h"
+#include "encoder_json.h"
+#include "decoder_json.h"
+#include "net/server.h"
 #include "logger.h"
 
 #if !defined(CHARGER_VENDOR)
@@ -51,9 +57,11 @@
 #define CHARGER_MODEL		"EVSE-7S"
 #endif
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)		(sizeof(x) / sizeof((x)[0]))
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
 #endif
+
+#define BUFSIZE			2048
 
 typedef int (*message_handler_t)(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
@@ -63,6 +71,9 @@ struct message_entry {
 	const ocpp_message_t msg_type;
 	const message_handler_t handler;
 };
+
+static struct server *csms;
+static struct ringbuf *rxq;
 
 /* NOTE: The message allocated by this function should be freed by the caller.
  * Free will be done in ocpp event callback function when
@@ -605,7 +616,7 @@ static int push_request(struct ocpp_connector *connector,
 		const uint32_t delay_sec)
 {
 	return push(connector, msg_type, NULL,
-			ctx, delay_sec, requests, ARRAY_SIZE(requests));
+			ctx, delay_sec, requests, ARRAY_COUNT(requests));
 }
 
 static int push_responses(struct ocpp_connector *connector,
@@ -613,25 +624,116 @@ static int push_responses(struct ocpp_connector *connector,
 		void *ctx, const uint32_t delay_sec)
 {
 	return push(connector, msg_type, req,
-			ctx, delay_sec, responses, ARRAY_SIZE(responses));
+			ctx, delay_sec, responses, ARRAY_COUNT(responses));
 }
 
-int message_push_request(struct ocpp_connector *connector,
+/* A time-based message ID is used by default rather than a UUID.
+ *
+ * Time-based ID was chosen because:
+ * 1. shorter message length than UUID.
+ * 2. additional information beyond the ID(time difference or order between
+ *    messages).
+ * 3. intuitive
+ * 4. ease of implementation
+ *
+ * Note that the main premise is that you don't need a unique ID for every
+ * message on every device, but only need to maintain a unique ID within a
+ * single device. However, if considering distributed systems or addressing
+ * predictability-related security vulnerabilities, it is recommended to use
+ * a UUID-based approach. */
+static void generate_message_id_by_time(char *buf, size_t bufsize)
+{
+	static uint8_t nonce;
+	const time_t ts = time(NULL);
+	snprintf(buf, bufsize, "%d-%03u", (int32_t)ts, (uint8_t)nonce++);
+}
+
+void ocpp_generate_message_id(void *buf, size_t bufsize)
+{
+#if defined(USE_UUID_MESSAGE_ID)
+	generate_message_id_by_uuid(buf, bufsize);
+#else
+	generate_message_id_by_time(buf, bufsize);
+#endif
+}
+
+int ocpp_send(const struct ocpp_message *msg)
+{
+	size_t json_len = 0;
+	char *json = encoder_json_encode(msg, &json_len);
+
+	if (!json || !json_len) {
+		return -ENOMEM;
+	}
+
+	int err = server_send(csms, json, json_len);
+
+	if (err > 0) { /* success */
+		err = 0;
+		metrics_increase(OCPPMessageSentCount);
+		debug("%.*s", (int)json_len, json);
+	}
+
+	encoder_json_free(json);
+
+	info("%s message(%d): %s, %s",
+			(err == 0)? "Sent" : "Failed to send",
+			err, ocpp_stringify_type(msg->type), msg->id);
+
+	return err;
+}
+
+int ocpp_recv(struct ocpp_message *msg)
+{
+	static uint8_t buf[BUFSIZE];
+	size_t cap = ringbuf_capacity(rxq) - ringbuf_length(rxq);
+
+	while (cap > sizeof(buf)) {
+		int len = server_recv(csms, buf, sizeof(buf));
+		if (len <= 0) {
+			break;
+		}
+
+		ringbuf_write(rxq, buf, (size_t)len);
+		cap -= (size_t)len;
+	}
+
+	size_t decoded_len = 0;
+	const size_t len = ringbuf_peek(rxq, 0, buf, sizeof(buf));
+	int err = decoder_json_decode(msg, (char *)buf, len, &decoded_len);
+	ringbuf_consume(rxq, decoded_len);
+
+	if (!err || err == -ENOTSUP) {
+		debug("%.*s", (int)decoded_len, buf);
+		info("Received %zu bytes, decoded %zu bytes", len, decoded_len);
+	}
+
+	return err;
+}
+
+int adapter_push_request(struct ocpp_connector *connector,
 		const ocpp_message_t msg_type, void *ctx)
 {
 	return push_request(connector, msg_type, ctx, 0);
 }
 
-int message_push_request_defer(struct ocpp_connector *connector,
+int adapter_push_request_defer(struct ocpp_connector *connector,
 		const ocpp_message_t msg_type, void *ctx,
 		const uint32_t delay_sec)
 {
 	return push_request(connector, msg_type, ctx, delay_sec);
 }
 
-int message_push_response(struct ocpp_connector *connector,
+int adapter_push_response(struct ocpp_connector *connector,
 		const ocpp_message_t msg_type,
 		const struct ocpp_message *req, void *ctx)
 {
 	return push_responses(connector, msg_type, req, ctx, 0);
+}
+
+void adapter_init(struct server *server, size_t rxqueue_size)
+{
+	csms = server;
+	rxq = ringbuf_create(rxqueue_size);
+	assert(csms && rxq);
 }
