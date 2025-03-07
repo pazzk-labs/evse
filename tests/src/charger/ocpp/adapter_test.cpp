@@ -1,7 +1,7 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
-#include "messages.h"
+#include "adapter.h"
 
 TEST_GROUP(OcppMessage) {
 	void setup(void) {

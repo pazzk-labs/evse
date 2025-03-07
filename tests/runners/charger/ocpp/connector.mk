@@ -16,46 +16,41 @@
 COMPONENT_NAME = OcppConnector
 
 SRC_FILES = \
-	../src/charger/ocpp/connector_private.c \
-	../external/libmcu/modules/metrics/src/metrics.c \
-	../external/libmcu/modules/metrics/src/metrics_overrides.c \
+	../src/charger/ocpp/ocpp_connector.c \
+	../src/charger/ocpp/ocpp_connector_internal.c \
+	../src/charger/connector.c \
+	../external/libmcu/modules/fsm/src/fsm.c \
+	../external/libmcu/modules/ratelim/src/ratelim.c \
+	../external/libmcu/modules/common/src/msgq.c \
+	../external/libmcu/modules/common/src/ringbuf.c \
 
 TEST_SRC_FILES = \
 	src/charger/ocpp/connector_test.cpp \
 	src/test_all.cpp \
 	stubs/logging.c \
 	stubs/logger.c \
-	stubs/ratelim.c \
+	stubs/metering.cpp \
+	mocks/iec61851.cpp \
+	mocks/safety.cpp \
+	mocks/csms.cpp \
+	mocks/ocpp.cpp \
 	../external/libmcu/tests/mocks/assert.cpp \
+	../external/libmcu/tests/stubs/metrics.cpp \
+	../external/libmcu/tests/stubs/bitops.cpp \
 
 INCLUDE_DIRS = \
 	$(CPPUTEST_HOME)/include \
 	mocks/ \
 	../include \
 	../src/charger/ocpp \
-	../include/driver \
 	../external/ocpp/include \
-	../external/cJSON \
 	../external/libmcu/modules/common/include \
-	../external/libmcu/modules/logging/include \
+	../external/libmcu/modules/fsm/include \
 	../external/libmcu/modules/metrics/include \
 	../external/libmcu/modules/ratelim/include \
-	../external/libmcu/modules/fsm/include \
-	../external/libmcu/interfaces/pwm/include \
-	../external/libmcu/interfaces/spi/include \
-	../external/libmcu/interfaces/gpio/include \
-	../external/libmcu/interfaces/i2c/include \
-	../external/libmcu/interfaces/adc/include \
-	../external/libmcu/interfaces/uart/include \
-	../external/libmcu/interfaces/kvstore/include \
-	../external/libmcu/interfaces/flash/include \
+	../external/libmcu/modules/logging/include \
 
 MOCKS_SRC_DIRS =
-CPPUTEST_CPPFLAGS = -include ../include/logger.h \
-	-DMETRICS_USER_DEFINES=\"../include/metrics.def\" \
-	-DOCPP_ERROR=error \
-	-DOCPP_DEBUG=debug \
-	-DOCPP_INFO=info \
-	-D_GNU_SOURCE \
+CPPUTEST_CPPFLAGS = -include ../include/logger.h
 
 include runners/MakefileRunner

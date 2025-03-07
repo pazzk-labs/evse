@@ -30,56 +30,29 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#ifndef CHARGER_PRIVATE_H
-#define CHARGER_PRIVATE_H
+#ifndef OCPP_MESSAGE_ADAPTER_H
+#define OCPP_MESSAGE_ADAPTER_H
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#include "charger/charger.h"
+#include "charger/ocpp_connector.h"
+#include "ocpp/ocpp.h"
 
-#include <stdint.h>
-
-#include "libmcu/list.h"
-#include "libmcu/ratelim.h"
-
-#define CHARGER_LOG_RATE_CAP		10
-#define CHARGER_LOG_RATE_SEC		2
-
-struct charger_api {
-	struct connector *(*create_connector)(struct charger *charger,
-			const struct connector_param *param);
-	void (*destroy_connector)(struct charger *charger, struct list *link);
-	int (*step)(struct charger *self, uint32_t *next_period_ms);
-};
-
-struct charger {
-	struct charger_api api;
-	struct charger_param param;
-	const char *name;
-
-	struct {
-		struct list list;
-		uint8_t count;
-	} connectors;
-
-	charger_event_cb_t event_cb;
-	void *event_cb_ctx;
-
-	struct ratelim log_ratelim; /* rate limiter for logging */
-};
-
-struct connector *get_connector(struct charger *charger,
-		const char *connector_name);
-struct connector *get_connector_free(struct charger *charger);
-struct connector *get_connector_by_id(struct charger *charger, const int id);
-
-void register_connector(struct connector *c,
-		const struct connector_param *param, struct charger *charger);
+struct server;
+void adapter_init(struct server *server, size_t rxqueue_size);
+int adapter_push_request(struct ocpp_connector *connector,
+		const ocpp_message_t msg_type, void *ctx);
+int adapter_push_request_defer(struct ocpp_connector *connector,
+		const ocpp_message_t msg_type, void *ctx,
+		const uint32_t delay_sec);
+int adapter_push_response(struct ocpp_connector *connector,
+		const ocpp_message_t msg_type,
+		const struct ocpp_message *req, void *ctx);
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* CHARGER_PRIVATE_H */
+#endif /* OCPP_MESSAGE_ADAPTER_H */

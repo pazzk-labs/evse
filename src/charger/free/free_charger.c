@@ -30,26 +30,17 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#ifndef OCPP_CSMS_H
-#define OCPP_CSMS_H
+#include "charger/free.h"
+#include "../charger_internal.h"
+#include <stdlib.h>
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-#include "ocpp/ocpp.h"
-
-int csms_init(void *ctx);
-int csms_request(const ocpp_message_t msgtype, void *ctx, void *opt);
-int csms_request_defer(const ocpp_message_t msgtype, void *ctx, void *opt,
-		const uint32_t delay_sec);
-int csms_response(const ocpp_message_t msgtype,
-		const struct ocpp_message *req, void *ctx, void *opt);
-bool csms_is_up(void);
-int csms_reconnect(const uint32_t delay_sec);
-
-#if defined(__cplusplus)
+struct charger *free_charger_create(void)
+{
+	struct charger *free_charger = malloc(sizeof(*free_charger));
+	return free_charger;
 }
-#endif
 
-#endif /* OCPP_CSMS_H */
+void free_charger_destroy(struct charger *charger)
+{
+	free(charger);
+}

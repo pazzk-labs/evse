@@ -39,25 +39,7 @@ extern "C" {
 
 #include "charger/charger.h"
 
-/**
- * @brief Create a free charger.
- *
- * This function creates a free charger using the specified parameters.
- *
- * @param[in] param A pointer to the parameters used to create the charger.
- *
- * @return A pointer to the created charger.
- */
-struct charger *free_charger_create(const struct charger_param *param);
-
-/**
- * @brief Destroy a free charger.
- *
- * This function destroys the specified free charger and frees associated
- * resources.
- *
- * @param[out] charger A pointer to the charger to be destroyed.
- */
+struct charger *free_charger_create(void);
 void free_charger_destroy(struct charger *charger);
 
 #if defined(__cplusplus)

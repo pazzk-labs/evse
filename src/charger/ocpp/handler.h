@@ -30,14 +30,14 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#ifndef OCPP_HANDLER_PRIVATE_H
-#define OCPP_HANDLER_PRIVATE_H
+#ifndef OCPP_MESSAGE_HANDLER_PRIVATE_H
+#define OCPP_MESSAGE_HANDLER_PRIVATE_H
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#include "charger_private.h"
+#include "charger/ocpp.h"
 #include "ocpp/ocpp.h"
 
 void handler_process(struct ocpp_charger *charger,
@@ -47,4 +47,4 @@ void handler_process(struct ocpp_charger *charger,
 }
 #endif
 
-#endif /* OCPP_HANDLER_PRIVATE_H */
+#endif /* OCPP_MESSAGE_HANDLER_PRIVATE_H */

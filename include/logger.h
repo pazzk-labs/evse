@@ -39,7 +39,6 @@ extern "C" {
 
 #include <stdarg.h>
 #include "libmcu/logging.h"
-#include "fs/logfs.h"
 
 #if !defined(LOGGER_FS_BASE_PATH)
 #define LOGGER_FS_BASE_PATH	"logfs"
@@ -63,6 +62,7 @@ enum {
 
 typedef uint8_t log_writer_t;
 
+struct logfs;
 /**
  * @brief Initialize the logger with the given file system.
  *

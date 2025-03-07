@@ -30,10 +30,14 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "charger_private.h"
+#include "charger_internal.h"
 #include "charger/connector.h"
-#include <string.h>
+
+#include <stdbool.h>
 #include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "logger.h"
 
 #if !defined(DEFAULT_INPUT_CURRENT)
@@ -52,9 +56,11 @@
 #define DEFAULT_OUTPUT_CURRENT_MAX		DEFAULT_OUTPUT_CURRENT_MIN
 #endif
 
-#if !defined(MIN)
-#define MIN(a, b)				(((a) > (b))? (b) : (a))
-#endif
+struct connector_entry {
+	struct list link; /* to charger.connectors.list */
+	struct connector *connector;
+	int id;
+};
 
 static bool validate_charger_param(const struct charger_param *param)
 {
@@ -71,14 +77,96 @@ static bool validate_charger_param(const struct charger_param *param)
 	return true;
 }
 
-static void destroy_connectors(struct charger *charger)
+static int delete_connector(struct charger *self, struct connector *connector)
+{
+	struct list *head = &self->connectors.list;
+	struct list *p;
+	struct list *t;
+
+	list_for_each_safe(p, t, head) {
+		struct connector_entry *entry =
+			list_entry(p, struct connector_entry, link);
+
+		if (entry->connector == connector) {
+			list_del(p, head);
+			free(entry);
+			return 0;
+		}
+	}
+
+	return -ENOENT;
+}
+
+static void delete_connectors(struct charger *self)
+{
+	struct list *head = &self->connectors.list;
+	struct list *p;
+	struct list *t;
+
+	list_for_each_safe(p, t, head) {
+		struct connector_entry *entry =
+			list_entry(p, struct connector_entry, link);
+
+		list_del(p, head);
+		free(entry);
+	}
+}
+
+int charger_process(struct charger *self)
 {
 	struct list *p;
-	struct list *n;
 
-	list_for_each_safe(p, n, &charger->connectors.list) {
-		charger->api.destroy_connector(charger, p);
-		charger->connectors.count--;
+	if (self->extension.pre_process) {
+		(*self->extension.pre_process)(self);
+	}
+
+	list_for_each(p, &self->connectors.list) {
+		struct connector_entry *entry =
+			list_entry(p, struct connector_entry, link);
+		struct connector *connector = entry->connector;
+
+		connector_process(connector);
+	}
+
+	if (self->extension.post_process) {
+		(*self->extension.post_process)(self);
+	}
+
+	return 0;
+}
+
+int charger_get_connector_id(const struct charger *self,
+		const struct connector *connector, int *id)
+{
+	struct list *p;
+
+	if (!connector || !id) {
+		return -EINVAL;
+	}
+
+	list_for_each(p, &self->connectors.list) {
+		struct connector_entry *entry =
+			list_entry(p, struct connector_entry, link);
+
+		if (entry->connector == connector) {
+			*id = entry->id;
+			return 0;
+		}
+	}
+
+	return -ENOENT;
+}
+
+void charger_iterate_connectors(struct charger *self,
+		charger_iterate_cb_t cb, void *cb_ctx)
+{
+	struct list *p;
+
+	list_for_each(p, &self->connectors.list) {
+		struct connector_entry *entry =
+			list_entry(p, struct connector_entry, link);
+
+		cb(entry->connector, cb_ctx);
 	}
 }
 
@@ -95,117 +183,127 @@ void charger_default_param(struct charger_param *param)
 	}
 }
 
-int charger_register_event_cb(struct charger *charger,
+struct connector *charger_get_connector(const struct charger *self,
+		const char *connector_name_str)
+{
+	struct list *p;
+
+	list_for_each(p, &self->connectors.list) {
+		struct connector_entry *entry =
+			list_entry(p, struct connector_entry, link);
+		struct connector *c = entry->connector;
+
+		if (strcmp(connector_name(c), connector_name_str) == 0) {
+			return c;
+		}
+	}
+
+	return NULL;
+}
+
+struct connector *charger_get_connector_available(const struct charger *self)
+{
+	struct list *p;
+
+	list_for_each(p, &self->connectors.list) {
+		struct connector_entry *entry =
+			list_entry(p, struct connector_entry, link);
+		struct connector *c = entry->connector;
+
+		if (connector_is_enabled(c) && !connector_is_reserved(c) &&
+				connector_state(c) == A) {
+			return c;
+		}
+	}
+
+	return NULL;
+}
+
+struct connector *charger_get_connector_by_id(const struct charger *self,
+		const int id)
+{
+	struct list *p;
+
+	list_for_each(p, &self->connectors.list) {
+		struct connector_entry *entry =
+			list_entry(p, struct connector_entry, link);
+
+		if (entry->id == id) {
+			return entry->connector;
+		}
+	}
+
+	return NULL;
+}
+
+int charger_count_connectors(const struct charger *self)
+{
+	struct list *p;
+	int count = 0;
+
+	list_for_each(p, &self->connectors.list) {
+		count++;
+	}
+
+	return count;
+}
+
+int charger_register_event_cb(struct charger *self,
 		charger_event_cb_t cb, void *cb_ctx)
 {
-	charger->event_cb = cb;
-	charger->event_cb_ctx = cb_ctx;
+	self->event_cb = cb;
+	self->event_cb_ctx = cb_ctx;
+	return 0;
+}
+
+int charger_attach_connector(struct charger *self, struct connector *connector)
+{
+	struct connector_entry *entry = malloc(sizeof(*entry));
+
+	if (entry == NULL) {
+		return -ENOMEM;
+	}
+
+	self->connectors.id_counter++;
+
+	entry->connector = connector;
+	entry->id = self->connectors.id_counter;
+	list_add_tail(&entry->link, &self->connectors.list);
+
+	connector->id = entry->id;
 
 	return 0;
 }
 
-struct connector *charger_get_connector(struct charger *charger,
-		const char *connector_name)
+int charger_detach_connector(struct charger *self, struct connector *connector)
 {
-	return get_connector(charger, connector_name);
+	return delete_connector(self, connector);
 }
 
-struct connector *charger_get_connector_free(struct charger *charger)
-{
-	return get_connector_free(charger);
-}
-
-struct connector *charger_get_connector_by_id(struct charger *charger,
-		const int id)
-{
-	return get_connector_by_id(charger, id);
-}
-
-bool charger_create_connector(struct charger *charger,
-		const struct connector_param *param)
-{
-	struct connector *c;
-
-	if (!connector_validate_param(param,
-			charger->param.max_input_current_mA)) {
-		error("invalid connector param");
-		return false;
-	}
-
-	if (!(c = charger->api.create_connector(charger, param))) {
-		return false;
-	}
-
-	charger->connectors.count++;
-
-	return true;
-}
-
-int charger_step(struct charger *self, uint32_t *next_period_ms)
-{
-	return self->api.step(self, next_period_ms);
-}
-
-size_t charger_stringify_event(const charger_event_t event,
-		char *buf, size_t bufsize)
-{
-	const char *tbl[] = {
-		"Plugged",
-		"Unplugged",
-		"Charging Started",
-		"Charging Suspended",
-		"Charging Ended",
-		"Error",
-		"Recovery",
-		"Reboot Required",
-		"Configuration Changed",
-		"Parameter Updated",
-		"Billing Started",
-		"Billing Updated",
-		"Billing Ended",
-		"Occupied",
-		"Unoccupied",
-		"Authorization Rejected",
-		"Reserved",
-	};
-
-	size_t len = 0;
-
-	for (charger_event_t e = CHARGER_EVENT_RESERVED; e; e >>= 1) {
-		if (e & event) {
-			const char *str = tbl[__builtin_ctz(e)];
-			if (len) {
-				strncpy(&buf[len], ",", bufsize - len - 1);
-				len = MIN(len + 1, bufsize - 1);
-			}
-			strncpy(&buf[len], str, bufsize - len - 1);
-			len = MIN(len + strlen(str), bufsize - 1);
-		}
-	}
-
-	buf[len] = '\0';
-
-	return len;
-}
-
-int charger_init(struct charger *charger, const struct charger_param *param)
+int charger_init(struct charger *self, const struct charger_param *param,
+		const struct charger_extension *extension)
 {
 	if (!validate_charger_param(param)) {
 		return -EINVAL;
 	}
 
-	memcpy(&charger->param, param, sizeof(charger->param));
-	list_init(&charger->connectors.list);
+	memset(self, 0, sizeof(*self));
+	memcpy(&self->param, param, sizeof(*param));
+	list_init(&self->connectors.list);
 
-	ratelim_init(&charger->log_ratelim, RATELIM_UNIT_SECOND,
-			CHARGER_LOG_RATE_CAP, CHARGER_LOG_RATE_SEC);
+	if (extension) {
+		memcpy(&self->extension, extension, sizeof(*extension));
+		(*extension->init)(self);
+	}
 
 	return 0;
 }
 
-int charger_deinit(struct charger *charger)
+void charger_deinit(struct charger *self)
 {
-	destroy_connectors(charger);
+	if (self->extension.deinit) {
+		(*self->extension.deinit)(self);
+	}
 
-	return 0;
+	delete_connectors(self);
 }

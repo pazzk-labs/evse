@@ -43,8 +43,8 @@
 
 #define STACK_SIZE_BYTES	4096U
 
-#if !defined(MAX)
-#define MIN(a, b)		((a) > (b)? (b) : (a))
+#if !defined(MIN)
+#define MIN(a, b)		(((a) > (b))? (b) : (a))
 #endif
 
 struct debug_button {

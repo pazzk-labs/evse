@@ -30,27 +30,42 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#ifndef OCPP_MESSAGES_PRIVATE_H
-#define OCPP_MESSAGES_PRIVATE_H
+#ifndef OCPP_CHECKPOINT_H
+#define OCPP_CHECKPOINT_H
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#include "connector_private.h"
-#include "ocpp/ocpp.h"
+#include <stdbool.h>
+#include "libmcu/compiler.h"
 
-int message_push_request(struct ocpp_connector *connector,
-		const ocpp_message_t msg_type, void *ctx);
-int message_push_request_defer(struct ocpp_connector *connector,
-		const ocpp_message_t msg_type, void *ctx,
-		const uint32_t delay_sec);
-int message_push_response(struct ocpp_connector *connector,
-		const ocpp_message_t msg_type,
-		const struct ocpp_message *req, void *ctx);
+#if !defined(OCPP_CONNECTOR_MAX)
+#define OCPP_CONNECTOR_MAX		2
+#endif
+
+typedef uint32_t ocpp_transaction_id_t;
+
+struct ocpp_connector_checkpoint {
+	/* The following fields are used for power loss recovery. */
+	ocpp_transaction_id_t transaction_id;
+	bool unavailable; /* connector availability */
+	uint8_t padding[3]; /* padding to ensure 8-byte alignment */
+};
+static_assert(sizeof(struct ocpp_connector_checkpoint) == 8,
+		"Incorrect size of struct ocpp_connector_checkpoint");
+
+struct ocpp_checkpoint {
+	struct ocpp_connector_checkpoint connector[OCPP_CONNECTOR_MAX];
+
+	bool unavailable; /* charger availability */
+	uint8_t padding[7];
+};
+static_assert(sizeof(struct ocpp_checkpoint) == OCPP_CONNECTOR_MAX * 8 + 8,
+		"Incorrect size of struct ocpp_checkpoint");
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* OCPP_MESSAGES_PRIVATE_H */
+#endif /* OCPP_CHECKPOINT_H */

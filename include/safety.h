@@ -38,7 +38,6 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include "libmcu/gpio.h"
 
 typedef enum {
 	SAFETY_STATUS_UNKNOWN,
@@ -58,6 +57,8 @@ typedef enum {
 	SAFETY_TYPE_INPUT_POWER,
 	SAFETY_TYPE_OUTPUT_POWER,
 } safety_t;
+
+struct gpio;
 
 /**
  * @brief Initializes the safety module.

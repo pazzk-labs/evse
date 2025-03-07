@@ -39,7 +39,6 @@ extern "C" {
 
 #include <stdint.h>
 #include <stdbool.h>
-#include "libmcu/uart.h"
 
 #if !defined(METERING_ENERGY_SAVE_THRESHOLD_WH)
 /**
@@ -75,6 +74,7 @@ struct metering_energy;
 typedef bool (*metering_save_cb_t)(const struct metering *self,
 		const struct metering_energy *energy, void *ctx);
 
+struct uart;
 struct metering_io {
 	struct uart *uart;
 };

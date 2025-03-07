@@ -1,42 +1,16 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
-#include "charger_private.h"
-#include "connector_private.h"
-
-static struct connector *create_connector(struct charger *charger,
-			const struct connector_param *param) {
-	struct connector *c = (struct connector *)
-		mock().actualCall("create_connector")
-		.returnPointerValueOrDefault(NULL);
-	c->param = *param;
-	c->id = 1;
-	c->charger = charger;
-	list_add_tail(&c->link, &charger->connectors.list);
-	return c;
-}
-
-static void destroy_connector(struct charger *charger, struct list *link) {
-}
+#include "charger_internal.h"
+#include "charger/connector.h"
 
 TEST_GROUP(Charger) {
 	struct charger charger;
-	struct connector c;
+	struct charger_param param;
 
 	void setup(void) {
-		memset(&charger, 0, sizeof(charger));
-		memset(&c, 0, sizeof(c));
-		struct charger_param param = {
-			.max_input_current_mA = 50000,
-			.input_voltage = 220,
-			.input_frequency = 60,
-		};
-		charger.api = (struct charger_api) {
-			.create_connector = create_connector,
-			.destroy_connector = destroy_connector,
-		};
-
-		charger_init(&charger, &param);
+		charger_default_param(&param);
+		charger_init(&charger, &param, NULL);
 	}
 	void teardown(void) {
 		charger_deinit(&charger);
@@ -44,190 +18,138 @@ TEST_GROUP(Charger) {
 		mock().checkExpectations();
 		mock().clear();
 	}
-
-	void attach_connector(void) {
-		struct connector_param param = {
-			.max_output_current_mA = 5,
-			.min_output_current_mA = 0,
-			.iec61851 = (struct iec61851 *)1,
-			.name = "name",
-		};
-		mock().expectOneCall("create_connector").andReturnValue(&c);
-		charger_create_connector(&charger, &param);
-	}
 };
 
-TEST(Charger, ShouldReturnEINVAL_WhenNullParamGiven) {
-	LONGS_EQUAL(-EINVAL, charger_init(&charger, NULL));
+TEST(Charger, ShouldReturnDefaultParam) {
+	charger_default_param(&param);
 
-	struct charger_param param = {
-		.max_input_current_mA = 50000,
-		.input_voltage = 0,
-		.input_frequency = 60,
-	};
-	charger_init(&charger, &param);
+	LONGS_EQUAL(31818, param.max_input_current_mA);
+	LONGS_EQUAL(220, param.input_voltage);
+	LONGS_EQUAL(60, param.input_frequency);
+	LONGS_EQUAL(31818, param.max_output_current_mA);
+	LONGS_EQUAL(31818, param.min_output_current_mA);
 }
+TEST(Charger, ShouldReturnEINVAL_WhenInvalidParamGiven) {
+	charger_default_param(&param);
+	param.max_input_current_mA = 0;
+	LONGS_EQUAL(-EINVAL, charger_init(&charger, &param, NULL));
 
-TEST(Charger, ShouldCallCreateConnector_WhenValidParamGiven) {
-	struct connector_param param = {
-		.max_output_current_mA = 5,
-		.min_output_current_mA = 0,
-		.iec61851 = (struct iec61851 *)1,
-		.name = "name",
-	};
-	mock().expectOneCall("create_connector").andReturnValue(&c);
-	charger_create_connector(&charger, &param);
+	charger_default_param(&param);
+	param.input_voltage = 0;
+	LONGS_EQUAL(-EINVAL, charger_init(&charger, &param, NULL));
+
+	charger_default_param(&param);
+	param.input_frequency = 0;
+	LONGS_EQUAL(-EINVAL, charger_init(&charger, &param, NULL));
 }
-
-TEST(Charger, ShouldReturnConnector_WhenConnectorNameGiven) {
-	struct connector_param param = {
-		.max_output_current_mA = 5,
-		.min_output_current_mA = 0,
-		.iec61851 = (struct iec61851 *)1,
-		.name = "name",
-	};
-	mock().expectOneCall("create_connector").andReturnValue(&c);
-	charger_create_connector(&charger, &param);
-	LONGS_EQUAL(&c, charger_get_connector(&charger, "name"));
+TEST(Charger, ShouldReturnZeroConnectors_WhenJustCreated) {
+	LONGS_EQUAL(0, charger_count_connectors(&charger));
 }
-
+TEST(Charger, ShouldReturnNull_WhenNoConnectorAttached) {
+	LONGS_EQUAL(NULL, charger_get_connector_by_id(&charger, 0));
+	LONGS_EQUAL(NULL, charger_get_connector_available(&charger));
+	LONGS_EQUAL(NULL, charger_get_connector(&charger, ""));
+	LONGS_EQUAL(NULL, charger_get_connector(&charger, NULL));
+}
+TEST(Charger, ShouldAttachConnector) {
+	struct connector c;
+	int id;
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c));
+	LONGS_EQUAL(1, charger_count_connectors(&charger));
+	LONGS_EQUAL(0, charger_get_connector_id(&charger, &c, &id));
+	LONGS_EQUAL(1, id);
+}
 TEST(Charger, ShouldReturnConnector_WhenConnectorIdGiven) {
-	struct connector_param param = {
-		.max_output_current_mA = 5,
-		.min_output_current_mA = 0,
-		.iec61851 = (struct iec61851 *)1,
-		.name = "name",
-	};
-	mock().expectOneCall("create_connector").andReturnValue(&c);
-	charger_create_connector(&charger, &param);
+	struct connector c;
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c));
 	LONGS_EQUAL(&c, charger_get_connector_by_id(&charger, 1));
 }
+TEST(Charger, ShouldReturnAvailableConnector_WhenAvailable) {
+	struct connector c;
+	mock().expectOneCall("connector_is_enabled").andReturnValue(true);
+	mock().expectOneCall("connector_is_reserved").andReturnValue(false);
+	mock().expectOneCall("connector_state").andReturnValue(A);
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c));
+	LONGS_EQUAL(&c, charger_get_connector_available(&charger));
+}
+TEST(Charger, ShouldDetachConnector) {
+	struct connector c;
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c));
+	LONGS_EQUAL(1, charger_count_connectors(&charger));
+	LONGS_EQUAL(0, charger_detach_connector(&charger, &c));
+	LONGS_EQUAL(0, charger_count_connectors(&charger));
+}
+TEST(Charger, ShouldReturnCountOfConnectors_WhenConnectorAttached) {
+	struct connector c1;
+	struct connector c2;
+	struct connector c3;
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c1));
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c2));
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c3));
+	LONGS_EQUAL(3, charger_count_connectors(&charger));
+}
+TEST(Charger, ShouldReturnUniqueConnectorID_WhenMultipleConnectorsAttached) {
+	struct connector c1;
+	struct connector c2;
+	struct connector c3;
+	int id1, id2, id3;
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c1));
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c2));
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c3));
+	LONGS_EQUAL(0, charger_get_connector_id(&charger, &c1, &id1));
+	LONGS_EQUAL(0, charger_get_connector_id(&charger, &c2, &id2));
+	LONGS_EQUAL(0, charger_get_connector_id(&charger, &c3, &id3));
+	LONGS_EQUAL(1, id1);
+	LONGS_EQUAL(2, id2);
+	LONGS_EQUAL(3, id3);
+}
+TEST(Charger, ShouldReturnUniqueConnectorID_WhenMultipleConnectorsAttachedAndDetached) {
+	struct connector c1;
+	struct connector c2;
+	struct connector c3;
+	int id1, id2, id3;
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c1));
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c2));
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c3));
+	LONGS_EQUAL(0, charger_get_connector_id(&charger, &c1, &id1));
+	LONGS_EQUAL(0, charger_get_connector_id(&charger, &c2, &id2));
+	LONGS_EQUAL(0, charger_get_connector_id(&charger, &c3, &id3));
+	LONGS_EQUAL(1, id1);
+	LONGS_EQUAL(2, id2);
+	LONGS_EQUAL(3, id3);
+	LONGS_EQUAL(0, charger_detach_connector(&charger, &c2));
+	LONGS_EQUAL(2, charger_count_connectors(&charger));
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c2));
+	LONGS_EQUAL(0, charger_get_connector_id(&charger, &c2, &id2));
+	LONGS_EQUAL(4, id2);
+	LONGS_EQUAL(3, charger_count_connectors(&charger));
+}
+TEST(Charger, ShouldProcessAllConnectors) {
+	struct connector c1;
+	struct connector c2;
+	struct connector c3;
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c1));
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c2));
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c3));
 
-TEST(Charger, get_connector_ShouldReturnNull_WhenNoConnectorRegistered) {
-	LONGS_EQUAL(NULL, charger_get_connector(&charger, "name"));
-}
+	mock().expectOneCall("connector_process").withParameter("self", &c1);
+	mock().expectOneCall("connector_process").withParameter("self", &c2);
+	mock().expectOneCall("connector_process").withParameter("self", &c3);
 
-TEST(Charger, ShouldSetPriority) {
-	LONGS_EQUAL(0, connector_set_priority(&c, 10));
-	LONGS_EQUAL(10, c.param.priority);
+	LONGS_EQUAL(0, charger_process(&charger));
 }
-
-TEST(Charger, ShouldReturnFalse_WhenNullParamGiven) {
-	LONGS_EQUAL(false, connector_validate_param(NULL, 0));
-}
-TEST(Charger, ShouldReturnFalse_WhenNullNameGiven) {
-	struct connector_param param = {
-		.name = NULL,
-	};
-	LONGS_EQUAL(false, connector_validate_param(&param, 0));
-}
-TEST(Charger, ShouldReturnFalse_WhenNullIec61851Given) {
-	struct connector_param param = {
-		.iec61851 = NULL,
-		.name = "name",
-	};
-	LONGS_EQUAL(false, connector_validate_param(&param, 0));
-}
-TEST(Charger, ShouldReturnFalse_WhenMinOutputCurrentGreaterThanMaxOutputCurrent) {
-	struct connector_param param = {
-		.max_output_current_mA = 5,
-		.min_output_current_mA = 10,
-		.iec61851 = (struct iec61851 *)1,
-		.name = "name",
-	};
-	LONGS_EQUAL(false, connector_validate_param(&param, 0));
-}
-TEST(Charger, ShouldReturnFalse_WhenMaxOutputCurrentGreaterThanMaxInputCurrent) {
-	struct connector_param param = {
-		.max_output_current_mA = 10,
-		.min_output_current_mA = 5,
-		.iec61851 = (struct iec61851 *)1,
-		.name = "name",
-	};
-	LONGS_EQUAL(false, connector_validate_param(&param, 5));
-}
-TEST(Charger, ShouldReturnTrue_WhenValidParamGiven) {
-	struct connector_param param = {
-		.max_output_current_mA = 5,
-		.min_output_current_mA = 0,
-		.iec61851 = (struct iec61851 *)1,
-		.name = "name",
-	};
-	LONGS_EQUAL(true, connector_validate_param(&param, 5));
-}
-
-TEST(Charger, ShouldReturnString_WhenStateGiven) {
-	STRCMP_EQUAL("A", stringify_state(A));
-	STRCMP_EQUAL("B", stringify_state(B));
-	STRCMP_EQUAL("C", stringify_state(C));
-	STRCMP_EQUAL("D", stringify_state(D));
-	STRCMP_EQUAL("E", stringify_state(E));
-	STRCMP_EQUAL("F", stringify_state(F));
-}
-TEST(Charger, ShouldReturnNoneEvent_WhenStateChangedFromEToA) {
-	LONGS_EQUAL(CHARGER_EVENT_NONE, get_event_from_state_change(A, E));
-}
-TEST(Charger, ShouldReturnPluggedEvent_WhenStateChangedFromAToB) {
-	LONGS_EQUAL(CHARGER_EVENT_PLUGGED, get_event_from_state_change(B, A));
-}
-TEST(Charger, ShouldReturnErrorEvent_WhenStateChangedFromAToF) {
-	LONGS_EQUAL(CHARGER_EVENT_ERROR, get_event_from_state_change(F, A));
-}
-TEST(Charger, ShouldReturnUnpluggedEvent_WhenStateChangedFromBToA) {
-	LONGS_EQUAL(CHARGER_EVENT_UNPLUGGED, get_event_from_state_change(A, B));
-}
-TEST(Charger, ShouldReturnErrorEvent_WhenStateChangedFromBToF) {
-	LONGS_EQUAL(CHARGER_EVENT_ERROR, get_event_from_state_change(F, B));
-}
-TEST(Charger, ShouldReturnChargingStartedEvent_WhenStateChangedFromBToC) {
-	LONGS_EQUAL(CHARGER_EVENT_CHARGING_STARTED,
-			get_event_from_state_change(C, B));
-}
-TEST(Charger, ShouldReturnChargingSuspendedEvent_WhenStateChangedFromCToB) {
-	LONGS_EQUAL(CHARGER_EVENT_CHARGING_ENDED,
-			get_event_from_state_change(B, C));
-}
-TEST(Charger, ShouldReturnUnpluggedEvent_WhenStateChangedFromCToA) {
-	LONGS_EQUAL(CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_UNPLUGGED,
-			get_event_from_state_change(A, C));
-}
-TEST(Charger, ShouldReturnErrorEvent_WhenStateChangedFromCToF) {
-	LONGS_EQUAL(CHARGER_EVENT_ERROR | CHARGER_EVENT_CHARGING_ENDED,
-			get_event_from_state_change(F, C));
-}
-TEST(Charger, ShouldReturnRecoveryEvent_WhenStateChangedFromFToA) {
-	LONGS_EQUAL(CHARGER_EVENT_ERROR_RECOVERY,
-			get_event_from_state_change(A, F));
-}
-TEST(Charger, ShouldReturnRecoveryEvent_WhenStateChangedFromFToB) {
-	LONGS_EQUAL(CHARGER_EVENT_ERROR_RECOVERY | CHARGER_EVENT_PLUGGED,
-			get_event_from_state_change(B, F));
-}
-
-TEST(Charger, ShouldReturnFalse_WhenDutyIs100) {
-	mock().expectOneCall("iec61851_get_pwm_duty_set").andReturnValue(100);
-	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_B);
-	LONGS_EQUAL(false, is_state_x2(&c, B));
-}
-TEST(Charger, ShouldReturnFalse_WhenDutyIs0) {
-	mock().expectOneCall("iec61851_get_pwm_duty_set").andReturnValue(0);
-	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_B);
-	LONGS_EQUAL(false, is_state_x2(&c, B));
-}
-TEST(Charger, ShouldReturnTrue_WhenDutyIsNominal) {
-	mock().expectOneCall("iec61851_get_pwm_duty_set").andReturnValue(53);
-	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_B);
-	LONGS_EQUAL(true, is_state_x2(&c, B));
-}
-
-TEST(Charger, ShouldReturnEventString) {
-	char buf[CHARGER_EVENT_STRING_MAXLEN];
-	charger_stringify_event(CHARGER_EVENT_PLUGGED, buf, sizeof(buf));
-	STRCMP_EQUAL("Plugged", buf);
-	charger_stringify_event(CHARGER_EVENT_BILLING_ENDED, buf, sizeof(buf));
-	STRCMP_EQUAL("Billing Ended", buf);
-	charger_stringify_event((charger_event_t)(CHARGER_EVENT_BILLING_ENDED |
-			CHARGER_EVENT_CHARGING_ENDED | CHARGER_EVENT_UNPLUGGED),
-			buf, sizeof(buf));
-	STRCMP_EQUAL("Billing Ended,Charging Ended,Unplugged", buf);
+TEST(Charger, ShouldReturnConnectorID_WhenConnectorGiven) {
+	struct connector c1;
+	struct connector c2;
+	struct connector c3;
+	int id1, id2, id3;
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c1));
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c2));
+	LONGS_EQUAL(0, charger_attach_connector(&charger, &c3));
+	LONGS_EQUAL(0, charger_get_connector_id(&charger, &c1, &id1));
+	LONGS_EQUAL(0, charger_get_connector_id(&charger, &c2, &id2));
+	LONGS_EQUAL(0, charger_get_connector_id(&charger, &c3, &id3));
+	LONGS_EQUAL(1, id1);
+	LONGS_EQUAL(2, id2);
+	LONGS_EQUAL(3, id3);
 }

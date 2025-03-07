@@ -37,9 +37,8 @@
 extern "C" {
 #endif
 
-#include "libmcu/pwm.h"
-
 struct relay;
+struct pwm_channel;
 
 /**
  * @brief Creates a relay instance.

@@ -116,7 +116,7 @@ uint8_t iec61851_get_pwm_duty(struct iec61851 *self)
 	return pilot_duty(self->pilot);
 }
 
-uint8_t iec61851_get_pwm_duty_set(struct iec61851 *self)
+uint8_t iec61851_get_pwm_duty_target(struct iec61851 *self)
 {
 	return self->pilot_duty_pct;
 }

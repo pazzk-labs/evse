@@ -47,8 +47,8 @@
 #define MIN(a, b)		((a) > (b)? (b) : (a))
 #endif
 
-#if !defined(ARRAY_SIZE)
-#define ARRAY_SIZE(x)		(sizeof(x) / sizeof((x)[0]))
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
 #endif
 
 typedef int (*decoder_handler_t)(struct ocpp_message *msg, cJSON *json);
@@ -419,12 +419,13 @@ static struct decoder_entry decoders[] = {
 	{ OCPP_MSG_RESET,                    do_reset },
 	{ OCPP_MSG_START_TRANSACTION,        do_start_transaction },
 	{ OCPP_MSG_STATUS_NOTIFICATION,      do_empty },
+	{ OCPP_MSG_STOP_TRANSACTION,         do_empty },
 	{ OCPP_MSG_UPDATE_FIRMWARE,          do_updatefirmware },
 };
 
 static decoder_handler_t decoder(ocpp_message_t msgtype)
 {
-	for (size_t i = 0; i < ARRAY_SIZE(decoders); i++) {
+	for (size_t i = 0; i < ARRAY_COUNT(decoders); i++) {
 		if (decoders[i].msg_type == msgtype) {
 			return decoders[i].handler;
 		}

@@ -42,7 +42,9 @@
 #define LFS_FLASH_SECTOR_SIZE		(4 * 1024/*KiB*/)
 #define LFS_FLASH_PAGE_SIZE		256
 
+#if !defined(MIN)
 #define MIN(a, b)			(((a) > (b))? (b) : (a))
+#endif
 
 struct fs {
 	struct fs_api api;

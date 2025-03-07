@@ -30,39 +30,45 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#ifndef OCPP_CHARGER_PRIVATE_H
-#define OCPP_CHARGER_PRIVATE_H
+#ifndef CHARGER_FACTORY_H
+#define CHARGER_FACTORY_H
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#include "charger/ocpp.h"
-#include "../charger_private.h"
+#include "charger/charger.h"
+#include "charger/connector.h"
 
-typedef enum {
-	OCPP_CHARGER_REBOOT_NONE,
-	OCPP_CHARGER_REBOOT_REQUIRED,
-	OCPP_CHARGER_REBOOT_REQUIRED_REMOTELY,
-	OCPP_CHARGER_REBOOT_FORCED,
-} ocpp_charger_reboot_t;
+/**
+ * @brief Creates a charger instance based on the provided parameters.
+ *
+ * @param[in] param Pointer to the charger parameters.
+ * @param[in] extension Pointer to the charger extension.
+ *
+ * @return Pointer to the created charger instance.
+ */
+struct charger *charger_factory_create(struct charger_param *param,
+		struct charger_extension **extension);
 
-struct ocpp_charger {
-	struct charger base;
-	struct ocpp_charger_param param;
+/**
+ * @brief Creates a connector instance based on the provided parameters.
+ *
+ * @param[in] param Pointer to the connector parameters.
+ *
+ * @return Pointer to the created connector instance.
+ */
+struct connector *connector_factory_create(const struct connector_param *param);
 
-	bool param_changed; /* set when availability changed or
-			transaction_id acquired */
-	bool configuration_changed; /* set when configuration changed */
-	bool status_report_required; /* set when conn0 availability changed */
-	bool csms_up; /* set when BootNotification.conf: Accepted */
-	bool remote_request; /* set when remote reset requested */
-
-	ocpp_charger_reboot_t reboot_required;
-};
+/**
+ * @brief Retrieves the current mode of the charger factory.
+ *
+ * @return String representing the current mode of the charger factory.
+ */
+const char *charger_factory_mode(void);
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* OCPP_CHARGER_PRIVATE_H */
+#endif /* CHARGER_FACTORY_H */
