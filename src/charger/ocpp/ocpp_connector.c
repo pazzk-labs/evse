@@ -498,10 +498,10 @@ static int process(struct connector *self)
 	struct ocpp_connector *oc = (struct ocpp_connector *)self;
 
 	oc->now = time(NULL);
-	fsm_step(&self->fsm);
 
-	ocpp_connector_state_t state = ocpp_connector_state(oc);
+	const fsm_state_t state = fsm_step(&self->fsm);
 	struct metering *meter = connector_meter(self);
+
 	if (meter && (state == Charging || state == SuspendedEV)) {
 		int err = metering_step(meter);
 		if (err && err != -EAGAIN) {

@@ -34,9 +34,11 @@
 #include "../connector_internal.h"
 
 #include <stdlib.h>
+#include <errno.h>
 
 #include "libmcu/fsm.h"
 #include "libmcu/metrics.h"
+#include "metering.h"
 #include "logger.h"
 
 #if !defined(ARRAY_COUNT)
@@ -150,6 +152,11 @@ static void do_supply_power(fsm_state_t state, fsm_state_t next_state, void *ctx
 	if (!connector_is_supplying_power(c)) {
 		connector_enable_power_supply(c);
 	}
+
+	uint64_t energy = 0;
+	if (metering_get_energy(connector_meter(c), &energy, NULL) == 0) {
+		info("meterStart: %llu", energy);
+	}
 }
 
 static void do_stop_power(fsm_state_t state, fsm_state_t next_state, void *ctx)
@@ -157,6 +164,11 @@ static void do_stop_power(fsm_state_t state, fsm_state_t next_state, void *ctx)
 	struct connector *c = (struct connector *)ctx;
 	if (connector_is_supplying_power(c)) {
 		connector_disable_power_supply(c);
+	}
+
+	uint64_t energy = 0;
+	if (metering_get_energy(connector_meter(c), &energy, NULL) == 0) {
+		info("meterStop: %llu", energy);
 	}
 }
 
@@ -303,7 +315,17 @@ static void on_state_change(struct fsm *fsm,
 
 static int process(struct connector *self)
 {
-	fsm_step(&self->fsm);
+	const fsm_state_t state = fsm_step(&self->fsm);
+	struct metering *meter = connector_meter(self);
+
+	if (meter && (state == C || state == D)) {
+		int err = metering_step(meter);
+		if (err && err != -EAGAIN) {
+			ratelim_request_format(&self->log_ratelim,
+				logger_error, "metering_step failed");
+		}
+	}
+
 	return 0;
 }
 

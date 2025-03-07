@@ -5,6 +5,7 @@
 #include "connector_internal.h"
 #include "iec61851.h"
 #include "safety.h"
+#include "metering.h"
 
 #include <time.h>
 
@@ -84,6 +85,9 @@ TEST_GROUP(FreeConnector) {
 		mock().expectOneCall("iec61851_is_supplying_power")
 			.andReturnValue(false);
 		mock().expectOneCall("iec61851_start_power_supply");
+		mock().expectOneCall("metering_get_energy")
+			.ignoreOtherParameters()
+			.andReturnValue(0);
 		mock().expectOneCall("on_connector_event")
 			.withParameter("event", CONNECTOR_EVENT_CHARGING_STARTED);
 		LONGS_EQUAL(0, connector_process(c));
@@ -178,6 +182,9 @@ TEST(FreeConnector, ShouldGoStateCWithEvent_WhenChargingStartedInStateB) {
 	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_C);
 	mock().expectOneCall("iec61851_is_supplying_power").andReturnValue(false);
 	mock().expectOneCall("iec61851_start_power_supply");
+	mock().expectOneCall("metering_get_energy")
+		.ignoreOtherParameters()
+		.andReturnValue(0);
 	mock().expectOneCall("on_connector_event")
 		.withParameter("event", CONNECTOR_EVENT_CHARGING_STARTED);
 
@@ -191,6 +198,9 @@ TEST(FreeConnector, ShouldGoStateAWithEvent_WhenUnpluggedInStateC) {
 	mock().expectOneCall("iec61851_stop_power_supply");
 	mock().expectOneCall("iec61851_set_current")
 		.withParameter("milliampere", 0);
+	mock().expectOneCall("metering_get_energy")
+		.ignoreOtherParameters()
+		.andReturnValue(0);
 
 	mock().expectOneCall("on_connector_event")
 		.withParameter("event", CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_UNPLUGGED);
@@ -204,6 +214,9 @@ TEST(FreeConnector, ShouldGoStateBWithEvent_WhenChargingEndedInStateC) {
 	mock().expectNCalls(2, "iec61851_state").andReturnValue(IEC61851_STATE_B);
 	mock().expectOneCall("iec61851_is_supplying_power").andReturnValue(true);
 	mock().expectOneCall("iec61851_stop_power_supply");
+	mock().expectOneCall("metering_get_energy")
+		.ignoreOtherParameters()
+		.andReturnValue(0);
 
 	mock().expectOneCall("on_connector_event")
 		.withParameter("event", CONNECTOR_EVENT_CHARGING_ENDED);
