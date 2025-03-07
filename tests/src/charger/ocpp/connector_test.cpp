@@ -5,6 +5,7 @@
 #include "ocpp/ocpp.h"
 #include "ocpp_connector_internal.h"
 #include "iec61851.h"
+#include "safety.h"
 
 static void on_connector_event(struct connector *self, connector_event_t event,
 		void *ctx) {
@@ -42,6 +43,53 @@ TEST_GROUP(OcppConnector) {
 		mock().checkExpectations();
 		mock().clear();
 	}
+
+	void go_available(void) {
+		ocpp_connector_set_csms_up(oc, true);
+		mock().expectNCalls(2, "iec61851_state")
+			.andReturnValue(IEC61851_STATE_A);
+		mock().expectOneCall("csms_request")
+			.withParameter("msgtype", OCPP_MSG_STATUS_NOTIFICATION);
+		// on_state_change()
+		mock().expectOneCall("iec61851_state")
+			.andReturnValue(IEC61851_STATE_A);
+		mock().expectOneCall("iec61851_is_occupied_state")
+			.withParameter("state", IEC61851_STATE_A)
+			.andReturnValue(false);
+		connector_process(c);
+	}
+	void go_preparing_occupied(void) {
+		go_available();
+
+		// 1. fault check(is_evse_error)
+		mock().expectOneCall("iec61851_get_pwm_duty_target")
+			.andReturnValue(100);
+		mock().expectOneCall("safety_status")
+			.withParameter("type", SAFETY_TYPE_INPUT_POWER)
+			.withParameter("expected_freq", 60)
+			.andReturnValue(SAFETY_STATUS_OK);
+		mock().expectOneCall("safety_status")
+			.withParameter("type", SAFETY_TYPE_OUTPUT_POWER)
+			.withParameter("expected_freq", 60)
+			.andReturnValue(SAFETY_STATUS_STALE);
+		// 2. is_unavailable, is_preparing, do_preparing
+		mock().expectNCalls(3, "iec61851_state")
+			.andReturnValue(IEC61851_STATE_A);
+		mock().expectOneCall("csms_request")
+			.withParameter("msgtype", OCPP_MSG_STATUS_NOTIFICATION);
+		// 3. on_state_change()
+		mock().expectOneCall("iec61851_state")
+			.andReturnValue(IEC61851_STATE_A);
+		mock().expectOneCall("iec61851_is_occupied_state")
+			.withParameter("state", IEC61851_STATE_A)
+			.andReturnValue(false);
+		mock().expectOneCall("on_connector_event")
+			.withParameter("event", CONNECTOR_EVENT_OCCUPIED);
+
+		ocpp_connector_set_session_current_uid(oc, "test");
+
+		connector_process(c);
+	}
 };
 
 TEST(OcppConnector, ShouldSendBootNotification_WhenNoPendingRequests) {
@@ -75,7 +123,7 @@ TEST(OcppConnector, ShouldGoAvailable_WhenBooted) {
 }
 TEST(OcppConnector, ShouldGoPreparing_WhenBootedWithPlugged) {
 	ocpp_connector_set_csms_up(oc, true);
-	mock().expectNCalls(4, "iec61851_state").andReturnValue(IEC61851_STATE_B);
+	mock().expectNCalls(3, "iec61851_state").andReturnValue(IEC61851_STATE_B);
 	mock().expectOneCall("csms_request")
 		.withParameter("msgtype", OCPP_MSG_STATUS_NOTIFICATION);
 	// on_state_change()
@@ -96,5 +144,36 @@ TEST(OcppConnector, ShouldGoUnavailable_WhenBooted) {
 		.withParameter("state", IEC61851_STATE_A).andReturnValue(false);
 
 	ocpp_connector_set_availability(oc, false);
+	connector_process(c);
+}
+TEST(OcppConnector, ShouldGoPreparing_WhenAuthorized) {
+	go_preparing_occupied();
+}
+TEST(OcppConnector, ShouldDispatchUnoccupiedEvent_WhenAuthorizationTimeout) {
+	go_preparing_occupied();
+	ocpp_connector_set_session_current_expiry(oc, time(NULL));
+
+	// 1. fault check(is_evse_error)
+	mock().expectOneCall("iec61851_get_pwm_duty_target").andReturnValue(100);
+	mock().expectOneCall("safety_status")
+		.withParameter("type", SAFETY_TYPE_INPUT_POWER)
+		.withParameter("expected_freq", 60)
+		.andReturnValue(SAFETY_STATUS_OK);
+	mock().expectOneCall("safety_status")
+		.withParameter("type", SAFETY_TYPE_OUTPUT_POWER)
+		.withParameter("expected_freq", 60)
+		.andReturnValue(SAFETY_STATUS_STALE);
+	// 2. is_unavailable, is_available, do_preparing
+	mock().expectNCalls(2, "iec61851_state").andReturnValue(IEC61851_STATE_A);
+	mock().expectOneCall("csms_request")
+		.withParameter("msgtype", OCPP_MSG_STATUS_NOTIFICATION);
+	// 3. on_state_change()
+	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_A);
+	mock().expectOneCall("iec61851_is_occupied_state")
+		.withParameter("state", IEC61851_STATE_A)
+		.andReturnValue(false);
+	mock().expectOneCall("on_connector_event")
+		.withParameter("event", CONNECTOR_EVENT_UNOCCUPIED);
+
 	connector_process(c);
 }

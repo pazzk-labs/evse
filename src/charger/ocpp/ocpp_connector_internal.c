@@ -36,19 +36,9 @@
 
 static bool is_time_expired(const struct ocpp_connector *c)
 {
-	return c->session.timestamp.expiry <= c->now;
+	return c->session.timestamp.expiry &&
+		c->session.timestamp.expiry <= c->now;
 }
-
-static void dispatch_event(struct ocpp_connector *oc,
-		const connector_event_t event)
-{
-	if (!event || !oc->base.event_cb) {
-		return;
-	}
-
-	(*oc->base.event_cb)(&oc->base, event, oc->base.event_cb_ctx);
-}
-
 
 static bool update_metering_core(struct ocpp_connector *oc, time_t *timestamp,
 		uint32_t interval, ocpp_reading_context_t context)
@@ -153,14 +143,6 @@ bool ocpp_connector_is_unavailable(const struct ocpp_connector *oc)
 	return oc->checkpoint->unavailable;
 }
 
-#if 0
-bool ocpp_connector_is_occupied(const ocpp_connector_state_t state)
-{
-	return state == Preparing || state == Charging ||
-		state == SuspendedEV || state == Finishing;
-}
-#endif
-
 bool ocpp_connector_is_csms_up(const struct ocpp_connector *oc)
 {
 	return oc->csms_up;
@@ -174,19 +156,13 @@ void ocpp_connector_set_csms_up(struct ocpp_connector *oc, const bool up)
 bool ocpp_connector_is_session_established(const struct ocpp_connector *oc)
 {
 	const uint8_t empty[OCPP_ID_TOKEN_MAXLEN] = {0, };
-	return memcmp(oc->session.auth.current.id, empty, sizeof(empty)) != 0;
+	return memcmp(oc->session.auth.current.uid, empty, sizeof(empty)) != 0;
 }
 
 bool ocpp_connector_is_session_active(const struct ocpp_connector *oc)
 {
 	return ocpp_connector_is_session_established(oc) &&
 		!is_time_expired(oc);
-}
-
-bool ocpp_connector_is_session_trial_id_exist(const struct ocpp_connector *oc)
-{
-	const uint8_t empty[OCPP_ID_TOKEN_MAXLEN] = {0, };
-	return memcmp(oc->session.auth.trial.id, empty, sizeof(empty)) != 0;
 }
 
 bool ocpp_connector_is_transaction_started(const struct ocpp_connector *oc)
@@ -204,6 +180,8 @@ void ocpp_connector_set_session_current_expiry(struct ocpp_connector *oc,
 {
 	if (expiry) {
 		oc->session.timestamp.expiry = expiry;
+		info("expiry set to %lld, %llds from now",
+				expiry, expiry - oc->now);
 	}
 }
 
@@ -263,7 +241,7 @@ void ocpp_connector_clear_checkpoint_tid(struct ocpp_connector *oc)
 void ocpp_connector_raise_event(struct ocpp_connector *oc,
 		const connector_event_t event)
 {
-	dispatch_event(oc, event);
+	msgq_push(oc->evtq, &event, sizeof(event));
 }
 
 bool ocpp_connector_has_missing_transaction(struct ocpp_connector *oc)
@@ -273,45 +251,81 @@ bool ocpp_connector_has_missing_transaction(struct ocpp_connector *oc)
 
 void ocpp_connector_clear_session_id(struct auth *auth)
 {
-	memset(&auth->id, 0, sizeof(auth->id));
-	memset(&auth->parent_id, 0, sizeof(auth->parent_id));
+	memset(&auth->uid, 0, sizeof(auth->uid));
+	memset(&auth->pid, 0, sizeof(auth->pid));
 }
 
-void ocpp_connector_set_session_current_id(struct ocpp_connector *c,
-		const char id[OCPP_ID_TOKEN_MAXLEN])
+void ocpp_connector_set_session_current_uid(struct ocpp_connector *c,
+		const char uid[OCPP_ID_TOKEN_MAXLEN])
 {
-	int timeout = 0;
-	ocpp_get_configuration("ConnectionTimeOut",
-			&timeout, sizeof(timeout), NULL);
-	memcpy(&c->session.auth.current.id, id,
-			sizeof(c->session.auth.current.id));
-	ocpp_connector_set_session_current_expiry(c, c->now + timeout);
+	memcpy(&c->session.auth.current.uid, uid,
+			sizeof(c->session.auth.current.uid));
 
 	ocpp_connector_clear_session_id(&c->session.auth.trial);
-	info("user \"%s\" authorized", c->session.auth.current.id);
+	info("user \"%s\" authorized", c->session.auth.current.uid);
 }
 
-void ocpp_connector_set_session_parent_id(struct ocpp_connector *c,
-		const char id[OCPP_ID_TOKEN_MAXLEN])
+void ocpp_connector_set_session_pid(struct ocpp_connector *c,
+		const char pid[OCPP_ID_TOKEN_MAXLEN])
 {
-	if (id[0]) {
-		memcpy(&c->session.auth.current.parent_id, id,
-				sizeof(c->session.auth.current.parent_id));
-		info("parent \"%s\" authorized", id);
+	if (pid[0]) {
+		memcpy(&c->session.auth.current.pid, pid,
+				sizeof(c->session.auth.current.pid));
+		info("parent \"%s\" authorized", pid);
 	}
 }
 
-void ocpp_connector_set_session_trial_id(struct ocpp_connector *c,
-		const char id[OCPP_ID_TOKEN_MAXLEN])
+void ocpp_connector_set_session_trial_uid(struct ocpp_connector *c,
+		const char uid[OCPP_ID_TOKEN_MAXLEN])
 {
-	memcpy(&c->session.auth.trial.id, id, sizeof(c->session.auth.trial.id));
-	info("user \"%s\" in trial", id);
+	memcpy(&c->session.auth.trial.uid, uid, sizeof(c->session.auth.trial.uid));
+	info("user \"%s\" in trial", uid);
 }
 
-void ocpp_connector_accept_session_trial_id(struct ocpp_connector *c)
+void ocpp_connector_accept_session_trial_uid(struct ocpp_connector *c)
 {
-	ocpp_connector_set_session_current_id(c,
-			(const char *)c->session.auth.trial.id);
+	ocpp_connector_set_session_current_uid(c,
+			(const char *)c->session.auth.trial.uid);
+}
+
+void ocpp_connector_clear_session_trial_uid(struct ocpp_connector *c)
+{
+	ocpp_connector_clear_session_id(&c->session.auth.trial);
+}
+
+bool ocpp_connector_is_session_trial_uid_exist(const struct ocpp_connector *oc)
+{
+	const uint8_t empty[OCPP_ID_TOKEN_MAXLEN] = {0, };
+	return memcmp(oc->session.auth.trial.uid, empty, sizeof(empty)) != 0;
+}
+
+bool ocpp_connector_is_trial_uid_equal(const struct ocpp_connector *c)
+{
+	if (ocpp_connector_is_session_established(c)) {
+		return memcmp(c->session.auth.current.uid,
+				c->session.auth.trial.uid,
+				sizeof(c->session.auth.current.uid))
+			== 0;
+	}
+
+	if (ocpp_connector_is_session_trial_uid_exist(c)) {
+		return memcmp(c->session.auth.current.uid,
+				c->session.auth.trial.uid,
+				sizeof(c->session.auth.current.uid))
+			== 0;
+	}
+
+	return false;
+}
+
+void ocpp_connector_trigger_stop_session(struct ocpp_connector *c, bool remote)
+{
+	/* Stop the session and clear the current session ID. The trial session
+	 * ID is used for the StopTransaction request. */
+	ocpp_connector_set_session_trial_uid(c,
+			(const char *)c->session.auth.current.uid);
+	ocpp_connector_clear_session_id(&c->session.auth.current);
+	c->session.remote_stop = remote;
 }
 
 ocpp_measurand_t ocpp_connector_update_metering(struct ocpp_connector *oc)

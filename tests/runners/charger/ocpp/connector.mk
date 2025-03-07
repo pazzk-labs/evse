@@ -21,6 +21,8 @@ SRC_FILES = \
 	../src/charger/connector.c \
 	../external/libmcu/modules/fsm/src/fsm.c \
 	../external/libmcu/modules/ratelim/src/ratelim.c \
+	../external/libmcu/modules/common/src/msgq.c \
+	../external/libmcu/modules/common/src/ringbuf.c \
 
 TEST_SRC_FILES = \
 	src/charger/ocpp/connector_test.cpp \

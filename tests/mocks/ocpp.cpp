@@ -81,6 +81,7 @@ int ocpp_set_configuration(const char * const keystr,
 int ocpp_get_configuration(const char * const keystr,
 		void *buf, size_t bufsize, bool *readonly) {
 	return mock().actualCall("ocpp_get_configuration")
+		.withOutputParameter("buf", buf)
 		.returnIntValueOrDefault(0);
 }
 int ocpp_get_configuration_by_index(int index,

@@ -40,6 +40,8 @@
 #include "metering.h"
 #include "logger.h"
 
+#define MAX_EVENTS			4
+
 #if !defined(ARRAY_COUNT)
 #define ARRAY_COUNT(x)			(sizeof(x) / sizeof((x)[0]))
 #endif
@@ -239,6 +241,10 @@ static void do_available(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 
+	if (state == Preparing && !ocpp_connector_is_session_established(oc)) {
+		ocpp_connector_raise_event(oc, CONNECTOR_EVENT_UNPLUGGED);
+	}
+
 	send_connector_status(oc, NULL);
 	ocpp_connector_clear_session(oc);
 
@@ -248,15 +254,6 @@ static void do_available(fsm_state_t state, fsm_state_t next_state, void *ctx)
 static void do_preparing(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
-	struct connector *c = &oc->base;
-
-	if (connector_is_state_x(c, A)) { /* remote start or idTag */
-		uint32_t conn_timeout_sec;
-		ocpp_get_configuration("ConnectionTimeOut",
-				&conn_timeout_sec, sizeof(conn_timeout_sec), 0);
-		ocpp_connector_set_session_current_expiry(oc,
-				oc->now + conn_timeout_sec);
-	}
 
         /* NOTE: Transition to the Preparing state to allow the user to restart
          * charging if desired, but maintain the Finishing state in the CSMS to
@@ -418,24 +415,26 @@ static connector_event_t get_event_from_state_change(fsm_state_t new_state,
 		const bool plugged;
 		const uint32_t event;
 	} tbl[] = {
-		{ Available,   Preparing,   true,  CONNECTOR_EVENT_PLUGGED },
+		{ Available,   Preparing,   true,  CONNECTOR_EVENT_PLUGGED |
+			CONNECTOR_EVENT_OCCUPIED },
 		{ Available,   Preparing,   false, CONNECTOR_EVENT_OCCUPIED },
 		{ Available,   Reserved,    false, CONNECTOR_EVENT_RESERVED },
 		{ Available,   Faulted,     false, CONNECTOR_EVENT_ERROR },
-		{ Preparing,   Available,   false, CONNECTOR_EVENT_UNPLUGGED },
+		{ Preparing,   Available,   false, CONNECTOR_EVENT_UNOCCUPIED },
 		{ Preparing,   Charging,    true,  CONNECTOR_EVENT_CHARGING_STARTED },
 		{ Preparing,   SuspendedEV, true,  CONNECTOR_EVENT_CHARGING_SUSPENDED },
 		{ Preparing,   Faulted,     true,  CONNECTOR_EVENT_ERROR },
-		{ Charging,    Available,   false, CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_UNPLUGGED },
-		{ Charging,    Finishing,   false, CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_UNPLUGGED },
+		{ Charging,    Finishing,   false, CONNECTOR_EVENT_CHARGING_ENDED },
 		{ Charging,    Finishing,   true,  CONNECTOR_EVENT_CHARGING_ENDED },
 		{ Charging,    SuspendedEV, true,  CONNECTOR_EVENT_CHARGING_SUSPENDED },
-		{ Charging,    Faulted,     true,  CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_ERROR },
 		{ SuspendedEV, Charging,    true,  CONNECTOR_EVENT_CHARGING_STARTED },
 		{ SuspendedEV, Finishing,   true,  CONNECTOR_EVENT_CHARGING_ENDED },
 		{ SuspendedEV, Finishing,   false, CONNECTOR_EVENT_CHARGING_ENDED },
-		{ SuspendedEV, Faulted,     true,  CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_ERROR },
-		{ Finishing,   Available,   false, CONNECTOR_EVENT_UNPLUGGED },
+		{ Finishing,   Available,   false, CONNECTOR_EVENT_UNPLUGGED |
+			CONNECTOR_EVENT_UNOCCUPIED },
+		{ Finishing,   Faulted,     false, CONNECTOR_EVENT_ERROR |
+			CONNECTOR_EVENT_UNPLUGGED | CONNECTOR_EVENT_UNOCCUPIED },
+		{ Finishing,   Faulted,     true,  CONNECTOR_EVENT_ERROR },
 		{ Reserved,    Available,   false, CONNECTOR_EVENT_UNOCCUPIED },
 		{ Reserved,    Preparing,   true,  CONNECTOR_EVENT_PLUGGED },
 		{ Faulted,     Available,   false, CONNECTOR_EVENT_ERROR_RECOVERY },
@@ -452,11 +451,30 @@ static connector_event_t get_event_from_state_change(fsm_state_t new_state,
 	return CONNECTOR_EVENT_NONE;
 }
 
+static void dispatch_event(struct connector *c, bool plugged,
+		fsm_state_t new_state, fsm_state_t prev_state)
+{
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+	connector_event_t events = CONNECTOR_EVENT_NONE;
+
+	while (msgq_len(oc->evtq) > 0) {
+		connector_event_t evt;
+		if (msgq_pop(oc->evtq, &evt, sizeof(evt)) > 0) {
+			events |= evt;
+		}
+	}
+
+	events |= get_event_from_state_change(new_state, prev_state, plugged);
+
+	if (events && c->event_cb) {
+		(*c->event_cb)(c, events, c->event_cb_ctx);
+	}
+}
+
 static void on_state_change(struct fsm *fsm,
 		fsm_state_t new_state, fsm_state_t prev_state, void *ctx)
 {
-	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
-	struct connector *c = &oc->base;
+	struct connector *c = (struct connector *)ctx;
 	const connector_state_t cp_state = connector_state(c);
 
 	c->time_last_state_change = time(NULL);
@@ -469,12 +487,8 @@ static void on_state_change(struct fsm *fsm,
 					(ocpp_connector_state_t)new_state),
 			c->time_last_state_change);
 
-	const connector_event_t events = get_event_from_state_change(new_state,
-			prev_state, connector_is_occupied_state(cp_state));
-
-	if (events && c->event_cb) {
-		(*c->event_cb)(c, events, c->event_cb_ctx);
-	}
+	dispatch_event(c, connector_is_occupied_state(cp_state),
+			new_state, prev_state);
 
 	connector_update_metrics(cp_state);
 }
@@ -546,6 +560,12 @@ struct connector *ocpp_connector_create(const struct connector_param *param)
 		},
 	};
 
+	if ((oc->evtq = msgq_create(msgq_calc_size(MAX_EVENTS,
+			sizeof(connector_event_t)))) == NULL) {
+		free(oc);
+		return NULL;
+	}
+
 	fsm_init(&oc->base.fsm, transitions, ARRAY_COUNT(transitions), oc);
 	fsm_set_state_change_cb(&oc->base.fsm, on_state_change, oc);
 
@@ -560,5 +580,6 @@ struct connector *ocpp_connector_create(const struct connector_param *param)
 void ocpp_connector_destroy(struct connector *c)
 {
 	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+	msgq_destroy(oc->evtq);
 	free(oc);
 }

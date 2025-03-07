@@ -40,10 +40,11 @@ extern "C" {
 #include "charger/ocpp_connector.h"
 #include "../connector_internal.h"
 #include "ocpp/ocpp.h"
+#include "libmcu/msgq.h"
 
 struct auth {
-	uint8_t id[OCPP_ID_TOKEN_MAXLEN];
-	uint8_t parent_id[OCPP_ID_TOKEN_MAXLEN];
+	uint8_t uid[OCPP_ID_TOKEN_MAXLEN];
+	uint8_t pid[OCPP_ID_TOKEN_MAXLEN];
 };
 
 struct session_metering {
@@ -104,6 +105,7 @@ struct ocpp_connector {
 	 * it must be linked to the appropriate data for the connector using
 	 * ocpp_connector_link_checkpoint(). */
 	struct ocpp_connector_checkpoint *checkpoint;
+	struct msgq *evtq;
 	struct charging_session session;
 	struct charger_ocpp_info ocpp_info;
 
@@ -361,7 +363,7 @@ bool ocpp_connector_is_session_active(const struct ocpp_connector *oc);
  *
  * @return true if a session trial ID exists, false otherwise.
  */
-bool ocpp_connector_is_session_trial_id_exist(const struct ocpp_connector *oc);
+bool ocpp_connector_is_session_trial_uid_exist(const struct ocpp_connector *oc);
 
 /**
  * @brief Checks if a transaction has started for the given OCPP connector.
@@ -410,35 +412,70 @@ void ocpp_connector_set_session_current_expiry(struct ocpp_connector *oc,
  * @brief Sets the current session ID for the OCPP connector.
  *
  * @param[in] c Pointer to the OCPP connector structure.
- * @param[in] id The session ID to set.
+ * @param[in] uid The session ID to set.
  */
-void ocpp_connector_set_session_current_id(struct ocpp_connector *c,
-		const char id[OCPP_ID_TOKEN_MAXLEN]);
+void ocpp_connector_set_session_current_uid(struct ocpp_connector *c,
+		const char uid[OCPP_ID_TOKEN_MAXLEN]);
 
 /**
  * @brief Sets the parent session ID for the OCPP connector.
  *
  * @param[in] c Pointer to the OCPP connector structure.
- * @param[in] id The parent session ID to set.
+ * @param[in] pid The parent session ID to set.
  */
-void ocpp_connector_set_session_parent_id(struct ocpp_connector *c,
-		const char id[OCPP_ID_TOKEN_MAXLEN]);
+void ocpp_connector_set_session_pid(struct ocpp_connector *c,
+		const char pid[OCPP_ID_TOKEN_MAXLEN]);
 
 /**
  * @brief Sets the trial session ID for the OCPP connector.
  *
  * @param[in] c Pointer to the OCPP connector structure.
- * @param[in] id The trial session ID to set.
+ * @param[in] uid The trial session ID to set.
  */
-void ocpp_connector_set_session_trial_id(struct ocpp_connector *c,
-		const char id[OCPP_ID_TOKEN_MAXLEN]);
+void ocpp_connector_set_session_trial_uid(struct ocpp_connector *c,
+		const char uid[OCPP_ID_TOKEN_MAXLEN]);
 
 /**
  * @brief Accepts the trial session ID for the OCPP connector.
  *
  * @param[in] c Pointer to the OCPP connector structure.
  */
-void ocpp_connector_accept_session_trial_id(struct ocpp_connector *c);
+void ocpp_connector_accept_session_trial_uid(struct ocpp_connector *c);
+
+/**
+ * @brief Clears the trial UID for the given OCPP connector session.
+ *
+ * This function clears the trial UID associated with the specified OCPP
+ * connector.
+ *
+ * @param[in] c Pointer to the OCPP connector structure.
+ */
+void ocpp_connector_clear_session_trial_uid(struct ocpp_connector *c);
+
+/**
+ * @brief Checks if the trial UID is equal to the session UID or PID.
+ *
+ * This function checks if the trial UID associated with the specified OCPP
+ * connector is equal to either the session UID or the PID.
+ *
+ * @param[in] c Pointer to the OCPP connector structure.
+ *
+ * @return true if the trial UID matches the session UID or PID, false
+ * otherwise.
+ */
+bool ocpp_connector_is_trial_uid_equal(const struct ocpp_connector *c);
+
+/**
+ * @brief Triggers the stop of an OCPP session for the given connector.
+ *
+ * This function triggers the stop of an OCPP session associated with the
+ * specified connector. It can be called either remotely or locally.
+ *
+ * @param[in] c Pointer to the OCPP connector structure.
+ * @param[in] remote Boolean flag indicating if the session stop is initiated
+ * remotely.
+ */
+void ocpp_connector_trigger_stop_session(struct ocpp_connector *c, bool remote);
 
 #if defined(__cplusplus)
 }

@@ -51,6 +51,10 @@
 #define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
 #endif
 
+#if !defined(MIN)
+#define MIN(a, b)		((a) > (b)? (b) : (a))
+#endif
+
 typedef void (*handler_fn_t)(struct ocpp_charger *charger,
 		const struct ocpp_message *message);
 
@@ -77,18 +81,33 @@ static void do_auth(struct ocpp_charger *charger,
 	if (!oc) {
 		error("connector not found for message id %s", message->id);
 	} else if (p->idTagInfo.status == OCPP_AUTH_STATUS_ACCEPTED) {
-		if (!ocpp_connector_is_session_established(oc)) {
-			ocpp_connector_accept_session_trial_id(oc);
-			ocpp_connector_set_session_current_expiry(oc,
-					p->idTagInfo.expiryDate);
-			ocpp_connector_set_session_parent_id(oc,
-					p->idTagInfo.parentIdTag);
+		if (ocpp_connector_is_session_established(oc)) { /* 2nd tag */
+			if (ocpp_connector_is_trial_uid_equal(oc)) {
+				ocpp_connector_trigger_stop_session(oc, false);
+				info("session will stop by 2nd idTag");
+			} else {
+				error("session already established");
+			}
+			return;
+		} else if (p->idTagInfo.expiryDate &&
+				p->idTagInfo.expiryDate <= oc->now) {
+			error("already expired");
 			return;
 		}
-		error("session already established");
+		ocpp_connector_accept_session_trial_uid(oc);
+		ocpp_connector_set_session_pid(oc, p->idTagInfo.parentIdTag);
+
+		uint32_t conn_timeout_sec;
+		ocpp_get_configuration("ConnectionTimeOut",
+				&conn_timeout_sec, sizeof(conn_timeout_sec), 0);
+		time_t expiry = oc->now + conn_timeout_sec;
+		if (p->idTagInfo.expiryDate) {
+			expiry = MIN(expiry, p->idTagInfo.expiryDate);
+		}
+		ocpp_connector_set_session_current_expiry(oc, expiry);
 	} else {
-		ocpp_connector_clear_session(oc);
-		error("session cleared: authorization failure");
+		ocpp_connector_clear_session_trial_uid(oc);
+		error("session trial cleared: authorization failure");
 	}
 }
 
@@ -313,7 +332,7 @@ static void do_remote_start(struct ocpp_charger *charger,
 	oc = (struct ocpp_connector *)c;
 
 	if (ocpp_connector_is_session_active(oc) ||
-			ocpp_connector_is_session_trial_id_exist(oc)) {
+			ocpp_connector_is_session_trial_uid_exist(oc)) {
 		error("connector %d is already occupied", p->connectorId);
 		goto out;
 	}
@@ -328,9 +347,9 @@ static void do_remote_start(struct ocpp_charger *charger,
 		ocpp_get_configuration("AuthorizeRemoteTxRequests",
 				&auth_required, sizeof(auth_required), NULL);
 		if (!auth_required) {
-			ocpp_connector_set_session_current_id(oc, p->idTag);
+			ocpp_connector_set_session_current_uid(oc, p->idTag);
 		} else {
-			ocpp_connector_set_session_trial_id(oc, p->idTag);
+			ocpp_connector_set_session_trial_uid(oc, p->idTag);
 			csms_request(OCPP_MSG_AUTHORIZE, c, NULL);
 		}
 		return;
@@ -361,10 +380,7 @@ static void do_remote_stop(struct ocpp_charger *charger,
 		if (state != Charging && state != SuspendedEV) {
 			error("connector %d is not charging", c->base.id);
 		}
-		ocpp_connector_set_session_trial_id(c,
-				(const char *)c->session.auth.current.id);
-		ocpp_connector_clear_session_id(&c->session.auth.current);
-		c->session.remote_stop = true;
+		ocpp_connector_trigger_stop_session(c, true);
 		csms_response(OCPP_MSG_REMOTE_STOP_TRANSACTION, message, c,
 				(void *)OCPP_REMOTE_STATUS_ACCEPTED);
 	}
@@ -404,7 +420,7 @@ static void do_start_transaction(struct ocpp_charger *charger,
 	}
 
 	ocpp_connector_set_session_current_expiry(oc, p->idTagInfo.expiryDate);
-	ocpp_connector_set_session_parent_id(oc, p->idTagInfo.parentIdTag);
+	ocpp_connector_set_session_pid(oc, p->idTagInfo.parentIdTag);
 	ocpp_connector_set_tid(oc, (ocpp_transaction_id_t)p->transactionId);
 
 	ocpp_charger_mq_send((struct charger *)charger,

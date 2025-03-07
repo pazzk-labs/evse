@@ -144,7 +144,7 @@ static int do_authorize(struct ocpp_connector *c,
 		return -ENOMEM;
 	}
 
-	strcpy(p->idTag, (const char *)c->session.auth.trial.id);
+	strcpy(p->idTag, (const char *)c->session.auth.trial.uid);
 
 	return request_free_if_fail(msg_type, req, p, sizeof(*p),
 			delay_sec, false, c);
@@ -470,7 +470,7 @@ static int do_starttransaction(struct ocpp_connector *c,
 		.timestamp = c->now,
 		.reservationId = (int)c->session.reservation_id, /* optional */
 	};
-	memcpy(p->idTag, c->session.auth.current.id, sizeof(p->idTag));
+	memcpy(p->idTag, c->session.auth.current.uid, sizeof(p->idTag));
 
 	return request_free_if_fail(msg_type, req, p, sizeof(*p),
 			delay_sec, true, c);
@@ -529,10 +529,10 @@ static int do_stoptransaction(struct ocpp_connector *c,
 		.reason = (ocpp_stop_reason_t)(uintptr_t)ctx, /* optional */
 	};
 
-	if (ocpp_connector_is_session_trial_id_exist(c)) {
-		memcpy(p->idTag, c->session.auth.trial.id, sizeof(p->idTag));
+	if (ocpp_connector_is_session_trial_uid_exist(c)) {
+		memcpy(p->idTag, c->session.auth.trial.uid, sizeof(p->idTag));
 	} else {
-		memcpy(p->idTag, c->session.auth.current.id, sizeof(p->idTag));
+		memcpy(p->idTag, c->session.auth.current.uid, sizeof(p->idTag));
 	}
 
 	return request_free_if_fail(msg_type, req, p, sizeof(*p),

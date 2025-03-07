@@ -419,6 +419,7 @@ static struct decoder_entry decoders[] = {
 	{ OCPP_MSG_RESET,                    do_reset },
 	{ OCPP_MSG_START_TRANSACTION,        do_start_transaction },
 	{ OCPP_MSG_STATUS_NOTIFICATION,      do_empty },
+	{ OCPP_MSG_STOP_TRANSACTION,         do_empty },
 	{ OCPP_MSG_UPDATE_FIRMWARE,          do_updatefirmware },
 };
 
