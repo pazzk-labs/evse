@@ -43,13 +43,15 @@ extern "C" {
 /**
  * @brief Creates a charger instance based on the provided parameters.
  *
- * @param[in] param Pointer to the charger parameters.
- * @param[in] extension Pointer to the charger extension.
+ * @param[out] param Pointer to the charger parameters.
+ * @param[out] extension Pointer to the charger extension.
+ * @param[in] ctx The context for the charger, used to abstract parameters for
+ *            each charger.
  *
  * @return Pointer to the created charger instance.
  */
 struct charger *charger_factory_create(struct charger_param *param,
-		struct charger_extension **extension);
+		struct charger_extension **extension, void *ctx);
 
 /**
  * @brief Creates a connector instance based on the provided parameters.

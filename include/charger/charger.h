@@ -38,6 +38,7 @@ extern "C" {
 #endif
 
 #include <stdint.h>
+#include <stdbool.h>
 
 struct charger;
 struct connector;
@@ -199,6 +200,17 @@ void charger_default_param(struct charger_param *param);
  */
 int charger_get_connector_id(const struct charger *self,
 		const struct connector *connector, int *id);
+
+/**
+ * @brief Checks if the charger supports the given mode.
+ *
+ * @param[in] self Pointer to the charger structure.
+ * @param[in] modestr The mode string to check, with a maximum length defined by
+ *            CHARGER_MODE_STRING_MAXLEN.
+ *
+ * @return true if the mode is supported, false otherwise.
+ */
+bool charger_supports(const struct charger *self, const char *modestr);
 
 #if defined(__cplusplus)
 }

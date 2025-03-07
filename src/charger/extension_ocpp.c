@@ -35,6 +35,7 @@
 #include "charger_internal.h"
 
 #include <string.h>
+#include <stdlib.h>
 
 #include "ocpp/csms.h"
 #include "updater.h"
@@ -184,6 +185,12 @@ static int ext_init(struct charger *self)
 
 	if (!err) {
 		err = updater_register_event_callback(on_updater_event, self);
+	}
+
+	struct charger_support_entry *support = malloc(sizeof(*support));
+	if (support) {
+		support->name = "ocpp";
+		list_add(&support->link, &self->supported);
 	}
 
 	return err;

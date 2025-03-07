@@ -32,23 +32,15 @@
 
 #include "charger/ocpp.h"
 #include "charger/ocpp_connector.h"
-#include "../charger_internal.h"
+#include "ocpp_charger_internal.h"
 
 #include <stdlib.h>
 #include <string.h>
 
 #include "libmcu/msgq.h"
+#include "libmcu/compiler.h"
 
 #define MAX_MESSAGES		4
-
-struct ocpp_charger {
-	struct charger base;
-	struct ocpp_checkpoint checkpoint;
-	struct msgq *msgq;
-	ocpp_charger_reboot_t reboot_required;
-
-	bool remote_request; /* set when remote reset requested */
-};
 
 struct iterator_ctx {
 	struct connector *connector;
@@ -147,8 +139,9 @@ bool ocpp_charger_is_checkpoint_equal(const struct charger *charger,
 			sizeof(*checkpoint)) == 0;
 }
 
-struct charger *ocpp_charger_create(void)
+struct charger *ocpp_charger_create(void *ctx)
 {
+	unused(ctx);
 	struct ocpp_charger *ocpp_charger = calloc(1, sizeof(*ocpp_charger));
 
 	if (!ocpp_charger) {
