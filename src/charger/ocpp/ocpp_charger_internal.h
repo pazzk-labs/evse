@@ -30,38 +30,27 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#ifndef CHARGER_INTERNAL_H
-#define CHARGER_INTERNAL_H
+#ifndef OCPP_CHARGER_INTERNAL_H
+#define OCPP_CHARGER_INTERNAL_H
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#include "charger/charger.h"
-#include "libmcu/list.h"
+#include "charger/ocpp.h"
+#include "../charger_internal.h"
 
-struct charger {
-	struct charger_param param;
-	struct charger_extension extension;
+struct ocpp_charger {
+	struct charger base;
+	struct ocpp_checkpoint checkpoint;
+	struct msgq *msgq;
+	ocpp_charger_reboot_t reboot_required;
 
-	struct {
-		struct list list; /* list of connectors */
-		uint8_t id_counter;
-	} connectors;
-
-	charger_event_cb_t event_cb;
-	void *event_cb_ctx;
-
-	struct list supported;
-};
-
-struct charger_support_entry {
-	struct list link; /* to charger.supported */
-	const char *name;
+	bool remote_request; /* set when remote reset requested */
 };
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* CHARGER_INTERNAL_H */
+#endif /* OCPP_CHARGER_INTERNAL_H */

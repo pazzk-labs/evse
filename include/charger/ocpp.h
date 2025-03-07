@@ -81,7 +81,7 @@ struct ocpp_charger;
  *
  * @return Pointer to the newly created charger instance.
  */
-struct charger *ocpp_charger_create(void);
+struct charger *ocpp_charger_create(void *ctx);
 
 /**
  * @brief Destroys an OCPP charger instance.

@@ -9,7 +9,7 @@ TEST_GROUP(OcppCharger) {
 
 	void setup(void) {
 		charger_default_param(&param);
-		charger = ocpp_charger_create();
+		charger = ocpp_charger_create(NULL);
 		charger_init(charger, &param, NULL);
 	}
 	void teardown(void) {

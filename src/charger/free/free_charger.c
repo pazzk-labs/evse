@@ -33,9 +33,11 @@
 #include "charger/free.h"
 #include "../charger_internal.h"
 #include <stdlib.h>
+#include "libmcu/compiler.h"
 
-struct charger *free_charger_create(void)
+struct charger *free_charger_create(void *ctx)
 {
+	unused(ctx);
 	struct charger *free_charger = malloc(sizeof(*free_charger));
 	return free_charger;
 }

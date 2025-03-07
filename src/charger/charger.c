@@ -38,6 +38,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "libmcu/list.h"
 #include "logger.h"
 
 #if !defined(DEFAULT_INPUT_CURRENT)
@@ -106,6 +107,21 @@ static void delete_connectors(struct charger *self)
 	list_for_each_safe(p, t, head) {
 		struct connector_entry *entry =
 			list_entry(p, struct connector_entry, link);
+
+		list_del(p, head);
+		free(entry);
+	}
+}
+
+static void delete_supported_list(struct charger *self)
+{
+	struct list *head = &self->supported;
+	struct list *p;
+	struct list *t;
+
+	list_for_each_safe(p, t, head) {
+		struct charger_support_entry *entry =
+			list_entry(p, struct charger_support_entry, link);
 
 		list_del(p, head);
 		free(entry);
@@ -236,6 +252,22 @@ struct connector *charger_get_connector_by_id(const struct charger *self,
 	return NULL;
 }
 
+bool charger_supports(const struct charger *self, const char *modestr)
+{
+	struct list *p;
+
+	list_for_each(p, &self->supported) {
+		struct charger_support_entry *entry =
+			list_entry(p, struct charger_support_entry, link);
+
+		if (strcmp(entry->name, modestr) == 0) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 int charger_count_connectors(const struct charger *self)
 {
 	struct list *p;
@@ -290,6 +322,7 @@ int charger_init(struct charger *self, const struct charger_param *param,
 	memset(self, 0, sizeof(*self));
 	memcpy(&self->param, param, sizeof(*param));
 	list_init(&self->connectors.list);
+	list_init(&self->supported);
 
 	if (extension) {
 		memcpy(&self->extension, extension, sizeof(*extension));
@@ -306,4 +339,5 @@ void charger_deinit(struct charger *self)
 	}
 
 	delete_connectors(self);
+	delete_supported_list(self);
 }

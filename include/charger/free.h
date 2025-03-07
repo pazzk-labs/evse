@@ -39,7 +39,7 @@ extern "C" {
 
 #include "charger/charger.h"
 
-struct charger *free_charger_create(void);
+struct charger *free_charger_create(void *ctx);
 void free_charger_destroy(struct charger *charger);
 
 #if defined(__cplusplus)

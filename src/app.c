@@ -109,7 +109,7 @@ static void on_connector_event(struct connector *self,
 	}
 
 	/* The following are OCPP-specific events */
-	if (strcmp(charger_factory_mode(), "ocpp") != 0) {
+	if (!charger_supports(charger, "ocpp")) {
 		return;
 	}
 
@@ -179,7 +179,7 @@ static void start_charger(struct app *app)
 {
 	struct charger_param param;
 	struct charger_extension *extension;
-	m.charger = charger_factory_create(&param, &extension);
+	m.charger = charger_factory_create(&param, &extension, NULL);
 	charger_init(m.charger, &param, extension);
 
 	struct metering_io conn1_io = {

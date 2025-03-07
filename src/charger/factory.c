@@ -42,15 +42,17 @@
 
 #define CHARGER_MODE_STRING_MAXLEN		4 /* without null-terminator */
 
-typedef struct charger *(*charger_factory_t)(void);
+typedef struct charger *(*charger_factory_t)(void *ctx);
 typedef struct connector *
 	(*connector_factory_t)(const struct connector_param *param);
 typedef struct charger_extension *(*charger_extension_factory_t)(void);
 
 static const char *get_charger_mode(void)
 {
-	static char mode[CHARGER_MODE_STRING_MAXLEN+1] = "free";
-	config_read(CONFIG_KEY_CHARGER_MODE, mode, sizeof(mode));
+	static char mode[CHARGER_MODE_STRING_MAXLEN+1] = { 0, };
+	if (config_read(CONFIG_KEY_CHARGER_MODE, mode, sizeof(mode)-1) < 0) {
+		strncpy(mode, "free", sizeof(mode));
+	}
 	return mode;
 }
 
@@ -60,14 +62,15 @@ const char *charger_factory_mode(void)
 }
 
 struct charger *charger_factory_create(struct charger_param *param,
-		struct charger_extension **extension)
+		struct charger_extension **extension, void *ctx)
 {
 	charger_factory_t charger_factory;
+	const char *mode = get_charger_mode();
 
 	charger_default_param(param);
 	config_read(CONFIG_KEY_CHARGER_PARAM, param, sizeof(*param));
 
-	if (strcmp(get_charger_mode(), "ocpp") == 0) {
+	if (strcmp(mode, "ocpp") == 0) {
 		charger_factory = ocpp_charger_create;
 		*extension = ocpp_charger_extension();
 	} else {
@@ -75,14 +78,17 @@ struct charger *charger_factory_create(struct charger_param *param,
 		*extension = NULL;
 	}
 
-	return (*charger_factory)();
+	info("%s charger created", mode);
+
+	return (*charger_factory)(ctx);
 }
 
 struct connector *connector_factory_create(const struct connector_param *param)
 {
 	connector_factory_t connector_factory;
+	const char *mode = get_charger_mode();
 
-	if (strcmp(get_charger_mode(), "ocpp") == 0) {
+	if (strcmp(mode, "ocpp") == 0) {
 		connector_factory = ocpp_connector_create;
 	} else {
 		connector_factory = free_connector_create;
