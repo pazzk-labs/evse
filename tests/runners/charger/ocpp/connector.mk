@@ -36,6 +36,7 @@ TEST_SRC_FILES = \
 	mocks/ocpp.cpp \
 	../external/libmcu/tests/mocks/assert.cpp \
 	../external/libmcu/tests/stubs/metrics.cpp \
+	../external/libmcu/tests/stubs/bitops.cpp \
 
 INCLUDE_DIRS = \
 	$(CPPUTEST_HOME)/include \
