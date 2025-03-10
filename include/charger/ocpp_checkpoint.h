@@ -41,7 +41,7 @@ extern "C" {
 #include "libmcu/compiler.h"
 
 #if !defined(OCPP_CONNECTOR_MAX)
-#define OCPP_CONNECTOR_MAX		2
+#define OCPP_CONNECTOR_MAX		1
 #endif
 
 typedef uint32_t ocpp_transaction_id_t;

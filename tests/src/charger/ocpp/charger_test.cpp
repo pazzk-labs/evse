@@ -40,7 +40,6 @@ TEST(OcppCharger, ShouldReturnPendingRebootType) {
 TEST(OcppCharger, ShouldSaveCheckpoint_WhenSetCheckpoint) {
 	const struct ocpp_checkpoint expected = {
 		.connector = {
-			{.transaction_id = 0x1234},
 			{.transaction_id = 0x5678, .unavailable = true},
 		},
 	};

@@ -34,13 +34,17 @@
 
 #include <string.h>
 
+#include "libmcu/compiler.h"
+
 #include "charger/free.h"
 #include "charger/ocpp.h"
 #include "charger/free_connector.h"
 #include "charger/ocpp_connector.h"
 #include "config.h"
 
-#define CHARGER_MODE_STRING_MAXLEN		4 /* without null-terminator */
+static_assert(sizeof(struct charger_param)
+		== sizeof(((struct config *)0)->charger.param),
+		"charger_param size mismatch");
 
 typedef struct charger *(*charger_factory_t)(void *ctx);
 typedef struct connector *
@@ -49,8 +53,8 @@ typedef struct charger_extension *(*charger_extension_factory_t)(void);
 
 static const char *get_charger_mode(void)
 {
-	static char mode[CHARGER_MODE_STRING_MAXLEN+1] = { 0, };
-	if (config_read(CONFIG_KEY_CHARGER_MODE, mode, sizeof(mode)-1) < 0) {
+	static char mode[CONFIG_CHARGER_MODE_MAXLEN] = { 0, };
+	if (config_get("chg.mode", mode, sizeof(mode)) < 0) {
 		strncpy(mode, "free", sizeof(mode));
 	}
 	return mode;
@@ -67,8 +71,12 @@ struct charger *charger_factory_create(struct charger_param *param,
 	charger_factory_t charger_factory;
 	const char *mode = get_charger_mode();
 
-	charger_default_param(param);
-	config_read(CONFIG_KEY_CHARGER_PARAM, param, sizeof(*param));
+	config_get("chg.param", param, sizeof(*param));
+
+	if (!charger_is_param_valid(param)) {
+		charger_default_param(param);
+		config_set("chg.param", param, sizeof(*param));
+	}
 
 	if (strcmp(mode, "ocpp") == 0) {
 		charger_factory = ocpp_charger_create;

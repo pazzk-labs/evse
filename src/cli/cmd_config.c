@@ -43,7 +43,6 @@
 #include "libmcu/pki.h"
 
 #define ECBUF_MAXLEN		512
-#define PKA_BUFSIZE		2048
 
 static void println(const struct cli_io *io, const char *str)
 {
@@ -51,20 +50,10 @@ static void println(const struct cli_io *io, const char *str)
 	io->write("\n", 1);
 }
 
-static void print_all_keys(const struct cli_io *io)
-{
-	for (int i = 0; i < CONFIG_KEY_MAX; i++) {
-		const char *key = config_get_keystr(i);
-		if (key) {
-			println(io, key);
-		}
-	}
-}
-
 static void print_charge_mode(const struct cli_io *io)
 {
-	char mode[16] = { 0, };
-	config_read(CONFIG_KEY_CHARGER_MODE, mode, sizeof(mode));
+	char mode[CONFIG_CHARGER_MODE_MAXLEN] = { 0, };
+	config_get("chg.mode", mode, sizeof(mode));
 	println(io, mode);
 }
 
@@ -73,7 +62,7 @@ static void print_charge_param(const struct cli_io *io)
 	char buf[64];
 	struct charger_param param;
 	charger_default_param(&param);
-	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	config_get("chg.param", &param, sizeof(param));
 	snprintf(buf, sizeof(buf), "Input voltage: %dV", param.input_voltage);
 	println(io, buf);
 	snprintf(buf, sizeof(buf), "Input current: %umA", param.max_input_current_mA);
@@ -88,10 +77,10 @@ static void print_charge_param(const struct cli_io *io)
 
 static void print_x509_ca(const struct cli_io *io)
 {
-	char *buf = malloc(PKA_BUFSIZE);
+	char *buf = malloc(CONFIG_X509_MAXLEN);
 	if (buf) {
 		buf[0] = '\0';
-		config_read(CONFIG_KEY_X509_CA, buf, PKA_BUFSIZE);
+		config_get("x509.ca", buf, CONFIG_X509_MAXLEN);
 		println(io, buf);
 		free(buf);
 	}
@@ -99,10 +88,10 @@ static void print_x509_ca(const struct cli_io *io)
 
 static void print_x509_cert(const struct cli_io *io)
 {
-	char *buf = malloc(PKA_BUFSIZE);
+	char *buf = malloc(CONFIG_X509_MAXLEN);
 	if (buf) {
 		buf[0] = '\0';
-		config_read(CONFIG_KEY_X509_CERT, buf, PKA_BUFSIZE);
+		config_get("x509.cert", buf, CONFIG_X509_MAXLEN);
 		println(io, buf);
 		free(buf);
 	}
@@ -110,7 +99,7 @@ static void print_x509_cert(const struct cli_io *io)
 
 static void change_charge_mode(const struct cli_io *io, const char *str)
 {
-	char mode[16];
+	char mode[CONFIG_CHARGER_MODE_MAXLEN] = { 0, };
 
 	if (strcmp(str, "free") == 0) {
 		strcpy(mode, "free");
@@ -121,8 +110,8 @@ static void change_charge_mode(const struct cli_io *io, const char *str)
 		return;
 	}
 
-	if (config_save(CONFIG_KEY_CHARGER_MODE, mode, strlen(mode)) == 0) {
-		println(io, "Reboot to apply the changes.");
+	if (config_set("chg.mode", mode, strlen(mode)) == 0) {
+		println(io, "Reboot to apply the changes after saving");
 	}
 }
 
@@ -137,9 +126,9 @@ static void change_input_voltage(const struct cli_io *io, const char *str)
 
 	struct charger_param param;
 	charger_default_param(&param);
-	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	config_get("chg.param", &param, sizeof(param));
 	param.input_voltage = (int16_t)voltage;
-	config_save(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	config_set("chg.param", &param, sizeof(param));
 }
 
 static void change_input_frequency(const struct cli_io *io, const char *str)
@@ -153,9 +142,9 @@ static void change_input_frequency(const struct cli_io *io, const char *str)
 
 	struct charger_param param;
 	charger_default_param(&param);
-	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	config_get("chg.param", &param, sizeof(param));
 	param.input_frequency = (int16_t)freq;
-	config_save(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	config_set("chg.param", &param, sizeof(param));
 }
 
 static void change_input_current(const struct cli_io *io, const char *str)
@@ -169,16 +158,16 @@ static void change_input_current(const struct cli_io *io, const char *str)
 
 	struct charger_param param;
 	charger_default_param(&param);
-	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	config_get("chg.param", &param, sizeof(param));
 	param.max_input_current_mA = (uint32_t)cur * 1000;
-	config_save(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	config_set("chg.param", &param, sizeof(param));
 }
 
 static void change_output_max_current(const struct cli_io *io, const char *str)
 {
 	struct charger_param param;
 	charger_default_param(&param);
-	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	config_get("chg.param", &param, sizeof(param));
 
 	long cur = strtol(str, NULL, 10);
 
@@ -188,14 +177,14 @@ static void change_output_max_current(const struct cli_io *io, const char *str)
 	}
 
 	param.max_output_current_mA = (uint32_t)cur * 1000;
-	config_save(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	config_set("chg.param", &param, sizeof(param));
 }
 
 static void change_output_min_current(const struct cli_io *io, const char *str)
 {
 	struct charger_param param;
 	charger_default_param(&param);
-	config_read(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	config_set("chg.param", &param, sizeof(param));
 
 	long cur = strtol(str, NULL, 10);
 
@@ -205,7 +194,7 @@ static void change_output_min_current(const struct cli_io *io, const char *str)
 	}
 
 	param.min_output_current_mA = (uint32_t)cur * 1000;
-	config_save(CONFIG_KEY_CHARGER_PARAM, &param, sizeof(param));
+	config_set("chg.param", &param, sizeof(param));
 }
 
 static size_t read_until_eot(const struct cli_io *io,
@@ -240,20 +229,20 @@ static size_t read_until_eot(const struct cli_io *io,
 
 static void change_ca(const struct cli_io *io)
 {
-	uint8_t *buf = malloc(PKA_BUFSIZE);
+	uint8_t *buf = malloc(CONFIG_X509_MAXLEN);
 
 	if (!buf) {
 		return;
 	}
 
-	size_t len = read_until_eot(io, (char *)buf, PKA_BUFSIZE, 10000);
+	size_t len = read_until_eot(io, (char *)buf, CONFIG_X509_MAXLEN, 10000);
 
 	if (len <= 0 || pki_verify_cert(buf, len, buf, len) != 0) {
 		println(io, "Failed to verify the certificate");
 		goto out_free;
 	}
 
-	if (config_save(CONFIG_KEY_X509_CA, buf, len+1/*null*/) < 0) {
+	if (config_set("x509.ca", buf, len+1/*null*/) < 0) {
 		println(io, "Failed to save the CA");
 	}
 
@@ -266,25 +255,26 @@ static void change_cert(const struct cli_io *io)
 	uint8_t *ca;
 	uint8_t *buf;
 
-	if ((buf = malloc(PKA_BUFSIZE)) == NULL) {
+	if ((buf = malloc(CONFIG_X509_MAXLEN)) == NULL) {
 		println(io, "Failed to allocate buf");
 		return;
 	}
-	if ((ca = malloc(PKA_BUFSIZE)) == NULL) {
+	if ((ca = malloc(CONFIG_X509_MAXLEN)) == NULL) {
 		println(io, "Failed to allocate ca");
 		free(buf);
 		return;
 	}
 
-	size_t len = read_until_eot(io, (char *)buf, PKA_BUFSIZE, 10000);
-	int ca_len = config_read(CONFIG_KEY_X509_CA, ca, PKA_BUFSIZE);
+	size_t len = read_until_eot(io, (char *)buf, CONFIG_X509_MAXLEN, 10000);
+	config_get("x509.ca", ca, CONFIG_X509_MAXLEN);
+	size_t ca_len = strlen((const char *)ca);
 
 	if (ca_len <= 0 || pki_verify_cert(ca, (size_t)ca_len, buf, len) != 0) {
 		println(io, "Failed to verify the certificate");
 		goto out_free;
 	}
 
-	if (config_save(CONFIG_KEY_X509_CERT, buf, len+1/*null*/) < 0) {
+	if (config_set("x509.cert", buf, len+1/*null*/) < 0) {
 		println(io, "Failed to save the certificate");
 	}
 
@@ -296,27 +286,27 @@ out_free:
 static void set_config(const struct cli_io *io,
 		const char *key, const char *value)
 {
-	if (strcmp(key, "chg/mode") == 0) {
+	if (strcmp(key, "chg.mode") == 0) {
 		change_charge_mode(io, value);
 	} else if (strcmp(key, "mac") == 0) {
-	} else if (strcmp(key, "chg/vol") == 0) {
+	} else if (strcmp(key, "chg.vol") == 0) {
 		change_input_voltage(io, value);
-	} else if (strcmp(key, "chg/freq") == 0) {
+	} else if (strcmp(key, "chg.freq") == 0) {
 		change_input_frequency(io, value);
-	} else if (strcmp(key, "chg/input_curr") == 0) {
+	} else if (strcmp(key, "chg.input_curr") == 0) {
 		change_input_current(io, value);
-	} else if (strcmp(key, "chg/max_out_curr") == 0) {
+	} else if (strcmp(key, "chg.max_out_curr") == 0) {
 		change_output_max_current(io, value);
-	} else if (strcmp(key, "chg/min_out_curr") == 0) {
+	} else if (strcmp(key, "chg.min_out_curr") == 0) {
 		change_output_min_current(io, value);
 	}
 }
 
 static void read_and_set_config(const struct cli_io *io, const char *key)
 {
-	if (strcmp(key, "x509/ca") == 0) {
+	if (strcmp(key, "x509.ca") == 0) {
 		change_ca(io);
-	} else if (strcmp(key, "x509/cert") == 0) {
+	} else if (strcmp(key, "x509.cert") == 0) {
 		change_cert(io);
 	}
 }
@@ -324,7 +314,7 @@ static void read_and_set_config(const struct cli_io *io, const char *key)
 static void set_config_multi_param(const struct cli_io *io,
 		int argc, const char *argv[])
 {
-	if (argc == 8 && strcmp(argv[2], "chg/param") == 0) {
+	if (argc == 8 && strcmp(argv[2], "chg.param") == 0) {
 		change_input_voltage(io, argv[3]);
 		change_input_current(io, argv[4]);
 		change_input_frequency(io, argv[5]);
@@ -338,6 +328,10 @@ DEFINE_CLI_CMD(config, "Configurations") {
 
 	if (argc >= 2) {
 		if (argc == 2 && strcmp(argv[1], "reset") == 0) {
+			config_reset(NULL);
+		} else if (argc == 2 && strcmp(argv[1], "save") == 0) {
+			config_set("device.id", "PZKC12412240001", 16);
+			config_save();
 		} else if (argc == 3 && strcmp(argv[1], "set") == 0) {
 			read_and_set_config(cli->io, argv[2]);
 		} else if (argc == 4 && strcmp(argv[1], "set") == 0) {
@@ -354,8 +348,6 @@ DEFINE_CLI_CMD(config, "Configurations") {
 	print_charge_mode(cli->io);
 	println(cli->io, "[Charge parameters]");
 	print_charge_param(cli->io);
-	println(cli->io, "[Other configurations]");
-	print_all_keys(cli->io);
 	println(cli->io, "[X.509 CA]");
 	print_x509_ca(cli->io);
 	println(cli->io, "[X.509 Cert]");

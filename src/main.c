@@ -215,6 +215,12 @@ static void on_cleanup_timeout(struct apptmr *timer, void *ctx)
 	cleanup_handler(actor, NULL);
 }
 
+static void on_config_save(void *ctx)
+{
+	unused(ctx);
+	info("Configuration saved in NVS.");
+}
+
 static void on_watchdog_timeout(struct wdt *wdt, void *ctx)
 {
 	if (ratelim_request(&cleanup_limit)) {
@@ -289,7 +295,7 @@ int main(void)
 	uptime_init();
 	cleanup_init();
 	wdt_init(on_watchdog_periodic, NULL);
-	config_init(nvs_kvstore_new());
+	config_init(nvs_kvstore_new(), on_config_save, NULL);
 	secret_init(nvs_kvstore_new());
 
 	app.fs = fs_create(flash_create(0));
@@ -322,8 +328,7 @@ int main(void)
 	safety_init(periph->input_power, periph->output_power);
 	safety_enable();
 
-	config_read(CONFIG_KEY_NET_HEALTH_CHECK_INTERVAL,
-			&network_healthchk_interval_ms,
+	config_get("net.health", &network_healthchk_interval_ms,
 			sizeof(network_healthchk_interval_ms));
 	netmgr_init(network_healthchk_interval_ms);
 	updater_init();

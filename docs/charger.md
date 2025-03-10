@@ -74,6 +74,8 @@ OCPP를 활용하여 충전기와 백엔드 서버 간 인증 및 결제를 처�
 - 우선순위가 가장 높은 커넥터만 충전이 시작됨
 - 우선순위가 동일한 경우, 전력을 1/n씩 나눠가짐
 - 충전 중에 높은 우선순위 커넥터가 연결되면, 낮은 우선순위 커넥터는 충전이 중지됨
+- config.h: `CONFIG_CHARGER_CONNECTOR_MAX`로 커넥터 수를 설정할 수 있음
+- ocpp_checkpoint.h: `OCPP_CONNECTOR_MAX`로 커넥터 수를 설정할 수 있음
 
 ### Backend Authentication Method 백엔드 인증 방식
 ![Charger State Diagram](images/charger_state_diagram_ocpp.png)
