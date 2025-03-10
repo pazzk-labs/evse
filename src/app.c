@@ -80,7 +80,7 @@ static void on_charger_event(struct charger *charger, struct connector *c,
 		 * them persistent. */
 		const struct ocpp_checkpoint *checkpoint =
 			ocpp_charger_get_checkpoint(charger);
-		config_set("ocpp/checkpoint", checkpoint, sizeof(*checkpoint));
+		config_set("ocpp.checkpoint", checkpoint, sizeof(*checkpoint));
 	}
 
 	if (event & OCPP_CHARGER_EVENT_CONFIGURATION_CHANGED) {
@@ -203,8 +203,7 @@ static void start_charger(struct app *app)
 		.input_frequency = param.input_frequency,
 		.iec61851 = iec61851_create(app->pilot, app->relay),
 		.metering = metering_create(METERING_HLW811X, &conn1,
-				on_metering_save, (void *)(uintptr_t)
-				"chg.c1.metering"),
+				on_metering_save, (void *)"chg.c1.metering"),
 		.name = "c1",
 		.priority = 0,
 	};
@@ -282,10 +281,13 @@ void app_init(struct app *app)
 	cli_start(&m.cli);
 
 	uint8_t mac[NETIF_MAC_ADDR_LEN];
-	config_get("net/mac", mac, sizeof(mac));
+	config_get("net.mac", mac, sizeof(mac));
 	netmgr_register_iface(eth_w5500_create(periph->w5500), 0, mac, NULL);
 	netmgr_enable();
 
 	setup_charger_components(app);
 	start_charger(app);
+
+	info("MAC: %02X:%02X:%02X:%02X:%02X:%02X",
+			mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 }
