@@ -136,7 +136,7 @@ static void set_level(struct logger *logger, logging_t level)
 
 	logger->level = level;
 	logging_set_level_global(level);
-	config_save(CONFIG_KEY_DEVICE_LOG_LEVEL, &level, sizeof(level));
+	config_set("log.level", &level, sizeof(level));
 }
 
 static void set_writer(struct logger *logger, log_writer_t writer)
@@ -164,7 +164,7 @@ static void set_writer(struct logger *logger, log_writer_t writer)
 	}
 
 	logger->writer.enabled = writer;
-	config_save(CONFIG_KEY_DEVICE_LOG_MODE, &writer, sizeof(writer));
+	config_set("log.mode", &writer, sizeof(writer));
 }
 
 void logger_set_level(logging_t level)
@@ -192,8 +192,8 @@ void logger_init(struct logfs *fs)
 	logging_t level = LOGGING_TYPE_DEBUG;
 	log_writer_t writer = LOG_WRITER_ALL;
 
-	config_read(CONFIG_KEY_DEVICE_LOG_MODE, &writer, sizeof(writer));
-	config_read(CONFIG_KEY_DEVICE_LOG_LEVEL, &level, sizeof(level));
+	config_get("log.mode", &writer, sizeof(writer));
+	config_get("log.level", &level, sizeof(level));
 
 	memset(&m, 0, sizeof(m));
 	m.fs = (struct logfs *)fs;

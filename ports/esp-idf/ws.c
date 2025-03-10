@@ -318,8 +318,15 @@ struct server *ws_create_server(const struct ws_param *param,
 	};
 
 	memcpy(&ws.param, param, sizeof(*param));
-	ws.rxq = ringbuf_create(ws.param.rxq_maxsize);
+	if (param->tls.ca_len) {
+		/* cert. strings should be null-terminated */
+		ws.param.tls.ca_len += 1;
+	}
+	if (param->tls.cert_len) {
+		ws.param.tls.cert_len += 1;
+	}
 
+	ws.rxq = ringbuf_create(ws.param.rxq_maxsize);
 	ws.cb = cb;
 	ws.cb_ctx = cb_ctx;
 

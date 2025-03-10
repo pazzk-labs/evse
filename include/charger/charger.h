@@ -212,6 +212,15 @@ int charger_get_connector_id(const struct charger *self,
  */
 bool charger_supports(const struct charger *self, const char *modestr);
 
+/**
+ * @brief Checks if the given charger parameters are valid.
+
+ * @param[in] param A pointer to the charger_param structure to validate.
+
+ * @return bool Returns true if the parameters are valid, false otherwise.
+ */
+bool charger_is_param_valid(const struct charger_param *param);
+
 #if defined(__cplusplus)
 }
 #endif

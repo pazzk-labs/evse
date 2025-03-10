@@ -40,6 +40,7 @@
 #include "libmcu/adc.h"
 #include "libmcu/uart.h"
 #include "libmcu/assert.h"
+#include "libmcu/compiler.h"
 
 #include "config.h"
 #include "exio.h"
@@ -59,6 +60,13 @@
 #include "ocpp/ocpp.h"
 #include "logger.h"
 
+static_assert(sizeof(struct metering_energy)
+		== sizeof(((struct config *)0)->charger.connector[0].metering),
+		"metering_energy size mismatch");
+static_assert(sizeof(struct pilot_params)
+		== sizeof(((struct config *)0)->charger.connector[0].pilot),
+		"pilot_params size mismatch");
+
 static struct {
 	struct cli cli;
 	struct charger *charger;
@@ -72,8 +80,7 @@ static void on_charger_event(struct charger *charger, struct connector *c,
 		 * them persistent. */
 		const struct ocpp_checkpoint *checkpoint =
 			ocpp_charger_get_checkpoint(charger);
-		config_save(CONFIG_KEY_OCPP_CHECKPOINT,
-					checkpoint, sizeof(*checkpoint));
+		config_set("ocpp/checkpoint", checkpoint, sizeof(*checkpoint));
 	}
 
 	if (event & OCPP_CHARGER_EVENT_CONFIGURATION_CHANGED) {
@@ -81,14 +88,14 @@ static void on_charger_event(struct charger *charger, struct connector *c,
 		void *p = (void *)calloc(1, len);
 		if (p) {
 			ocpp_copy_configuration_to(p, len);
-			config_save(CONFIG_KEY_OCPP_CONFIG, p, len);
+			config_set("ocpp.config", p, len);
 			free(p);
 		}
 	}
 
 	if (event & OCPP_CHARGER_EVENT_REBOOT_REQUIRED) {
 		bool reboot_manually = false;
-		config_read(CONFIG_KEY_DFU_REBOOT_MANUAL,
+		config_get("dfu.reboot_manually",
 				&reboot_manually, sizeof(reboot_manually));
 		if (!reboot_manually) {
 			app_reboot();
@@ -120,8 +127,7 @@ static void on_connector_event(struct connector *self,
 			CONNECTOR_EVENT_BILLING_ENDED)) {
 		/* The transaction ID will be saved or cleared in non-volatile
 		 * memory in case of a power failure */
-		config_save(CONFIG_KEY_OCPP_CHECKPOINT,
-				checkpoint, sizeof(*checkpoint));
+		config_set("ocpp.checkpoint", checkpoint, sizeof(*checkpoint));
 	}
 
 	if (event & CONNECTOR_EVENT_ENABLED) {
@@ -139,8 +145,8 @@ static bool on_metering_save(const struct metering *metering,
 {
 	debug("metering save: %lluWh", energy->wh);
 
-	config_key_t key = (config_key_t)(uintptr_t)ctx;
-	return config_save(key, energy, sizeof(*energy)) >= 0;
+	const char *key = (const char *)ctx;
+	return config_set(key, energy, sizeof(*energy)) >= 0;
 }
 
 static void setup_charger_components(struct app *app)
@@ -150,9 +156,10 @@ static void setup_charger_components(struct app *app)
 	struct pinmap_periph *periph = &app->periph;
 	struct pilot_params cp_params;
 
-	if (config_read(CONFIG_KEY_PILOT_PARAM,
-			&cp_params, sizeof(cp_params)) <= 0) {
-		pilot_default_params(&cp_params);
+	/* FIXME: each connector should have its own cp params */
+	pilot_default_params(&cp_params);
+	if (!config_is_zeroed("chg.c1.cp")) {
+		config_get("chg.c1.cp", &cp_params, sizeof(cp_params));
 	}
 
 	app->relay = relay_create(periph->pwm0_ch0_relay);
@@ -188,8 +195,7 @@ static void start_charger(struct app *app)
 	struct metering_param conn1 = {
 		.io = &conn1_io,
 	};
-	config_read(CONFIG_KEY_CHARGER_METERING_1,
-			&conn1.energy, sizeof(conn1.energy));
+	config_get("chg.c1.metering", &conn1.energy, sizeof(conn1.energy));
 
 	struct connector_param conn_param = {
 		.max_output_current_mA = param.max_output_current_mA,
@@ -198,7 +204,7 @@ static void start_charger(struct app *app)
 		.iec61851 = iec61851_create(app->pilot, app->relay),
 		.metering = metering_create(METERING_HLW811X, &conn1,
 				on_metering_save, (void *)(uintptr_t)
-				CONFIG_KEY_CHARGER_METERING_1),
+				"chg.c1.metering"),
 		.name = "c1",
 		.priority = 0,
 	};
@@ -276,7 +282,7 @@ void app_init(struct app *app)
 	cli_start(&m.cli);
 
 	uint8_t mac[NETIF_MAC_ADDR_LEN];
-	config_read(CONFIG_KEY_NET_MAC, mac, sizeof(mac));
+	config_get("net/mac", mac, sizeof(mac));
 	netmgr_register_iface(eth_w5500_create(periph->w5500), 0, mac, NULL);
 	netmgr_enable();
 

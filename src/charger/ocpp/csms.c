@@ -34,9 +34,12 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 
+#include "ocpp/core/configuration_size.h"
 #include "libmcu/metrics.h"
+#include "libmcu/compiler.h"
 
 #include "net/server_ws.h"
 #include "net/util.h"
@@ -47,11 +50,20 @@
 #include "logger.h"
 
 #define RXQUEUE_SIZE			4096
-#define PKA_BUFSIZE			2048
 
 #define DEFAULT_WS_PING_INTERVAL_SEC	300
 #define DEFAULT_TX_TIMEOUT_MS		10000
 #define DEFAULT_SERVER_URL		"wss://csms.pazzk.net"
+
+static_assert(sizeof(((struct config *)0)->net.server_url) == WS_URI_MAXLEN,
+		"WS_URI_MAXLEN is not equal to the size of ws_param.url");
+static_assert(sizeof(((struct config *)0)->net.server_id) == WS_AUTH_ID,
+		"WS_AUTH_ID is not equal to the size of ws_param.auth.id");
+static_assert(sizeof(((struct config *)0)->net.server_pass) == WS_AUTH_PASS,
+		"WS_AUTH_PASS is not equal to the size of ws_param.auth.pass");
+static_assert(sizeof(((struct config *)0)->ocpp.config)
+		== OCPP_CONFIGURATION_TOTAL_SIZE,
+		"OCPP configuration size mismatch");
 
 static struct server *csms;
 
@@ -65,37 +77,36 @@ static int initialize_server(void)
 		.ping_interval_sec = DEFAULT_WS_PING_INTERVAL_SEC,
 	};
 
-	config_read(CONFIG_KEY_SERVER_URL, param.url, sizeof(param.url)-1);
-	config_read(CONFIG_KEY_WS_PING_INTERVAL, &param.ping_interval_sec,
+	config_get("net.server.url", param.url, sizeof(param.url));
+	config_get("net.server.ping", &param.ping_interval_sec,
 			sizeof(param.ping_interval_sec));
-	config_read(CONFIG_KEY_SERVER_ID, param.auth.id,
-			sizeof(param.auth.id)-1);
-	config_read(CONFIG_KEY_SERVER_PASS, param.auth.pass,
-			sizeof(param.auth.pass)-1);
+	config_get("net.server.id", param.auth.id, sizeof(param.auth.id));
+	config_get("net.server.pass", param.auth.pass, sizeof(param.auth.pass));
 
 	if (net_is_secure_protocol(net_get_protocol_from_url(param.url))) {
 		/* NOTE: The allocated dynamic memory is not freed because the
 		 * certificate is used throughout the device's lifecycle.
 		 * To minimize RAM usage, consider accessing the flash memory
 		 * directly. */
-		uint8_t *key = (uint8_t *)malloc(PKA_BUFSIZE);
-		uint8_t *cert = (uint8_t *)malloc(PKA_BUFSIZE);
-		uint8_t *ca = (uint8_t *)malloc(PKA_BUFSIZE);
+		uint8_t *key = (uint8_t *)malloc(CONFIG_X509_MAXLEN);
+		uint8_t *cert = (uint8_t *)malloc(CONFIG_X509_MAXLEN);
+		uint8_t *ca = (uint8_t *)malloc(CONFIG_X509_MAXLEN);
 		int len;
 
 		if (key && (len = secret_read(SECRET_KEY_X509_KEY,
-				key, PKA_BUFSIZE)) > 0) {
+				key, CONFIG_X509_MAXLEN)) > 0) {
 			param.tls.key_len = (size_t)len;
 			param.tls.key = key;
 		}
-		if (cert && (len = config_read(CONFIG_KEY_X509_CERT,
-				cert, PKA_BUFSIZE)) > 0) {
-			param.tls.cert_len = (size_t)len;
+		if (cert && config_get("x509.cert", cert,
+				CONFIG_X509_MAXLEN) == 0) {
+			param.tls.cert_len = strnlen((const char *)cert,
+					CONFIG_X509_MAXLEN);
 			param.tls.cert = cert;
 		}
-		if (ca && (len = config_read(CONFIG_KEY_X509_CA,
-				ca, PKA_BUFSIZE)) > 0) {
-			param.tls.ca_len = (size_t)len;
+		if (ca && config_get("x509.ca", ca, CONFIG_X509_MAXLEN) == 0) {
+			param.tls.ca_len = strnlen((const char *)ca,
+					CONFIG_X509_MAXLEN);
 			param.tls.ca = ca;
 		}
 	}
@@ -180,10 +191,10 @@ int csms_init(void *ctx)
 			return -ENOMEM;
 		}
 
-		if (config_read(CONFIG_KEY_OCPP_CONFIG, p, len) == (int)len) {
-			ocpp_copy_configuration_from(p, len);
-		} else {
-			warn("Failed to load OCPP configuration");
+		if (!config_is_zeroed("ocpp.config")) {
+			if (config_get("ocpp.config", p, len) == 0) {
+				ocpp_copy_configuration_from(p, len);
+			}
 		}
 
 		free(p);

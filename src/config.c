@@ -34,144 +34,484 @@
 
 #include <string.h>
 #include <errno.h>
-#include <stdbool.h>
 
+#include "libmcu/kvstore.h"
 #include "libmcu/metrics.h"
+#include "libmcu/crc32.h"
 
-#define NAMESPACE		"config"
+#include "logger.h"
 
-struct config {
+#define NAMESPACE			"config"
+#define BASIC_CONFIG_KEY		"basic"
+
+#define CONFIG_ENTRY(key, field, ro)	{ key, offsetof(struct config, field), \
+		sizeof(((struct config *)0)->field), ro }
+
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)			(sizeof(x) / sizeof((x)[0]))
+#endif
+
+struct config_entry {
+	const char *key;
+	size_t offset;
+	size_t size;
+	const bool readonly;
+};
+
+struct config_custom_entry {
+	const char *key;
+	size_t size;
+};
+
+struct config_mgr {
 	struct kvstore *nvs;
+	struct config basic;
+	config_save_cb_t save_cb;
+	void *save_cb_ctx;
+	bool dirty;
 };
 
-static struct config cfg;
+typedef void (*iterate_cb_t)(const struct config_entry *entry, void *ctx);
+typedef void (*default_handler_t)(struct config *cfg);
 
-static const char *cfgstr_tbl[CONFIG_KEY_MAX] = {
-	/* Do not exceed 15 characters.          "123456789012345" */
-	[CONFIG_KEY_DEVICE_ID]                 = "dev/id",
-	[CONFIG_KEY_DEVICE_NAME]               = "dev/name",
-	[CONFIG_KEY_DEVICE_MODE]               = "dev/mode",
-	[CONFIG_KEY_DEVICE_LOG_MODE]           = "dev/logmod",
-	[CONFIG_KEY_DEVICE_LOG_LEVEL]          = "dev/loglvl",
-	[CONFIG_KEY_X509_CA]                   = "x509/ca",
-	[CONFIG_KEY_X509_CERT]                 = "x509/cert",
-	[CONFIG_KEY_DFU_REBOOT_MANUAL]         = "dfu/rst_manual",
-	[CONFIG_KEY_CHARGER_MODE]              = "chg/mode",
-	[CONFIG_KEY_CHARGER_PARAM]             = "chg/param",
-	[CONFIG_KEY_CHARGER_METERING_1]        = "chg/1/metering",
-	[CONFIG_KEY_PILOT_PARAM]               = "chg/61851/cp",
-	[CONFIG_KEY_NET_MAC]                   = "net/mac",
-	[CONFIG_KEY_NET_HEALTH_CHECK_INTERVAL] = "net/health_chk",
-	[CONFIG_KEY_WS_PING_INTERVAL]          = "net/ws/ping",
-	[CONFIG_KEY_SERVER_URL]                = "net/srv/url",
-	[CONFIG_KEY_SERVER_ID]                 = "net/srv/id",
-	[CONFIG_KEY_SERVER_PASS]               = "net/srv/pass",
-	[CONFIG_KEY_PLC_MAC]                   = "net/plc/mac",
-	[CONFIG_KEY_OCPP_CHECKPOINT]           = "ocpp/checkpoint",
-	[CONFIG_KEY_OCPP_CONFIG]               = "ocpp/config",
-	/* Do not exceed 15 characters.          "123456789012345" */
+static const struct config_entry config_map[] = {
+	CONFIG_ENTRY("version",             version,                   true),
+	CONFIG_ENTRY("crc",                 crc,                       true),
+	CONFIG_ENTRY("device.id",           device_id,                 true),
+	CONFIG_ENTRY("device.name",         device_name,               false),
+	CONFIG_ENTRY("device.mode",         device_mode,               false),
+	CONFIG_ENTRY("log.mode",            log_mode,                  false),
+	CONFIG_ENTRY("log.level",           log_level,                 false),
+	CONFIG_ENTRY("dfu.reboot_manually", dfu_reboot_manually,       false),
+
+	CONFIG_ENTRY("chg.mode",        charger.mode,                  false),
+	CONFIG_ENTRY("chg.param",       charger.param,                 false),
+	CONFIG_ENTRY("chg.count",       charger.connector_count,       false),
+	CONFIG_ENTRY("chg.c1.cp",       charger.connector[0].pilot,    false),
+	CONFIG_ENTRY("chg.c1.metering", charger.connector[0].metering, false),
+	CONFIG_ENTRY("chg.c1.plc_mac",  charger.connector[0].plc_mac,  false),
+
+	CONFIG_ENTRY("net.mac",         net.mac,                       false),
+	CONFIG_ENTRY("net.health",      net.health_check_interval,     false),
+	CONFIG_ENTRY("net.server.url",  net.server_url,                false),
+	CONFIG_ENTRY("net.server.id",   net.server_id,                 false),
+	CONFIG_ENTRY("net.server.pass", net.server_pass,               false),
+	CONFIG_ENTRY("net.server.ping", net.ping_interval,             false),
+
+	CONFIG_ENTRY("ocpp.version",    ocpp.version,                  true),
+	CONFIG_ENTRY("ocpp.config",     ocpp.config,                   false),
+	CONFIG_ENTRY("ocpp.checkpoint", ocpp.checkpoint,               false),
 };
 
-static const char *get_keystr_from_key(config_key_t key)
+/* This custom configuration is not part of the basic configuration. Each
+ * configuration is stored in a separate key-value pair. */
+static const struct config_custom_entry custom_config_map[] = {
+	/* Do not exceed 15 characters.
+	  "123456789012345" */
+	{ "x509.ca",         CONFIG_X509_MAXLEN }, /* CA certificates */
+	{ "x509.cert",       CONFIG_X509_MAXLEN }, /* Device certificate */
+};
+
+static struct config_mgr mgr;
+
+static void mark_dirty(void)
 {
-	if (key < CONFIG_KEY_MAX) {
-		return cfgstr_tbl[key];
+	mgr.dirty = true;
+}
+
+static void clear_dirty(void)
+{
+	mgr.dirty = false;
+}
+
+static bool is_dirty(void)
+{
+	return mgr.dirty;
+}
+
+static const struct config_entry *find_config_entry(const char *key)
+{
+	for (size_t i = 0; i < ARRAY_COUNT(config_map); i++) {
+		if (strcmp(config_map[i].key, key) == 0) {
+			return &config_map[i];
+		}
 	}
 	return NULL;
 }
 
-static bool is_readonly(config_key_t key)
+static const struct config_custom_entry *
+find_custom_config_entry(const char *key)
 {
-	switch (key) {
-	case CONFIG_KEY_DEVICE_ID:
-		return true;
-	default:
-		return false;
-	}
-}
-
-int config_read(config_key_t key, void *buf, size_t bufsize)
-{
-	const char *keystr = get_keystr_from_key(key);
-
-	if (!keystr) {
-		return -ENOENT;
-	}
-
-	return kvstore_read(cfg.nvs, keystr, buf, bufsize);
-}
-
-int config_save(config_key_t key, const void *data, size_t datasize)
-{
-	const char *keystr = get_keystr_from_key(key);
-
-	if (!keystr) {
-		return -ENOENT;
-	}
-
-	if (is_readonly(key)) {
-		return -EPERM;
-	}
-
-	return kvstore_write(cfg.nvs, keystr, data, datasize);
-}
-
-int config_delete(config_key_t key)
-{
-	const char *keystr = get_keystr_from_key(key);
-
-	if (!keystr) {
-		return -ENOENT;
-	}
-
-	if (is_readonly(key)) {
-		return -EPERM;
-	}
-
-	return kvstore_clear(cfg.nvs, keystr);
-}
-
-config_key_t config_get_key(const char *keystr)
-{
-	for (int i = 0; i < CONFIG_KEY_MAX; i++) {
-		if (strcmp(keystr, cfgstr_tbl[i]) == 0) {
-			return (config_key_t)i;
+	for (size_t i = 0; i < ARRAY_COUNT(custom_config_map); i++) {
+		if (strcmp(custom_config_map[i].key, key) == 0) {
+			return &custom_config_map[i];
 		}
 	}
-
-	return CONFIG_KEY_MAX;
+	return NULL;
 }
 
-const char *config_get_keystr(config_key_t key)
+static uint32_t compute_crc(const struct config *cfg)
 {
-	return get_keystr_from_key(key);
+	return crc32_cksum((const uint8_t *)cfg,
+			sizeof(*cfg) - sizeof(cfg->crc));
 }
 
-int config_reset(config_key_t key)
+static int read_custom_config(const char *key, void *buf, size_t bufsize)
 {
-	const char *keystr = get_keystr_from_key(key);
+	const struct config_custom_entry *entry = find_custom_config_entry(key);
 
-	if (!keystr) {
+	if (!entry) {
+		metrics_increase(ConfigNotFoundCount);
 		return -ENOENT;
 	}
 
-	if (is_readonly(key)) {
+	if (bufsize < entry->size) {
+		metrics_increase(ConfigSizeMismatchCount);
+		return -ENOMEM;
+	}
+
+	if (kvstore_read(mgr.nvs, key, buf, entry->size) < 0) {
+		metrics_increase(ConfigReadErrorCount);
+		return -EIO;
+	}
+
+	return 0;
+}
+
+static int write_custom_config(const char *key,
+		const void *data, size_t datasize)
+{
+	const struct config_custom_entry *entry = find_custom_config_entry(key);
+
+	if (!entry) {
+		metrics_increase(ConfigNotFoundCount);
+		return -ENOENT;
+	}
+
+	if (datasize > entry->size) {
+		metrics_increase(ConfigSizeMismatchCount);
+		return -ENOMEM;
+	}
+
+	if (kvstore_write(mgr.nvs, key, data, datasize) < 0) {
+		metrics_increase(ConfigSaveErrorCount);
+		return -EIO;
+	}
+
+	return 0;
+}
+
+static int save_basic_config(struct config *cfg)
+{
+	if (!is_dirty()) {
+		return 0;
+	}
+
+	cfg->crc = compute_crc(cfg);
+
+	if (kvstore_write(mgr.nvs, BASIC_CONFIG_KEY, cfg, sizeof(*cfg)) < 0) {
+		metrics_increase(ConfigSaveErrorCount);
+		return -EIO;
+	}
+
+	clear_dirty();
+
+	if (mgr.save_cb) {
+		(*mgr.save_cb)(mgr.save_cb_ctx);
+	}
+
+	return 0;
+}
+
+static void set_default_chg_mode(struct config *cfg)
+{
+	strcpy(cfg->charger.mode, "free");
+}
+
+static void set_default_chg_c_cnt(struct config *cfg)
+{
+	cfg->charger.connector_count = 1;
+}
+
+static void set_default_chg_c1_plc_mac(struct config *cfg)
+{
+	cfg->charger.connector[0].plc_mac[0] = 0x02;
+	cfg->charger.connector[0].plc_mac[3] = 0xfe;
+	cfg->charger.connector[0].plc_mac[4] = 0xed;
+}
+
+static void set_default_net_mac(struct config *cfg)
+{
+	cfg->net.mac[0] = 0x00;
+	cfg->net.mac[1] = 0xf2;
+}
+
+static void set_default_net_healthcheck(struct config *cfg)
+{
+	cfg->net.health_check_interval = 60000; /* milliseconds */
+}
+
+static void set_default_ping_interval(struct config *cfg)
+{
+	cfg->net.ping_interval = 120; /* seconds */
+}
+
+static void set_default_server_url(struct config *cfg)
+{
+	strcpy(cfg->net.server_url, "wss://csms.pazzk.net");
+}
+
+static const struct {
+	const char *key;
+	default_handler_t handler;
+} default_handlers[] = {
+	{ "chg.mode",        set_default_chg_mode },
+	{ "chg.count",       set_default_chg_c_cnt },
+	{ "chg.c1.plc_mac",  set_default_chg_c1_plc_mac },
+	{ "net.mac",         set_default_net_mac },
+	{ "net.health",      set_default_net_healthcheck },
+	{ "net.server.ping", set_default_ping_interval },
+	{ "net.server.url",  set_default_server_url },
+};
+
+static bool set_default(const char *key, struct config *cfg)
+{
+	for (size_t i = 0; i < ARRAY_COUNT(default_handlers); i++) {
+		if (strcmp(default_handlers[i].key, key) == 0) {
+			(*default_handlers[i].handler)(cfg);
+			return true;
+		}
+	}
+	return false;
+}
+
+static void set_default_or_zero(const struct config_entry *entry,
+		struct config *cfg)
+{
+	if (entry->readonly) {
+		return;
+	}
+
+	if (!set_default(entry->key, cfg)) {
+		memset((uint8_t *)cfg + entry->offset, 0, entry->size);
+	}
+}
+
+static void on_each_config_reset(const struct config_entry *entry, void *ctx)
+{
+	set_default_or_zero(entry, (struct config *)ctx);
+}
+
+static void iterate_config_entries(iterate_cb_t cb, void *cb_ctx)
+{
+	for (size_t i = 0; i < ARRAY_COUNT(config_map); i++) {
+		const struct config_entry *entry = &config_map[i];
+		cb(entry, cb_ctx);
+	}
+}
+
+static void apply_defaults(struct config *cfg)
+{
+	iterate_config_entries(on_each_config_reset, cfg);
+	cfg->version = CONFIG_VERSION;
+	metrics_increase(ConfigDefaultResetCount);
+}
+
+static void clear_custom_configs(void)
+{
+	for (size_t i = 0; i < ARRAY_COUNT(custom_config_map); i++) {
+		kvstore_clear(mgr.nvs, custom_config_map[i].key);
+	}
+}
+
+static bool apply_default(struct config *cfg, const char *key)
+{
+	if (key == NULL) {
+		apply_defaults(cfg);
+		clear_custom_configs();
+		return true;
+	}
+
+	const struct config_entry *entry = find_config_entry(key);
+
+	if (entry) {
+		set_default_or_zero(entry, cfg);
+		return true;
+	}
+
+	const struct config_custom_entry *custom_entry =
+		find_custom_config_entry(key);
+
+	if (custom_entry) {
+		kvstore_clear(mgr.nvs, key);
+		return true;
+	}
+
+	error("Key not found: %s", key);
+
+	return false;
+}
+
+static void migrate_config(struct config *cfg)
+{
+	if (cfg->version == CONFIG_VERSION) {
+		return;
+	} else if (cfg->version > CONFIG_VERSION) {
+		/* Downgrade is not supported. It might be a corrupted data. */
+		apply_defaults(cfg);
+		warn("Downgrading the configuration is not supported.");
+	}
+
+	if (cfg->version < MAKE_VERSION(0, 0, 1)) {
+		/* v0.0.1 is the first version released. */
+		apply_defaults(cfg);
+		warn("Migrating the configuration to v0.0.1.");
+	}
+
+	cfg->version = CONFIG_VERSION;
+	mark_dirty();
+
+	if (save_basic_config(cfg) == 0) {
+		metrics_increase(ConfigMigrationCount);
+		info("Configuration migrated to v%d.%d.%d",
+				GET_VERSION_MAJOR(CONFIG_VERSION),
+				GET_VERSION_MINOR(CONFIG_VERSION),
+				GET_VERSION_PATCH(CONFIG_VERSION));
+	}
+}
+
+static void load_config(struct config *cfg)
+{
+	int err;
+
+	if ((err = kvstore_read(mgr.nvs, BASIC_CONFIG_KEY, cfg, sizeof(*cfg)))
+			< 0) {
+		apply_defaults(cfg);
+                /* Do not mark dirty and give it a chance to recover when
+                 * rebooted. */
+                warn("Failed to load. Applying defaults.");
+	}
+
+	if (cfg->crc != compute_crc(cfg)) {
+		apply_defaults(cfg);
+		if (!err) { /* flash corruption */
+			mark_dirty();
+		}
+		warn("CRC mismatch detected. Applying defaults.");
+	}
+
+	migrate_config(cfg);
+}
+
+bool config_is_zeroed(const char *key)
+{
+	const uint8_t *cfg = (const uint8_t *)&mgr.basic;
+	const struct config_entry *entry = find_config_entry(key);
+
+	if (!entry) {
+		return false;
+	}
+
+	uint8_t zero[entry->size];
+	memset(zero, 0, entry->size);
+
+	return memcmp(cfg + entry->offset, zero, entry->size) == 0;
+}
+
+int config_get(const char *key, void *buf, size_t bufsize)
+{
+	const struct config_entry *entry = find_config_entry(key);
+
+	if (!entry) {
+		return read_custom_config(key, buf, bufsize);
+	}
+
+	if (bufsize < entry->size) {
+		metrics_increase(ConfigSizeMismatchCount);
+		error("Data size mismatch: %zu < %zu", bufsize, entry->size);
+		return -ENOMEM;
+	}
+
+	memcpy(buf, (uint8_t *)&mgr.basic + entry->offset, entry->size);
+
+	return 0;
+}
+
+int config_set(const char *key, const void *data, size_t datasize)
+{
+	const struct config_entry *entry = find_config_entry(key);
+
+	if (!entry) {
+		return write_custom_config(key, data, datasize);
+	}
+
+	if (entry->readonly) {
+		error("Read-only key: %s", key);
 		return -EPERM;
 	}
 
-	return kvstore_clear(cfg.nvs, keystr);
+	if (datasize > entry->size) {
+		metrics_increase(ConfigSizeMismatchCount);
+		error("Data size mismatch: %zu > %zu", datasize, entry->size);
+		return -ENOMEM;
+	}
+
+	if (memcmp((uint8_t *)&mgr.basic + entry->offset, data, datasize)) {
+		memcpy((uint8_t *)&mgr.basic + entry->offset, data, datasize);
+		mark_dirty();
+	}
+
+	return 0;
 }
 
-int config_init(struct kvstore *nvs)
+int config_read_all(struct config *cfg)
 {
-	memset(&cfg, 0, sizeof(cfg));
+	memcpy(cfg, &mgr.basic, sizeof(*cfg));
+	return 0;
+}
+
+int config_write_all(const struct config *cfg)
+{
+	memcpy(&mgr.basic, cfg, sizeof(*cfg));
+	mark_dirty();
+	return 0;
+}
+
+int config_save(void)
+{
+	return save_basic_config(&mgr.basic);
+}
+
+int config_reset(const char *key)
+{
+	if (apply_default(&mgr.basic, key)) {
+		mark_dirty();
+		return 0;
+	}
+
+	return -ENOENT;
+}
+
+int config_update_json(const char *json, size_t json_len)
+{
+	return -ENOTSUP;
+}
+
+int config_init(struct kvstore *nvs, config_save_cb_t cb, void *cb_ctx)
+{
+	memset(&mgr, 0, sizeof(mgr));
 
 	int err = kvstore_open(nvs, NAMESPACE);
-	cfg.nvs = nvs;
+	mgr.nvs = nvs;
+	mgr.save_cb = cb;
+	mgr.save_cb_ctx = cb_ctx;
 
 	if (err < 0) {
 		metrics_increase(ConfigInitError);
+		error("Failed to open the configuration namespace: %d", err);
 	}
+
+	load_config(&mgr.basic);
 
 	return err;
 }
