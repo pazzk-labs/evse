@@ -82,7 +82,7 @@ static void print_url(const struct cli_io *io)
 #define URL_MAXLEN	256
 #endif
 	char buf[URL_MAXLEN] = { 0, };
-	config_read(CONFIG_KEY_SERVER_URL, buf, sizeof(buf));
+	config_get("net.server.url", buf, sizeof(buf));
 	println(io, buf);
 }
 
@@ -90,7 +90,7 @@ static void print_mac(const struct cli_io *io)
 {
 	uint8_t mac[MAC_ADDR_LEN] = { 0, };
 	char mac_str[18] = { 0, };
-	config_read(CONFIG_KEY_NET_MAC, mac, sizeof(mac));
+	config_get("net.mac", mac, sizeof(mac));
 	snprintf(mac_str, sizeof(mac_str), "%02X:%02X:%02X:%02X:%02X:%02X",
 			mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
 	println(io, mac_str);
@@ -99,7 +99,7 @@ static void print_mac(const struct cli_io *io)
 static void print_health_check_interval(const struct cli_io *io)
 {
 	uint32_t health_interval = 0;
-	config_read(CONFIG_KEY_NET_HEALTH_CHECK_INTERVAL, &health_interval,
+	config_get("net.health", &health_interval,
 			sizeof(health_interval));
 	char health_interval_str[12] = { 0, };
 	snprintf(health_interval_str, sizeof(health_interval_str), "%u",
@@ -110,14 +110,14 @@ static void print_health_check_interval(const struct cli_io *io)
 static void print_server_id(const struct cli_io *io)
 {
 	char id[64] = {0};
-	config_read(CONFIG_KEY_SERVER_ID, id, sizeof(id));
+	config_get("net.server.id", id, sizeof(id));
 	println(io, id);
 }
 
 static void print_websocket_ping_interval(const struct cli_io *io)
 {
 	uint32_t ws_ping_interval = 0;
-	config_read(CONFIG_KEY_WS_PING_INTERVAL, &ws_ping_interval,
+	config_get("net.server.ping", &ws_ping_interval,
 			sizeof(ws_ping_interval));
 	char ws_ping_interval_str[12] = { 0, };
 	snprintf(ws_ping_interval_str, sizeof(ws_ping_interval_str), "%u",
@@ -147,11 +147,11 @@ static void print_all(const struct cli_io *io)
 }
 
 typedef bool (*check_fn_t)(const struct cli_io *io,
-		config_key_t key, const char *value);
+		const char *key, const char *value);
 typedef bool (*cmd_handler_t)(const struct cli_io *io, check_fn_t check,
-		config_key_t key, const char *value, bool is_number);
+		const char *key, const char *value, bool is_number);
 
-static bool is_url_valid(const struct cli_io *io, config_key_t key,
+static bool is_url_valid(const struct cli_io *io, const char *key,
 		const char *value)
 {
 	if (net_get_protocol_from_url(value) == NET_PROTO_UNKNOWN) {
@@ -161,13 +161,13 @@ static bool is_url_valid(const struct cli_io *io, config_key_t key,
 	return true;
 }
 
-static bool is_ip_valid(const struct cli_io *io, config_key_t key,
+static bool is_ip_valid(const struct cli_io *io, const char *key,
 		const char *value)
 {
 	return net_is_ipv4_str_valid(value);
 }
 
-static bool is_mac_valid(const struct cli_io *io, config_key_t key,
+static bool is_mac_valid(const struct cli_io *io, const char *key,
 		const char *value)
 {
 	uint8_t mac[MAC_ADDR_LEN];
@@ -175,7 +175,7 @@ static bool is_mac_valid(const struct cli_io *io, config_key_t key,
 }
 
 static bool is_health_interval_valid(const struct cli_io *io,
-		config_key_t key, const char *value)
+		const char *key, const char *value)
 {
 	uint32_t intval = (uint32_t)strtol(value, NULL, 10);
 	if (intval != 0 && intval < 1000) {
@@ -186,7 +186,7 @@ static bool is_health_interval_valid(const struct cli_io *io,
 }
 
 static bool is_ping_interval_valid(const struct cli_io *io,
-		config_key_t key, const char *value)
+		const char *key, const char *value)
 {
 	uint32_t intval = (uint32_t)strtol(value, NULL, 10);
 	if (intval != 0 && intval < 60) {
@@ -197,7 +197,7 @@ static bool is_ping_interval_valid(const struct cli_io *io,
 }
 
 static bool do_ping(const struct cli_io *io, check_fn_t check,
-		config_key_t key, const char *value, bool is_number)
+		const char *key, const char *value, bool is_number)
 {
 	char buf[64] = { 0, };
 
@@ -217,7 +217,7 @@ static bool do_ping(const struct cli_io *io, check_fn_t check,
 }
 
 static bool enable(const struct cli_io *io, check_fn_t check,
-		config_key_t key, const char *value, bool is_number)
+		const char *key, const char *value, bool is_number)
 {
 	if (strcmp(value, "enable") == 0) {
 		netmgr_enable();
@@ -230,7 +230,7 @@ static bool enable(const struct cli_io *io, check_fn_t check,
 }
 
 static bool update_cfg(const struct cli_io *io, check_fn_t check,
-		config_key_t key, const char *value, bool is_number)
+		const char *key, const char *value, bool is_number)
 {
 	if (check && !(*check)(io, key, value)) {
 		return false;
@@ -238,14 +238,14 @@ static bool update_cfg(const struct cli_io *io, check_fn_t check,
 
 	if (is_number) {
 		uint32_t intval = (uint32_t)strtol(value, NULL, 10);
-		config_save(key, &intval, sizeof(intval));
+		config_set(key, &intval, sizeof(intval));
 	} else {
-		if (key == CONFIG_KEY_NET_MAC) {
+		if (strcmp(key, "net.mac") == 0) {
 			uint8_t mac[MAC_ADDR_LEN];
 			net_get_mac_from_str(value, mac);
-			config_save(key, mac, sizeof(mac));
+			config_set(key, mac, sizeof(mac));
 		} else {
-			config_save(key, value, strlen(value));
+			config_set(key, value, strlen(value));
 		}
 	}
 
@@ -258,27 +258,24 @@ static struct {
 	const char *cmd;
 	cmd_handler_t run;
 	check_fn_t check;
-	config_key_t key;
+	const char *key;
 	bool is_number;
 } cmds[] = {
 	{ .argc = 2, .cmd = "enable", .run = enable },
 	{ .argc = 2, .cmd = "disable", .run = enable },
 	{ .argc = 3, .cmd = "mac", .run = update_cfg, .check = is_mac_valid,
-		.key = CONFIG_KEY_NET_MAC, },
+		.key = "net.mac", },
 	{ .argc = 3, .cmd = "health", .run = update_cfg,
 		.check = is_health_interval_valid,
-		.key = CONFIG_KEY_NET_HEALTH_CHECK_INTERVAL,
-		.is_number = true },
+		.key = "net.health", .is_number = true },
 	{ .argc = 3, .cmd = "ping", .run = do_ping, .check = is_ip_valid },
 	{ .argc = 3, .cmd = "url", .run = update_cfg,
-		.check = is_url_valid, .key = CONFIG_KEY_SERVER_URL },
-	{ .argc = 3, .cmd = "id", .run = update_cfg,
-		.key = CONFIG_KEY_SERVER_ID },
-	{ .argc = 3, .cmd = "pw", .run = update_cfg,
-		.key = CONFIG_KEY_SERVER_PASS },
-	{ .argc = 3, .cmd = "ws/ping", .run = update_cfg,
+		.check = is_url_valid, .key = "net.server.url" },
+	{ .argc = 3, .cmd = "id", .run = update_cfg, .key = "net.server.id" },
+	{ .argc = 3, .cmd = "pw", .run = update_cfg, .key = "net.server.pass" },
+	{ .argc = 3, .cmd = "ws.ping", .run = update_cfg,
 		.check = is_ping_interval_valid,
-		.key = CONFIG_KEY_WS_PING_INTERVAL, .is_number = true },
+		.key = "net.server.ping", .is_number = true },
 };
 
 DEFINE_CLI_CMD(net, "Network commands") {

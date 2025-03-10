@@ -85,6 +85,7 @@ static void print_help(struct cli_io const *io)
 
 static void print_version(struct cli_io const *io)
 {
+	io->write("v", 1);
 	println(io, board_get_version_string());
 }
 

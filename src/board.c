@@ -31,14 +31,40 @@
  */
 
 #include "config.h"
+#include <stdio.h>
 
 const char *board_get_serial_number_string(void)
 {
-	static char sn[19+1];
+	static char sn[CONFIG_DEVICE_ID_MAXLEN];
 
 	if (sn[0] == '\0') {
-		config_read(CONFIG_KEY_DEVICE_ID, sn, sizeof(sn));
+		config_get("device.id", sn, sizeof(sn));
 	}
 
 	return sn;
+}
+
+const char *board_get_version_string(void)
+{
+	static char version[16];
+
+	if (version[0] == '\0') {
+		snprintf(version, sizeof(version), "%d.%d.%d",
+				GET_VERSION_MAJOR(CONFIG_VERSION),
+				GET_VERSION_MINOR(CONFIG_VERSION),
+				GET_VERSION_PATCH(CONFIG_VERSION));
+	}
+
+	return version;
+}
+
+const char *board_name(void)
+{
+	static char name[CONFIG_DEVICE_NAME_MAXLEN];
+
+	if (name[0] == '\0') {
+		config_get("device.name", name, sizeof(name));
+	}
+
+	return name;
 }

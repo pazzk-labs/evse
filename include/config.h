@@ -37,104 +37,163 @@
 extern "C" {
 #endif
 
-#include "libmcu/kvstore.h"
+#include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
+#include "libmcu/compiler.h"
 
-typedef enum {
-	CONFIG_KEY_DEVICE_ID,
-	CONFIG_KEY_DEVICE_NAME,
-	CONFIG_KEY_DEVICE_MODE,
-	CONFIG_KEY_DEVICE_LOG_MODE,
-	CONFIG_KEY_DEVICE_LOG_LEVEL,
-	CONFIG_KEY_X509_CA, /* CA certificate chain */
-	CONFIG_KEY_X509_CERT, /* device certificate */
-	CONFIG_KEY_DFU_REBOOT_MANUAL,
-	CONFIG_KEY_CHARGER_MODE,
-	CONFIG_KEY_CHARGER_PARAM,
-	CONFIG_KEY_CHARGER_METERING_1,
-	CONFIG_KEY_PILOT_PARAM,
-	CONFIG_KEY_NET_MAC,
-	CONFIG_KEY_NET_HEALTH_CHECK_INTERVAL,
-	CONFIG_KEY_WS_PING_INTERVAL,
-	CONFIG_KEY_SERVER_URL,
-	CONFIG_KEY_SERVER_ID,
-	CONFIG_KEY_SERVER_PASS,
-	CONFIG_KEY_PLC_MAC,
-	CONFIG_KEY_OCPP_CHECKPOINT,
-	CONFIG_KEY_OCPP_CONFIG, /* ocpp configuration */
-	CONFIG_KEY_MAX,
-} config_key_t;
+#if !defined(MAKE_VERSION)
+#define MAKE_VERSION(major, minor, patch)	\
+	(((major) << 16) | ((minor) << 8) | (patch))
+#endif
+
+#if !defined(GET_VERSION_MAJOR)
+#define GET_VERSION_MAJOR(version)		(((version) >> 16) & 0xff)
+#endif
+#if !defined(GET_VERSION_MINOR)
+#define GET_VERSION_MINOR(version)		(((version) >> 8) & 0xff)
+#endif
+#if !defined(GET_VERSION_PATCH)
+#define GET_VERSION_PATCH(version)		((version) & 0xff)
+#endif
+
+#define CONFIG_VERSION				MAKE_VERSION(0, 0, 1)
+
+#define CONFIG_DEVICE_ID_MAXLEN			24
+#define CONFIG_DEVICE_NAME_MAXLEN		32
+#define CONFIG_CHARGER_MODE_MAXLEN		8
+#define CONFIG_CHARGER_CONNECTOR_MAX		1
+#define CONFIG_X509_MAXLEN			2048
+
+typedef void (*config_save_cb_t)(void *ctx);
+
+struct config_charger {
+	char mode[CONFIG_CHARGER_MODE_MAXLEN];
+	uint8_t param[16];
+	uint8_t connector_count;
+	struct {
+		uint8_t metering[16];
+		uint8_t pilot[30];
+		uint8_t plc_mac[6];
+	} connector[CONFIG_CHARGER_CONNECTOR_MAX];
+} LIBMCU_PACKED;
+
+struct config_net {
+	uint8_t mac[6];
+	uint32_t health_check_interval;
+	uint32_t ping_interval;
+	char server_url[256];
+	char server_id[32];
+	char server_pass[40];
+} LIBMCU_PACKED;
+
+struct config_ocpp {
+	uint32_t version;
+	uint8_t config[546];
+	uint8_t checkpoint[16];
+} LIBMCU_PACKED;
+
+struct config {
+	uint32_t version;
+
+	char device_id[CONFIG_DEVICE_ID_MAXLEN];
+	char device_name[CONFIG_DEVICE_NAME_MAXLEN];
+	uint8_t device_mode;
+
+	uint8_t log_mode;
+	uint8_t log_level;
+
+	bool dfu_reboot_manually;
+
+	struct config_charger charger;
+	struct config_net net;
+	struct config_ocpp ocpp;
+
+	uint32_t crc; /* keep this field at the end */
+} LIBMCU_PACKED;
+static_assert(sizeof(struct config) == 1053, "config size mismatch");
+
+struct kvstore;
 
 /**
- * @brief Initialize the configuration module.
- *
- * @param[in] nvs Pointer to the key-value store structure.
- *
+ * @brief Initializes the configuration module.
+ * @param[in] nvs Handle to the non-volatile storage.
+ * @param[in] cb Callback function for configuration save events.
+ * @param[in] cb_ctx Context to be passed to the callback function.
  * @return 0 on success, negative error code on failure.
  */
-int config_init(struct kvstore *nvs);
+int config_init(struct kvstore *nvs, config_save_cb_t cb, void *cb_ctx);
 
 /**
- * @brief Read a configuration value.
- *
- * @param[in] key The configuration key to read.
- * @param[out] buf Buffer to store the read value.
+ * @brief Reads a configuration value.
+ * @param[in] key Configuration key string (e.g., "device.id").
+ * @param[out] buf Buffer to store the retrieved value.
  * @param[in] bufsize Size of the buffer.
- *
  * @return 0 on success, negative error code on failure.
  */
-int config_read(config_key_t key, void *buf, size_t bufsize);
+int config_get(const char *key, void *buf, size_t bufsize);
 
 /**
- * @brief Save a configuration value.
- *
- * @param[in] key The configuration key to save.
- * @param[in] data Pointer to the data to save.
- * @param[in] datasize Size of the data to save.
- *
+ * @brief Writes a configuration value.
+ * @param[in] key Configuration key string (e.g., "device.id").
+ * @param[in] data Data to be written.
+ * @param[in] datasize Size of the data to be written.
  * @return 0 on success, negative error code on failure.
  */
-int config_save(config_key_t key, const void *data, size_t datasize);
+int config_set(const char *key, const void *data, size_t datasize);
 
 /**
- * @brief Delete a configuration value.
- *
- * @param[in] key The configuration key to delete.
- *
+ * @brief Reads all configuration settings.
+ * @param[out] cfg A pointer to the config structure where the settings will be
+ *             stored.
+ * @return int Returns 0 on success, or a negative error code on failure.
+ */
+int config_read_all(struct config *cfg);
+
+/**
+ * @brief Writes all configuration settings.
+ * @param cfg A pointer to the config structure containing the settings to be
+ *        written.
+ * @return int Returns 0 on success, or a negative error code on failure.
+ */
+int config_write_all(const struct config *cfg);
+
+/**
+ * @brief Saves the modified configuration values.
  * @return 0 on success, negative error code on failure.
  */
-int config_delete(config_key_t key);
+int config_save(void);
 
 /**
- * @brief Get the configuration key from a string.
- *
- * @param[in] keystr The string representation of the key.
- *
- * @return The configuration key.
+ * @brief Resets a specific configuration key to its default value.
+ * @param[in] key Configuration key to reset (NULL resets all configurations).
+ * @return 0 on success, negative error code on failure.
  */
-config_key_t config_get_key(const char *keystr);
+int config_reset(const char *key);
 
 /**
- * @brief Get the string representation of a configuration key.
- *
- * @param[in] key The configuration key.
- *
- * @return The string representation of the key.
+ * @brief Updates configuration values using a JSON string.
+ * @param[in] json JSON-formatted configuration string.
+ * @param[in] json_len Length of the JSON string.
+ * @return 0 on success, negative error code on failure.
  */
-const char *config_get_keystr(config_key_t key);
+int config_update_json(const char *json, size_t json_len);
 
 /**
- * @brief Reset the configuration value for a specific key.
+ * @brief Checks if the configuration setting for the given key is zeroed.
  *
- * This function resets the configuration value associated with the given key
- * to its default value. If the key does not exist, no action is performed.
+ * This function does not support custom settings. If the key corresponds to a
+ * custom setting, the function will return false.
  *
- * @param[in] key The configuration key for which to reset the value.
+ * @warning Be cautious when using this function to determine initialization
+ *          status, as the actual configuration value might be zero.
  *
- * @return 0 if the operation was successful, or a negative error code if the
- * operation failed.
+ * @param[in] key The key of the configuration setting to check.
+ *
+ * @return bool Returns true if the configuration setting is zeroed, false
+ *         otherwise.
  */
-int config_reset(config_key_t key);
+bool config_is_zeroed(const char *key);
 
 #if defined(__cplusplus)
 }

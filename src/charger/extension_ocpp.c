@@ -46,6 +46,10 @@
 #define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
 #endif
 
+static_assert(sizeof(((struct config *)0)->ocpp.checkpoint) ==
+		sizeof(struct ocpp_checkpoint),
+		"config.ocpp.checkpoint size mismatch");
+
 typedef void (*msg_handler_t)(struct charger *charger,
 		const struct ocpp_charger_msg *msg);
 
@@ -177,8 +181,7 @@ static int ext_init(struct charger *self)
 	struct ocpp_charger *charger = (struct ocpp_charger *)self;
 	struct ocpp_checkpoint checkpoint = { 0, };
 
-	config_read(CONFIG_KEY_OCPP_CHECKPOINT,
-			&checkpoint, sizeof(checkpoint));
+	config_get("ocpp.checkpoint", &checkpoint, sizeof(checkpoint));
 	ocpp_charger_set_checkpoint(self, &checkpoint);
 
 	int err = csms_init(self);

@@ -268,6 +268,11 @@ bool charger_supports(const struct charger *self, const char *modestr)
 	return false;
 }
 
+bool charger_is_param_valid(const struct charger_param *param)
+{
+	return validate_charger_param(param);
+}
+
 int charger_count_connectors(const struct charger *self)
 {
 	struct list *p;
