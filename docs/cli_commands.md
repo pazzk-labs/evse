@@ -25,24 +25,29 @@
 
 | subcommand          | Description | Example               | Note            |
 | ------------------- | ----------- | --------------------- | --------------- |
-| set {chg\|mode}     | 설정 변경   | `config set chg/mode free` | 설정 리스트는 아래 테이블 참고 |
-| get {chg\|mode\|id} | 설정 확인   | `config get chg`      |                 |
+| set {chg\|mode}     | 설정 변경   | `config set chg.mode free` | 설정 리스트는 아래 테이블 참고 |
+| show                | 설정 확인   | `config show`              |            |
+| reset               | 설정 초기화 | `config reset`             |            |
+| save                | 설정 저장   | `config save`              |            |
+
+> ![NOTE]
+> 설정 변경 후 `config save`로 저장해야 시스템을 재부팅해도 설정이 유지됩니다.
 
 #### 설정 목록
 
 | config | Description    | Options               | Note                  |
 | ------ | -------------- | --------------------- | --------------------- |
-| id     | 디바이스 ID    |                       |                       |
 | mode   | 운영 모드      | `manufacturing`, `installing`, `production`, `development` | |
-| chg/mode | 충전 모드    | `free`, `ocpp`, `hlc` |                        |
-| chg/vol          | 입력 전압      |              | 단위: V               |
-| chg/freq         | 입력 주파수    |              | 단위: Hz              |
-| chg/input_curr   | 입력 최대 전류 |              | 단위: A               |
-| chg/max_out_curr | 출력 최대 전류 |              | 단위: A               |
-| chg/min_out_curr | 출력 최소 전류 |              | 단위: A               |
-| chg/param | 충전 파라미터(vol,input_curr,freq,min_out_curr,max_out_curr) | | e.g. `config set chg/param 220 32 60 6 32`|
-| x509/ca          | CA 인증서       |             |                      |
-| x509/cert        | 디바이스 인증서 |             |                      |
+| mac   | MAC 주소       |       | e.g. `config set mac 11:22:33:44:55:66` |
+| chg.mode | 충전 모드    | `free`, `ocpp`, `hlc` |                        |
+| chg.vol          | 입력 전압      |              | 단위: V               |
+| chg.freq         | 입력 주파수    |              | 단위: Hz              |
+| chg.input_curr   | 입력 최대 전류 |              | 단위: A               |
+| chg.max_out_curr | 출력 최대 전류 |              | 단위: A               |
+| chg.min_out_curr | 출력 최소 전류 |              | 단위: A               |
+| chg.param | 충전 파라미터(vol,input_curr,freq,min_out_curr,max_out_curr) | | e.g. `config set chg.param 220 32 60 6 32`|
+| x509.ca          | CA 인증서       |             |                      |
+| x509.cert        | 디바이스 인증서 |             |                      |
 
 > ![NOTE]
 > 디바이스 인증서 업데이트시 저장된 CA 인증서로 인증서 유효성 검사를 수행합니다. 따라서 CA 인증서를 먼저 업데이트하세요.
@@ -62,6 +67,7 @@
 | level      | 로그 레벨 확인 | `log level`           |      |
 | level      | 로그 레벨 설정 | `log level info`      | debug, info, error, none |
 | set        | 로그 출력 설정 | `log set console`     | console, file, all, none |
+| flush      | 버퍼에 있는 로그를 파일로 출력 | `log flush` |      |
 
 - 로그 레벨 설정(`level`)은 `debug`가 디폴트이며, `info`로 설정하면 `debug` 로그가 출력되지 않습니다.
 - 로그 출력 설정(`set`)은 `all`이 디폴트이며, `stdout`로 설정하면 파일로 로그를 출력하지 않습니다. `file`로 설정하면 파일로 로그를 출력하고 `stdout`로 로그를 출력하지 않습니다.
@@ -73,7 +79,7 @@
 
 | subcommand | Description          | Example        | Note |
 | ---------- | -------------------- | -------------- | ---- |
-| `clear`    | 메트릭 데이터 초기화 | `metric clear` |      |
+| `reset`    | 메트릭 데이터 초기화 | `metric reset` |      |
 | `show`     | 메트릭 데이터 보기   | `metric show`  |      |
 
 ### `net`
@@ -87,8 +93,8 @@
 | `url`            | 서버 URL 설정     | `net url wss://csms.pazzk.net:9000` | |
 | `id`             | 인증 ID 설정      | `net id id_str`   |      |
 | `pw`             | 인증 PW 설정      | `net pw pass_str` |      |
-| `ws/ping`        | 웹소켓 핑 주기    | `net ws/ping 60`       | 단위: 초. 0일 경우 비활성화 |
-| `health`         | 네트워크 health check 주기 | `net health 60`  | 단위: 초. 0일 경우 비활성화 |
+| `ws.ping`        | 웹소켓 핑 주기    | `net ws.ping 60`       | 단위: 초. 0일 경우 비활성화 |
+| `health`         | 네트워크 health check 주기 | `net health 60000`  | 단위: 밀리초. 0일 경우 비활성화 |
 
 ### `ocpp`
 
@@ -121,8 +127,8 @@
 | subcommand | Description                             | Example | Note |
 | ---------- | --------------------------------------- | ------- | ---- |
 | `dfu {image\|sign}` | DFU 암호키 변경  | `sec dfu image 1234567890` | |
-| `x509/key` | X.509 인증서 비밀키 생성  | `sec x509/key`             | |
-| `x509/key/csr` | X.509 인증서 CSR 생성 및 읽기 | `sec x509/key/csr` | 생성할 경우 CN, C, O, E 순으로 입력. e.g. `sec x509/key/csr PZKC12411190001 KR Pazzk op@pazzk.net` |
+| `x509.key` | X.509 인증서 비밀키 생성  | `sec x509.key`             | |
+| `x509.key.csr` | X.509 인증서 CSR 생성 및 읽기 | `sec x509.key.csr` | 생성할 경우 CN, C, O, E 순으로 입력. e.g. `sec x509.key.csr PZKC12411190001 KR Pazzk op@pazzk.net` |
 
 - `image`: DFU 이미지 암호화용 AES-128 대칭키
 - `sign`: DFU 서명용 비대칭키

@@ -117,18 +117,18 @@ static void print_x509_key_csr(const struct cli_io *io)
 	println(io, (char *)csr);
 }
 
-DEFINE_CLI_CMD(sec, "sec {dfu|x509/key|x509/key/csr}") {
+DEFINE_CLI_CMD(sec, "sec {dfu|x509.key|x509.key.csr}") {
 	struct cli const *cli = (struct cli const *)env;
 
 	if (argc == 1) {
 		return CLI_CMD_INVALID_PARAM;
 	} else if (argc >= 2 && strcmp(argv[1], "dfu") == 0) {
 		process_dfu(argc, argv, cli->io);
-	} else if (argc == 2 && strcmp(argv[1], "x509/key") == 0) {
+	} else if (argc == 2 && strcmp(argv[1], "x509.key") == 0) {
 		generate_x509_key(cli->io);
-	} else if (argc == 6 && strcmp(argv[1], "x509/key/csr") == 0) {
+	} else if (argc == 6 && strcmp(argv[1], "x509.key.csr") == 0) {
 		generate_x509_csr(cli->io, argv[2], argv[3], argv[4], argv[5]);
-	} else if (argc == 2 && strcmp(argv[1], "x509/key/csr") == 0) {
+	} else if (argc == 2 && strcmp(argv[1], "x509.key.csr") == 0) {
 		print_x509_key_csr(cli->io);
 	}
 
