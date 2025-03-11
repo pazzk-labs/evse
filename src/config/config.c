@@ -31,6 +31,7 @@
  */
 
 #include "config.h"
+#include "config_default.h"
 
 #include <string.h>
 #include <errno.h>
@@ -79,7 +80,6 @@ struct config_mgr {
 };
 
 typedef void (*iterate_cb_t)(const struct config_entry *entry, void *ctx);
-typedef void (*default_handler_t)(struct config *cfg);
 
 static const struct config_entry config_map[] = {
 	CONFIG_ENTRY("version",             version,                   R),
@@ -232,80 +232,6 @@ static int save_basic_config(struct config *cfg)
 	return 0;
 }
 
-static void set_default_chg_mode(struct config *cfg)
-{
-	strcpy(cfg->charger.mode, "free");
-}
-
-static void set_default_chg_c_cnt(struct config *cfg)
-{
-	cfg->charger.connector_count = 1;
-}
-
-static void set_default_chg_c1_plc_mac(struct config *cfg)
-{
-	cfg->charger.connector[0].plc_mac[0] = 0x02;
-	cfg->charger.connector[0].plc_mac[3] = 0xfe;
-	cfg->charger.connector[0].plc_mac[4] = 0xed;
-}
-
-static void set_default_net_mac(struct config *cfg)
-{
-	cfg->net.mac[0] = 0x00;
-	cfg->net.mac[1] = 0xf2;
-}
-
-static void set_default_net_healthcheck(struct config *cfg)
-{
-	cfg->net.health_check_interval = 60000; /* milliseconds */
-}
-
-static void set_default_ping_interval(struct config *cfg)
-{
-	cfg->net.ping_interval = 120; /* seconds */
-}
-
-static void set_default_server_url(struct config *cfg)
-{
-	strcpy(cfg->net.server_url, "wss://csms.pazzk.net");
-}
-
-static void set_default_vendor(struct config *cfg)
-{
-	strcpy(cfg->ocpp.vendor, "net.pazzk");
-}
-
-static void set_default_model(struct config *cfg)
-{
-	strcpy(cfg->ocpp.model, "EVSE-7S");
-}
-
-static const struct {
-	const char *key;
-	default_handler_t handler;
-} default_handlers[] = {
-	{ "chg.mode",        set_default_chg_mode },
-	{ "chg.count",       set_default_chg_c_cnt },
-	{ "chg.c1.plc_mac",  set_default_chg_c1_plc_mac },
-	{ "net.mac",         set_default_net_mac },
-	{ "net.health",      set_default_net_healthcheck },
-	{ "net.server.ping", set_default_ping_interval },
-	{ "net.server.url",  set_default_server_url },
-	{ "ocpp.vendor",     set_default_vendor },
-	{ "ocpp.model",      set_default_model },
-};
-
-static bool set_default(const char *key, struct config *cfg)
-{
-	for (size_t i = 0; i < ARRAY_COUNT(default_handlers); i++) {
-		if (strcmp(default_handlers[i].key, key) == 0) {
-			(*default_handlers[i].handler)(cfg);
-			return true;
-		}
-	}
-	return false;
-}
-
 static void set_default_or_zero(const struct config_entry *entry,
 		struct config *cfg)
 {
@@ -313,7 +239,7 @@ static void set_default_or_zero(const struct config_entry *entry,
 		return;
 	}
 
-	if (!set_default(entry->key, cfg)) {
+	if (!config_set_default(entry->key, cfg)) {
 		memset((uint8_t *)cfg + entry->offset, 0, entry->size);
 	}
 }

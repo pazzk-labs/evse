@@ -16,7 +16,8 @@
 COMPONENT_NAME = Config
 
 SRC_FILES = \
-	../src/config.c \
+	../src/config/config.c \
+	../src/config/config_default.c \
 	../external/libmcu/modules/common/src/crc32.c \
 
 TEST_SRC_FILES = \
@@ -30,6 +31,7 @@ TEST_SRC_FILES = \
 INCLUDE_DIRS = \
 	$(CPPUTEST_HOME)/include \
 	../include \
+	../src/config \
 	../external/libmcu/modules/common/include \
 	../external/libmcu/modules/logging/include \
 	../external/libmcu/modules/metrics/include \
