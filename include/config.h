@@ -41,21 +41,7 @@ extern "C" {
 #include <stddef.h>
 #include <stdbool.h>
 #include "libmcu/compiler.h"
-
-#if !defined(MAKE_VERSION)
-#define MAKE_VERSION(major, minor, patch)	\
-	(((major) << 16) | ((minor) << 8) | (patch))
-#endif
-
-#if !defined(GET_VERSION_MAJOR)
-#define GET_VERSION_MAJOR(version)		(((version) >> 16) & 0xff)
-#endif
-#if !defined(GET_VERSION_MINOR)
-#define GET_VERSION_MINOR(version)		(((version) >> 8) & 0xff)
-#endif
-#if !defined(GET_VERSION_PATCH)
-#define GET_VERSION_PATCH(version)		((version) & 0xff)
-#endif
+#include "version.h"
 
 #define CONFIG_VERSION				MAKE_VERSION(0, 0, 1)
 

@@ -163,10 +163,10 @@ static int do_bootnotification(struct ocpp_connector *c,
 	*p = (struct ocpp_BootNotification) {
 		.chargePointModel = CHARGER_MODEL,
 		.chargePointVendor = CHARGER_VENDOR,
-		.firmwareVersion = def2str(VERSION_TAG),
 	};
 
 	strcpy(p->chargePointSerialNumber, board_get_serial_number_string());
+	strcpy(p->firmwareVersion, board_get_version_string());
 
 	return request_free_if_fail(msg_type, req, p, sizeof(*p),
 			delay_sec, true, c);
