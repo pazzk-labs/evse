@@ -110,7 +110,7 @@ static void change_charge_mode(const struct cli_io *io, const char *str)
 		return;
 	}
 
-	if (config_set("chg.mode", mode, strlen(mode)) == 0) {
+	if (config_set("chg.mode", mode, strlen(mode)+1/*null*/) == 0) {
 		println(io, "Reboot to apply the changes after saving");
 	}
 }
@@ -330,7 +330,6 @@ DEFINE_CLI_CMD(config, "Configurations") {
 		if (argc == 2 && strcmp(argv[1], "reset") == 0) {
 			config_reset(NULL);
 		} else if (argc == 2 && strcmp(argv[1], "save") == 0) {
-			config_set("device.id", "PZKC12412240001", 16);
 			config_save();
 		} else if (argc == 3 && strcmp(argv[1], "set") == 0) {
 			read_and_set_config(cli->io, argv[2]);

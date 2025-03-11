@@ -245,7 +245,7 @@ static bool update_cfg(const struct cli_io *io, check_fn_t check,
 			net_get_mac_from_str(value, mac);
 			config_set(key, mac, sizeof(mac));
 		} else {
-			config_set(key, value, strlen(value));
+			config_set(key, value, strlen(value)+1/*null*/);
 		}
 	}
 
