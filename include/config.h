@@ -41,21 +41,7 @@ extern "C" {
 #include <stddef.h>
 #include <stdbool.h>
 #include "libmcu/compiler.h"
-
-#if !defined(MAKE_VERSION)
-#define MAKE_VERSION(major, minor, patch)	\
-	(((major) << 16) | ((minor) << 8) | (patch))
-#endif
-
-#if !defined(GET_VERSION_MAJOR)
-#define GET_VERSION_MAJOR(version)		(((version) >> 16) & 0xff)
-#endif
-#if !defined(GET_VERSION_MINOR)
-#define GET_VERSION_MINOR(version)		(((version) >> 8) & 0xff)
-#endif
-#if !defined(GET_VERSION_PATCH)
-#define GET_VERSION_PATCH(version)		((version) & 0xff)
-#endif
+#include "version.h"
 
 #define CONFIG_VERSION				MAKE_VERSION(0, 0, 1)
 
@@ -91,6 +77,8 @@ struct config_ocpp {
 	uint32_t version;
 	uint8_t config[546];
 	uint8_t checkpoint[16];
+	char vendor[20+1];
+	char model[20+1];
 } LIBMCU_PACKED;
 
 struct config {
@@ -111,7 +99,7 @@ struct config {
 
 	uint32_t crc; /* keep this field at the end */
 } LIBMCU_PACKED;
-static_assert(sizeof(struct config) == 1053, "config size mismatch");
+static_assert(sizeof(struct config) == 1095, "config size mismatch");
 
 struct kvstore;
 

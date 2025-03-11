@@ -30,41 +30,37 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "config.h"
-#include <stdio.h>
+#ifndef VERSION_H
+#define VERSION_H
 
-const char *board_get_serial_number_string(void)
-{
-	static char sn[CONFIG_DEVICE_ID_MAXLEN];
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
-	if (sn[0] == '\0') {
-		config_get("device.id", sn, sizeof(sn));
-	}
+#if !defined(MAKE_VERSION)
+#define MAKE_VERSION(major, minor, patch)	\
+	(((major) << 16) | ((minor) << 8) | (patch))
+#endif
 
-	return sn;
+#if !defined(GET_VERSION_MAJOR)
+#define GET_VERSION_MAJOR(version)		(((version) >> 16) & 0xff)
+#endif
+#if !defined(GET_VERSION_MINOR)
+#define GET_VERSION_MINOR(version)		(((version) >> 8) & 0xff)
+#endif
+#if !defined(GET_VERSION_PATCH)
+#define GET_VERSION_PATCH(version)		((version) & 0xff)
+#endif
+
+#define VERSION_MAJOR				0
+#define VERSION_MINOR				0
+#define VERSION_PATCH				1
+
+#define VERSION					\
+	MAKE_VERSION(VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH)
+
+#if defined(__cplusplus)
 }
+#endif
 
-const char *board_get_version_string(void)
-{
-	static char version[16];
-
-	if (version[0] == '\0') {
-		snprintf(version, sizeof(version), "%d.%d.%d",
-				GET_VERSION_MAJOR(VERSION),
-				GET_VERSION_MINOR(VERSION),
-				GET_VERSION_PATCH(VERSION));
-	}
-
-	return version;
-}
-
-const char *board_name(void)
-{
-	static char name[CONFIG_DEVICE_NAME_MAXLEN];
-
-	if (name[0] == '\0') {
-		config_get("device.name", name, sizeof(name));
-	}
-
-	return name;
-}
+#endif /* VERSION_H */

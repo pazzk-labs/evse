@@ -30,41 +30,21 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "config.h"
-#include <stdio.h>
+#ifndef CONFIG_DEFAULT_H
+#define CONFIG_DEFAULT_H
 
-const char *board_get_serial_number_string(void)
-{
-	static char sn[CONFIG_DEVICE_ID_MAXLEN];
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
-	if (sn[0] == '\0') {
-		config_get("device.id", sn, sizeof(sn));
-	}
+#include <stdbool.h>
 
-	return sn;
+struct config;
+
+bool config_set_default(const char *key, struct config *cfg);
+
+#if defined(__cplusplus)
 }
+#endif
 
-const char *board_get_version_string(void)
-{
-	static char version[16];
-
-	if (version[0] == '\0') {
-		snprintf(version, sizeof(version), "%d.%d.%d",
-				GET_VERSION_MAJOR(VERSION),
-				GET_VERSION_MINOR(VERSION),
-				GET_VERSION_PATCH(VERSION));
-	}
-
-	return version;
-}
-
-const char *board_name(void)
-{
-	static char name[CONFIG_DEVICE_NAME_MAXLEN];
-
-	if (name[0] == '\0') {
-		config_get("device.name", name, sizeof(name));
-	}
-
-	return name;
-}
+#endif /* CONFIG_DEFAULT_H */

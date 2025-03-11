@@ -39,15 +39,62 @@
 
 #include "config.h"
 #include "charger/charger.h"
+#include "net/util.h"
 #include "libmcu/timext.h"
 #include "libmcu/pki.h"
 
-#define ECBUF_MAXLEN		512
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
+#endif
+
+struct cmd;
+typedef void (*cmd_handler_t)(const struct cli_io *io,
+		int argc, const char *argv[], const struct cmd *cmd);
+
+struct cmd {
+	const char *name;
+	const char *opt;
+	const char *usage;
+	int argc_min;
+	int argc_max;
+	cmd_handler_t handler;
+};
 
 static void println(const struct cli_io *io, const char *str)
 {
 	io->write(str, strlen(str));
 	io->write("\n", 1);
+}
+
+static void printkey(const struct cli_io *io, const char *str)
+{
+	io->write(str, strlen(str));
+	io->write("=", 1);
+}
+
+static void print_help(const struct cli_io *io, const struct cmd *cmd,
+		const char *extra)
+{
+	io->write(cmd->usage, strlen(cmd->usage));
+
+	if (cmd->opt) {
+		io->write(" ", 1);
+		io->write(cmd->opt, strlen(cmd->opt));
+	}
+
+	if (extra) {
+		io->write(" ", 1);
+		io->write(extra, strlen(extra));
+	}
+
+	io->write("\n", 1);
+}
+
+static void print_usage(const struct cli_io *io, const struct cmd *cmd,
+		const char *extra)
+{
+	io->write("usage: ", 7);
+	print_help(io, cmd, extra);
 }
 
 static void print_charge_mode(const struct cli_io *io)
@@ -60,16 +107,17 @@ static void print_charge_mode(const struct cli_io *io)
 static void print_charge_param(const struct cli_io *io)
 {
 	char buf[64];
+	const size_t maxlen = sizeof(buf);
 	struct charger_param param;
 	charger_default_param(&param);
 	config_get("chg.param", &param, sizeof(param));
-	snprintf(buf, sizeof(buf), "Input voltage: %dV", param.input_voltage);
+	snprintf(buf, maxlen, "voltage.input=%dV", param.input_voltage);
 	println(io, buf);
-	snprintf(buf, sizeof(buf), "Input current: %umA", param.max_input_current_mA);
+	snprintf(buf, maxlen, "current.input=%umA", param.max_input_current_mA);
 	println(io, buf);
-	snprintf(buf, sizeof(buf), "Input frequency: %dHz", param.input_frequency);
+	snprintf(buf, maxlen, "frequency.input=%dHz", param.input_frequency);
 	println(io, buf);
-	snprintf(buf, sizeof(buf), "Output current: %umA ~ %umA",
+	snprintf(buf, maxlen, "current.output=%umA ~ %umA",
 			param.min_output_current_mA,
 			param.max_output_current_mA);
 	println(io, buf);
@@ -97,104 +145,54 @@ static void print_x509_cert(const struct cli_io *io)
 	}
 }
 
-static void change_charge_mode(const struct cli_io *io, const char *str)
+static void print_ocpp(const struct cli_io *io)
 {
-	char mode[CONFIG_CHARGER_MODE_MAXLEN] = { 0, };
+	char buf[20+1] = "ocpp.vendor";
+	printkey(io, buf);
+	config_get(buf, buf, sizeof(buf));
+	println(io, buf);
 
-	if (strcmp(str, "free") == 0) {
-		strcpy(mode, "free");
-	} else if (strcmp(str, "ocpp") == 0) {
-		strcpy(mode, "ocpp");
-	} else {
-		println(io, "invalid mode");
-		return;
-	}
+	strcpy(buf, "ocpp.model");
+	printkey(io, buf);
+	config_get(buf, buf, sizeof(buf));
+	println(io, buf);
 
-	if (config_set("chg.mode", mode, strlen(mode)) == 0) {
-		println(io, "Reboot to apply the changes after saving");
-	}
+	uint32_t version;
+	strcpy(buf, "ocpp.version");
+	printkey(io, buf);
+	config_get(buf, &version, sizeof(version));
+	snprintf(buf, sizeof(buf), "v%d.%d.%d", GET_VERSION_MAJOR(version),
+			GET_VERSION_MINOR(version), GET_VERSION_PATCH(version));
+	println(io, buf);
 }
 
-static void change_input_voltage(const struct cli_io *io, const char *str)
+static void do_show(const struct cli_io *io, int argc, const char *argv[],
+		const struct cmd *cmd)
 {
-	long voltage = strtol(str, NULL, 10);
-
-	if (voltage < 100 || voltage > 300) {
-		println(io, "invalid voltage");
-		return;
-	}
-
-	struct charger_param param;
-	charger_default_param(&param);
-	config_get("chg.param", &param, sizeof(param));
-	param.input_voltage = (int16_t)voltage;
-	config_set("chg.param", &param, sizeof(param));
+	println(io, "[Charge mode]");
+	print_charge_mode(io);
+	println(io, "[Charge parameters]");
+	print_charge_param(io);
+	println(io, "[X.509 CA]");
+	print_x509_ca(io);
+	println(io, "[X.509 Cert]");
+	print_x509_cert(io);
+	println(io, "[OCPP]");
+	print_ocpp(io);
 }
 
-static void change_input_frequency(const struct cli_io *io, const char *str)
+static void do_reset(const struct cli_io *io, int argc, const char *argv[],
+		const struct cmd *cmd)
 {
-	long freq = strtol(str, NULL, 10);
-
-	if (freq < 50 || freq > 60) {
-		println(io, "invalid frequency");
-		return;
-	}
-
-	struct charger_param param;
-	charger_default_param(&param);
-	config_get("chg.param", &param, sizeof(param));
-	param.input_frequency = (int16_t)freq;
-	config_set("chg.param", &param, sizeof(param));
+	config_reset(NULL);
+	println(io, "Configuration reset.");
 }
 
-static void change_input_current(const struct cli_io *io, const char *str)
+static void do_save(const struct cli_io *io, int argc, const char *argv[],
+		const struct cmd *cmd)
 {
-	long cur = strtol(str, NULL, 10);
-
-	if (cur < 6 || cur > 50) {
-		println(io, "invalid input current");
-		return;
-	}
-
-	struct charger_param param;
-	charger_default_param(&param);
-	config_get("chg.param", &param, sizeof(param));
-	param.max_input_current_mA = (uint32_t)cur * 1000;
-	config_set("chg.param", &param, sizeof(param));
-}
-
-static void change_output_max_current(const struct cli_io *io, const char *str)
-{
-	struct charger_param param;
-	charger_default_param(&param);
-	config_get("chg.param", &param, sizeof(param));
-
-	long cur = strtol(str, NULL, 10);
-
-	if (cur < 6 || cur > 50) {
-		println(io, "invalid output max. current");
-		return;
-	}
-
-	param.max_output_current_mA = (uint32_t)cur * 1000;
-	config_set("chg.param", &param, sizeof(param));
-}
-
-static void change_output_min_current(const struct cli_io *io, const char *str)
-{
-	struct charger_param param;
-	charger_default_param(&param);
-	config_set("chg.param", &param, sizeof(param));
-
-	long cur = strtol(str, NULL, 10);
-
-	if (cur < 6 || cur > 50 || cur > param.max_output_current_mA / 1000) {
-		println(io, "invalid output min. current");
-		return;
-	}
-
-	param.min_output_current_mA = (uint32_t)cur * 1000;
-	config_set("chg.param", &param, sizeof(param));
+	config_save();
+	println(io, "Configuration saved.");
 }
 
 static size_t read_until_eot(const struct cli_io *io,
@@ -283,75 +281,232 @@ out_free:
 	free(buf);
 }
 
-static void set_config(const struct cli_io *io,
-		const char *key, const char *value)
+static void do_read_set(const struct cli_io *io, int argc, const char *argv[],
+		const struct cmd *cmd)
 {
-	if (strcmp(key, "chg.mode") == 0) {
-		change_charge_mode(io, value);
-	} else if (strcmp(key, "mac") == 0) {
-	} else if (strcmp(key, "chg.vol") == 0) {
-		change_input_voltage(io, value);
-	} else if (strcmp(key, "chg.freq") == 0) {
-		change_input_frequency(io, value);
-	} else if (strcmp(key, "chg.input_curr") == 0) {
-		change_input_current(io, value);
-	} else if (strcmp(key, "chg.max_out_curr") == 0) {
-		change_output_max_current(io, value);
-	} else if (strcmp(key, "chg.min_out_curr") == 0) {
-		change_output_min_current(io, value);
-	}
-}
-
-static void read_and_set_config(const struct cli_io *io, const char *key)
-{
-	if (strcmp(key, "x509.ca") == 0) {
+	if (strcmp(argv[2], "x509.ca") == 0) {
 		change_ca(io);
-	} else if (strcmp(key, "x509.cert") == 0) {
+	} else if (strcmp(argv[2], "x509.cert") == 0) {
 		change_cert(io);
+	} else {
+		print_usage(io, cmd, NULL);
 	}
 }
 
-static void set_config_multi_param(const struct cli_io *io,
-		int argc, const char *argv[])
+static void do_set_mode(const struct cli_io *io, int argc, const char *argv[],
+		const struct cmd *cmd)
 {
-	if (argc == 8 && strcmp(argv[2], "chg.param") == 0) {
-		change_input_voltage(io, argv[3]);
-		change_input_current(io, argv[4]);
-		change_input_frequency(io, argv[5]);
-		change_output_max_current(io, argv[7]);
-		change_output_min_current(io, argv[6]);
+	if (argc != cmd->argc_max) {
+		goto out_help;
 	}
+
+	char mode[CONFIG_CHARGER_MODE_MAXLEN] = { 0, };
+
+	if (strcmp(argv[3], "free") == 0) {
+		strcpy(mode, "free");
+	} else if (strcmp(argv[3], "ocpp") == 0) {
+		strcpy(mode, "ocpp");
+	} else {
+		goto out_help;
+	}
+
+	if (config_set("chg.mode", mode, strlen(mode)+1/*null*/) == 0) {
+		println(io, "Reboot to apply the changes after saving");
+	}
+
+out_help:
+	print_usage(io, cmd, "free | ocpp | hlc");
 }
 
-DEFINE_CLI_CMD(config, "Configurations") {
+static void do_set_input_voltage(const struct cli_io *io,
+		int argc, const char *argv[], const struct cmd *cmd)
+{
+	if (argc != cmd->argc_max) {
+		goto out_help;
+	}
+
+	long voltage = strtol(argv[3], NULL, 10);
+
+	if (voltage < 100 || voltage > 300) {
+		goto out_help;
+	}
+
+	struct charger_param param;
+	charger_default_param(&param);
+	config_get("chg.param", &param, sizeof(param));
+	param.input_voltage = (int16_t)voltage;
+	config_set("chg.param", &param, sizeof(param));
+
+out_help:
+	print_usage(io, cmd, "100 ~ 300");
+}
+
+static void do_set_input_frequency(const struct cli_io *io,
+		int argc, const char *argv[], const struct cmd *cmd)
+{
+	if (argc != cmd->argc_max) {
+		goto out_help;
+	}
+
+	long freq = strtol(argv[3], NULL, 10);
+
+	if (freq < 50 || freq > 60) {
+		goto out_help;
+	}
+
+	struct charger_param param;
+	charger_default_param(&param);
+	config_get("chg.param", &param, sizeof(param));
+	param.input_frequency = (int16_t)freq;
+	config_set("chg.param", &param, sizeof(param));
+
+out_help:
+	print_usage(io, cmd, "50 ~ 60");
+}
+
+static void do_set_input_current(const struct cli_io *io,
+		int argc, const char *argv[], const struct cmd *cmd)
+{
+	if (argc != cmd->argc_max) {
+		goto out_help;
+	}
+
+	long cur = strtol(argv[3], NULL, 10);
+
+	if (cur < 6 || cur > 50) {
+		goto out_help;
+	}
+
+	struct charger_param param;
+	charger_default_param(&param);
+	config_get("chg.param", &param, sizeof(param));
+	param.max_input_current_mA = (uint32_t)cur * 1000;
+	config_set("chg.param", &param, sizeof(param));
+
+out_help:
+	print_usage(io, cmd, "6 ~ 50");
+}
+
+static void do_set_output_max_current(const struct cli_io *io,
+		int argc, const char *argv[], const struct cmd *cmd)
+{
+	if (argc != cmd->argc_max) {
+		goto out_help;
+	}
+
+	struct charger_param param;
+	charger_default_param(&param);
+	config_get("chg.param", &param, sizeof(param));
+
+	long cur = strtol(argv[3], NULL, 10);
+
+	if (cur < 6 || cur > 50) {
+		goto out_help;
+	}
+
+	param.max_output_current_mA = (uint32_t)cur * 1000;
+	config_set("chg.param", &param, sizeof(param));
+
+out_help:
+	print_usage(io, cmd, "6 ~ 50");
+}
+
+static void do_set_output_min_current(const struct cli_io *io,
+		int argc, const char *argv[], const struct cmd *cmd)
+{
+	if (argc != cmd->argc_max) {
+		goto out_help;
+	}
+
+	struct charger_param param;
+	charger_default_param(&param);
+	config_set("chg.param", &param, sizeof(param));
+
+	long cur = strtol(argv[3], NULL, 10);
+
+	if (cur < 6 || cur > 50 || cur > param.max_output_current_mA / 1000) {
+		goto out_help;
+	}
+
+	param.min_output_current_mA = (uint32_t)cur * 1000;
+	config_set("chg.param", &param, sizeof(param));
+
+out_help:
+	print_usage(io, cmd, "6 ~ 50, max. output current");
+}
+
+static void do_set_multi_chg_param(const struct cli_io *io,
+		int argc, const char *argv[], const struct cmd *cmd)
+{
+	if (argc != cmd->argc_max) {
+		print_usage(io, cmd, "<voltage> <current> <frequency> <min> <max>");
+		return;
+	}
+
+	do_set_input_voltage(io, 4, argv, cmd);
+	do_set_input_current(io, 4, &argv[1], cmd);
+	do_set_input_frequency(io, 4, &argv[2], cmd);
+	do_set_output_max_current(io, 4, &argv[3], cmd);
+	do_set_output_min_current(io, 4, &argv[4], cmd);
+}
+
+static void do_set_mac(const struct cli_io *io, int argc, const char *argv[],
+		const struct cmd *cmd)
+{
+	if (argc != cmd->argc_max) {
+		goto out_help;
+	}
+
+	uint8_t mac[MAC_ADDR_LEN];
+	if (!net_get_mac_from_str(argv[3], mac)) {
+		goto out_help;
+	}
+
+	config_set("net.mac", mac, sizeof(mac));
+
+out_help:
+	print_usage(io, cmd, "01:23:45:67:89:ab");
+}
+
+static const struct cmd cmds[] = {
+	{ "show",  NULL,               "config show",  2, 2, do_show },
+	{ "reset", NULL,               "config reset", 2, 2, do_reset },
+	{ "save",  NULL,               "config save",  2, 2, do_save },
+	{ "set",   "x509.ca",          "config set",   3, 3, do_read_set },
+	{ "set",   "x509.cert",        "config set",   3, 3, do_read_set },
+	{ "set",   "mac",              "config set",   3, 4, do_set_mac },
+	{ "set",   "chg.mode",         "config set",   3, 4, do_set_mode },
+	{ "set",   "chg.vol",          "config set",   3, 4, do_set_input_voltage },
+	{ "set",   "chg.freq",         "config set",   3, 4, do_set_input_frequency },
+	{ "set",   "chg.input_curr",   "config set",   3, 4, do_set_input_current },
+	{ "set",   "chg.max_out_curr", "config set",   3, 4, do_set_output_max_current },
+	{ "set",   "chg.min_out_curr", "config set",   3, 4, do_set_output_min_current },
+	{ "set",   "chg.param",        "config set",   3, 8, do_set_multi_chg_param },
+};
+
+DEFINE_CLI_CMD(config, NULL) {
 	const struct cli *cli = (struct cli const *)env;
 
-	if (argc >= 2) {
-		if (argc == 2 && strcmp(argv[1], "reset") == 0) {
-			config_reset(NULL);
-		} else if (argc == 2 && strcmp(argv[1], "save") == 0) {
-			config_set("device.id", "PZKC12412240001", 16);
-			config_save();
-		} else if (argc == 3 && strcmp(argv[1], "set") == 0) {
-			read_and_set_config(cli->io, argv[2]);
-		} else if (argc == 4 && strcmp(argv[1], "set") == 0) {
-			set_config(cli->io, argv[2], argv[3]);
-		} else if (argc > 4 && strcmp(argv[1], "set") == 0) {
-			set_config_multi_param(cli->io, argc, argv);
-		}
+	if (argc < 2) {
+		do_show(cli->io, argc, argv, NULL);
 		return CLI_CMD_SUCCESS;
-	} else if (argc != 1) {
-		return CLI_CMD_INVALID_PARAM;
 	}
 
-	println(cli->io, "[Charge mode]");
-	print_charge_mode(cli->io);
-	println(cli->io, "[Charge parameters]");
-	print_charge_param(cli->io);
-	println(cli->io, "[X.509 CA]");
-	print_x509_ca(cli->io);
-	println(cli->io, "[X.509 Cert]");
-	print_x509_cert(cli->io);
+	for (size_t i = 0; i < ARRAY_COUNT(cmds); i++) {
+		if (argc >= cmds[i].argc_min && argc <= cmds[i].argc_max &&
+				strcmp(argv[1], cmds[i].name) == 0 &&
+				(!cmds[i].opt ||
+					strcmp(argv[2], cmds[i].opt) == 0)) {
+			cmds[i].handler(cli->io, argc, argv, &cmds[i]);
+			return CLI_CMD_SUCCESS;
+		}
+	}
+
+	println(cli->io, "usage:");
+
+	for (size_t i = 0; i < ARRAY_COUNT(cmds); i++) {
+		print_help(cli->io, &cmds[i], NULL);
+	}
 
 	return CLI_CMD_SUCCESS;
 }

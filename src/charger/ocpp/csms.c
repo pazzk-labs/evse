@@ -38,6 +38,7 @@
 #include <errno.h>
 
 #include "ocpp/core/configuration_size.h"
+#include "ocpp/version.h"
 #include "libmcu/metrics.h"
 #include "libmcu/compiler.h"
 
@@ -182,6 +183,18 @@ int csms_reconnect(const uint32_t delay_sec)
 
 int csms_init(void *ctx)
 {
+	const uint32_t ocpp_version = MAKE_VERSION(OCPP_VERSION_MAJOR,
+			OCPP_VERSION_MINOR,
+			OCPP_VERSION_BUILD);
+	uint32_t ocpp_version_saved;
+	config_get("ocpp.version", &ocpp_version_saved,
+			sizeof(ocpp_version_saved));
+	if (ocpp_version != ocpp_version_saved) {
+		error("OCPP version mismatch: %x != %x",
+				ocpp_version, ocpp_version_saved);
+		config_set("ocpp.version", &ocpp_version, sizeof(ocpp_version));
+	}
+
 	int err = initialize_server();
 
 	if (!err) {

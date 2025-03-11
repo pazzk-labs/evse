@@ -31,6 +31,7 @@
  */
 
 #include "config.h"
+#include "config_default.h"
 
 #include <string.h>
 #include <errno.h>
@@ -51,16 +52,23 @@
 #define ARRAY_COUNT(x)			(sizeof(x) / sizeof((x)[0]))
 #endif
 
+typedef enum {
+	R, /* read-only */
+	RFW, /* read-only but reset to factory default permitted */
+	W, /* write-only */
+	RW, /* read-write */
+} readonly_config_t;
+
 struct config_entry {
 	const char *key;
-	size_t offset;
-	size_t size;
-	const bool readonly;
+	const size_t offset;
+	const size_t size;
+	const readonly_config_t permission;
 };
 
 struct config_custom_entry {
 	const char *key;
-	size_t size;
+	const size_t size;
 };
 
 struct config_mgr {
@@ -72,35 +80,36 @@ struct config_mgr {
 };
 
 typedef void (*iterate_cb_t)(const struct config_entry *entry, void *ctx);
-typedef void (*default_handler_t)(struct config *cfg);
 
 static const struct config_entry config_map[] = {
-	CONFIG_ENTRY("version",             version,                   true),
-	CONFIG_ENTRY("crc",                 crc,                       true),
-	CONFIG_ENTRY("device.id",           device_id,                 true),
-	CONFIG_ENTRY("device.name",         device_name,               false),
-	CONFIG_ENTRY("device.mode",         device_mode,               false),
-	CONFIG_ENTRY("log.mode",            log_mode,                  false),
-	CONFIG_ENTRY("log.level",           log_level,                 false),
-	CONFIG_ENTRY("dfu.reboot_manually", dfu_reboot_manually,       false),
+	CONFIG_ENTRY("version",             version,                   R),
+	CONFIG_ENTRY("crc",                 crc,                       R),
+	CONFIG_ENTRY("device.id",           device_id,                 R),
+	CONFIG_ENTRY("device.name",         device_name,               RW),
+	CONFIG_ENTRY("device.mode",         device_mode,               RW),
+	CONFIG_ENTRY("log.mode",            log_mode,                  RW),
+	CONFIG_ENTRY("log.level",           log_level,                 RW),
+	CONFIG_ENTRY("dfu.reboot_manually", dfu_reboot_manually,       RW),
 
-	CONFIG_ENTRY("chg.mode",        charger.mode,                  false),
-	CONFIG_ENTRY("chg.param",       charger.param,                 false),
-	CONFIG_ENTRY("chg.count",       charger.connector_count,       false),
-	CONFIG_ENTRY("chg.c1.cp",       charger.connector[0].pilot,    false),
-	CONFIG_ENTRY("chg.c1.metering", charger.connector[0].metering, false),
-	CONFIG_ENTRY("chg.c1.plc_mac",  charger.connector[0].plc_mac,  false),
+	CONFIG_ENTRY("chg.mode",        charger.mode,                  RW),
+	CONFIG_ENTRY("chg.param",       charger.param,                 RW),
+	CONFIG_ENTRY("chg.count",       charger.connector_count,       RW),
+	CONFIG_ENTRY("chg.c1.cp",       charger.connector[0].pilot,    RW),
+	CONFIG_ENTRY("chg.c1.metering", charger.connector[0].metering, RW),
+	CONFIG_ENTRY("chg.c1.plc_mac",  charger.connector[0].plc_mac,  RW),
 
-	CONFIG_ENTRY("net.mac",         net.mac,                       false),
-	CONFIG_ENTRY("net.health",      net.health_check_interval,     false),
-	CONFIG_ENTRY("net.server.url",  net.server_url,                false),
-	CONFIG_ENTRY("net.server.id",   net.server_id,                 false),
-	CONFIG_ENTRY("net.server.pass", net.server_pass,               false),
-	CONFIG_ENTRY("net.server.ping", net.ping_interval,             false),
+	CONFIG_ENTRY("net.mac",         net.mac,                       RW),
+	CONFIG_ENTRY("net.health",      net.health_check_interval,     RW),
+	CONFIG_ENTRY("net.server.url",  net.server_url,                RW),
+	CONFIG_ENTRY("net.server.id",   net.server_id,                 RW),
+	CONFIG_ENTRY("net.server.pass", net.server_pass,               RW),
+	CONFIG_ENTRY("net.server.ping", net.ping_interval,             RW),
 
-	CONFIG_ENTRY("ocpp.version",    ocpp.version,                  true),
-	CONFIG_ENTRY("ocpp.config",     ocpp.config,                   false),
-	CONFIG_ENTRY("ocpp.checkpoint", ocpp.checkpoint,               false),
+	CONFIG_ENTRY("ocpp.version",    ocpp.version,                  RW),
+	CONFIG_ENTRY("ocpp.config",     ocpp.config,                   RW),
+	CONFIG_ENTRY("ocpp.checkpoint", ocpp.checkpoint,               RW),
+	CONFIG_ENTRY("ocpp.vendor",     ocpp.vendor,                   RFW),
+	CONFIG_ENTRY("ocpp.model",      ocpp.model,                    RFW),
 };
 
 /* This custom configuration is not part of the basic configuration. Each
@@ -223,76 +232,14 @@ static int save_basic_config(struct config *cfg)
 	return 0;
 }
 
-static void set_default_chg_mode(struct config *cfg)
-{
-	strcpy(cfg->charger.mode, "free");
-}
-
-static void set_default_chg_c_cnt(struct config *cfg)
-{
-	cfg->charger.connector_count = 1;
-}
-
-static void set_default_chg_c1_plc_mac(struct config *cfg)
-{
-	cfg->charger.connector[0].plc_mac[0] = 0x02;
-	cfg->charger.connector[0].plc_mac[3] = 0xfe;
-	cfg->charger.connector[0].plc_mac[4] = 0xed;
-}
-
-static void set_default_net_mac(struct config *cfg)
-{
-	cfg->net.mac[0] = 0x00;
-	cfg->net.mac[1] = 0xf2;
-}
-
-static void set_default_net_healthcheck(struct config *cfg)
-{
-	cfg->net.health_check_interval = 60000; /* milliseconds */
-}
-
-static void set_default_ping_interval(struct config *cfg)
-{
-	cfg->net.ping_interval = 120; /* seconds */
-}
-
-static void set_default_server_url(struct config *cfg)
-{
-	strcpy(cfg->net.server_url, "wss://csms.pazzk.net");
-}
-
-static const struct {
-	const char *key;
-	default_handler_t handler;
-} default_handlers[] = {
-	{ "chg.mode",        set_default_chg_mode },
-	{ "chg.count",       set_default_chg_c_cnt },
-	{ "chg.c1.plc_mac",  set_default_chg_c1_plc_mac },
-	{ "net.mac",         set_default_net_mac },
-	{ "net.health",      set_default_net_healthcheck },
-	{ "net.server.ping", set_default_ping_interval },
-	{ "net.server.url",  set_default_server_url },
-};
-
-static bool set_default(const char *key, struct config *cfg)
-{
-	for (size_t i = 0; i < ARRAY_COUNT(default_handlers); i++) {
-		if (strcmp(default_handlers[i].key, key) == 0) {
-			(*default_handlers[i].handler)(cfg);
-			return true;
-		}
-	}
-	return false;
-}
-
 static void set_default_or_zero(const struct config_entry *entry,
 		struct config *cfg)
 {
-	if (entry->readonly) {
+	if (entry->permission < RFW) {
 		return;
 	}
 
-	if (!set_default(entry->key, cfg)) {
+	if (!config_set_default(entry->key, cfg)) {
 		memset((uint8_t *)cfg + entry->offset, 0, entry->size);
 	}
 }
@@ -445,7 +392,7 @@ int config_set(const char *key, const void *data, size_t datasize)
 		return write_custom_config(key, data, datasize);
 	}
 
-	if (entry->readonly) {
+	if (entry->permission <= RFW) {
 		error("Read-only key: %s", key);
 		return -EPERM;
 	}

@@ -50,6 +50,14 @@ static void println(const struct cli_io *io, const char *str)
 	io->write("\n", 1);
 }
 
+static void printini(const struct cli_io *io,
+		const char *key, const char *value)
+{
+	io->write(key, strlen(key));
+	io->write("=", 1);
+	println(io, value);
+}
+
 static void print_state(const struct cli_io *io)
 {
 	const netmgr_state_t state = netmgr_state();
@@ -73,7 +81,7 @@ static void print_state(const struct cli_io *io)
 		break;
 	}
 
-	println(io, str);
+	printini(io, "state", str);
 }
 
 static void print_url(const struct cli_io *io)
@@ -83,7 +91,7 @@ static void print_url(const struct cli_io *io)
 #endif
 	char buf[URL_MAXLEN] = { 0, };
 	config_get("net.server.url", buf, sizeof(buf));
-	println(io, buf);
+	printini(io, "url", buf);
 }
 
 static void print_mac(const struct cli_io *io)
@@ -93,7 +101,7 @@ static void print_mac(const struct cli_io *io)
 	config_get("net.mac", mac, sizeof(mac));
 	snprintf(mac_str, sizeof(mac_str), "%02X:%02X:%02X:%02X:%02X:%02X",
 			mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-	println(io, mac_str);
+	printini(io, "mac", mac_str);
 }
 
 static void print_health_check_interval(const struct cli_io *io)
@@ -104,14 +112,14 @@ static void print_health_check_interval(const struct cli_io *io)
 	char health_interval_str[12] = { 0, };
 	snprintf(health_interval_str, sizeof(health_interval_str), "%u",
 			health_interval);
-	println(io, health_interval_str);
+	printini(io, "health-check-interval", health_interval_str);
 }
 
 static void print_server_id(const struct cli_io *io)
 {
 	char id[64] = {0};
 	config_get("net.server.id", id, sizeof(id));
-	println(io, id);
+	printini(io, "server-id", id);
 }
 
 static void print_websocket_ping_interval(const struct cli_io *io)
@@ -122,27 +130,16 @@ static void print_websocket_ping_interval(const struct cli_io *io)
 	char ws_ping_interval_str[12] = { 0, };
 	snprintf(ws_ping_interval_str, sizeof(ws_ping_interval_str), "%u",
 			ws_ping_interval);
-	println(io, ws_ping_interval_str);
+	printini(io, "ws-ping-interval", ws_ping_interval_str);
 }
 
 static void print_all(const struct cli_io *io)
 {
-	println(io, "[Status]");
 	print_state(io);
-
-	println(io, "[Server URL]");
 	print_url(io);
-
-	println(io, "[MAC Address]");
 	print_mac(io);
-
-	println(io, "[Health Check Interval]");
 	print_health_check_interval(io);
-
-	println(io, "[Server ID]");
 	print_server_id(io);
-
-	println(io, "[WebSocket Ping Interval]");
 	print_websocket_ping_interval(io);
 }
 
@@ -245,7 +242,7 @@ static bool update_cfg(const struct cli_io *io, check_fn_t check,
 			net_get_mac_from_str(value, mac);
 			config_set(key, mac, sizeof(mac));
 		} else {
-			config_set(key, value, strlen(value));
+			config_set(key, value, strlen(value)+1/*null*/);
 		}
 	}
 

@@ -44,8 +44,7 @@ typedef enum {
 	CMD_OPT_VERSION			= 0x01,
 	CMD_OPT_BUILD_DATE		= 0x02,
 	CMD_OPT_SERIAL_NUMBER		= 0x04,
-	CMD_OPT_HELP			= 0x08,
-	CMD_OPT_CPULOAD			= 0x10,
+	CMD_OPT_CPULOAD			= 0x08,
 	CMD_OPT_ALL			= (
 			CMD_OPT_VERSION |
 			CMD_OPT_BUILD_DATE |
@@ -53,9 +52,12 @@ typedef enum {
 			CMD_OPT_SERIAL_NUMBER),
 } cmd_opt_t;
 
-static void println(const struct cli_io *io, const char *str)
+static void printini(const struct cli_io *io,
+		const char *key, const char *value)
 {
-	io->write(str, strlen(str));
+	io->write(key, strlen(key));
+	io->write("=", 1);
+	io->write(value, strlen(value));
 	io->write("\n", 1);
 }
 
@@ -65,8 +67,6 @@ static cmd_opt_t get_command_option(int argc, const char *opt)
 		return CMD_OPT_ALL;
 	} else if (opt == NULL) {
 		return CMD_OPT_NONE;
-	} else if (strcmp(opt, "help") == 0) {
-		return CMD_OPT_HELP;
 	} else if (strcmp(opt, "version") == 0) {
 		return CMD_OPT_VERSION;
 	} else if (strcmp(opt, "sn") == 0) {
@@ -78,62 +78,53 @@ static cmd_opt_t get_command_option(int argc, const char *opt)
 	return CMD_OPT_ALL;
 }
 
-static void print_help(struct cli_io const *io)
-{
-	println(io, "subcommands:\n\n\tversion\n\tsn\n\tbuild");
-}
-
 static void print_version(struct cli_io const *io)
 {
-	io->write("v", 1);
-	println(io, board_get_version_string());
+	printini(io, "Version", board_get_version_string());
 }
 
 static void print_sn(struct cli_io const *io)
 {
-	println(io, board_get_serial_number_string());
+	printini(io, "SN", board_get_serial_number_string());
 }
 
 static void print_build_date(struct cli_io const *io)
 {
-	println(io, board_get_build_date_string());
+	printini(io, "Build-date", board_get_build_date_string());
 }
 
 static void print_cpuload(struct cli_io const *io)
 {
 	char buf[64];
-	snprintf(buf, sizeof(buf)-1,
-			"CPU load: %u%% %u%%, %u%% %u%%, %u%% %u%%",
+	snprintf(buf, sizeof(buf)-1, "%u%% %u%%, %u%% %u%%, %u%% %u%%",
 			board_cpuload(0, 1), board_cpuload(1, 1),
 			board_cpuload(0, 60), board_cpuload(1, 60),
 			board_cpuload(0, 5*60), board_cpuload(1, 5*60));
-	println(io, buf);
+	printini(io, "CPU-load", buf);
 }
 
 static void print_board_time(struct cli_io const *io)
 {
 	char buf[32];
-	snprintf(buf, sizeof(buf)-1, "Monotonic time %lu",
-			board_get_time_since_boot_ms());
-	println(io, buf);
+	snprintf(buf, sizeof(buf)-1, "%lu", board_get_time_since_boot_ms());
+	printini(io, "Monotonic-time", buf);
 
-	snprintf(buf, sizeof(buf)-1, "Walltime: %u", (uint32_t)time(NULL));
-	println(io, buf);
+	snprintf(buf, sizeof(buf)-1, "%u", (uint32_t)time(NULL));
+	printini(io, "Walltime", buf);
 }
 
 static void print_device_info(struct cli_io const *io)
 {
-	println(io, board_get_reboot_reason_string(board_get_reboot_reason()));
+	printini(io, "Reboot-reason", board_get_reboot_reason_string(
+			board_get_reboot_reason()));
 
 	char buf[32];
-	snprintf(buf, sizeof(buf)-1, "Heap: %lu/%lu",
-			board_get_heap_watermark(),
+	snprintf(buf, sizeof(buf)-1, "%lu/%lu", board_get_heap_watermark(),
 			board_get_free_heap_bytes());
-	println(io, buf);
+	printini(io, "Heap", buf);
 
-	snprintf(buf, sizeof(buf)-1, "Stack: %lu",
-			board_get_current_stack_watermark());
-	println(io, buf);
+	snprintf(buf, sizeof(buf)-1, "%lu", board_get_current_stack_watermark());
+	printini(io, "Stack", buf);
 }
 
 static void print_uptime(struct cli_io const *io)
@@ -143,8 +134,8 @@ static void print_uptime(struct cli_io const *io)
 	const uint32_t hours = sec / 3600;
 	const uint32_t days = hours / 24;
 
-	snprintf(buf, sizeof(buf)-1, "Uptime: %u hours (%u days)", hours, days);
-	println(io, buf);
+	snprintf(buf, sizeof(buf)-1, "%u hours (%u days)", hours, days);
+	printini(io, "Uptime", buf);
 }
 
 static void print_fs_info(struct cli_io const *io, struct app *app)
@@ -154,10 +145,10 @@ static void print_fs_info(struct cli_io const *io, struct app *app)
 	fs_usage(app->fs, &used_bytes, &total_bytes);
 
 	char buf[128];
-	snprintf(buf, sizeof(buf)-1, "Filesystem: %zu/%zu bytes (%u%% used)",
+	snprintf(buf, sizeof(buf)-1, "%zu/%zu bytes (%u%% used)",
 			used_bytes, total_bytes,
 			(uint32_t)(used_bytes*100/total_bytes));
-	println(io, buf);
+	printini(io, "Filesystem", buf);
 }
 
 DEFINE_CLI_CMD(info, "Display device info") {
@@ -170,9 +161,6 @@ DEFINE_CLI_CMD(info, "Display device info") {
 
 	cmd_opt_t options = get_command_option(argc, argv? argv[1] : NULL);
 
-	if (options & CMD_OPT_HELP) {
-		print_help(cli->io);
-	}
 	if (options & CMD_OPT_VERSION) {
 		print_version(cli->io);
 	}
