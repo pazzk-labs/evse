@@ -42,20 +42,20 @@
 #include "libmcu/board.h"
 #include "libmcu/ringbuf.h"
 #include "libmcu/assert.h"
+#include "libmcu/compiler.h"
 
 #include "charger/ocpp.h"
 #include "ocpp_connector_internal.h"
 #include "encoder_json.h"
 #include "decoder_json.h"
 #include "net/server.h"
+#include "config.h"
 #include "logger.h"
 
-#if !defined(CHARGER_VENDOR)
-#define CHARGER_VENDOR		"net.pazzk"
-#endif
-#if !defined(CHARGER_MODEL)
-#define CHARGER_MODEL		"EVSE-7S"
-#endif
+static_assert(sizeof(((struct config *)0)->ocpp.vendor) == OCPP_CiString20,
+		"config.ocpp.vendor size mismatch");
+static_assert(sizeof(((struct config *)0)->ocpp.model) == OCPP_CiString20,
+		"config.ocpp.model size mismatch");
 
 #if !defined(ARRAY_COUNT)
 #define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
@@ -160,13 +160,14 @@ static int do_bootnotification(struct ocpp_connector *c,
 		return -ENOMEM;
 	}
 
-	*p = (struct ocpp_BootNotification) {
-		.chargePointModel = CHARGER_MODEL,
-		.chargePointVendor = CHARGER_VENDOR,
-	};
+	*p = (struct ocpp_BootNotification) { 0, };
 
 	strcpy(p->chargePointSerialNumber, board_get_serial_number_string());
 	strcpy(p->firmwareVersion, board_get_version_string());
+	config_get("ocpp.vendor", p->chargePointVendor,
+			sizeof(p->chargePointVendor));
+	config_get("ocpp.model", p->chargePointModel,
+			sizeof(p->chargePointModel));
 
 	return request_free_if_fail(msg_type, req, p, sizeof(*p),
 			delay_sec, true, c);
@@ -232,9 +233,8 @@ static int do_datatransfer(struct ocpp_connector *c,
 		return -ENOMEM;
 	}
 
-	*p = (struct ocpp_DataTransfer) {
-		.vendorId = CHARGER_VENDOR,
-	};
+	*p = (struct ocpp_DataTransfer) { 0, };
+	config_get("ocpp.vendor", p->vendorId, sizeof(p->vendorId));
 	strcpy(p->messageId, c->ocpp_info.datatransfer.id);
 	if (c->ocpp_info.datatransfer.data &&
 			c->ocpp_info.datatransfer.datasize) {
@@ -505,7 +505,7 @@ static int do_statusnotification(struct ocpp_connector *c,
 
 	if (c->ocpp_info.vendor_error_code) { /* optional */
 		strcpy(p->vendorErrorCode, c->ocpp_info.vendor_error_code);
-		strcpy(p->vendorId, CHARGER_VENDOR);
+		config_get("ocpp.vendor", p->vendorId, sizeof(p->vendorId));
 	}
 
 	return request_free_if_fail(msg_type, req, p, sizeof(*p),

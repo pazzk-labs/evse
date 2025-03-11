@@ -77,6 +77,8 @@ struct config_ocpp {
 	uint32_t version;
 	uint8_t config[546];
 	uint8_t checkpoint[16];
+	char vendor[20+1];
+	char model[20+1];
 } LIBMCU_PACKED;
 
 struct config {
@@ -97,7 +99,7 @@ struct config {
 
 	uint32_t crc; /* keep this field at the end */
 } LIBMCU_PACKED;
-static_assert(sizeof(struct config) == 1053, "config size mismatch");
+static_assert(sizeof(struct config) == 1095, "config size mismatch");
 
 struct kvstore;
 

@@ -50,6 +50,12 @@ static void println(const struct cli_io *io, const char *str)
 	io->write("\n", 1);
 }
 
+static void printkey(const struct cli_io *io, const char *str)
+{
+	io->write(str, strlen(str));
+	io->write("=", 1);
+}
+
 static void print_charge_mode(const struct cli_io *io)
 {
 	char mode[CONFIG_CHARGER_MODE_MAXLEN] = { 0, };
@@ -63,13 +69,13 @@ static void print_charge_param(const struct cli_io *io)
 	struct charger_param param;
 	charger_default_param(&param);
 	config_get("chg.param", &param, sizeof(param));
-	snprintf(buf, sizeof(buf), "Input voltage: %dV", param.input_voltage);
+	snprintf(buf, sizeof(buf), "voltage.input=%dV", param.input_voltage);
 	println(io, buf);
-	snprintf(buf, sizeof(buf), "Input current: %umA", param.max_input_current_mA);
+	snprintf(buf, sizeof(buf), "current.input=%umA", param.max_input_current_mA);
 	println(io, buf);
-	snprintf(buf, sizeof(buf), "Input frequency: %dHz", param.input_frequency);
+	snprintf(buf, sizeof(buf), "frequency.input=%dHz", param.input_frequency);
 	println(io, buf);
-	snprintf(buf, sizeof(buf), "Output current: %umA ~ %umA",
+	snprintf(buf, sizeof(buf), "current.output=%umA ~ %umA",
 			param.min_output_current_mA,
 			param.max_output_current_mA);
 	println(io, buf);
@@ -95,6 +101,27 @@ static void print_x509_cert(const struct cli_io *io)
 		println(io, buf);
 		free(buf);
 	}
+}
+
+static void print_ocpp(const struct cli_io *io)
+{
+	char buf[20+1] = "ocpp.vendor";
+	printkey(io, buf);
+	config_get(buf, buf, sizeof(buf));
+	println(io, buf);
+
+	strcpy(buf, "ocpp.model");
+	printkey(io, buf);
+	config_get(buf, buf, sizeof(buf));
+	println(io, buf);
+
+	uint32_t version;
+	strcpy(buf, "ocpp.version");
+	printkey(io, buf);
+	config_get(buf, &version, sizeof(version));
+	snprintf(buf, sizeof(buf), "v%d.%d.%d", GET_VERSION_MAJOR(version),
+			GET_VERSION_MINOR(version), GET_VERSION_PATCH(version));
+	println(io, buf);
 }
 
 static void change_charge_mode(const struct cli_io *io, const char *str)
@@ -351,6 +378,8 @@ DEFINE_CLI_CMD(config, "Configurations") {
 	print_x509_ca(cli->io);
 	println(cli->io, "[X.509 Cert]");
 	print_x509_cert(cli->io);
+	println(cli->io, "[OCPP]");
+	print_ocpp(cli->io);
 
 	return CLI_CMD_SUCCESS;
 }
