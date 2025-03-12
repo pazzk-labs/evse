@@ -152,19 +152,22 @@ bool csms_is_up(void)
 
 int csms_request(const ocpp_message_t msgtype, void *ctx, void *opt)
 {
-	return adapter_push_request(ctx, msgtype, opt);
+	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
+	return adapter_push_request(oc, msgtype, opt);
 }
 
 int csms_request_defer(const ocpp_message_t msgtype, void *ctx, void *opt,
 		const uint32_t delay_sec)
 {
-	return adapter_push_request_defer(ctx, msgtype, opt, delay_sec);
+	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
+	return adapter_push_request_defer(oc, msgtype, opt, delay_sec);
 }
 
 int csms_response(const ocpp_message_t msgtype,
 		const struct ocpp_message *req, void *ctx, void *opt)
 {
-	return adapter_push_response(ctx, msgtype, req, opt);
+	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
+	return adapter_push_response(oc, msgtype, req, opt);
 }
 
 int csms_reconnect(const uint32_t delay_sec)
@@ -199,7 +202,7 @@ int csms_init(void *ctx)
 
 	if (!err) {
 		const size_t len = ocpp_compute_configuration_size();
-		void *p = (void *)calloc(1, len);
+		void *p = calloc(1, len);
 		if (p == NULL) {
 			return -ENOMEM;
 		}

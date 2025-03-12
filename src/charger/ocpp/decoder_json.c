@@ -79,11 +79,15 @@ static void *create_message(struct ocpp_message *msg, size_t msgsize)
 
 static int do_error(struct ocpp_message *msg, cJSON *json)
 {
+	unused(msg);
+	unused(json);
 	return -ENOTSUP;
 }
 
 static int do_empty(struct ocpp_message *msg, cJSON *json)
 {
+	unused(msg);
+	unused(json);
 	return 0;
 }
 
@@ -162,7 +166,8 @@ static int do_bootnotification(struct ocpp_message *msg, cJSON *json)
 	}
 
 	p->currentTime = iso8601_convert_to_time(cJSON_GetStringValue(datetime));
-	p->interval = (int)cJSON_GetNumberValue(interval);
+	double t = cJSON_GetNumberValue(interval);
+	p->interval = (int)t;
 	p->status = ocpp_get_boot_status_from_string(cJSON_GetStringValue(status));
 
 	return 0;
@@ -194,7 +199,8 @@ static int do_change_availability(struct ocpp_message *msg, cJSON *json)
 		return -ENOMEM;
 	}
 
-	p->connectorId = (int)cJSON_GetNumberValue(connector);
+	double t = cJSON_GetNumberValue(connector);
+	p->connectorId = (int)t;
 	p->type = value;
 
 	return 0;
@@ -279,7 +285,8 @@ static int do_remote_start(struct ocpp_message *msg, cJSON *json)
 	strcpy(p->idTag, cJSON_GetStringValue(uid));
 
 	if (cid) {
-		p->connectorId = (int)cJSON_GetNumberValue(cid);
+		double t = cJSON_GetNumberValue(cid);
+		p->connectorId = (int)t;
 	}
 	if (profile) {
 		/* TODO: parse charging profile */
@@ -305,7 +312,8 @@ static int do_remote_stop(struct ocpp_message *msg, cJSON *json)
 		return -ENOMEM;
 	}
 
-	p->transactionId = (int)cJSON_GetNumberValue(tid);
+	double t = cJSON_GetNumberValue(tid);
+	p->transactionId = (int)t;
 
 	return 0;
 }
@@ -358,7 +366,8 @@ static int do_start_transaction(struct ocpp_message *msg, cJSON *json)
 	}
 
 	p->idTagInfo.status = ocpp_get_auth_status_from_string(s);
-	p->transactionId = (int)cJSON_GetNumberValue(tid);
+	double t = cJSON_GetNumberValue(tid);
+	p->transactionId = (int)t;
 
 	if (expiry) {
 		p->idTagInfo.expiryDate = iso8601_convert_to_time(
@@ -394,10 +403,12 @@ static int do_updatefirmware(struct ocpp_message *msg, cJSON *json)
 	p->retrieveDate = iso8601_convert_to_time(cJSON_GetStringValue(due));
 
 	if (interval) {
-		p->retryInterval = (int)cJSON_GetNumberValue(interval);
+		double t = cJSON_GetNumberValue(interval);
+		p->retryInterval = (int)t;
 	}
 	if (retries) {
-		p->retries = (int)cJSON_GetNumberValue(retries);
+		double t = cJSON_GetNumberValue(retries);
+		p->retries = (int)t;
 	}
 
 	return 0;
@@ -443,8 +454,8 @@ static int decode(struct ocpp_message *msg, cJSON *json)
 		return -EPROTO;
 	}
 
-	const ocpp_message_role_t role = (ocpp_message_role_t)
-		(cJSON_GetNumberValue(cJSON_GetArrayItem(json, 0)));
+	const double t = cJSON_GetNumberValue(cJSON_GetArrayItem(json, 0));
+	const ocpp_message_role_t role = (ocpp_message_role_t)t;
 	const char *id = cJSON_GetStringValue(cJSON_GetArrayItem(json, 1));
 	cJSON *payload = cJSON_GetArrayItem(json, narr - 1);
 	ocpp_message_t type = ocpp_get_type_from_idstr(id);

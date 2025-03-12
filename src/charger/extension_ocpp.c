@@ -86,6 +86,7 @@ static void on_updater_event(updater_event_t event, void *ctx)
 
 static void on_each_connector_csms_up(struct connector *c, void *ctx)
 {
+	unused(ctx);;
 	struct ocpp_connector *oc = (struct ocpp_connector *)c;
 	ocpp_connector_set_csms_up(oc, true);
 }
@@ -111,6 +112,7 @@ static void dispatch_event(struct charger *charger, struct connector *c,
 static void proc_availability(struct charger *charger,
 		const struct ocpp_charger_msg *msg)
 {
+	unused(msg);
 	struct ocpp_connector_checkpoint checkpoint = {
 		.unavailable = !ocpp_charger_get_availability(charger),
 	};
@@ -156,17 +158,20 @@ static void proc_remote_reset(struct charger *charger,
 static void proc_start_transaction(struct charger *charger,
 		const struct ocpp_charger_msg *msg)
 {
+	unused(charger);
 	struct ocpp_connector *oc = (struct ocpp_connector *)msg->value;
 	if (oc == NULL) {
 		error("no connector given for StartTransaction");
 		return;
 	}
+	ocpp_connector_set_checkpoint_tid(oc);
 	ocpp_connector_raise_event(oc, CONNECTOR_EVENT_BILLING_STARTED);
 }
 
 static void proc_stop_transaction(struct charger *charger,
 		const struct ocpp_charger_msg *msg)
 {
+	unused(charger);
 	struct ocpp_connector *oc = (struct ocpp_connector *)msg->value;
 	if (oc == NULL) {
 		error("no connector given for StopTransaction");
@@ -178,7 +183,6 @@ static void proc_stop_transaction(struct charger *charger,
 
 static int ext_init(struct charger *self)
 {
-	struct ocpp_charger *charger = (struct ocpp_charger *)self;
 	struct ocpp_checkpoint checkpoint = { 0, };
 
 	config_get("ocpp.checkpoint", &checkpoint, sizeof(checkpoint));
@@ -190,7 +194,8 @@ static int ext_init(struct charger *self)
 		err = updater_register_event_callback(on_updater_event, self);
 	}
 
-	struct charger_support_entry *support = malloc(sizeof(*support));
+	struct charger_support_entry *support = (struct charger_support_entry *)
+			malloc(sizeof(*support));
 	if (support) {
 		support->name = "ocpp";
 		list_add(&support->link, &self->supported);
@@ -217,7 +222,7 @@ static int ext_pre_process(struct charger *self)
 	static_assert(ARRAY_COUNT(msg_handlers) == OCPP_CHARGER_MSG_MAX,
 			"msg_handlers size mismatch");
 
-	struct ocpp_charger_msg msg = { 0, };
+	struct ocpp_charger_msg msg;
 
 	int err = ocpp_step();
 

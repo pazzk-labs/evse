@@ -68,7 +68,8 @@ static bool update_metering_core(struct ocpp_connector *oc, time_t *timestamp,
 
 ocpp_connector_state_t ocpp_connector_state(struct ocpp_connector *oc)
 {
-	return (ocpp_connector_state_t)fsm_get_state(&oc->base.fsm);
+	return (ocpp_connector_state_t)
+		(int)fsm_get_state(&oc->base.fsm);
 }
 
 const char *ocpp_connector_stringify_state(ocpp_connector_state_t state)
@@ -120,7 +121,7 @@ ocpp_status_t ocpp_connector_map_state_to_ocpp(ocpp_connector_state_t state)
 		[Unavailable]   = OCPP_STATUS_UNAVAILABLE,
 	};
 
-	return (ocpp_status_t)tbl[state];
+	return tbl[state];
 }
 
 ocpp_error_t ocpp_connector_map_error_to_ocpp(connector_error_t error)
@@ -238,6 +239,11 @@ void ocpp_connector_clear_checkpoint_tid(struct ocpp_connector *oc)
 	oc->checkpoint->transaction_id = 0;
 }
 
+void ocpp_connector_set_checkpoint_tid(struct ocpp_connector *oc)
+{
+	oc->checkpoint->transaction_id = oc->session.transaction_id;
+}
+
 void ocpp_connector_raise_event(struct ocpp_connector *oc,
 		const connector_event_t event)
 {
@@ -340,7 +346,7 @@ ocpp_measurand_t ocpp_connector_update_metering(struct ocpp_connector *oc)
 
 	if (!update_metering_core(oc, &oc->session.metering.time_sample_periodic,
 			sample_interval, OCPP_READ_CTX_SAMPLE_PERIODIC)) {
-		return 0;
+		return (ocpp_measurand_t)0;
 	}
 
 	return (ocpp_measurand_t)sample_data_type;
@@ -358,12 +364,12 @@ ocpp_connector_update_metering_clock_aligned(struct ocpp_connector *oc)
 			&clock_data_type, sizeof(clock_data_type), 0);
 
 	if (!clock_interval || (oc->now % clock_interval) != 0) {
-		return 0;
+		return (ocpp_measurand_t)0;
 	}
 
 	if (!update_metering_core(oc, &oc->session.metering.time_clock_periodic,
 			clock_interval, OCPP_READ_CTX_SAMPLE_CLOCK)) {
-		return 0;
+		return (ocpp_measurand_t)0;
 	}
 
 	return (ocpp_measurand_t)clock_data_type;

@@ -131,6 +131,7 @@ static int do_empty(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
+	unused(ctx);
 	return request(msg_type, req, NULL, 0, delay_sec, false, c);
 }
 
@@ -138,7 +139,9 @@ static int do_authorize(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_Authorize *p = alloc_message(sizeof(*p));
+	unused(ctx);
+	struct ocpp_Authorize *p =
+		(struct ocpp_Authorize *)alloc_message(sizeof(*p));
 
 	if (!p) {
 		return -ENOMEM;
@@ -154,7 +157,9 @@ static int do_bootnotification(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_BootNotification *p = alloc_message(sizeof(*p));
+	unused(ctx);
+	struct ocpp_BootNotification *p =
+		(struct ocpp_BootNotification *)alloc_message(sizeof(*p));
 
 	if (!p) {
 		return -ENOMEM;
@@ -177,7 +182,9 @@ static int do_change_availability(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_ChangeAvailability_conf *p = alloc_message(sizeof(*p));
+	struct ocpp_ChangeAvailability_conf *p =
+		(struct ocpp_ChangeAvailability_conf *)
+		alloc_message(sizeof(*p));
 
 	if (!p) {
 		return -ENOMEM;
@@ -193,7 +200,9 @@ static int do_change_configuration(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_ChangeConfiguration_conf *p = alloc_message(sizeof(*p));
+	struct ocpp_ChangeConfiguration_conf *p =
+		(struct ocpp_ChangeConfiguration_conf *)
+		alloc_message(sizeof(*p));
 
 	if (!p) {
 		return -ENOMEM;
@@ -209,7 +218,8 @@ static int do_clear_cache(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_ClearCache_conf *p = alloc_message(sizeof(*p));
+	struct ocpp_ClearCache_conf *p =
+		(struct ocpp_ClearCache_conf *)alloc_message(sizeof(*p));
 
 	if (!p) {
 		return -ENOMEM;
@@ -225,9 +235,11 @@ static int do_datatransfer(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
+	unused(ctx);
 	const size_t total_size = sizeof(struct ocpp_DataTransfer) +
 		c->ocpp_info.datatransfer.datasize;
-	struct ocpp_DataTransfer *p = alloc_message(total_size);
+	struct ocpp_DataTransfer *p =
+		(struct ocpp_DataTransfer *)alloc_message(total_size);
 
 	if (!p) {
 		return -ENOMEM;
@@ -250,7 +262,9 @@ static int do_diagnostic_status_noti(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_DiagnosticsStatusNotification *p = alloc_message(sizeof(*p));
+	struct ocpp_DiagnosticsStatusNotification *p =
+		(struct ocpp_DiagnosticsStatusNotification *)
+		alloc_message(sizeof(*p));
 
 	if (!p) {
 		return -ENOMEM;
@@ -268,7 +282,9 @@ static int do_fw_status_noti(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_FirmwareStatusNotification *p = alloc_message(sizeof(*p));
+	struct ocpp_FirmwareStatusNotification *p =
+		(struct ocpp_FirmwareStatusNotification *)
+		alloc_message(sizeof(*p));
 
 	if (!p) {
 		return -ENOMEM;
@@ -286,14 +302,15 @@ static int do_get_configuration(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
+	unused(ctx);
 	size_t req_keylen = 0;
 
 	if (req->payload.fmt.request) {
-		req_keylen = strlen(req->payload.fmt.request);
+		req_keylen = strlen((const char *)req->payload.fmt.request);
 	}
 
 	const size_t total_size = req_keylen + 1;
-	char *p = alloc_message(total_size);
+	char *p = (char *)alloc_message(total_size);
 
 	if (!p) {
 		return -ENOMEM;
@@ -302,7 +319,7 @@ static int do_get_configuration(struct ocpp_connector *c,
 	/* NOTE: An ad-hoc method of passing the request message to
 	 * be processed by the encoder. */
 	if (req_keylen) {
-		strcpy(p, req->payload.fmt.data);
+		strcpy(p, (char *)req->payload.fmt.data);
 	}
 
 	return request_free_if_fail(msg_type, req, p, total_size,
@@ -312,10 +329,11 @@ static int do_get_configuration(struct ocpp_connector *c,
 static size_t count_measurands(ocpp_measurand_t measurands)
 {
 	size_t count = 0;
+	unsigned int t = (unsigned int)measurands;
 
-	while (measurands) {
-		count += measurands & 1;
-		measurands >>= 1;
+	while (t) {
+		count += t & 1;
+		t >>= 1;
 	}
 
 	return count;
@@ -329,12 +347,12 @@ static ocpp_measurand_t pick_measurand_by_index(ocpp_measurand_t measurands,
 	for (size_t i = 0; i < sizeof(measurands) * 8; i++) {
 		if (measurands & (1 << i)) {
 			if (++count == index) {
-				return 1 << i;
+				return (ocpp_measurand_t)(1 << i);
 			}
 		}
 	}
 
-	return 0;
+	return (ocpp_measurand_t)0;
 }
 
 static ocpp_measure_unit_t get_unit_by_measurand(ocpp_measurand_t measurand)
@@ -357,22 +375,22 @@ static void set_measurand_value(struct ocpp_SampledValue *p,
 {
 	switch (measurand) {
 	case OCPP_MEASURAND_ENERGY_ACTIVE_IMPORT_REGISTER:
-		snprintf(p->value, sizeof(p->value), "%" PRIu64, v->wh);
+		snprintf(p->value, sizeof(p->value), "%"PRIu64, v->wh);
 		break;
 	case OCPP_MEASURAND_POWER_ACTIVE_IMPORT:
-		snprintf(p->value, sizeof(p->value), "%d", v->watt);
+		snprintf(p->value, sizeof(p->value), "%"PRId32, v->watt);
 		break;
 	case OCPP_MEASURAND_CURRENT_IMPORT:
-		snprintf(p->value, sizeof(p->value), "%d", v->milliamp);
+		snprintf(p->value, sizeof(p->value), "%"PRId32, v->milliamp);
 		break;
 	case OCPP_MEASURAND_VOLTAGE:
-		snprintf(p->value, sizeof(p->value), "%d", v->millivolt);
+		snprintf(p->value, sizeof(p->value), "%"PRId32, v->millivolt);
 		break;
 	case OCPP_MEASURAND_POWER_FACTOR:
-		snprintf(p->value, sizeof(p->value), "%d", v->pf_centi);
+		snprintf(p->value, sizeof(p->value), "%"PRId32, v->pf_centi);
 		break;
 	case OCPP_MEASURAND_FREQUENCY:
-		snprintf(p->value, sizeof(p->value), "%d", v->centi_hertz);
+		snprintf(p->value, sizeof(p->value), "%"PRId32, v->centi_hertz);
 		break;
 	default:
 		memset(p->value, 0, sizeof(p->value));
@@ -388,27 +406,32 @@ static int do_metervalue(struct ocpp_connector *c,
 	const size_t n_samples = count_measurands(measurands);
 	const size_t total_size = sizeof(struct ocpp_MeterValues)
 		+ n_samples * sizeof(struct ocpp_SampledValue);
-	struct ocpp_MeterValues *p = alloc_message(total_size);
+	struct ocpp_MeterValues *p =
+		(struct ocpp_MeterValues *)alloc_message(total_size);
 
 	if (!p) {
 		return -ENOMEM;
 	}
 
+	struct ocpp_MeterValue *value = (struct ocpp_MeterValue *)(void *)&p->meterValue;
 	*p = (struct ocpp_MeterValues) {
 		.connectorId = c->base.id,
 		.transactionId = (int)c->session.transaction_id,
-		.meterValue = {
-			.timestamp = c->now,
-		},
 	};
+	*value = (struct ocpp_MeterValue) {
+		.timestamp = c->now,
+	};
+	struct ocpp_SampledValue *sampledValue =
+		(struct ocpp_SampledValue *)(void *)value->sampledValue;
 
 	for (size_t i = 0; i < n_samples; i++) {
-		ocpp_measurand_t measurand = pick_measurand_by_index(measurands, i+1);
-		p->meterValue.sampledValue[i].context = c->session.metering.context;
-		p->meterValue.sampledValue[i].measurand = measurand;
-		p->meterValue.sampledValue[i].unit = get_unit_by_measurand(measurand);
+		ocpp_measurand_t measurand =
+			pick_measurand_by_index(measurands, i+1);
+		sampledValue[i].context = c->session.metering.context;
+		sampledValue[i].measurand = measurand;
+		sampledValue[i].unit = get_unit_by_measurand(measurand);
 
-		set_measurand_value(&p->meterValue.sampledValue[i],
+		set_measurand_value(&sampledValue[i],
 				measurand, &c->session.metering);
 	}
 
@@ -420,7 +443,9 @@ static int do_remote_start_stop(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_RemoteStartTransaction_conf *p = alloc_message(sizeof(*p));
+	struct ocpp_RemoteStartTransaction_conf *p =
+		(struct ocpp_RemoteStartTransaction_conf *)
+		alloc_message(sizeof(*p));
 
 	if (!p) {
 		return -ENOMEM;
@@ -436,7 +461,9 @@ static int do_reset(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_Reset_conf *p = alloc_message(sizeof(*p));
+	unused(c);
+	struct ocpp_Reset_conf *p =
+		(struct ocpp_Reset_conf *)alloc_message(sizeof(*p));
 	struct charger *charger = (struct charger *)ctx;
 
 	if (!p) {
@@ -458,7 +485,9 @@ static int do_starttransaction(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_StartTransaction *p = alloc_message(sizeof(*p));
+	unused(ctx);
+	struct ocpp_StartTransaction *p =
+		(struct ocpp_StartTransaction *)alloc_message(sizeof(*p));
 
 	if (!p) {
 		return -ENOMEM;
@@ -480,7 +509,8 @@ static int do_statusnotification(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_StatusNotification *p = alloc_message(sizeof(*p));
+	struct ocpp_StatusNotification *p =
+		(struct ocpp_StatusNotification *)alloc_message(sizeof(*p));
 
 	if (!p) {
 		return -ENOMEM;
@@ -499,7 +529,7 @@ static int do_statusnotification(struct ocpp_connector *c,
 		p->status = ocpp_connector_map_state_to_ocpp(
 				ocpp_connector_state(c));
 		if (ctx) { /* optional */
-			strcpy(p->info, ctx);
+			strcpy(p->info, (char *)ctx);
 		}
 	}
 
@@ -516,7 +546,8 @@ static int do_stoptransaction(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_StopTransaction *p = alloc_message(sizeof(*p));
+	struct ocpp_StopTransaction *p =
+		(struct ocpp_StopTransaction *)alloc_message(sizeof(*p));
 
 	if (!p) {
 		return -ENOMEM;
@@ -543,7 +574,9 @@ static int do_unlock(struct ocpp_connector *c,
 		const ocpp_message_t msg_type, const struct ocpp_message *req,
 		void *ctx, const uint32_t delay_sec)
 {
-	struct ocpp_UnlockConnector_conf *p = alloc_message(sizeof(*p));
+	unused(ctx);
+	struct ocpp_UnlockConnector_conf *p =
+		(struct ocpp_UnlockConnector_conf *)alloc_message(sizeof(*p));
 
 	if (!p) {
 		return -ENOMEM;
@@ -633,15 +666,15 @@ static void generate_message_id_by_time(char *buf, size_t bufsize)
 {
 	static uint8_t nonce;
 	const time_t ts = time(NULL);
-	snprintf(buf, bufsize, "%d-%03u", (int32_t)ts, (uint8_t)nonce++);
+	snprintf(buf, bufsize, "%" PRId32 "-%03u", (int32_t)ts, nonce++);
 }
 
 void ocpp_generate_message_id(void *buf, size_t bufsize)
 {
 #if defined(USE_UUID_MESSAGE_ID)
-	generate_message_id_by_uuid(buf, bufsize);
+	generate_message_id_by_uuid((char *)buf, bufsize);
 #else
-	generate_message_id_by_time(buf, bufsize);
+	generate_message_id_by_time((char *)buf, bufsize);
 #endif
 }
 
@@ -686,8 +719,12 @@ int ocpp_recv(struct ocpp_message *msg)
 		cap -= (size_t)len;
 	}
 
-	size_t decoded_len = 0;
 	const size_t len = ringbuf_peek(rxq, 0, buf, sizeof(buf));
+	if (len == 0) {
+		return -ENOENT;
+	}
+
+	size_t decoded_len = 0;
 	int err = decoder_json_decode(msg, (char *)buf, len, &decoded_len);
 	ringbuf_consume(rxq, decoded_len);
 

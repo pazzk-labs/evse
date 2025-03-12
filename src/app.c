@@ -75,6 +75,8 @@ static struct {
 static void on_charger_event(struct charger *charger, struct connector *c,
 		charger_event_t event, void *ctx)
 {
+	unused(c);
+	unused(ctx);
 	if (event & OCPP_CHARGER_EVENT_AVAILABILITY_CHANGED) {
 		/* Availability changes are saved in non-volatile memory to keep
 		 * them persistent. */
@@ -85,7 +87,7 @@ static void on_charger_event(struct charger *charger, struct connector *c,
 
 	if (event & OCPP_CHARGER_EVENT_CONFIGURATION_CHANGED) {
 		const size_t len = ocpp_compute_configuration_size();
-		void *p = (void *)calloc(1, len);
+		void *p = calloc(1, len);
 		if (p) {
 			ocpp_copy_configuration_to(p, len);
 			config_set("ocpp.config", p, len);
@@ -109,7 +111,7 @@ static void on_connector_event(struct connector *self,
 	struct charger *charger = (struct charger *)ctx;
 
 	connector_stringify_event(event, evtstr, sizeof(evtstr));
-	info("charger event: \"%s\"", evtstr);
+	info("connector event: \"%s\"", evtstr);
 
 	if (event & CONNECTOR_EVENT_CHARGING_ENDED) {
 		metering_save_energy(connector_meter(self));
@@ -117,18 +119,12 @@ static void on_connector_event(struct connector *self,
 
 	/* The following are OCPP-specific events */
 	if (!charger_supports(charger, "ocpp")) {
+		warn("OCPP is not supported");
 		return;
 	}
 
 	struct ocpp_checkpoint *checkpoint =
 		ocpp_charger_get_checkpoint(charger);
-
-	if (event & (CONNECTOR_EVENT_BILLING_STARTED |
-			CONNECTOR_EVENT_BILLING_ENDED)) {
-		/* The transaction ID will be saved or cleared in non-volatile
-		 * memory in case of a power failure */
-		config_set("ocpp.checkpoint", checkpoint, sizeof(*checkpoint));
-	}
 
 	if (event & CONNECTOR_EVENT_ENABLED) {
 		int cid;
@@ -136,13 +132,22 @@ static void on_connector_event(struct connector *self,
 			assert(cid > 0 && cid <= OCPP_CONNECTOR_MAX);
 			ocpp_connector_link_checkpoint(self,
 					&checkpoint->connector[cid-1]);
+			info("connector%d linked to checkpoint", cid);
 		}
+	}
+
+	if (event & (CONNECTOR_EVENT_BILLING_STARTED |
+			CONNECTOR_EVENT_BILLING_ENDED)) {
+		/* The transaction ID will be saved or cleared in non-volatile
+		 * memory in case of a power failure */
+		config_set("ocpp.checkpoint", checkpoint, sizeof(*checkpoint));
 	}
 }
 
 static bool on_metering_save(const struct metering *metering,
 		const struct metering_energy *energy, void *ctx)
 {
+	unused(metering);
 	debug("metering save: %lluWh", energy->wh);
 
 	const char *key = (const char *)ctx;
@@ -188,6 +193,7 @@ static void start_charger(struct app *app)
 	struct charger_extension *extension;
 	m.charger = charger_factory_create(&param, &extension, NULL);
 	charger_init(m.charger, &param, extension);
+	charger_register_event_cb(m.charger, on_charger_event, &m);
 
 	struct metering_io conn1_io = {
 		.uart = app->periph.uart1,
@@ -195,7 +201,8 @@ static void start_charger(struct app *app)
 	struct metering_param conn1 = {
 		.io = &conn1_io,
 	};
-	config_get("chg.c1.metering", &conn1.energy, sizeof(conn1.energy));
+	char c_metering[] = "chg.c1.metering";
+	config_get(c_metering, &conn1.energy, sizeof(conn1.energy));
 
 	struct connector_param conn_param = {
 		.max_output_current_mA = param.max_output_current_mA,
@@ -203,7 +210,7 @@ static void start_charger(struct app *app)
 		.input_frequency = param.input_frequency,
 		.iec61851 = iec61851_create(app->pilot, app->relay),
 		.metering = metering_create(METERING_HLW811X, &conn1,
-				on_metering_save, (void *)"chg.c1.metering"),
+				on_metering_save, (void *)c_metering),
 		.name = "c1",
 		.priority = 0,
 	};
@@ -220,7 +227,7 @@ void app_adjust_time_on_drift(const time_t unixtime, const uint32_t drift)
 	int32_t diff = (int32_t)(unixtime - now);
 	diff = (diff > 0) ? diff : -diff;
 
-	if (diff >= drift) {
+	if ((uint32_t)diff >= drift) {
 		struct timeval tv = {
 			.tv_sec = unixtime,
 			.tv_usec = 0,
@@ -273,8 +280,8 @@ void app_init(struct app *app)
 #define CLI_MAX_HISTORY		10U
 	static char buf[CLI_CMD_MAXLEN * CLI_MAX_HISTORY];
 
-	DEFINE_CLI_CMD_LIST(commands, config, help, config, info, log, net,
-			ocpp, reboot, metric, sec, xmodem);
+	DEFINE_CLI_CMD_LIST(commands, config, help, info, log, net, ocpp,
+			reboot, metric, sec, xmodem);
 
 	cli_init(&m.cli, cli_io_create(), buf, sizeof(buf), app);
 	cli_register_cmdlist(&m.cli, commands);

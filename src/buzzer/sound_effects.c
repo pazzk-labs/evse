@@ -32,9 +32,6 @@
 
 #include "buzzer.h"
 
-#define UNIT_INTERVAL		150
-#define REST_INTERVAL		50
-
 static const struct tone beep[] = {
 	{ .note = NOTE_G,       .octave = OCTAVE_7, .len_ms = 50 },
 };

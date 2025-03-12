@@ -126,7 +126,7 @@ int ocpp_charger_set_checkpoint(struct charger *charger,
 		const struct ocpp_checkpoint *checkpoint)
 {
 	struct ocpp_charger *ocpp_charger = (struct ocpp_charger *)charger;
-	ocpp_charger->checkpoint = *checkpoint;
+	memcpy(&ocpp_charger->checkpoint, checkpoint, sizeof(*checkpoint));
 	return 0;
 }
 
@@ -142,7 +142,8 @@ bool ocpp_charger_is_checkpoint_equal(const struct charger *charger,
 struct charger *ocpp_charger_create(void *ctx)
 {
 	unused(ctx);
-	struct ocpp_charger *ocpp_charger = calloc(1, sizeof(*ocpp_charger));
+	struct ocpp_charger *ocpp_charger =
+		(struct ocpp_charger *)calloc(1, sizeof(*ocpp_charger));
 
 	if (!ocpp_charger) {
 		return NULL;

@@ -68,7 +68,7 @@ struct logfs {
 static void get_filepath(const time_t ts, const char *basedir,
 		char *buf, const size_t bufsize)
 {
-	snprintf(buf, bufsize-1, "%s/%lu", basedir, ts);
+	snprintf(buf, bufsize-1, "%s/%lld", basedir, ts);
 }
 
 static void add_list_sorted(struct file *file, struct list *head)

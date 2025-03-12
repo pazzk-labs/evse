@@ -31,9 +31,12 @@
  */
 
 #include "libmcu/cli.h"
+
 #include <string.h>
 #include <stdio.h>
 #include <time.h>
+#include <inttypes.h>
+
 #include "libmcu/board.h"
 #include "fs/fs.h"
 #include "uptime.h"
@@ -80,7 +83,7 @@ static cmd_opt_t get_command_option(int argc, const char *opt)
 
 static void print_version(struct cli_io const *io)
 {
-	printini(io, "Version", board_get_version_string());
+	printini(io, "fw-ver", board_get_version_string());
 }
 
 static void print_sn(struct cli_io const *io)
@@ -90,7 +93,7 @@ static void print_sn(struct cli_io const *io)
 
 static void print_build_date(struct cli_io const *io)
 {
-	printini(io, "Build-date", board_get_build_date_string());
+	printini(io, "build-date", board_get_build_date_string());
 }
 
 static void print_cpuload(struct cli_io const *io)
@@ -100,41 +103,42 @@ static void print_cpuload(struct cli_io const *io)
 			board_cpuload(0, 1), board_cpuload(1, 1),
 			board_cpuload(0, 60), board_cpuload(1, 60),
 			board_cpuload(0, 5*60), board_cpuload(1, 5*60));
-	printini(io, "CPU-load", buf);
+	printini(io, "cpuload", buf);
 }
 
 static void print_board_time(struct cli_io const *io)
 {
 	char buf[32];
 	snprintf(buf, sizeof(buf)-1, "%lu", board_get_time_since_boot_ms());
-	printini(io, "Monotonic-time", buf);
+	printini(io, "monotonic-time", buf);
 
-	snprintf(buf, sizeof(buf)-1, "%u", (uint32_t)time(NULL));
-	printini(io, "Walltime", buf);
+	snprintf(buf, sizeof(buf)-1, "%"PRId64, (int64_t)time(NULL));
+	printini(io, "walltime", buf);
 }
 
 static void print_device_info(struct cli_io const *io)
 {
-	printini(io, "Reboot-reason", board_get_reboot_reason_string(
+	printini(io, "reboot-reason", board_get_reboot_reason_string(
 			board_get_reboot_reason()));
 
 	char buf[32];
 	snprintf(buf, sizeof(buf)-1, "%lu/%lu", board_get_heap_watermark(),
 			board_get_free_heap_bytes());
-	printini(io, "Heap", buf);
+	printini(io, "heap", buf);
 
 	snprintf(buf, sizeof(buf)-1, "%lu", board_get_current_stack_watermark());
-	printini(io, "Stack", buf);
+	printini(io, "stack", buf);
 }
 
 static void print_uptime(struct cli_io const *io)
 {
 	char buf[32];
 	const time_t sec = uptime_get();
-	const uint32_t hours = sec / 3600;
+	const uint32_t hours = (const uint32_t)(sec / 3600);
 	const uint32_t days = hours / 24;
 
-	snprintf(buf, sizeof(buf)-1, "%u hours (%u days)", hours, days);
+	snprintf(buf, sizeof(buf)-1,
+			"%"PRIu32" hours (%"PRIu32" days)", hours, days);
 	printini(io, "Uptime", buf);
 }
 
@@ -145,9 +149,9 @@ static void print_fs_info(struct cli_io const *io, struct app *app)
 	fs_usage(app->fs, &used_bytes, &total_bytes);
 
 	char buf[128];
-	snprintf(buf, sizeof(buf)-1, "%zu/%zu bytes (%u%% used)",
+	snprintf(buf, sizeof(buf)-1, "%zu/%zu bytes (%zu%% used)",
 			used_bytes, total_bytes,
-			(uint32_t)(used_bytes*100/total_bytes));
+			used_bytes*100/total_bytes);
 	printini(io, "Filesystem", buf);
 }
 

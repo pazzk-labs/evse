@@ -48,6 +48,8 @@
 
 static bool is_booting(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	return !ocpp_connector_is_csms_up(oc) &&
 		ocpp_count_pending_requests() == 0;
@@ -55,6 +57,9 @@ static bool is_booting(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_available(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 
@@ -76,6 +81,9 @@ static bool is_available(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_preparing(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 
@@ -89,6 +97,8 @@ static bool is_preparing(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_charging(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 
@@ -108,6 +118,8 @@ static bool is_charging(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_charging_rdy(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 
@@ -122,6 +134,8 @@ static bool is_charging_rdy(fsm_state_t state, fsm_state_t next_state, void *ctx
 
 static bool is_suspendedEV(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 
@@ -133,6 +147,8 @@ static bool is_suspendedEV(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_finishing(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 
@@ -152,12 +168,18 @@ static bool is_finishing(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_reserved(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+	unused(ctx);
 	/* TODO: implement */
 	return false;
 }
 
 static bool is_unavailable(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 
@@ -174,6 +196,8 @@ static bool is_unavailable(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_faulted(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 	const ocpp_connector_state_t ocpp_state = (ocpp_connector_state_t)state;
@@ -206,6 +230,9 @@ static void send_metering(struct ocpp_connector *oc)
 
 static void do_boot(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 	connector_stop_duty(c);
@@ -215,6 +242,8 @@ static void do_boot(fsm_state_t state, fsm_state_t next_state, void *ctx)
 static void do_missing_transaction(fsm_state_t state, fsm_state_t next_state,
 		void *ctx)
 {
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 	const ocpp_connector_state_t ocpp_state = (ocpp_connector_state_t)state;
@@ -268,6 +297,9 @@ static void do_preparing(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_request_tid(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 
@@ -281,6 +313,8 @@ static void do_request_tid(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_charging(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 
@@ -301,6 +335,8 @@ static void do_charging(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_suspendedEV(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 
@@ -313,6 +349,8 @@ static void do_suspendedEV(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_finishing(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 	const ocpp_connector_state_t ocpp_state = (ocpp_connector_state_t)state;
@@ -336,6 +374,8 @@ static void do_finishing(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_reserved(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	send_connector_status(oc, NULL);
 }
@@ -352,6 +392,9 @@ static void do_unavailable(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_faulted(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 	union {
@@ -455,7 +498,7 @@ static void dispatch_event(struct connector *c, bool plugged,
 		fsm_state_t new_state, fsm_state_t prev_state)
 {
 	struct ocpp_connector *oc = (struct ocpp_connector *)c;
-	connector_event_t events = CONNECTOR_EVENT_NONE;
+	uint32_t events = CONNECTOR_EVENT_NONE;
 
 	while (msgq_len(oc->evtq) > 0) {
 		connector_event_t evt;
@@ -467,13 +510,15 @@ static void dispatch_event(struct connector *c, bool plugged,
 	events |= get_event_from_state_change(new_state, prev_state, plugged);
 
 	if (events && c->event_cb) {
-		(*c->event_cb)(c, events, c->event_cb_ctx);
+		(*c->event_cb)(c, (connector_event_t)events, c->event_cb_ctx);
 	}
 }
 
 static void on_state_change(struct fsm *fsm,
 		fsm_state_t new_state, fsm_state_t prev_state, void *ctx)
 {
+	unused(fsm);
+
 	struct connector *c = (struct connector *)ctx;
 	const connector_state_t cp_state = connector_state(c);
 
@@ -549,7 +594,8 @@ struct connector *ocpp_connector_create(const struct connector_param *param)
 	struct ocpp_connector *oc;
 
 	if (!param || !connector_validate_param(param) ||
-			(oc = malloc(sizeof(*oc))) == NULL) {
+			(oc = (struct ocpp_connector *)malloc(sizeof(*oc)))
+				== NULL) {
 		return NULL;
 	}
 

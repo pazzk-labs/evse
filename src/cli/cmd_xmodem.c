@@ -90,6 +90,8 @@ static void flush_input(void)
 static xmodem_error_t on_recv_dummy(size_t seq,
 		const uint8_t *data, size_t datasize, void *ctx)
 {
+	unused(data);
+
 	struct download_ctx *e = (struct download_ctx *)ctx;
 	e->filesize += datasize;
 
@@ -123,13 +125,13 @@ static xmodem_error_t download(xmodem_recv_callback_t cb, void *cb_ctx)
 
 static void test_download(const struct cli_io *io)
 {
-	struct download_ctx ctx = {0, 0, 0};
+	struct download_ctx ctx = { 0, };
 	tio = io;
 
 	xmodem_error_t err = download(on_recv_dummy, &ctx);
 
 	char str[STRBUF_MAXLEN];
-	snprintf(str, sizeof(str), "Downloaded %zu bytes in %ums(%zuB/s): %d",
+	snprintf(str, sizeof(str), "Downloaded %zu bytes in %lums(%luB/s): %d",
 			ctx.filesize, ctx.t1 - ctx.t0,
 			(ctx.filesize*1000) / (ctx.t1 - ctx.t0), err);
 	println(io, str);
@@ -179,7 +181,7 @@ static void update_firmware(const struct cli_io *io)
 	xmodem_error_t err = download(on_recv_firmware, &ctx);
 
 	char str[STRBUF_MAXLEN];
-	snprintf(str, sizeof(str), "Downloaded %zu bytes in %ums(%zuB/s): %d",
+	snprintf(str, sizeof(str), "Downloaded %zu bytes in %lums(%luB/s): %d",
 			ctx.filesize, ctx.t1 - ctx.t0,
 			(ctx.filesize*1000) / (ctx.t1 - ctx.t0), err);
 	println(io, str);

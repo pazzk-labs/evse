@@ -46,7 +46,7 @@ void apptmr_global_post_timeout_hook(struct apptmr *self)
 {
 	(void)self;
 	metrics_set_if_max(AppTimerRunningTimeMax,
-			board_get_time_since_boot_ms() - t0);
+			METRICS_VALUE(board_get_time_since_boot_ms() - t0));
 	metrics_set(AppTimerStackHighWatermark,
-			board_get_current_stack_watermark());
+			METRICS_VALUE(board_get_current_stack_watermark()));
 }

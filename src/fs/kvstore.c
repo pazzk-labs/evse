@@ -32,7 +32,6 @@
 
 #include "fs/kvstore.h"
 #include <stdlib.h>
-#include <errno.h>
 
 struct kvstore {
 	struct kvstore_api api;
@@ -58,16 +57,20 @@ static int do_erase(struct kvstore *self, char const *key)
 
 static int do_open(struct kvstore *self, char const *ns)
 {
+	unused(self);
+	unused(ns);
 	return 0;
 }
 
 static void do_close(struct kvstore *self)
 {
+	unused(self);
 }
 
 struct kvstore *fs_kvstore_create(struct fs *fs)
 {
-	struct kvstore *fs_kvstore = malloc(sizeof(*fs_kvstore));
+	struct kvstore *fs_kvstore =
+		(struct kvstore *)malloc(sizeof(*fs_kvstore));
 
 	fs_kvstore->api = (struct kvstore_api) {
 		.write = do_write,

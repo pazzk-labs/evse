@@ -45,7 +45,7 @@ int tmp102_read(int16_t *temperature)
 		return err;
 	}
 
-	raw = (raw >> 8) | ((raw & 0xff) << 8);
+	raw = (uint16_t)(raw >> 8) | (uint16_t)((raw & 0xff) << 8);
 	raw >>= 4;
 
 	if (raw & 0x800) {
@@ -53,7 +53,7 @@ int tmp102_read(int16_t *temperature)
 		negative = -1;
 	}
 
-	*temperature = (raw * 625 / 1000) * negative;
+	*temperature = (int16_t)((raw * 625 / 1000) * negative);
 
 	return err;
 }
