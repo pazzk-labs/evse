@@ -112,7 +112,7 @@ static void print_board_time(struct cli_io const *io)
 	snprintf(buf, sizeof(buf)-1, "%lu", board_get_time_since_boot_ms());
 	printini(io, "monotonic-time", buf);
 
-	snprintf(buf, sizeof(buf)-1, "%"PRId64, (int64_t)time(NULL));
+	snprintf(buf, sizeof(buf)-1, "%"PRId64, time(NULL));
 	printini(io, "walltime", buf);
 }
 

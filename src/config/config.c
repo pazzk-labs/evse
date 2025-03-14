@@ -350,6 +350,33 @@ static void load_config(struct config *cfg)
 	migrate_config(cfg);
 }
 
+static int set_config(const char *key, const void *data, size_t datasize)
+{
+	const struct config_entry *entry = find_config_entry(key);
+
+	if (!entry) {
+		return write_custom_config(key, data, datasize);
+	}
+
+	if (entry->permission <= RFW) {
+		error("Read-only key: %s", key);
+		return -EPERM;
+	}
+
+	if (datasize > entry->size) {
+		metrics_increase(ConfigSizeMismatchCount);
+		error("Data size mismatch: %zu > %zu", datasize, entry->size);
+		return -ENOMEM;
+	}
+
+	if (memcmp((uint8_t *)&mgr.basic + entry->offset, data, datasize)) {
+		memcpy((uint8_t *)&mgr.basic + entry->offset, data, datasize);
+		mark_dirty();
+	}
+
+	return 0;
+}
+
 bool config_is_zeroed(const char *key)
 {
 	const uint8_t *cfg = (const uint8_t *)&mgr.basic;
@@ -386,29 +413,7 @@ int config_get(const char *key, void *buf, size_t bufsize)
 
 int config_set(const char *key, const void *data, size_t datasize)
 {
-	const struct config_entry *entry = find_config_entry(key);
-
-	if (!entry) {
-		return write_custom_config(key, data, datasize);
-	}
-
-	if (entry->permission <= RFW) {
-		error("Read-only key: %s", key);
-		return -EPERM;
-	}
-
-	if (datasize > entry->size) {
-		metrics_increase(ConfigSizeMismatchCount);
-		error("Data size mismatch: %zu > %zu", datasize, entry->size);
-		return -ENOMEM;
-	}
-
-	if (memcmp((uint8_t *)&mgr.basic + entry->offset, data, datasize)) {
-		memcpy((uint8_t *)&mgr.basic + entry->offset, data, datasize);
-		mark_dirty();
-	}
-
-	return 0;
+	return set_config(key, data, datasize);
 }
 
 int config_read_all(struct config *cfg)
@@ -427,6 +432,17 @@ int config_write_all(const struct config *cfg)
 int config_save(void)
 {
 	return save_basic_config(&mgr.basic);
+}
+
+int config_set_and_save(const char *key, const void *data, size_t datasize)
+{
+	int err = set_config(key, data, datasize);
+
+	if (err == 0) {
+		err = save_basic_config(&mgr.basic);
+	}
+
+	return err;
 }
 
 int config_reset(const char *key)

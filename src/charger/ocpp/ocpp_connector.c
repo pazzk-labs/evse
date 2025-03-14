@@ -494,11 +494,10 @@ static connector_event_t get_event_from_state_change(fsm_state_t new_state,
 	return CONNECTOR_EVENT_NONE;
 }
 
-static void dispatch_event(struct connector *c, bool plugged,
-		fsm_state_t new_state, fsm_state_t prev_state)
+static void dispatch_event(struct connector *c, connector_event_t event)
 {
 	struct ocpp_connector *oc = (struct ocpp_connector *)c;
-	uint32_t events = CONNECTOR_EVENT_NONE;
+	uint32_t events = event;
 
 	while (msgq_len(oc->evtq) > 0) {
 		connector_event_t evt;
@@ -506,8 +505,6 @@ static void dispatch_event(struct connector *c, bool plugged,
 			events |= evt;
 		}
 	}
-
-	events |= get_event_from_state_change(new_state, prev_state, plugged);
 
 	if (events && c->event_cb) {
 		(*c->event_cb)(c, (connector_event_t)events, c->event_cb_ctx);
@@ -532,8 +529,8 @@ static void on_state_change(struct fsm *fsm,
 					(ocpp_connector_state_t)new_state),
 			c->time_last_state_change);
 
-	dispatch_event(c, connector_is_occupied_state(cp_state),
-			new_state, prev_state);
+	dispatch_event(c, get_event_from_state_change(new_state, prev_state,
+			connector_is_occupied_state(cp_state)));
 
 	connector_update_metrics(cp_state);
 }
@@ -554,6 +551,8 @@ static int process(struct connector *self)
 				logger_error, "metering_step failed");
 		}
 	}
+
+	dispatch_event(self, CONNECTOR_EVENT_NONE);
 
 	return 0;
 }

@@ -356,7 +356,8 @@ static bool do_meter_value(const struct ocpp_message *msg, cJSON *json)
 		(const struct ocpp_MeterValues *)msg->payload.fmt.request;
         /* FIXME: deal with multiple meter values and sampled values. only one
          * meter value with multiple sampled values supported at the moment. */
-        const size_t n = (msg->payload.size - sizeof(*p))
+        const size_t n = (msg->payload.size -
+			sizeof(*p) - sizeof(struct ocpp_MeterValue))
 		/ sizeof(struct ocpp_SampledValue);
 	int expected_ok = 1;
 	int ok = 0;
@@ -641,7 +642,7 @@ char *encoder_json_encode(const struct ocpp_message *msg, size_t *msglen)
 		}
 	}
 
-	if (msglen) {
+	if (text && msglen) {
 		*msglen = len;
 	}
 

@@ -220,7 +220,7 @@ static void on_cleanup_timeout(struct apptmr *timer, void *ctx)
 static void on_config_save(void *ctx)
 {
 	unused(ctx);
-	info("Configuration saved in NVS.");
+	info("Config saved in NVS.");
 }
 
 static void on_watchdog_timeout(struct wdt *wdt, void *ctx)

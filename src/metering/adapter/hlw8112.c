@@ -262,8 +262,11 @@ static int save_energy(struct metering *self)
 		if ((success = (*self->save_cb)(self, &updated,
 				self->save_cb_ctx))) {
 			memcpy(saved, &updated, sizeof(updated));
-			self->ts_saved = board_get_time_since_boot_ms();
 		}
+	}
+
+	if (success) {
+		self->ts_saved = board_get_time_since_boot_ms();
 	}
 
 	return success? 0: -EIO;

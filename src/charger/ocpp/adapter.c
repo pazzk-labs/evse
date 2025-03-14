@@ -404,8 +404,9 @@ static int do_metervalue(struct ocpp_connector *c,
 {
 	const ocpp_measurand_t measurands = (ocpp_measurand_t)(uintptr_t)ctx;
 	const size_t n_samples = count_measurands(measurands);
-	const size_t total_size = sizeof(struct ocpp_MeterValues)
-		+ n_samples * sizeof(struct ocpp_SampledValue);
+	const size_t total_size = sizeof(struct ocpp_MeterValues) +
+		sizeof(struct ocpp_MeterValue) +
+		n_samples * sizeof(struct ocpp_SampledValue);
 	struct ocpp_MeterValues *p =
 		(struct ocpp_MeterValues *)alloc_message(total_size);
 
@@ -413,7 +414,8 @@ static int do_metervalue(struct ocpp_connector *c,
 		return -ENOMEM;
 	}
 
-	struct ocpp_MeterValue *value = (struct ocpp_MeterValue *)(void *)&p->meterValue;
+	struct ocpp_MeterValue *value =
+		(struct ocpp_MeterValue *)(void *)p->meterValue;
 	*p = (struct ocpp_MeterValues) {
 		.connectorId = c->base.id,
 		.transactionId = (int)c->session.transaction_id,
