@@ -90,6 +90,7 @@ static int erase_block(const struct lfs_config *c, lfs_block_t block)
 
 static int sync_fs(const struct lfs_config *c)
 {
+	unused(c);
 	return 0;
 }
 
@@ -111,7 +112,7 @@ static const char *skip_leading_slashes(const char *path)
 	return path;
 }
 
-static int create_directory(lfs_t *fs, const char *filepath)
+static int create_directory(lfs_t *fs_handle, const char *filepath)
 {
 	const char *p = skip_leading_slashes(filepath);
 	int offset = 0;
@@ -125,8 +126,8 @@ static int create_directory(lfs_t *fs, const char *filepath)
 		offset += slash;
 
 		char dir[FS_FILENAME_MAX+1] = { 0, };
-		memcpy(dir, p, MIN(offset, sizeof(dir)-1));
-		int err = lfs_mkdir(fs, dir);
+		memcpy(dir, p, MIN((size_t)offset, sizeof(dir)-1));
+		int err = lfs_mkdir(fs_handle, dir);
 
 		if (err != 0 && err != LFS_ERR_EXIST) {
 			return err;
@@ -157,13 +158,13 @@ static int write_core(struct fs *self,
 	}
 
 	if (offset) {
-		if ((err = lfs_file_seek(&self->lfs,
-				&file, offset, LFS_SEEK_SET)) < 0) {
+		if ((err = lfs_file_seek(&self->lfs, &file,
+				(lfs_soff_t)offset, LFS_SEEK_SET)) < 0) {
 			goto out;
 		}
 	}
 
-	err = lfs_file_write(&self->lfs, &file, data, datasize);
+	err = lfs_file_write(&self->lfs, &file, data, (lfs_size_t)datasize);
 	err |= lfs_file_close(&self->lfs, &file);
 
 out:
@@ -178,7 +179,7 @@ static int do_write(struct fs *self, const char *filepath, const size_t offset,
 	int err = write_core(self, filepath, offset, data, datasize,
 			LFS_O_RDWR | LFS_O_CREAT);
 	metrics_set_if_max(FileSystemWriteTimeMax,
-			board_get_time_since_boot_ms() - t0);
+			METRICS_VALUE(board_get_time_since_boot_ms() - t0));
 	return err;
 }
 
@@ -189,7 +190,7 @@ static int do_append(struct fs *self,
 	int err = write_core(self, filepath, 0, data, datasize,
 			LFS_O_WRONLY | LFS_O_CREAT | LFS_O_APPEND);
 	metrics_set_if_max(FileSystemWriteTimeMax,
-			board_get_time_since_boot_ms() - t0);
+			METRICS_VALUE(board_get_time_since_boot_ms() - t0));
 	return err;
 }
 
@@ -206,7 +207,7 @@ static int do_read(struct fs *self, const char *filepath, const size_t offset,
 	}
 
 	const lfs_soff_t file_size = lfs_file_size(&self->lfs, &file);
-	const lfs_size_t len = MIN(file_size, bufsize);
+	const lfs_size_t len = MIN((lfs_size_t)file_size, (lfs_size_t)bufsize);
 
 	if (len <= 0) {
 		err = -EBADF;
@@ -214,8 +215,8 @@ static int do_read(struct fs *self, const char *filepath, const size_t offset,
 	}
 
 	if (offset) {
-		if ((err = lfs_file_seek(&self->lfs,
-				&file, offset, LFS_SEEK_SET)) < 0) {
+		if ((err = lfs_file_seek(&self->lfs, &file,
+				(lfs_soff_t)offset, LFS_SEEK_SET)) < 0) {
 			goto out;
 		}
 	}
@@ -224,7 +225,7 @@ static int do_read(struct fs *self, const char *filepath, const size_t offset,
 	lfs_file_close(&self->lfs, &file);
 
 	metrics_set_if_max(FileSystemReadTimeMax,
-			board_get_time_since_boot_ms() - t0);
+			METRICS_VALUE(board_get_time_since_boot_ms() - t0));
 out:
 	metrics_increase(FileSystemReadCount);
 	return err;
@@ -235,7 +236,7 @@ static int do_delete(struct fs *self, const char *filepath)
 	const uint32_t t0 = board_get_time_since_boot_ms();
 	int err = lfs_remove(&self->lfs, filepath);
 	metrics_set_if_max(FileSystemEraseTimeMax,
-			board_get_time_since_boot_ms() - t0);
+			METRICS_VALUE(board_get_time_since_boot_ms() - t0));
 	metrics_increase(FileSystemEraseCount);
 	return err == LFS_ERR_NOENT? -ENOENT : err;
 }
@@ -302,8 +303,8 @@ static int do_usage(struct fs *self, size_t *used, size_t *total)
 
 	const lfs_ssize_t block_size = LFS_FLASH_SECTOR_SIZE;
 	const lfs_ssize_t total_blocks = LFS_FLASH_SIZE / block_size;
-	const size_t total_size = total_blocks * block_size;
-	const size_t used_size = used_blocks * block_size;
+	const size_t total_size = (size_t)(total_blocks * block_size);
+	const size_t used_size = (size_t)(used_blocks * block_size);
 
 	if (used) {
 		*used = used_size;

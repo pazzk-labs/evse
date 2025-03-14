@@ -22,6 +22,7 @@ endif()
 
 project(EVSE)
 
+include(${CMAKE_SOURCE_DIR}/projects/common.cmake)
 include(${CMAKE_SOURCE_DIR}/projects/version.cmake)
 include(${CMAKE_SOURCE_DIR}/projects/sources.cmake)
 include(${CMAKE_SOURCE_DIR}/projects/external.cmake)

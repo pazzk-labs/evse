@@ -302,6 +302,19 @@ void ocpp_connector_set_tid(struct ocpp_connector *oc,
 void ocpp_connector_clear_checkpoint_tid(struct ocpp_connector *oc);
 
 /**
+ * @brief Sets the current transaction ID as the checkpoint for the specified
+ *        OCPP connector.
+ *
+ * This function assigns the current transaction ID to the given OCPP connector
+ * as a checkpoint, which can be used to track the progress or state of a
+ * transaction. It is used to recover transactions in unexpected system reboot
+ * situations such as power loss.
+ *
+ * @param oc Pointer to the OCPP connector structure.
+ */
+void ocpp_connector_set_checkpoint_tid(struct ocpp_connector *oc);
+
+/**
  * @brief Checks if the OCPP connector has a missing transaction.
  *
  * @note A missing transaction occurs when the checkpoint transaction ID exists.

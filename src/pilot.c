@@ -279,10 +279,10 @@ static bool is_anomaly(const struct waveform *measured,
 		const uint16_t tolerance_mv,
 		const uint16_t max_transition_clocks)
 {
-	const uint32_t new = measured->highs_max;
+	const uint32_t neo = measured->highs_max;
 	const uint32_t old = cached->highs_max;
 
-	int32_t diff = (int32_t)(new - old);
+	int32_t diff = (int32_t)(neo - old);
 
 	if (diff < 0) {
 		diff = -diff;
@@ -302,7 +302,7 @@ static bool is_anomaly(const struct waveform *measured,
 
 static pilot_error_t check_error(const struct pilot *pilot)
 {
-	const uint32_t t = (uint32_t)board_get_time_since_boot_ms();
+	const uint32_t t = board_get_time_since_boot_ms();
 	const struct waveform *waveform = pilot->waveform.cached;
 
         /* if not measured more than 2*scan_interval_ms, something is wrong:
@@ -482,9 +482,11 @@ static bool measure(struct pilot *pilot)
  * context of the 10ms interval of the timer. */
 static void on_timeout(struct apptmr *timer, void *arg)
 {
+	unused(timer);
+
 	struct pilot *p = (struct pilot *)arg;
 	const pilot_status_t prev_status = p->status;
-	const uint32_t t = (uint32_t)board_get_time_since_boot_ms();
+	const uint32_t t = board_get_time_since_boot_ms();
 
 	wdt_feed(p->wdt);
 
@@ -654,7 +656,7 @@ int pilot_enable(struct pilot *pilot)
 			return err;
 		}
 
-		pilot->timestamp = (uint32_t)board_get_time_since_boot_ms();
+		pilot->timestamp = board_get_time_since_boot_ms();
 		apptmr_start(pilot->timer, pilot->params.scan_interval_ms);
 
 		wdt_enable(pilot->wdt);
@@ -692,10 +694,10 @@ struct pilot *pilot_create(const struct pilot_params *params,
 	}
 
 	const size_t buffer_size = sizeof(*buf) * p->params.sample_count;
-	if ((p->buffer.highs.data = malloc(buffer_size))) {
+	if ((p->buffer.highs.data = (uint16_t *)malloc(buffer_size))) {
 		p->waveform.measured.high_samples = &p->buffer.highs;
 	}
-	if ((p->buffer.lows.data = malloc(buffer_size))) {
+	if ((p->buffer.lows.data = (uint16_t *)malloc(buffer_size))) {
 		p->waveform.measured.low_samples = &p->buffer.lows;
 	}
 

@@ -30,7 +30,8 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "metering.h"
+#include "hlw8112.h"
+#include "hlw811x_overrides.h"
 
 #include <string.h>
 #include <errno.h>
@@ -90,7 +91,7 @@ static int enable(struct metering *self)
 	struct hlw811x_coeff coeff;
 	const uint8_t hfconst[] = { 0x38, 0xa4 }; /* EC: 3200/kWh */
 	uint16_t reg = 0;
-	hlw811x_error_t err = hlw811x_reset(self->hlw811x);
+	uint32_t err = hlw811x_reset(self->hlw811x);
 	sleep_ms(60); /* at least 60ms delay is required after reset. */
 
 	err |= hlw811x_write_reg(self->hlw811x, HLW811X_REG_PULSE_FREQ,
@@ -119,8 +120,8 @@ static int enable(struct metering *self)
 	err |= hlw811x_enable_zerocrossing(self->hlw811x);
 	err |= hlw811x_enable_power_factor(self->hlw811x);
 	err |= hlw811x_enable_b_channel_comparator(self->hlw811x);
-	err |= hlw811x_enable_interrupt(self->hlw811x,
-			HLW811X_INTR_PULSE_OUT_A | HLW811X_INTR_B_LEAKAGE);
+	err |= hlw811x_enable_interrupt(self->hlw811x, (hlw811x_intr_t)
+			(HLW811X_INTR_PULSE_OUT_A | HLW811X_INTR_B_LEAKAGE));
 	err |= hlw811x_enable_channel(self->hlw811x, HLW811X_CHANNEL_ALL);
 	err |= hlw811x_enable_pulse(self->hlw811x, HLW811X_CHANNEL_ALL);
 	err |= hlw811x_disable_energy_clearance(self->hlw811x,
@@ -148,6 +149,7 @@ static int enable(struct metering *self)
 
 static int disable(struct metering *self)
 {
+	unused(self);
 	return exio_set_metering_power(false);
 }
 
@@ -157,7 +159,8 @@ static int get_voltage(struct metering *self, int32_t *millivolt)
 		return -EINVAL;
 	}
 
-	int err = hlw811x_get_rms(self->hlw811x, HLW811X_CHANNEL_U, millivolt);
+	hlw811x_error_t err =
+		hlw811x_get_rms(self->hlw811x, HLW811X_CHANNEL_U, millivolt);
 
 	if (err != HLW811X_ERROR_NONE) {
 		error("can't get voltage: %d", err);
@@ -173,7 +176,8 @@ static int get_current(struct metering *self, int32_t *milliamp)
 		return -EINVAL;
 	}
 
-	int err = hlw811x_get_rms(self->hlw811x, HLW811X_CHANNEL_A, milliamp);
+	hlw811x_error_t err =
+		hlw811x_get_rms(self->hlw811x, HLW811X_CHANNEL_A, milliamp);
 
 	if (err != HLW811X_ERROR_NONE) {
 		error("can't get current: %d", err);
@@ -189,7 +193,7 @@ static int get_power_factor(struct metering *self, int32_t *centi)
 		return -EINVAL;
 	}
 
-	int err = hlw811x_get_power_factor(self->hlw811x, centi);
+	hlw811x_error_t err = hlw811x_get_power_factor(self->hlw811x, centi);
 
 	if (err != HLW811X_ERROR_NONE) {
 		error("can't get power factor: %d", err);
@@ -205,7 +209,7 @@ static int get_frequency(struct metering *self, int32_t *centihertz)
 		return -EINVAL;
 	}
 
-	int err = hlw811x_get_frequency(self->hlw811x, centihertz);
+	hlw811x_error_t err = hlw811x_get_frequency(self->hlw811x, centihertz);
 
 	if (err != HLW811X_ERROR_NONE) {
 		error("can't get frequency: %d", err);
@@ -224,7 +228,8 @@ static int get_phase(struct metering *self, int32_t *centidegree, int hz)
 	hlw811x_line_freq_t freq = (hz == 50)?
 		HLW811X_LINE_FREQ_50HZ: HLW811X_LINE_FREQ_60HZ;
 
-	int err = hlw811x_get_phase_angle(self->hlw811x, centidegree, freq);
+	hlw811x_error_t err =
+		hlw811x_get_phase_angle(self->hlw811x, centidegree, freq);
 
 	if (err != HLW811X_ERROR_NONE) {
 		error("can't get phase angle: %d", err);
@@ -236,6 +241,8 @@ static int get_phase(struct metering *self, int32_t *centidegree, int hz)
 
 static int get_energy(struct metering *self, uint64_t *wh, uint64_t *varh)
 {
+	unused(varh);
+
 	if (!wh) {
 		return -EINVAL;
 	}
@@ -255,8 +262,11 @@ static int save_energy(struct metering *self)
 		if ((success = (*self->save_cb)(self, &updated,
 				self->save_cb_ctx))) {
 			memcpy(saved, &updated, sizeof(updated));
-			self->ts_saved = board_get_time_since_boot_ms();
 		}
+	}
+
+	if (success) {
+		self->ts_saved = board_get_time_since_boot_ms();
 	}
 
 	return success? 0: -EIO;
@@ -264,11 +274,14 @@ static int save_energy(struct metering *self)
 
 static int get_power(struct metering *self, int32_t *watt, int32_t *var)
 {
+	unused(var);
+
 	if (!watt) {
 		return -EINVAL;
 	}
 
-	int err = hlw811x_get_power(self->hlw811x, HLW811X_CHANNEL_U, watt);
+	hlw811x_error_t err =
+		hlw811x_get_power(self->hlw811x, HLW811X_CHANNEL_U, watt);
 
 	if (err != HLW811X_ERROR_NONE) {
 		error("can't get power: %d", err);
@@ -295,7 +308,7 @@ static int step(struct metering *self)
 		return -EIO;
 	}
 
-	self->energy.wh += Wh;
+	self->energy.wh += (uint64_t)Wh;
 	self->ts_read = now;
 
 	const uint32_t ms = now - self->ts_saved;

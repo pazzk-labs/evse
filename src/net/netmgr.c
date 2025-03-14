@@ -273,7 +273,7 @@ static struct netmgr_entry *pick_netif(struct list *list,
 		next = &next->link == list ? NULL : next;
 	} else {
 		/* TODO: implement some algorithm to pick the next entry */
-		next = (struct netmgr_entry *)current;
+		next = current;
 	}
 
 	return next;
@@ -282,6 +282,8 @@ static struct netmgr_entry *pick_netif(struct list *list,
 static void on_state_change(struct fsm *fsm,
 		fsm_state_t new_state, fsm_state_t prev_state, void *ctx)
 {
+	unused(fsm);
+
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
 	const netmgr_state_t event =
 		get_event_from_state(entry, new_state, prev_state);
@@ -308,8 +310,8 @@ static void on_state_change(struct fsm *fsm,
 static void on_netif_event(struct netif *netif,
 		const netif_event_t event, void *ctx)
 {
-	(void)netif;
-	(void)ctx;
+	unused(netif);
+	unused(ctx);
 
 	msgq_push(m.msgq, &event, sizeof(event));
 	sem_post(&m.event);
@@ -319,6 +321,8 @@ static void on_netif_event(struct netif *netif,
 
 static void on_periodic_timer(struct apptmr *timer, void *arg)
 {
+	unused(timer);
+
 	struct netmgr *netmgr = (struct netmgr *)arg;
 
 	if (netmgr->healthchk_interval_ms) {
@@ -345,6 +349,8 @@ static bool is_static_ip_requested(struct netmgr_entry *entry)
 
 static bool is_error(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
 	return check_netmgr_enabled() && (retry_exhausted(&entry->retry) ||
 		entry->error_count >= (int)DEFAULT_MAX_RETRY);
@@ -352,6 +358,7 @@ static bool is_error(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_state_s0(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
 	const uint32_t elapsed = entry->ts - entry->ts_state_changed;
 	const bool timeout = elapsed >= entry->conn_timeout_ms;
@@ -373,6 +380,7 @@ static bool is_state_s1(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_state_s2(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
 	const uint32_t elapsed = entry->ts - entry->ts_state_changed;
 	const bool timeout = elapsed >= entry->conn_timeout_ms;
@@ -388,6 +396,8 @@ static bool is_state_s2(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_state_s3(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
 	const uint32_t elapsed = entry->ts - entry->ts_state_changed;
 	return elapsed >= DEFAULT_REENABLE_DELAY_MS;
@@ -395,6 +405,7 @@ static bool is_state_s3(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_state_s4(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
 	const uint32_t elapsed = entry->ts - entry->ts_state_changed;
 	const bool timeout = elapsed >= entry->conn_timeout_ms;
@@ -412,6 +423,8 @@ static bool is_state_s4(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_state_s5(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
 	const uint32_t elapsed = entry->ts - entry->ts_state_changed;
 
@@ -421,22 +434,33 @@ static bool is_state_s5(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_state_s6(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
 	return entry->event == NETIF_EVENT_IP_ACQUIRED;
 }
 
 static bool is_ping_req(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+	unused(ctx);
 	return check_selftest_ping_requested();
 }
 
 static bool is_task_req(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+	unused(ctx);
 	return check_task_registered();
 }
 
 static void do_ping(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
 	char ip_str[16];
 
@@ -472,6 +496,10 @@ static void do_ping(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_task(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+	unused(ctx);
+
 	bool repeat = false;
 
 	struct list *p;
@@ -494,6 +522,8 @@ static void do_task(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_connected(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
 
 	retry_reset(&entry->retry);
@@ -505,8 +535,9 @@ static void do_connected(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_disconnect(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
-	struct netif *netif = (struct netif *)entry->netif;
+	struct netif *netif = entry->netif;
 	struct netif_api *api = (struct netif_api *)netif;
 
 	int err = api->disconnect(netif);
@@ -525,8 +556,10 @@ static void do_disconnect(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_connect(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
-	struct netif *netif = (struct netif *)entry->netif;
+	struct netif *netif = entry->netif;
 	struct netif_api *api = (struct netif_api *)netif;
 	uint32_t backoff_time;
 
@@ -545,12 +578,15 @@ static void do_connect(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_enabled(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+	unused(ctx);
 }
 
 static void do_disable(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
-	struct netif *netif = (struct netif *)entry->netif;
+	struct netif *netif = entry->netif;
 	struct netif_api *api = (struct netif_api *)netif;
 
 	if (state >= S5) {
@@ -568,8 +604,10 @@ static void do_disable(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_enable(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
-	struct netif *netif = (struct netif *)entry->netif;
+	struct netif *netif = entry->netif;
 	struct netif_api *api = (struct netif_api *)netif;
 
 	int err = api->enable(netif);
@@ -588,12 +626,15 @@ static void do_enable(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_initialized(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+	unused(ctx);
 }
 
 static void do_off(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
-	struct netif *netif = (struct netif *)entry->netif;
+	struct netif *netif = entry->netif;
 	struct netif_api *api = (struct netif_api *)netif;
 
 	if (state >= S3) {
@@ -614,8 +655,10 @@ static void do_off(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_on(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
-	struct netif *netif = (struct netif *)entry->netif;
+	struct netif *netif = entry->netif;
 	struct netif_api *api = (struct netif_api *)netif;
 
 	int err = api->init(netif, entry->mac_addr);
@@ -640,6 +683,9 @@ static void do_on(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_reset(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
+	unused(ctx);
 	error("unrecoverable error state. rebooting...");
 	app_reboot();
 }
@@ -741,7 +787,7 @@ static void process(struct netmgr *netmgr)
 		return;
 	}
 
-	netmgr->current->ts = (uint32_t)board_get_time_since_boot_ms();
+	netmgr->current->ts = board_get_time_since_boot_ms();
 	const fsm_state_t state = fsm_step(&netmgr->current->fsm);
 
 	if (state == S0 && retry_exhausted(&netmgr->current->retry)) {
@@ -801,6 +847,7 @@ netmgr_state_t netmgr_state(void)
 
 int netmgr_ping(const char *ipstr, const uint32_t timeout_ms)
 {
+	unused(timeout_ms);
 	if (!m.current) {
 		return -ENODEV;
 	} else if (m.current->external_state != NETMGR_STATE_CONNECTED) {

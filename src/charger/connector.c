@@ -234,6 +234,7 @@ bool connector_is_output_power_ok(struct connector *self)
 bool connector_is_ev_response_timeout(const struct connector *self,
 		uint32_t elapsed_sec)
 {
+	unused(self);
 	return elapsed_sec >= IEC61851_EV_RESPONSE_TIMEOUT_SEC;
 }
 
@@ -334,7 +335,7 @@ size_t connector_stringify_event(const connector_event_t event,
 
 	size_t len = 0;
 
-	for (connector_event_t e = CONNECTOR_EVENT_ENABLED; e; e >>= 1) {
+	for (unsigned int e = CONNECTOR_EVENT_ENABLED; e; e = e >> 1) {
 		if (e & event) {
 			const char *str = tbl[__builtin_ctz(e)];
 			if (len) {

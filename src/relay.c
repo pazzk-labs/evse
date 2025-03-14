@@ -85,6 +85,7 @@ static void free_relay(struct relay *self)
 
 static void on_timeout(struct apptmr *timer, void *arg)
 {
+	unused(timer);
 	struct relay *p = (struct relay *)arg;
 	const uint8_t pct = MAX(p->hold_duty_pct, HOLD_MIN_PCT);
 
@@ -104,6 +105,7 @@ static void turn_on(struct relay *self, uint8_t duty_pct)
 static void turn_on_ext(struct relay *self,
 		uint8_t pickup_pct, uint16_t pickup_delay_ms, uint8_t hold_pct)
 {
+	unused(hold_pct);
 	turn_on(self, MAX(pickup_pct, PICKUP_MIN_PCT));
 
 	apptmr_stop(self->timer);

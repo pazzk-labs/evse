@@ -38,9 +38,9 @@ static uint8_t output_cache;
 static int set_output(uint8_t bit, bool on)
 {
 	if (on) {
-		output_cache |= (1 << bit);
+		output_cache |= (uint8_t)(1 << bit);
 	} else {
-		output_cache &= ~(1 << bit);
+		output_cache &= (uint8_t)~(1 << bit);
 	}
 
 	return tca9539_write_output_port0(output_cache);
@@ -78,7 +78,7 @@ int exio_set_led(bool on)
 
 exio_intr_t exio_get_intr_source(void)
 {
-	exio_intr_t intr = EXIO_INTR_NONE;
+	uint32_t intr = EXIO_INTR_NONE;
 	uint8_t buf = 0;
 
 	tca9539_read_input_port1(&buf);
@@ -93,7 +93,7 @@ exio_intr_t exio_get_intr_source(void)
 		intr |= EXIO_INTR_USB_CONNECT;
 	}
 
-	return intr;
+	return (exio_intr_t)intr;
 }
 
 int exio_get_intr_level(exio_intr_t intr)

@@ -72,8 +72,11 @@ struct availability_ctx {
 static void do_auth(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
+	unused(charger);
+
 	const struct ocpp_message *req = ocpp_get_message_by_id(message->id);
-	struct ocpp_connector *oc = req? req->ctx : NULL;
+	struct ocpp_connector *oc = req?
+		(struct ocpp_connector *)req->ctx : NULL;
 	const struct ocpp_Authorize_conf *p =
 		(const struct ocpp_Authorize_conf *)
 		message->payload.fmt.response;
@@ -227,6 +230,7 @@ static void do_change_availability(struct ocpp_charger *charger,
 
 static bool is_configuration_reboot_required(const char *key)
 {
+	unused(key);
 	/* TODO: implement */
 	return false;
 }
@@ -285,6 +289,7 @@ static void do_change_configuration(struct ocpp_charger *charger,
 static void do_clear_cache(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
+	unused(charger);
 	/* TODO: implement. always responses accepted as no cache implemented */
 	csms_response(OCPP_MSG_CLEAR_CACHE, message, NULL,
 			(void *)OCPP_REMOTE_STATUS_ACCEPTED);
@@ -293,6 +298,7 @@ static void do_clear_cache(struct ocpp_charger *charger,
 static void do_get_configuration(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
+	unused(charger);
 	/* NOTE: An ad-hoc method to reduce memory usage, this handler does
 	 * not process the request, but the encoder does. */
 	csms_response(OCPP_MSG_GET_CONFIGURATION, message, NULL, NULL);
@@ -301,6 +307,7 @@ static void do_get_configuration(struct ocpp_charger *charger,
 static void do_heartbeat(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
+	unused(charger);
 	const struct ocpp_Heartbeat_conf *p =
 		(const struct ocpp_Heartbeat_conf *)
 		message->payload.fmt.response;
@@ -408,7 +415,8 @@ static void do_start_transaction(struct ocpp_charger *charger,
 		(const struct ocpp_StartTransaction_conf *)
 		message->payload.fmt.response;
 	const struct ocpp_message *req = ocpp_get_message_by_id(message->id);
-	struct ocpp_connector *oc = req? req->ctx : NULL;
+	struct ocpp_connector *oc = req?
+		(struct ocpp_connector *)req->ctx : NULL;
 
 	if (!oc) {
 		error("connector not found for message id %s", message->id);
@@ -431,7 +439,8 @@ static void do_stop_transaction(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
 	const struct ocpp_message *req = ocpp_get_message_by_id(message->id);
-	struct ocpp_connector *oc = req? req->ctx : NULL;
+	struct ocpp_connector *oc = req?
+		(struct ocpp_connector *)req->ctx : NULL;
 
 	if (!oc) {
 		error("connector not found for message id %s", message->id);

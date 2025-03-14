@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 #include "net/netmgr.h"
 #include "net/util.h"
@@ -110,7 +111,7 @@ static void print_health_check_interval(const struct cli_io *io)
 	config_get("net.health", &health_interval,
 			sizeof(health_interval));
 	char health_interval_str[12] = { 0, };
-	snprintf(health_interval_str, sizeof(health_interval_str), "%u",
+	snprintf(health_interval_str, sizeof(health_interval_str), "%"PRIu32,
 			health_interval);
 	printini(io, "health-check-interval", health_interval_str);
 }
@@ -128,7 +129,7 @@ static void print_websocket_ping_interval(const struct cli_io *io)
 	config_get("net.server.ping", &ws_ping_interval,
 			sizeof(ws_ping_interval));
 	char ws_ping_interval_str[12] = { 0, };
-	snprintf(ws_ping_interval_str, sizeof(ws_ping_interval_str), "%u",
+	snprintf(ws_ping_interval_str, sizeof(ws_ping_interval_str), "%"PRIu32,
 			ws_ping_interval);
 	printini(io, "ws-ping-interval", ws_ping_interval_str);
 }
@@ -151,6 +152,7 @@ typedef bool (*cmd_handler_t)(const struct cli_io *io, check_fn_t check,
 static bool is_url_valid(const struct cli_io *io, const char *key,
 		const char *value)
 {
+	unused(key);
 	if (net_get_protocol_from_url(value) == NET_PROTO_UNKNOWN) {
 		println(io, "Unknown protocol.");
 		return false;
@@ -161,12 +163,16 @@ static bool is_url_valid(const struct cli_io *io, const char *key,
 static bool is_ip_valid(const struct cli_io *io, const char *key,
 		const char *value)
 {
+	unused(io);
+	unused(key);
 	return net_is_ipv4_str_valid(value);
 }
 
 static bool is_mac_valid(const struct cli_io *io, const char *key,
 		const char *value)
 {
+	unused(io);
+	unused(key);
 	uint8_t mac[MAC_ADDR_LEN];
 	return net_get_mac_from_str(value, mac);
 }
@@ -174,6 +180,7 @@ static bool is_mac_valid(const struct cli_io *io, const char *key,
 static bool is_health_interval_valid(const struct cli_io *io,
 		const char *key, const char *value)
 {
+	unused(key);
 	uint32_t intval = (uint32_t)strtol(value, NULL, 10);
 	if (intval != 0 && intval < 1000) {
 		println(io, "must be 0 or greater than 1s.");
@@ -185,6 +192,7 @@ static bool is_health_interval_valid(const struct cli_io *io,
 static bool is_ping_interval_valid(const struct cli_io *io,
 		const char *key, const char *value)
 {
+	unused(key);
 	uint32_t intval = (uint32_t)strtol(value, NULL, 10);
 	if (intval != 0 && intval < 60) {
 		println(io, "must be 0 or greater than 60s.");
@@ -196,6 +204,7 @@ static bool is_ping_interval_valid(const struct cli_io *io,
 static bool do_ping(const struct cli_io *io, check_fn_t check,
 		const char *key, const char *value, bool is_number)
 {
+	unused(is_number);
 	char buf[64] = { 0, };
 
 	if (check && !(*check)(io, key, value)) {
@@ -216,6 +225,10 @@ static bool do_ping(const struct cli_io *io, check_fn_t check,
 static bool enable(const struct cli_io *io, check_fn_t check,
 		const char *key, const char *value, bool is_number)
 {
+	unused(check);
+	unused(key);
+	unused(is_number);
+
 	if (strcmp(value, "enable") == 0) {
 		netmgr_enable();
 	} else if (strcmp(value, "disable") == 0) {

@@ -147,7 +147,8 @@ static void process_samples(struct entry *entry)
 		}
 		return;
 	}
-	if ((entry->missing_samples = MAX_SAMPLES - count_samples(entry))
+	if ((entry->missing_samples = (int8_t)
+				(MAX_SAMPLES - count_samples(entry)))
 			> FREQUENCY_TOLERANCE_HZ) {
 		if (entry->type == SAFETY_TYPE_INPUT_POWER) {
 			metrics_increase(SafetySamplingMissCount);
@@ -187,6 +188,7 @@ static safety_status_t check_status(struct entry *entry,
 
 static void on_gpio_event(struct gpio *gpio, void *ctx)
 {
+	unused(gpio);
 	struct entry *entry = (struct entry *)ctx;
 	struct ringbuf *ringbuf = entry->ringbuf;
 	const uint32_t t = board_get_time_since_boot_ms();
@@ -233,6 +235,7 @@ static void on_emergency_stop(usrinp_event_t event, void *ctx)
 
 static void on_periodic_timer(struct apptmr *timer, void *arg)
 {
+	unused(timer);
 	struct safety *self = (struct safety *)arg;
 	process_samples(&self->input_power);
 	process_samples(&self->output_power);

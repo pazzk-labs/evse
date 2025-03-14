@@ -93,7 +93,8 @@ int adc122s051_measure(struct adc122s051 *self,
 struct adc122s051 *adc122s051_create(struct spi_device *spi,
 		uint16_t *buf, const uint16_t bufsize)
 {
-	struct adc122s051 *p = malloc(sizeof(struct adc122s051));
+	struct adc122s051 *p = (struct adc122s051 *)
+		malloc(sizeof(struct adc122s051));
 
 	if (p) {
 		p->spi = spi;
