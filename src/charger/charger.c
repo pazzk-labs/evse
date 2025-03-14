@@ -295,7 +295,8 @@ int charger_register_event_cb(struct charger *self,
 
 int charger_attach_connector(struct charger *self, struct connector *connector)
 {
-	struct connector_entry *entry = malloc(sizeof(*entry));
+	struct connector_entry *entry =
+		(struct connector_entry *)malloc(sizeof(*entry));
 
 	if (entry == NULL) {
 		return -ENOMEM;
@@ -331,7 +332,7 @@ int charger_init(struct charger *self, const struct charger_param *param,
 
 	if (extension) {
 		memcpy(&self->extension, extension, sizeof(*extension));
-		(*extension->init)(self);
+		return (*extension->init)(self);
 	}
 
 	return 0;

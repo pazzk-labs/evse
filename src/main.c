@@ -82,30 +82,29 @@ static struct wdt *runner_wdt;
 
 static struct app app;
 
-static void update_metrics(struct app *app,
+static void update_metrics(struct app *papp,
 		const uint32_t t0, const uint32_t t1)
 {
 	size_t used_bytes;
-	fs_usage(app->fs, &used_bytes, NULL);
+	fs_usage(papp->fs, &used_bytes, NULL);
 
-	metrics_set(HeartbeatInterval, t1 - t0);
-	metrics_set(MonotonicTime, t1);
-	metrics_set(SystemTime, time(NULL));
-	metrics_set(Uptime, uptime_get());
-	metrics_set(CPULoad, board_cpuload(0, 1));
-	metrics_set(CPULoad2, board_cpuload(1, 1));
-	metrics_set(HeapLowWatermark, board_get_heap_watermark());
-	metrics_set(AppTimerCreatedCount, apptmr_len());
-	metrics_set(FileSystemUsage, used_bytes);
-	metrics_set(LogFsCount, logfs_count(app->logfs));
-	metrics_set(LogFsSize, logfs_size(app->logfs, 0));
+	metrics_set(HeartbeatInterval, METRICS_VALUE(t1 - t0));
+	metrics_set(MonotonicTime, METRICS_VALUE(t1));
+	metrics_set(SystemTime, METRICS_VALUE(time(NULL)));
+	metrics_set(Uptime, METRICS_VALUE(uptime_get()));
+	metrics_set(CPULoad, METRICS_VALUE(board_cpuload(0, 1)));
+	metrics_set(CPULoad2, METRICS_VALUE(board_cpuload(1, 1)));
+	metrics_set(HeapLowWatermark, METRICS_VALUE(board_get_heap_watermark()));
+	metrics_set(AppTimerCreatedCount, METRICS_VALUE(apptmr_len()));
+	metrics_set(FileSystemUsage, METRICS_VALUE(used_bytes));
+	metrics_set(LogFsCount, METRICS_VALUE(logfs_count(papp->logfs)));
+	metrics_set(LogFsSize, METRICS_VALUE(logfs_size(papp->logfs, 0)));
 }
 
-bool save_metrics(struct app *self, const uint32_t t0, const uint32_t t1)
+static bool save_metrics(struct app *self, const uint32_t t0, const uint32_t t1)
 {
 	const size_t metrics_bufsize = metrics_count() * 8;
 	uint8_t *encoded;
-	uint32_t index;
 	metricfs_id_t id;
 	int err;
 
@@ -144,7 +143,7 @@ static void runner_handler(struct actor *actor, struct actor_msg *msg)
 		t0 = t;
 		app_process(&interval_ms);
 		metrics_increase(RunnerDispatchCount);
-		metrics_set(RunnerNextInterval, interval_ms);
+		metrics_set(RunnerNextInterval, METRICS_VALUE(interval_ms));
 	}
 
 	actor_free(msg);
@@ -153,6 +152,7 @@ static void runner_handler(struct actor *actor, struct actor_msg *msg)
 
 static void exio_handler(struct actor *actor, struct actor_msg *msg)
 {
+	unused(actor);
 	exio_intr_t intr = exio_get_intr_source();
 
 	if (intr & EXIO_INTR_EMERGENCY) {
@@ -187,6 +187,7 @@ static void metric_handler(struct actor *actor, struct actor_msg *msg)
 
 static void cleanup_handler(struct actor *actor, struct actor_msg *msg)
 {
+	unused(actor);
 	info("Cleaning up...");
 
 	apptmr_stop(cleanup_timer);
@@ -210,6 +211,7 @@ static void raise_cleanup(void)
 
 static void on_cleanup_timeout(struct apptmr *timer, void *ctx)
 {
+	unused(timer);
 	struct actor *actor = (struct actor *)ctx;
 	metrics_increase(CleanupTimeoutCount);
 	cleanup_handler(actor, NULL);
@@ -218,11 +220,12 @@ static void on_cleanup_timeout(struct apptmr *timer, void *ctx)
 static void on_config_save(void *ctx)
 {
 	unused(ctx);
-	info("Configuration saved in NVS.");
+	info("Config saved in NVS.");
 }
 
 static void on_watchdog_timeout(struct wdt *wdt, void *ctx)
 {
+	unused(ctx);
 	if (ratelim_request(&cleanup_limit)) {
 		raise_cleanup();
 		error("Watchdog timeout: %s", wdt_name(wdt));
@@ -233,11 +236,14 @@ static void on_watchdog_timeout(struct wdt *wdt, void *ctx)
 static void on_watchdog_periodic(void *ctx)
 {
 	unused(ctx);
-	metrics_set(WDTStackHighWatermark, board_get_current_stack_watermark());
+	metrics_set(WDTStackHighWatermark,
+			METRICS_VALUE(board_get_current_stack_watermark()));
 }
 
 static void on_exio_intr(struct gpio *gpio, void *ctx)
 {
+	unused(gpio);
+	unused(ctx);
 	actor_send(&exio_actor, NULL);
 }
 
@@ -264,6 +270,7 @@ static void create_i2c_devices(struct pinmap_periph *p)
 
 static bool update(void *ctx)
 {
+	unused(ctx);
 	if (updater_process() == -EAGAIN) {
 		return true;
 	}
@@ -355,10 +362,10 @@ int main(void)
 	actor_send(&runner_actor, NULL);
 	actor_send(&metric_actor, NULL);
 
-	metrics_set(ResetReason, reboot_reason);
+	metrics_set(ResetReason, METRICS_VALUE(reboot_reason));
 	metrics_set(InitStackHighWatermark,
-			board_get_current_stack_watermark());
-	metrics_set(BootingTime, board_get_time_since_boot_ms());
+			METRICS_VALUE(board_get_current_stack_watermark()));
+	metrics_set(BootingTime, METRICS_VALUE(board_get_time_since_boot_ms()));
 
 	return 0;
 }

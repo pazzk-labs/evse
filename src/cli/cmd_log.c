@@ -85,31 +85,29 @@ static void print_log(struct logfs *fs, const char *filename, struct cli *cli)
 		return;
 	}
 
-	int err;
+	int len;
 	size_t filesize;
 	char *buf;
 	const time_t ts = strtoll(filename, NULL, 10);
 
-	if ((filesize = logfs_size(fs, ts)) < 0) {
-		if (filesize == 0) {
-			println(cli->io, "Failed to get file size");
-		}
+	if ((filesize = logfs_size(fs, ts)) == 0) {
+		println(cli->io, "Failed to get file size");
 		return;
 	}
 
 	const size_t blocksize = MIN(filesize, MAX_BUFSIZE);
-	if ((buf = malloc(blocksize)) == NULL) {
+	if ((buf = (char *)malloc(blocksize)) == NULL) {
 		println(cli->io, "Failed to allocate memory");
 		return;
 	}
 
-	for (size_t i = 0; i < filesize; i += (size_t)err) {
-		err = logfs_read(fs, ts, i, buf, blocksize);
-		if (err < 0) {
+	for (size_t i = 0; i < filesize; i += (size_t)len) {
+		len = logfs_read(fs, ts, i, buf, blocksize);
+		if (len < 0) {
 			println(cli->io, "Failed to read file");
 			break;
 		}
-		cli->io->write(buf, err);
+		cli->io->write(buf, (size_t)len);
 	}
 
 	free(buf);

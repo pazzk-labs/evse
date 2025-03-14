@@ -153,6 +153,20 @@ int config_write_all(const struct config *cfg);
 int config_save(void);
 
 /**
+ * @brief Writes a configuration value and saves it.
+ *
+ * This function sets the configuration value associated with the given key
+ * and saves the configuration to persistent storage.
+ *
+ * @param[in] key Configuration key string (e.g., "device.id").
+ * @param[in] data Data to be written.
+ * @param[in] datasize Size of the data to be written.
+ *
+ * @return 0 on success, negative error code on failure.
+ */
+int config_set_and_save(const char *key, const void *data, size_t datasize);
+
+/**
  * @brief Resets a specific configuration key to its default value.
  * @param[in] key Configuration key to reset (NULL resets all configurations).
  * @return 0 on success, negative error code on failure.

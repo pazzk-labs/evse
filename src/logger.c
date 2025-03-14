@@ -73,6 +73,8 @@ static void flush_logfs(void *arg)
 
 static size_t write_fs(const void *data, size_t size)
 {
+	unused(size);
+
 	const time_t sec = time(NULL);
 	const time_t day = sec - (sec % (24 * 60 * 60));
 
@@ -196,7 +198,7 @@ void logger_init(struct logfs *fs)
 	config_get("log.level", &level, sizeof(level));
 
 	memset(&m, 0, sizeof(m));
-	m.fs = (struct logfs *)fs;
+	m.fs = fs;
 
 	pthread_mutex_init(&m.file_mutex, NULL);
 	logging_init(board_get_time_since_boot_ms);

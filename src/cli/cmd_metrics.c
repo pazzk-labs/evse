@@ -85,7 +85,7 @@ static void convert(cbor_reader_t const *reader, cbor_item_t const *item,
 	cbor_decode(reader, item, &i32, sizeof(i32));
 
 	if ((item - parent) % 2) { /* key */
-		keystr = metrics_stringify_key(i32);
+		keystr = metrics_stringify_key((metric_key_t)i32);
 	} else { /* value */
 		char buf[2/*prettier*/+12/*digits*/+1/*null*/] = { 0, };
 		cli->io->write(keystr, strlen(keystr));

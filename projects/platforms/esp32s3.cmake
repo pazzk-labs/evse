@@ -2,7 +2,7 @@ set(ports ports/esp-idf ports/freertos)
 foreach(dir ${ports})
 	file(GLOB_RECURSE ${dir}_SRCS RELATIVE ${CMAKE_SOURCE_DIR} ${dir}/*.c)
 	file(GLOB_RECURSE ${dir}_CPP_SRCS RELATIVE ${CMAKE_SOURCE_DIR} ${dir}/*.cpp)
-	list(APPEND APP_SRCS ${${dir}_SRCS} ${${dir}_CPP_SRCS})
+	list(APPEND PORT_SRCS ${${dir}_SRCS} ${${dir}_CPP_SRCS})
 endforeach()
 
 set(PROJECT_EXECUTABLE ${CMAKE_PROJECT_NAME}.elf)
@@ -11,7 +11,7 @@ set(PROJECT_BIN ${CMAKE_PROJECT_NAME}.bin)
 include($ENV{IDF_PATH}/tools/cmake/idf.cmake)
 
 set(LIBMCU_ROOT ${PROJECT_SOURCE_DIR}/external/libmcu)
-list(APPEND APP_SRCS
+list(APPEND PORT_SRCS
 	${LIBMCU_ROOT}/ports/esp-idf/board.c
 	${LIBMCU_ROOT}/ports/esp-idf/actor.c
 	${LIBMCU_ROOT}/ports/esp-idf/pthread.c
@@ -34,10 +34,10 @@ list(APPEND APP_SRCS
 )
 
 if ($ENV{IDF_VERSION} VERSION_LESS "5.1.0")
-	list(APPEND APP_SRCS ${LIBMCU_ROOT}/ports/freertos/semaphore.c)
+	list(APPEND PORT_SRCS ${LIBMCU_ROOT}/ports/freertos/semaphore.c)
 endif()
 
-add_executable(${PROJECT_EXECUTABLE} ${APP_SRCS})
+add_executable(${PROJECT_EXECUTABLE} ${APP_SRCS} ${PORT_SRCS})
 
 target_compile_definitions(${PROJECT_EXECUTABLE}
 	PRIVATE
@@ -74,6 +74,16 @@ target_link_libraries(${PROJECT_EXECUTABLE}
 target_compile_options(${PROJECT_EXECUTABLE}
 	PRIVATE
 		-include ${LIBMCU_ROOT}/modules/logging/include/libmcu/logging.h
+)
+
+set(ADDITIONAL_COMPILE_OPTIONS
+	"-Wno-error=redundant-decls"
+	"-Wno-error=missing-include-dirs"
+	"-Wno-error"
+)
+set_source_files_properties(${APP_SRCS}
+	PROPERTIES COMPILE_OPTIONS
+		"${COMMON_COMPILE_OPTIONS};${ADDITIONAL_COMPILE_OPTIONS}"
 )
 
 target_include_directories(libmcu PUBLIC

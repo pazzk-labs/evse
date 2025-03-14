@@ -126,6 +126,9 @@ static void on_emergency_stop(struct button *btn,
 		const button_state_t event, const uint16_t clicks,
 		const uint16_t repeats, void *ctx)
 {
+	unused(btn);
+	unused(clicks);
+	unused(repeats);
 	struct emergency_stop *self = (struct emergency_stop *)ctx;
 	process_event(event, self->cb, self->cb_ctx);
 }
@@ -134,6 +137,9 @@ static void on_usb_event(struct button *btn,
 		const button_state_t event, const uint16_t clicks,
 		const uint16_t repeats, void *ctx)
 {
+	unused(btn);
+	unused(clicks);
+	unused(repeats);
 	struct usb_vbus *self = (struct usb_vbus *)ctx;
 	process_event(event, self->cb, self->cb_ctx);
 }
@@ -142,6 +148,8 @@ static void on_debug_button_event(struct button *btn,
 		const button_state_t event, const uint16_t clicks,
 		const uint16_t repeats, void *ctx)
 {
+	unused(btn);
+
 	struct debug_button *self = (struct debug_button *)ctx;
 
 	switch (event) {
@@ -172,7 +180,7 @@ static button_level_t get_estop_state(void *ctx)
 {
 	static button_level_t prev;
 
-	usrinp_get_state_t get_state = (usrinp_get_state_t)ctx;
+	usrinp_get_state_t get_state = (usrinp_get_state_t)(uintptr_t)ctx;
 	int rc = get_state(USRINP_EMERGENCY_STOP);
 
 	if (rc >= 0) {
@@ -186,7 +194,7 @@ static button_level_t get_usb_vbus_state(void *ctx)
 {
 	static button_level_t prev;
 
-	usrinp_get_state_t get_state = (usrinp_get_state_t)ctx;
+	usrinp_get_state_t get_state = (usrinp_get_state_t)(uintptr_t)ctx;
 	int rc = get_state(USRINP_USB_CONNECT);
 
 	if (rc >= 0) {
@@ -264,8 +272,8 @@ static void *task(void *e)
 
 		process(self);
 
-		metrics_set(UsrInpStackHighWatermark,
-				board_get_current_stack_watermark());
+		metrics_set(UsrInpStackHighWatermark, METRICS_VALUE(
+				board_get_current_stack_watermark()));
 	}
 
 	return 0;
@@ -299,8 +307,8 @@ static void initialize_estop(struct emergency_stop *estop,
 		.debounce_duration_ms = 20,
 		.sampling_timeout_ms = 1000,
 	};
-	estop->button = button_new(get_estop_state, f_get_state,
-			on_emergency_stop, estop);
+	estop->button = button_new(get_estop_state, (void *)(uintptr_t)
+			f_get_state, on_emergency_stop, estop);
 	button_set_param(estop->button, &estop->param);
 	button_enable(estop->button);
 }
@@ -312,8 +320,8 @@ static void initialize_usb(struct usb_vbus *usb, usrinp_get_state_t f_get_state)
 		.debounce_duration_ms = 150,
 		.sampling_timeout_ms = 1000,
 	};
-	usb->button = button_new(get_usb_vbus_state, f_get_state,
-			on_usb_event, usb);
+	usb->button = button_new(get_usb_vbus_state,
+			(void *)(uintptr_t)f_get_state, on_usb_event, usb);
 	button_set_param(usb->button, &usb->param);
 	button_enable(usb->button);
 }

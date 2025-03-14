@@ -32,6 +32,7 @@
 
 #include "libmcu/actor.h"
 #include "libmcu/actor_timer.h"
+#include "libmcu/actor_overrides.h"
 #include "libmcu/metrics.h"
 #include "libmcu/board.h"
 
@@ -43,7 +44,7 @@ void actor_pre_dispatch_hook(const struct actor *actor,
 	unused(actor);
 	unused(msg);
 
-	const uint32_t t1 = (uint32_t)board_get_time_since_boot_ms();
+	const uint32_t t1 = board_get_time_since_boot_ms();
 	const uint32_t elapsed = t1 - t0;
 
 	metrics_set_if_max(ActorIntervalMax, METRICS_VALUE(elapsed));
@@ -59,11 +60,11 @@ void actor_post_dispatch_hook(const struct actor *actor,
 	unused(actor);
 	unused(msg);
 
-	const uint32_t elapsed = (uint32_t)board_get_time_since_boot_ms() - t0;
+	const uint32_t elapsed = board_get_time_since_boot_ms() - t0;
 
 	metrics_set_if_max(ActorLongestTime, METRICS_VALUE(elapsed));
-	metrics_set(ActorQueueCount, actor_len());
-	metrics_set(ActorTimerQueueCount, actor_timer_len());
+	metrics_set(ActorQueueCount, METRICS_VALUE(actor_len()));
+	metrics_set(ActorTimerQueueCount, METRICS_VALUE(actor_timer_len()));
 	metrics_set(MainStackHighWatermark,
-			board_get_current_stack_watermark());
+			METRICS_VALUE(board_get_current_stack_watermark()));
 }

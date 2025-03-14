@@ -38,7 +38,8 @@
 struct charger *free_charger_create(void *ctx)
 {
 	unused(ctx);
-	struct charger *free_charger = malloc(sizeof(*free_charger));
+	struct charger *free_charger =
+		(struct charger *)malloc(sizeof(*free_charger));
 	return free_charger;
 }
 

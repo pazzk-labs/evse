@@ -67,6 +67,8 @@ static_assert(sizeof(struct pilot_params)
 		== sizeof(((struct config *)0)->charger.connector[0].pilot),
 		"pilot_params size mismatch");
 
+static const char *metering_ch1_key = "chg.c1.metering";
+
 static struct {
 	struct cli cli;
 	struct charger *charger;
@@ -75,20 +77,23 @@ static struct {
 static void on_charger_event(struct charger *charger, struct connector *c,
 		charger_event_t event, void *ctx)
 {
+	unused(c);
+	unused(ctx);
 	if (event & OCPP_CHARGER_EVENT_AVAILABILITY_CHANGED) {
 		/* Availability changes are saved in non-volatile memory to keep
 		 * them persistent. */
 		const struct ocpp_checkpoint *checkpoint =
 			ocpp_charger_get_checkpoint(charger);
-		config_set("ocpp.checkpoint", checkpoint, sizeof(*checkpoint));
+		config_set_and_save("ocpp.checkpoint",
+				checkpoint, sizeof(*checkpoint));
 	}
 
 	if (event & OCPP_CHARGER_EVENT_CONFIGURATION_CHANGED) {
 		const size_t len = ocpp_compute_configuration_size();
-		void *p = (void *)calloc(1, len);
+		void *p = calloc(1, len);
 		if (p) {
 			ocpp_copy_configuration_to(p, len);
-			config_set("ocpp.config", p, len);
+			config_set_and_save("ocpp.config", p, len);
 			free(p);
 		}
 	}
@@ -109,44 +114,60 @@ static void on_connector_event(struct connector *self,
 	struct charger *charger = (struct charger *)ctx;
 
 	connector_stringify_event(event, evtstr, sizeof(evtstr));
-	info("charger event: \"%s\"", evtstr);
+	info("connector event: \"%s\"", evtstr);
 
 	if (event & CONNECTOR_EVENT_CHARGING_ENDED) {
-		metering_save_energy(connector_meter(self));
+		struct metering *meter = connector_meter(self);
+		if (meter) {
+			metering_save_energy(meter);
+		}
 	}
 
 	/* The following are OCPP-specific events */
 	if (!charger_supports(charger, "ocpp")) {
+		warn("OCPP is not supported");
 		return;
 	}
 
 	struct ocpp_checkpoint *checkpoint =
 		ocpp_charger_get_checkpoint(charger);
 
-	if (event & (CONNECTOR_EVENT_BILLING_STARTED |
-			CONNECTOR_EVENT_BILLING_ENDED)) {
-		/* The transaction ID will be saved or cleared in non-volatile
-		 * memory in case of a power failure */
-		config_set("ocpp.checkpoint", checkpoint, sizeof(*checkpoint));
-	}
-
 	if (event & CONNECTOR_EVENT_ENABLED) {
 		int cid;
 		if (charger_get_connector_id(charger, self, &cid) == 0) {
 			assert(cid > 0 && cid <= OCPP_CONNECTOR_MAX);
-			ocpp_connector_link_checkpoint(self,
-					&checkpoint->connector[cid-1]);
+			struct ocpp_connector_checkpoint *ccp =
+				&checkpoint->connector[cid-1];
+			ocpp_connector_link_checkpoint(self, ccp);
+			info("connector%d enabled: \"%s\", missing %u",
+					cid, ccp->unavailable?
+						"unavailable" : "available",
+					ccp->transaction_id);
 		}
+	}
+
+	if (event & (CONNECTOR_EVENT_BILLING_STARTED |
+			CONNECTOR_EVENT_BILLING_ENDED)) {
+		/* The transaction ID will be saved or cleared in non-volatile
+		 * memory in case of a power failure */
+		config_set_and_save("ocpp.checkpoint",
+				checkpoint, sizeof(*checkpoint));
 	}
 }
 
 static bool on_metering_save(const struct metering *metering,
 		const struct metering_energy *energy, void *ctx)
 {
-	debug("metering save: %lluWh", energy->wh);
+	unused(metering);
 
 	const char *key = (const char *)ctx;
-	return config_set(key, energy, sizeof(*energy)) >= 0;
+
+	if (key && config_set_and_save(key, energy, sizeof(*energy)) == 0) {
+		info("metering save: %lluWh to %s", energy->wh, key);
+		return true;
+	}
+
+	return false;
 }
 
 static void setup_charger_components(struct app *app)
@@ -188,6 +209,7 @@ static void start_charger(struct app *app)
 	struct charger_extension *extension;
 	m.charger = charger_factory_create(&param, &extension, NULL);
 	charger_init(m.charger, &param, extension);
+	charger_register_event_cb(m.charger, on_charger_event, &m);
 
 	struct metering_io conn1_io = {
 		.uart = app->periph.uart1,
@@ -195,7 +217,12 @@ static void start_charger(struct app *app)
 	struct metering_param conn1 = {
 		.io = &conn1_io,
 	};
-	config_get("chg.c1.metering", &conn1.energy, sizeof(conn1.energy));
+	union {
+		const char *str;
+		void *p;
+	} conn1_key = { .str = metering_ch1_key };
+
+	config_get(metering_ch1_key, &conn1.energy, sizeof(conn1.energy));
 
 	struct connector_param conn_param = {
 		.max_output_current_mA = param.max_output_current_mA,
@@ -203,7 +230,7 @@ static void start_charger(struct app *app)
 		.input_frequency = param.input_frequency,
 		.iec61851 = iec61851_create(app->pilot, app->relay),
 		.metering = metering_create(METERING_HLW811X, &conn1,
-				on_metering_save, (void *)"chg.c1.metering"),
+				on_metering_save, (void *)conn1_key.p),
 		.name = "c1",
 		.priority = 0,
 	};
@@ -220,7 +247,7 @@ void app_adjust_time_on_drift(const time_t unixtime, const uint32_t drift)
 	int32_t diff = (int32_t)(unixtime - now);
 	diff = (diff > 0) ? diff : -diff;
 
-	if (diff >= drift) {
+	if ((uint32_t)diff >= drift) {
 		struct timeval tv = {
 			.tv_sec = unixtime,
 			.tv_usec = 0,
@@ -273,8 +300,8 @@ void app_init(struct app *app)
 #define CLI_MAX_HISTORY		10U
 	static char buf[CLI_CMD_MAXLEN * CLI_MAX_HISTORY];
 
-	DEFINE_CLI_CMD_LIST(commands, config, help, config, info, log, net,
-			ocpp, reboot, metric, sec, xmodem);
+	DEFINE_CLI_CMD_LIST(commands, config, help, info, log, net, ocpp,
+			reboot, metric, sec, xmodem);
 
 	cli_init(&m.cli, cli_io_create(), buf, sizeof(buf), app);
 	cli_register_cmdlist(&m.cli, commands);

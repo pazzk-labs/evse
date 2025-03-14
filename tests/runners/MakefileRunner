@@ -50,6 +50,7 @@ export CPPUTEST_WARNINGFLAGS = \
 	\
 	-Wno-error=switch-enum \
 	-Wno-error=aggregate-return \
+	-Wno-error=conversion \
 
 ifeq ($(shell uname), Darwin)
 CPPUTEST_WARNINGFLAGS += \

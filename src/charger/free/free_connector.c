@@ -47,6 +47,7 @@
 
 static bool is_initial(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	/* NOTE: Even if an E state occurs such as diode fault, since EVSE
 	 * transitions to F state, the following condition is only satisfied
@@ -58,54 +59,71 @@ static bool is_initial(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static bool is_state_a(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	return connector_is_state_x(c, A);
 }
 
 static bool is_state_b(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	return connector_is_state_x(c, B);
 }
 
 static bool is_state_c(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	return connector_is_state_x(c, C);
 }
 
 static bool is_state_c2(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	return connector_is_state_x2(c, C);
 }
 
 static bool is_state_d2(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	return connector_is_state_x2(c, D);
 }
 
 static bool is_state_d(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	return connector_is_state_x(c, D);
 }
 
 static bool is_state_e(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	return connector_is_state_x(c, E);
 }
 
 static bool is_state_f(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	return connector_is_evse_error(c, (connector_state_t)state);
 }
 
 static bool is_recovered(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 
 	if (!connector_is_input_power_ok(c) || connector_is_emergency_stop(c)) {
@@ -136,18 +154,24 @@ static void do_error(struct connector *c, connector_state_t state)
 
 static void do_stop_pwm(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	connector_stop_duty(c);
 }
 
 static void do_start_pwm(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	connector_start_duty(c);
 }
 
 static void do_supply_power(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	if (!connector_is_supplying_power(c)) {
 		connector_enable_power_supply(c);
@@ -161,6 +185,8 @@ static void do_supply_power(fsm_state_t state, fsm_state_t next_state, void *ctx
 
 static void do_stop_power(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(state);
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	if (connector_is_supplying_power(c)) {
 		connector_disable_power_supply(c);
@@ -180,6 +206,7 @@ static void do_stop_all(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_unexpected(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 	connector_go_fault(c);
 	c->error = CONNECTOR_ERROR_EVSE_SIDE;
@@ -192,6 +219,7 @@ static void do_unexpected(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_evse_error(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 
 	do_error(c, (connector_state_t)state);
@@ -207,6 +235,7 @@ static void do_evse_error(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 static void do_ev_error(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
+	unused(next_state);
 	struct connector *c = (struct connector *)ctx;
 
 	do_error(c, (connector_state_t)state);
@@ -295,6 +324,7 @@ static connector_event_t get_event_from_state_change(fsm_state_t new_state,
 static void on_state_change(struct fsm *fsm,
 		fsm_state_t new_state, fsm_state_t prev_state, void *ctx)
 {
+	unused(fsm);
 	struct connector *c = (struct connector *)ctx;
 	c->time_last_state_change = time(NULL);
 
@@ -357,7 +387,7 @@ struct connector *free_connector_create(const struct connector_param *param)
 	struct connector *c;
 
 	if (!param || !connector_validate_param(param) ||
-			(c = malloc(sizeof(*c))) == NULL) {
+			(c = (struct connector *)malloc(sizeof(*c))) == NULL) {
 		return NULL;
 	}
 

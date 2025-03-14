@@ -30,6 +30,7 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
+#include "libmcu/board.h"
 #include "config.h"
 #include <stdio.h>
 

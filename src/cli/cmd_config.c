@@ -66,10 +66,12 @@ static void println(const struct cli_io *io, const char *str)
 	io->write("\n", 1);
 }
 
-static void printkey(const struct cli_io *io, const char *str)
+static void printini(const struct cli_io *io,
+		const char *key, const char *value)
 {
-	io->write(str, strlen(str));
+	io->write(key, strlen(key));
 	io->write("=", 1);
+	println(io, value);
 }
 
 static void print_help(const struct cli_io *io, const struct cmd *cmd,
@@ -97,93 +99,104 @@ static void print_usage(const struct cli_io *io, const struct cmd *cmd,
 	print_help(io, cmd, extra);
 }
 
+static void print_config_version(const struct cli_io *io)
+{
+	char verstr[16];
+	uint32_t version;
+	config_get("version", &version, sizeof(version));
+	snprintf(verstr, sizeof(verstr), "v%"PRIu32".%"PRIu32".%"PRIu32,
+			GET_VERSION_MAJOR(version),
+			GET_VERSION_MINOR(version),
+			GET_VERSION_PATCH(version));
+	printini(io, "config.version", verstr);
+}
+
 static void print_charge_mode(const struct cli_io *io)
 {
 	char mode[CONFIG_CHARGER_MODE_MAXLEN] = { 0, };
 	config_get("chg.mode", mode, sizeof(mode));
-	println(io, mode);
+	printini(io, "mode", mode);
 }
 
 static void print_charge_param(const struct cli_io *io)
 {
-	char buf[64];
+	char buf[32];
 	const size_t maxlen = sizeof(buf);
 	struct charger_param param;
 	charger_default_param(&param);
 	config_get("chg.param", &param, sizeof(param));
-	snprintf(buf, maxlen, "voltage.input=%dV", param.input_voltage);
-	println(io, buf);
-	snprintf(buf, maxlen, "current.input=%umA", param.max_input_current_mA);
-	println(io, buf);
-	snprintf(buf, maxlen, "frequency.input=%dHz", param.input_frequency);
-	println(io, buf);
-	snprintf(buf, maxlen, "current.output=%umA ~ %umA",
+	snprintf(buf, maxlen, "%dV", param.input_voltage);
+	printini(io, "voltage.input", buf);
+	snprintf(buf, maxlen, "%"PRIu32"mA", param.max_input_current_mA);
+	printini(io, "current.input", buf);
+	snprintf(buf, maxlen, "%dHz", param.input_frequency);
+	printini(io, "frequency.input", buf);
+	snprintf(buf, maxlen, "%"PRIu32"mA ~ %"PRIu32"mA",
 			param.min_output_current_mA,
 			param.max_output_current_mA);
-	println(io, buf);
+	printini(io, "current.output", buf);
 }
 
 static void print_x509_ca(const struct cli_io *io)
 {
-	char *buf = malloc(CONFIG_X509_MAXLEN);
+	char *buf = (char *)malloc(CONFIG_X509_MAXLEN);
 	if (buf) {
 		buf[0] = '\0';
 		config_get("x509.ca", buf, CONFIG_X509_MAXLEN);
-		println(io, buf);
+		printini(io, "x509.ca", buf);
 		free(buf);
 	}
 }
 
 static void print_x509_cert(const struct cli_io *io)
 {
-	char *buf = malloc(CONFIG_X509_MAXLEN);
+	char *buf = (char *)malloc(CONFIG_X509_MAXLEN);
 	if (buf) {
 		buf[0] = '\0';
 		config_get("x509.cert", buf, CONFIG_X509_MAXLEN);
-		println(io, buf);
+		printini(io, "x509.cert", buf);
 		free(buf);
 	}
 }
 
 static void print_ocpp(const struct cli_io *io)
 {
-	char buf[20+1] = "ocpp.vendor";
-	printkey(io, buf);
-	config_get(buf, buf, sizeof(buf));
-	println(io, buf);
+	char buf[20+1];
 
-	strcpy(buf, "ocpp.model");
-	printkey(io, buf);
-	config_get(buf, buf, sizeof(buf));
-	println(io, buf);
+	config_get("ocpp.vendor", buf, sizeof(buf));
+	printini(io, "ocpp.vendor", buf);
+
+	config_get("ocpp.model", buf, sizeof(buf));
+	printini(io, "ocpp.model", buf);
 
 	uint32_t version;
-	strcpy(buf, "ocpp.version");
-	printkey(io, buf);
 	config_get(buf, &version, sizeof(version));
-	snprintf(buf, sizeof(buf), "v%d.%d.%d", GET_VERSION_MAJOR(version),
-			GET_VERSION_MINOR(version), GET_VERSION_PATCH(version));
-	println(io, buf);
+	snprintf(buf, sizeof(buf), "v%"PRIu32".%"PRIu32".%"PRIu32,
+			GET_VERSION_MAJOR(version), GET_VERSION_MINOR(version),
+			GET_VERSION_PATCH(version));
+	printini(io, "ocpp.version", buf);
 }
 
 static void do_show(const struct cli_io *io, int argc, const char *argv[],
 		const struct cmd *cmd)
 {
-	println(io, "[Charge mode]");
+	unused(argc);
+	unused(argv);
+	unused(cmd);
+	print_config_version(io);
 	print_charge_mode(io);
-	println(io, "[Charge parameters]");
 	print_charge_param(io);
-	println(io, "[X.509 CA]");
 	print_x509_ca(io);
-	println(io, "[X.509 Cert]");
 	print_x509_cert(io);
-	println(io, "[OCPP]");
 	print_ocpp(io);
 }
 
 static void do_reset(const struct cli_io *io, int argc, const char *argv[],
 		const struct cmd *cmd)
 {
+	unused(argc);
+	unused(argv);
+	unused(cmd);
 	config_reset(NULL);
 	println(io, "Configuration reset.");
 }
@@ -191,6 +204,9 @@ static void do_reset(const struct cli_io *io, int argc, const char *argv[],
 static void do_save(const struct cli_io *io, int argc, const char *argv[],
 		const struct cmd *cmd)
 {
+	unused(argc);
+	unused(argv);
+	unused(cmd);
 	config_save();
 	println(io, "Configuration saved.");
 }
@@ -227,7 +243,7 @@ static size_t read_until_eot(const struct cli_io *io,
 
 static void change_ca(const struct cli_io *io)
 {
-	uint8_t *buf = malloc(CONFIG_X509_MAXLEN);
+	uint8_t *buf = (uint8_t *)malloc(CONFIG_X509_MAXLEN);
 
 	if (!buf) {
 		return;
@@ -253,11 +269,11 @@ static void change_cert(const struct cli_io *io)
 	uint8_t *ca;
 	uint8_t *buf;
 
-	if ((buf = malloc(CONFIG_X509_MAXLEN)) == NULL) {
+	if ((buf = (uint8_t *)malloc(CONFIG_X509_MAXLEN)) == NULL) {
 		println(io, "Failed to allocate buf");
 		return;
 	}
-	if ((ca = malloc(CONFIG_X509_MAXLEN)) == NULL) {
+	if ((ca = (uint8_t *)malloc(CONFIG_X509_MAXLEN)) == NULL) {
 		println(io, "Failed to allocate ca");
 		free(buf);
 		return;
@@ -267,7 +283,7 @@ static void change_cert(const struct cli_io *io)
 	config_get("x509.ca", ca, CONFIG_X509_MAXLEN);
 	size_t ca_len = strlen((const char *)ca);
 
-	if (ca_len <= 0 || pki_verify_cert(ca, (size_t)ca_len, buf, len) != 0) {
+	if (ca_len <= 0 || pki_verify_cert(ca, ca_len, buf, len) != 0) {
 		println(io, "Failed to verify the certificate");
 		goto out_free;
 	}
@@ -284,6 +300,7 @@ out_free:
 static void do_read_set(const struct cli_io *io, int argc, const char *argv[],
 		const struct cmd *cmd)
 {
+	unused(argc);
 	if (strcmp(argv[2], "x509.ca") == 0) {
 		change_ca(io);
 	} else if (strcmp(argv[2], "x509.cert") == 0) {
@@ -313,6 +330,7 @@ static void do_set_mode(const struct cli_io *io, int argc, const char *argv[],
 	if (config_set("chg.mode", mode, strlen(mode)+1/*null*/) == 0) {
 		println(io, "Reboot to apply the changes after saving");
 	}
+	return;
 
 out_help:
 	print_usage(io, cmd, "free | ocpp | hlc");
@@ -336,6 +354,7 @@ static void do_set_input_voltage(const struct cli_io *io,
 	config_get("chg.param", &param, sizeof(param));
 	param.input_voltage = (int16_t)voltage;
 	config_set("chg.param", &param, sizeof(param));
+	return;
 
 out_help:
 	print_usage(io, cmd, "100 ~ 300");
@@ -359,6 +378,7 @@ static void do_set_input_frequency(const struct cli_io *io,
 	config_get("chg.param", &param, sizeof(param));
 	param.input_frequency = (int16_t)freq;
 	config_set("chg.param", &param, sizeof(param));
+	return;
 
 out_help:
 	print_usage(io, cmd, "50 ~ 60");
@@ -382,6 +402,7 @@ static void do_set_input_current(const struct cli_io *io,
 	config_get("chg.param", &param, sizeof(param));
 	param.max_input_current_mA = (uint32_t)cur * 1000;
 	config_set("chg.param", &param, sizeof(param));
+	return;
 
 out_help:
 	print_usage(io, cmd, "6 ~ 50");
@@ -406,6 +427,7 @@ static void do_set_output_max_current(const struct cli_io *io,
 
 	param.max_output_current_mA = (uint32_t)cur * 1000;
 	config_set("chg.param", &param, sizeof(param));
+	return;
 
 out_help:
 	print_usage(io, cmd, "6 ~ 50");
@@ -424,12 +446,14 @@ static void do_set_output_min_current(const struct cli_io *io,
 
 	long cur = strtol(argv[3], NULL, 10);
 
-	if (cur < 6 || cur > 50 || cur > param.max_output_current_mA / 1000) {
+	if (cur < 6 || cur > 50 ||
+			(uint32_t)cur > param.max_output_current_mA / 1000) {
 		goto out_help;
 	}
 
 	param.min_output_current_mA = (uint32_t)cur * 1000;
 	config_set("chg.param", &param, sizeof(param));
+	return;
 
 out_help:
 	print_usage(io, cmd, "6 ~ 50, max. output current");
@@ -463,6 +487,7 @@ static void do_set_mac(const struct cli_io *io, int argc, const char *argv[],
 	}
 
 	config_set("net.mac", mac, sizeof(mac));
+	return;
 
 out_help:
 	print_usage(io, cmd, "01:23:45:67:89:ab");

@@ -40,6 +40,7 @@
 #include "ocpp/strconv.h"
 #include "libmcu/timext.h"
 #include "libmcu/strext.h"
+#include "libmcu/compiler.h"
 #include "logger.h"
 #include "ocpp/type.h"
 
@@ -205,6 +206,7 @@ static bool pack_configuration(const char *key, cJSON *known, cJSON *unknown)
 
 static int pack_all_configurations(cJSON *known, cJSON *unknown, int max_count)
 {
+	unused(max_count);
 	int count = 0;
 
 	for (size_t i = 0; i < ocpp_count_configurations(); i++) {
@@ -237,6 +239,7 @@ static void on_each_conf_key(const char *chunk, size_t chunk_len, void *ctx)
 static int pack_configurations(const char *keys, cJSON *known, cJSON *unknown,
 		int max_count, int *unknown_count)
 {
+	unused(unknown_count);
 	struct configuration_ctx ctx = {
 		.known = known,
 		.unknown = unknown,
@@ -254,7 +257,7 @@ static int pack_configurations(const char *keys, cJSON *known, cJSON *unknown,
 
 static bool do_get_configuration(const struct ocpp_message *msg, cJSON *json)
 {
-	const char *keystr = msg->payload.fmt.data;
+	const char *keystr = (const char *)msg->payload.fmt.data;
 	int unknown_count = 0;
 	int max_count = 0;
 	cJSON *known;
@@ -315,7 +318,8 @@ static cJSON *create_sample_value(const struct ocpp_SampledValue *sample)
 	return value;
 }
 
-static cJSON *create_meter_value(const struct ocpp_MeterValue *p, size_t n)
+static cJSON *create_meter_value(const struct ocpp_MeterValue *meter,
+		size_t n)
 {
 	cJSON *value = cJSON_CreateObject();
 
@@ -323,8 +327,12 @@ static cJSON *create_meter_value(const struct ocpp_MeterValue *p, size_t n)
 		return NULL;
 	}
 
+	const struct ocpp_SampledValue *sampleValue =
+		(const struct ocpp_SampledValue *)(const void *)
+		meter->sampledValue;
+
 	char tstr[32] = { 0, };
-	iso8601_convert_to_string(p->timestamp, tstr, sizeof(tstr));
+	iso8601_convert_to_string(meter->timestamp, tstr, sizeof(tstr));
 	cJSON_AddItemToObject(value, "timestamp", cJSON_CreateString(tstr));
 
 	cJSON *samples = cJSON_CreateArray();
@@ -332,7 +340,7 @@ static cJSON *create_meter_value(const struct ocpp_MeterValue *p, size_t n)
 		cJSON_AddItemToObject(value, "sampledValue", samples);
 
 		for (size_t i = 0; i < n; i++) {
-			cJSON *sample = create_sample_value(&p->sampledValue[i]);
+			cJSON *sample = create_sample_value(&sampleValue[i]);
 			if (sample) {
 				cJSON_AddItemToArray(samples, sample);
 			}
@@ -348,8 +356,9 @@ static bool do_meter_value(const struct ocpp_message *msg, cJSON *json)
 		(const struct ocpp_MeterValues *)msg->payload.fmt.request;
         /* FIXME: deal with multiple meter values and sampled values. only one
          * meter value with multiple sampled values supported at the moment. */
-        const size_t n = (msg->payload.size - sizeof(*p))
-		/ sizeof(p->meterValue.sampledValue[0]);
+        const size_t n = (msg->payload.size -
+			sizeof(*p) - sizeof(struct ocpp_MeterValue))
+		/ sizeof(struct ocpp_SampledValue);
 	int expected_ok = 1;
 	int ok = 0;
 
@@ -366,7 +375,10 @@ static bool do_meter_value(const struct ocpp_message *msg, cJSON *json)
 	if (values) {
 		ok += cJSON_AddItemToObject(json, "meterValue", values);
 		expected_ok++;
-		cJSON *value = create_meter_value(&p->meterValue, n);
+		const struct ocpp_MeterValue *meterValue =
+			(const struct ocpp_MeterValue *)(const void *)
+			p->meterValue;
+		cJSON *value = create_meter_value(meterValue, n);
 		if (value) {
 			ok += cJSON_AddItemToArray(values, value);
 			expected_ok++;
@@ -630,7 +642,7 @@ char *encoder_json_encode(const struct ocpp_message *msg, size_t *msglen)
 		}
 	}
 
-	if (msglen) {
+	if (text && msglen) {
 		*msglen = len;
 	}
 

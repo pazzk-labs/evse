@@ -44,12 +44,12 @@
 
 static int do_read(void *buf, size_t bufsize)
 {
-	return fread(buf, bufsize, 1, stdin);
+	return (int)fread(buf, bufsize, 1, stdin);
 }
 
 static int do_write(const void *data, size_t datasize)
 {
-	int rc = fwrite(data, datasize, 1, stdout);
+	int rc = (int)fwrite(data, datasize, 1, stdout);
 
 	if (rc >= 0 && datasize > 0) {
 		fflush(stdout);
