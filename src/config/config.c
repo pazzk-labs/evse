@@ -84,7 +84,7 @@ typedef void (*iterate_cb_t)(const struct config_entry *entry, void *ctx);
 static const struct config_entry config_map[] = {
 	CONFIG_ENTRY("version",             version,                   R),
 	CONFIG_ENTRY("crc",                 crc,                       R),
-	CONFIG_ENTRY("device.id",           device_id,                 R),
+	CONFIG_ENTRY("device.id",           device_id,                 RFW),
 	CONFIG_ENTRY("device.name",         device_name,               RW),
 	CONFIG_ENTRY("device.mode",         device_mode,               RW),
 	CONFIG_ENTRY("log.mode",            log_mode,                  RW),

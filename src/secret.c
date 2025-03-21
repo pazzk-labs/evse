@@ -46,9 +46,11 @@ static struct secret secret;
 
 static const char *secrets_tbl[] = {
 	/* Do not exceed 15 characters. "123456789012345" */
-	[SECRET_KEY_IMAGE_AES128_KEY] = "dfu/image.key",
-	[SECRET_KEY_X509_KEY]         = "x509/dev.key",
-	[SECRET_KEY_X509_KEY_CSR]     = "x509/dev.csr",
+	[SECRET_KEY_DEVICE_ID]        = "device.id",
+	[SECRET_KEY_IMAGE_AES128_KEY] = "dfu.image.key",
+	[SECRET_KEY_X509_KEY]         = "x509.dev.key",
+	[SECRET_KEY_X509_KEY_CSR]     = "x509.dev.csr",
+	[SECRET_KEY_PLC_NMK]          = "plc.nmk",
 };
 
 static const char *get_keystr_from_key(secret_key_t key)

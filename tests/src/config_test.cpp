@@ -4,6 +4,7 @@
 #include "config.h"
 #include "libmcu/kvstore.h"
 #include "libmcu/crc32.h"
+#include "secret.h"
 
 #define X509_BUFSIZE		2048
 
@@ -13,6 +14,10 @@ extern void mock_kvstore_destroy(struct kvstore *kvstore);
 static void on_config_save(void *ctx) {
 	mock().actualCall("on_config_save")
 		.withPointerParameter("ctx", ctx);
+}
+
+int secret_read(secret_key_t key, void *buf, size_t bufsize) {
+	return 0;
 }
 
 TEST_GROUP(Config) {
@@ -71,7 +76,7 @@ TEST(Config, ShouldReturnDefaultConfig) {
 	config_get("chg.count", &actual.charger.connector_count, sizeof(actual.charger.connector_count));
 	LONGS_EQUAL(1, actual.charger.connector_count);
 	config_get("chg.c1.plc_mac", &actual.charger.connector[0].plc_mac, sizeof(actual.charger.connector[0].plc_mac));
-	MEMCMP_EQUAL("\02\0\0\xfe\xed\0", actual.charger.connector[0].plc_mac, sizeof(actual.charger.connector[0].plc_mac));
+	MEMCMP_EQUAL("\02\0\0\xfe\xed\01", actual.charger.connector[0].plc_mac, sizeof(actual.charger.connector[0].plc_mac));
 	config_get("net.mac", &actual.net.mac, sizeof(actual.net.mac));
 	MEMCMP_EQUAL("\0\xf2\0\0\0\0", actual.net.mac, sizeof(actual.net.mac));
 	config_get("net.health", &actual.net.health_check_interval, sizeof(actual.net.health_check_interval));
