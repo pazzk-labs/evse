@@ -30,8 +30,8 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#ifndef ETH_H
-#define ETH_H
+#ifndef ETH_W5500_H
+#define ETH_W5500_H
 
 #if defined(__cplusplus)
 extern "C" {
@@ -46,4 +46,4 @@ struct netif *eth_w5500_create(struct spi_device *spi);
 }
 #endif
 
-#endif /* ETH_H */
+#endif /* ETH_W5500_H */

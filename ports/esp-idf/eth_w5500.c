@@ -95,6 +95,8 @@ static struct callback *alloc_cb(struct callback *list,
 			return cb;
 		}
 	}
+
+	return NULL;
 }
 
 static void free_cb(struct callback *cb)
@@ -106,8 +108,8 @@ static void dispatch_event(struct netif *netif, netif_event_t event_type)
 {
 	for (int i = 0; i < NETIF_CALLBACK_MAX; i++) {
 		struct callback *cb = &netif->callbacks[i];
-		if (cb->cb && cb->event_type == event_type ||
-				cb->event_type == NETIF_EVENT_ANY) {
+		if (cb->cb && (cb->event_type == event_type ||
+				cb->event_type == NETIF_EVENT_ANY)) {
 			cb->cb(netif, event_type, cb->cb_ctx);
 		}
 	}
@@ -258,6 +260,17 @@ static int get_duplex(struct netif *netif, bool *duplex_enabled)
 	esp_err_t err = esp_eth_ioctl(netif->handle,
 			ETH_CMD_G_DUPLEX_MODE, &duplex);
 	*duplex_enabled = duplex == ETH_DUPLEX_FULL;
+	return err != ESP_OK? -err : 0;
+}
+
+static int send_eth_frame(struct netif *netif, const void *data,
+		const size_t datasize)
+{
+	union {
+		const void *data;
+		void *p;
+	} t = { .data = data };
+	esp_err_t err = esp_eth_transmit(netif->handle, t.p, datasize);
 	return err != ESP_OK? -err : 0;
 }
 
@@ -424,6 +437,7 @@ struct netif *eth_w5500_create(struct spi_device *spi)
 			.get_ip_info = get_ip_info,
 			.get_speed = get_speed,
 			.get_duplex = get_duplex,
+			.send_eth_frame = send_eth_frame,
 		},
 		.name = "w5500",
 	};
