@@ -41,9 +41,11 @@ extern "C" {
 #include <stddef.h>
 
 typedef enum {
+	SECRET_KEY_DEVICE_ID,
 	SECRET_KEY_IMAGE_AES128_KEY,
 	SECRET_KEY_X509_KEY,
 	SECRET_KEY_X509_KEY_CSR,
+	SECRET_KEY_PLC_NMK,
 	SECRET_KEY_MAX,
 } secret_key_t;
 

@@ -78,6 +78,8 @@ struct netif_api {
 	int (*get_ip_info)(struct netif *netif, ip_info_t *ip_info);
 	int (*get_speed)(struct netif *netif, uint32_t *kbps);
 	int (*get_duplex)(struct netif *netif, bool *duplex_enabled);
+	int (*send_eth_frame)(struct netif *netif, const void *data,
+			const size_t datasize);
 };
 
 #if defined(__cplusplus)
