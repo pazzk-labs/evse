@@ -66,7 +66,7 @@
 #define METRIC_STORAGE_MAXLEN		720 /* 30-day worth of data */
 #define METRIC_PREFIX			"metrics"
 
-#define RUNNER_WDT_TIMEOUT_MS		(1U/*sec*/ * 1000)
+#define RUNNER_WDT_TIMEOUT_MS		(10U/*sec*/ * 1000)
 #define CLEANUP_TIMEOUT_MS		(2U/*sec*/ * 1000)
 
 static uint8_t actor_mem[ACTOR_MEMSIZE_BYTES];
