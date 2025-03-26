@@ -53,7 +53,7 @@
 #define RXQUEUE_SIZE			4096
 
 #define DEFAULT_WS_PING_INTERVAL_SEC	300
-#define DEFAULT_TX_TIMEOUT_MS		10000
+#define DEFAULT_TX_TIMEOUT_MS		8000
 #define DEFAULT_SERVER_URL		"wss://csms.pazzk.net"
 
 static_assert(sizeof(((struct config *)0)->net.server_url) == WS_URI_MAXLEN,
