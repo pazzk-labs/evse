@@ -58,7 +58,7 @@ typedef enum {
 	SAFETY_TYPE_OUTPUT_POWER,
 } safety_t;
 
-struct gpio;
+struct lm_gpio;
 
 /**
  * @brief Initializes the safety module.
@@ -72,7 +72,7 @@ struct gpio;
  *
  * @return int Status code (0 for success, non-zero for error).
  */
-int safety_init(struct gpio *input_power, struct gpio *output_power);
+int safety_init(struct lm_gpio *input_power, struct lm_gpio *output_power);
 
 /**
  * @brief Deinitializes the safety module.

@@ -157,16 +157,16 @@ TEST_GROUP(ControlPilot) {
 		pilot_default_params(&params);
 		pilot = pilot_create(&params, 0, 0, sample_buffer);
 
-		mock().expectOneCall("pwm_enable").ignoreOtherParameters()
+		mock().expectOneCall("lm_pwm_enable").ignoreOtherParameters()
 			.andReturnValue(0);
-		mock().expectOneCall("pwm_start").ignoreOtherParameters()
+		mock().expectOneCall("lm_pwm_start").ignoreOtherParameters()
 			.andReturnValue(0);
 		pilot_enable(pilot);
 	}
 	void teardown(void) {
-		mock().expectOneCall("pwm_stop").ignoreOtherParameters()
+		mock().expectOneCall("lm_pwm_stop").ignoreOtherParameters()
 			.andReturnValue(0);
-		mock().expectOneCall("pwm_disable").ignoreOtherParameters()
+		mock().expectOneCall("lm_pwm_disable").ignoreOtherParameters()
 			.andReturnValue(0);
 		pilot_disable(pilot);
 		pilot_delete(pilot);
@@ -191,7 +191,7 @@ TEST_GROUP(ControlPilot) {
 			.andReturnValue(0);
 	}
 	void expect_duty(uint8_t duty) {
-		mock().expectOneCall("pwm_update_duty")
+		mock().expectOneCall("lm_pwm_update_duty")
 			.ignoreOtherParameters()
 			.andReturnValue(0);
 		pilot_set_duty(pilot, duty);

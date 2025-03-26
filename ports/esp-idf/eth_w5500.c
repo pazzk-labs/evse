@@ -421,7 +421,7 @@ static int deinit(struct netif *netif)
 	return err == ESP_OK? 0 : -err;
 }
 
-struct netif *eth_w5500_create(struct spi_device *spi)
+struct netif *eth_w5500_create(struct lm_spi_device *spi)
 {
 	static struct netif netif = {
 		.api = {

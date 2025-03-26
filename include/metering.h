@@ -74,9 +74,9 @@ struct metering_energy;
 typedef bool (*metering_save_cb_t)(const struct metering *self,
 		const struct metering_energy *energy, void *ctx);
 
-struct uart;
+struct lm_uart;
 struct metering_io {
-	struct uart *uart;
+	struct lm_uart *uart;
 };
 
 struct metering_energy {

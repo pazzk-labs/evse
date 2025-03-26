@@ -39,6 +39,7 @@
 #include "libmcu/cli.h"
 #include "libmcu/adc.h"
 #include "libmcu/uart.h"
+#include "libmcu/spi.h"
 #include "libmcu/assert.h"
 #include "libmcu/compiler.h"
 
@@ -189,18 +190,18 @@ static void setup_charger_components(struct app *app)
 				app->adc.buffer.tx, sizeof(app->adc.buffer.tx)),
 				periph->pwm1_ch1_cp, app->adc.buffer.rx);
 
-	uart_configure(app->periph.uart1, &(struct uart_config) {
+	lm_uart_configure(app->periph.uart1, &(struct lm_uart_config) {
 		.databit = 8,
-		.parity = UART_PARITY_EVEN,
-		.stopbit = UART_STOPBIT_1,
-		.flowctrl = UART_FLOWCTRL_NONE,
+		.parity = LM_UART_PARITY_EVEN,
+		.stopbit = LM_UART_STOPBIT_1,
+		.flowctrl = LM_UART_FLOWCTRL_NONE,
 		.rx_timeout_ms = METERING_RX_TIMEOUT_MS,
 	});
 
 	exio_set_metering_power(true);
 	relay_enable(app->relay);
 	pilot_enable(app->pilot);
-	uart_enable(app->periph.uart1, METERING_UART_BAUDRATE);
+	lm_uart_enable(app->periph.uart1, METERING_UART_BAUDRATE);
 }
 
 static void start_charger(struct app *app)
@@ -230,7 +231,7 @@ static void start_charger(struct app *app)
 		.input_frequency = param.input_frequency,
 		.iec61851 = iec61851_create(app->pilot, app->relay),
 		.metering = metering_create(METERING_HLW811X, &conn1,
-				on_metering_save, (void *)conn1_key.p),
+				on_metering_save, conn1_key.p),
 		.name = "c1",
 		.priority = 0,
 	};
@@ -284,12 +285,12 @@ void app_init(struct app *app)
 	exio_set_w5500_reset(true);
 	exio_set_qca7005_reset(true);
 
-	spi_enable(periph->cpadc);
-	spi_enable(periph->w5500);
+	lm_spi_enable(periph->cpadc);
+	lm_spi_enable(periph->w5500);
 
-	adc_enable(periph->adc1);
-	adc_calibrate(periph->adc1);
-	adc_channel_init(periph->adc1, ADC_CH_3); /* board revision */
+	lm_adc_enable(periph->adc1);
+	lm_adc_calibrate(periph->adc1);
+	lm_adc_channel_init(periph->adc1, LM_ADC_CH_3); /* board revision */
 
 	lis2dw12_init(periph->acc);
 	tmp102_init(periph->temp);

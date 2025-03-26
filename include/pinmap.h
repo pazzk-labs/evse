@@ -37,49 +37,49 @@
 extern "C" {
 #endif
 
-struct gpio;
-struct i2c;
-struct spi;
-struct pwm;
-struct adc;
-struct uart;
+struct lm_gpio;
+struct lm_i2c;
+struct lm_spi;
+struct lm_pwm;
+struct lm_adc;
+struct lm_uart;
 
 struct pinmap_periph {
-	struct i2c *i2c0; /* io expander, accelerometer, codec, temperature */
-	struct i2c_device *io_expander;
-	struct i2c_device *acc;
-	struct i2c_device *codec;
-	struct i2c_device *temp;
-	struct spi *spi2; /* qca7005, w5500 */
-	struct spi_device *qca7005;
-	struct spi_device *w5500;
-	struct spi *spi3; /* adc */
-	struct spi_device *cpadc;
-	struct adc *adc1; /* board revision */
-	struct pwm *pwm0; /* relay */
-	struct pwm_channel *pwm0_ch0_relay; /* relay */
-	struct pwm *pwm1; /* control pilot */
-	struct pwm_channel *pwm1_ch1_cp; /* control pilot */
-	struct pwm *pwm2; /* buzzer */
-	struct pwm_channel *pwm2_ch2_buzzer; /* buzzer */
-	struct uart *uart1; /* metering */
+	struct lm_i2c *i2c0; /* io expander, accelerometer, codec, temperature */
+	struct lm_i2c_device *io_expander;
+	struct lm_i2c_device *acc;
+	struct lm_i2c_device *codec;
+	struct lm_i2c_device *temp;
+	struct lm_spi *spi2; /* qca7005, w5500 */
+	struct lm_spi_device *qca7005;
+	struct lm_spi_device *w5500;
+	struct lm_spi *spi3; /* adc */
+	struct lm_spi_device *cpadc;
+	struct lm_adc *adc1; /* board revision */
+	struct lm_pwm *pwm0; /* relay */
+	struct lm_pwm_channel *pwm0_ch0_relay; /* relay */
+	struct lm_pwm *pwm1; /* control pilot */
+	struct lm_pwm_channel *pwm1_ch1_cp; /* control pilot */
+	struct lm_pwm *pwm2; /* buzzer */
+	struct lm_pwm_channel *pwm2_ch2_buzzer; /* buzzer */
+	struct lm_uart *uart1; /* metering */
 #if defined(ENABLE_DEBUG_UART0)
-	struct uart *uart0;
+	struct lm_uart *uart0;
 #endif
 
-	struct gpio *qca7005_cs;
-	struct gpio *w5500_cs;
-	struct gpio *adc_cs;
-	struct gpio *output_power;
-	struct gpio *input_power;
+	struct lm_gpio *qca7005_cs;
+	struct lm_gpio *w5500_cs;
+	struct lm_gpio *adc_cs;
+	struct lm_gpio *output_power;
+	struct lm_gpio *input_power;
 
-	struct gpio *io_expander_reset;
-	struct gpio *io_expander_int;
-	struct gpio *w5500_int;
-	struct gpio *qca7005_int;
-	struct gpio *metering_int;
+	struct lm_gpio *io_expander_reset;
+	struct lm_gpio *io_expander_int;
+	struct lm_gpio *w5500_int;
+	struct lm_gpio *qca7005_int;
+	struct lm_gpio *metering_int;
 
-	struct gpio *debug_button;
+	struct lm_gpio *debug_button;
 };
 
 int pinmap_init(struct pinmap_periph *periph);

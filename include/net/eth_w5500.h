@@ -38,9 +38,10 @@ extern "C" {
 #endif
 
 #include "net/netif.h"
-#include "libmcu/spi.h"
 
-struct netif *eth_w5500_create(struct spi_device *spi);
+struct lm_spi_device;
+
+struct netif *eth_w5500_create(struct lm_spi_device *spi);
 
 #if defined(__cplusplus)
 }

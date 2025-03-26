@@ -44,6 +44,7 @@
 #include "libmcu/apptmr.h"
 #include "libmcu/ratelim.h"
 #include "libmcu/i2c.h"
+#include "libmcu/gpio.h"
 
 #include "logger.h"
 #include "exio.h"
@@ -240,7 +241,7 @@ static void on_watchdog_periodic(void *ctx)
 			METRICS_VALUE(board_get_current_stack_watermark()));
 }
 
-static void on_exio_intr(struct gpio *gpio, void *ctx)
+static void on_exio_intr(struct lm_gpio *gpio, void *ctx)
 {
 	unused(gpio);
 	unused(ctx);
@@ -259,13 +260,13 @@ static int get_exio_state(usrinp_t source)
 
 static void create_i2c_devices(struct pinmap_periph *p)
 {
-	i2c_enable(p->i2c0);
-	i2c_reset(p->i2c0);
+	lm_i2c_enable(p->i2c0);
+	lm_i2c_reset(p->i2c0);
 
-	p->io_expander = i2c_create_device(p->i2c0, 0x74, 400000);
-	p->codec = i2c_create_device(p->i2c0, 0x18, 400000);
-	p->temp = i2c_create_device(p->i2c0, 0x49, 400000);
-	p->acc = i2c_create_device(p->i2c0, 0x19, 400000);
+	p->io_expander = lm_i2c_create_device(p->i2c0, 0x74, 400000);
+	p->codec = lm_i2c_create_device(p->i2c0, 0x18, 400000);
+	p->temp = lm_i2c_create_device(p->i2c0, 0x49, 400000);
+	p->acc = lm_i2c_create_device(p->i2c0, 0x19, 400000);
 }
 
 static bool update(void *ctx)
@@ -342,8 +343,8 @@ int main(void)
 	updater_set_runner(run_network_updater, NULL);
 
 	usrinp_init(periph->debug_button, get_exio_state);
-	gpio_register_callback(periph->io_expander_int, on_exio_intr, NULL);
-	gpio_enable(periph->io_expander_int);
+	lm_gpio_register_callback(periph->io_expander_int, on_exio_intr, NULL);
+	lm_gpio_enable(periph->io_expander_int);
 
 	/* NOTE: around 3kHz and 9kHz will be the most high-pitched sound on our
 	 * buzzer. which is G note in octave 7 and B note in octave 8. */

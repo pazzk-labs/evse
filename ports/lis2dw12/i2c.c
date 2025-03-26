@@ -36,13 +36,13 @@
 int lis2dw12_port_write_reg(void *ctx,
 		uint8_t reg, const uint8_t *data, size_t datasize)
 {
-	return i2c_write_reg((struct i2c_device *)ctx,
+	return lm_i2c_write_reg((struct lm_i2c_device *)ctx,
 			reg, 8, data, datasize, 100);
 }
 
 int lis2dw12_port_read_reg(void *ctx,
 		uint8_t reg, uint8_t *buf, size_t bufsize)
 {
-	return i2c_read_reg((struct i2c_device *)ctx,
+	return lm_i2c_read_reg((struct lm_i2c_device *)ctx,
 			reg, 8, buf, bufsize, 100);
 }
