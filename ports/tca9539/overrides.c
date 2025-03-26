@@ -38,12 +38,12 @@
 
 #define DEFAULT_TIMEOUT_MS	10
 
-static struct i2c_device *dev;
-static struct gpio *reset_pin;
+static struct lm_i2c_device *dev;
+static struct lm_gpio *reset_pin;
 
 int tca9539_port_write(uint8_t reg_addr, const void *data, size_t data_len)
 {
-	int err = i2c_write_reg(dev, reg_addr, 8,
+	int err = lm_i2c_write_reg(dev, reg_addr, 8,
 			data, data_len, DEFAULT_TIMEOUT_MS);
 	if (err < 0) {
 		metrics_increase(IOExpanderWriteErrorCount);
@@ -53,7 +53,7 @@ int tca9539_port_write(uint8_t reg_addr, const void *data, size_t data_len)
 
 int tca9539_port_read(uint8_t reg_addr, void *buf, size_t bufsize)
 {
-	int err = i2c_read_reg(dev, reg_addr, 8,
+	int err = lm_i2c_read_reg(dev, reg_addr, 8,
 			buf, bufsize, DEFAULT_TIMEOUT_MS);
 	if (err < 0) {
 		metrics_increase(IOExpanderReadErrorCount);
@@ -63,18 +63,18 @@ int tca9539_port_read(uint8_t reg_addr, void *buf, size_t bufsize)
 
 void tca9539_port_reset(void)
 {
-	gpio_set(reset_pin, 0);
+	lm_gpio_set(reset_pin, 0);
 	/* keep reset low for at least 6ns */
 	sleep_ms(1);
-	gpio_set(reset_pin, 1);
+	lm_gpio_set(reset_pin, 1);
 }
 
 void tca9539_port_init(int id, void *i2c, void *gpio_reset)
 {
 	(void)id;
-	dev = (struct i2c_device *)i2c;
-	reset_pin = (struct gpio *)gpio_reset;
+	dev = (struct lm_i2c_device *)i2c;
+	reset_pin = (struct lm_gpio *)gpio_reset;
 
-	gpio_enable(reset_pin);
-	gpio_set(reset_pin, 1);
+	lm_gpio_enable(reset_pin);
+	lm_gpio_set(reset_pin, 1);
 }

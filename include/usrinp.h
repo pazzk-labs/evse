@@ -37,8 +37,6 @@
 extern "C" {
 #endif
 
-#include "libmcu/gpio.h"
-
 typedef enum {
 	USRINP_DEBUG_BUTTON,      /**< Debug button input */
 	USRINP_EMERGENCY_STOP,    /**< Emergency stop input */
@@ -68,6 +66,8 @@ typedef int (*usrinp_get_state_t)(usrinp_t source);
  */
 typedef void (*usrinp_event_cb_t)(usrinp_event_t event, void *ctx);
 
+struct lm_gpio;
+
 /**
  * @brief Initialize user input handling.
  *
@@ -76,7 +76,7 @@ typedef void (*usrinp_event_cb_t)(usrinp_event_t event, void *ctx);
  *
  * @return 0 on success, negative error code on failure.
  */
-int usrinp_init(struct gpio *debug_button, usrinp_get_state_t f_get_state);
+int usrinp_init(struct lm_gpio *debug_button, usrinp_get_state_t f_get_state);
 
 /**
  * @brief Raise a user input event.

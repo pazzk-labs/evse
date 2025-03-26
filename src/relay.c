@@ -60,7 +60,7 @@
 #endif
 
 struct relay {
-	struct pwm_channel *pwm;
+	struct lm_pwm_channel *pwm;
 	struct apptmr *timer;
 	uint8_t hold_duty_pct;
 };
@@ -89,7 +89,7 @@ static void on_timeout(struct apptmr *timer, void *arg)
 	struct relay *p = (struct relay *)arg;
 	const uint8_t pct = MAX(p->hold_duty_pct, HOLD_MIN_PCT);
 
-	pwm_update_duty(p->pwm, PWM_PCT_TO_MILLI(pct));
+	lm_pwm_update_duty(p->pwm, LM_PWM_PCT_TO_MILLI(pct));
 
 	metrics_increase(RelayHoldCount);
 	metrics_set(RelayHoldDuty, pct);
@@ -97,7 +97,7 @@ static void on_timeout(struct apptmr *timer, void *arg)
 
 static void turn_on(struct relay *self, uint8_t duty_pct)
 {
-	pwm_start(self->pwm, PWM_FREQ, PWM_PCT_TO_MILLI(duty_pct));
+	lm_pwm_start(self->pwm, PWM_FREQ, LM_PWM_PCT_TO_MILLI(duty_pct));
 	metrics_increase(RelayPickupCount);
 	metrics_set(RelayPickupDuty, duty_pct);
 }
@@ -132,21 +132,21 @@ void relay_turn_on(struct relay *self)
 void relay_turn_off(struct relay *self)
 {
 	apptmr_stop(self->timer);
-	pwm_stop(self->pwm);
+	lm_pwm_stop(self->pwm);
 	metrics_increase(RelayOffCount);
 }
 
 int relay_enable(struct relay *self)
 {
-	return pwm_enable(self->pwm);
+	return lm_pwm_enable(self->pwm);
 }
 
 int relay_disable(struct relay *self)
 {
-	return pwm_disable(self->pwm);
+	return lm_pwm_disable(self->pwm);
 }
 
-struct relay *relay_create(struct pwm_channel *pwm_handle)
+struct relay *relay_create(struct lm_pwm_channel *pwm_handle)
 {
 	static struct relay relays[RELAY_MAX];
 	struct relay *p = new_relay(relays);

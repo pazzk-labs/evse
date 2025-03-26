@@ -33,6 +33,7 @@
 #include "adc122s051.h"
 #include <stdlib.h>
 #include <errno.h>
+#include "libmcu/spi.h"
 
 #if !defined(ADC122S051_REF_MILLIVOLT)
 #define ADC122S051_REF_MILLIVOLT	3300
@@ -42,7 +43,7 @@
 #endif
 
 struct adc122s051 {
-	struct spi_device *spi;
+	struct lm_spi_device *spi;
 
 	uint16_t *buf;
 	uint16_t bufsize;
@@ -71,7 +72,7 @@ int adc122s051_measure(struct adc122s051 *self,
 		return -ENOSPC;
 	}
 
-	int err = spi_writeread(self->spi, self->buf, samples_size,
+	int err = lm_spi_writeread(self->spi, self->buf, samples_size,
 			adc_samples, samples_size);
 
 	if (!err) {
@@ -90,7 +91,7 @@ int adc122s051_measure(struct adc122s051 *self,
 	return err;
 }
 
-struct adc122s051 *adc122s051_create(struct spi_device *spi,
+struct adc122s051 *adc122s051_create(struct lm_spi_device *spi,
 		uint16_t *buf, const uint16_t bufsize)
 {
 	struct adc122s051 *p = (struct adc122s051 *)

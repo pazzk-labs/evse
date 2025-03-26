@@ -38,7 +38,6 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include "libmcu/spi.h"
 
 /**
  * @brief Callback function type for processing ADC samples.
@@ -60,6 +59,7 @@ struct adc122s051_callback {
 };
 
 struct adc122s051;
+struct lm_spi_device;
 
 /**
  * @brief Creates an instance of the adc122s051 structure.
@@ -73,7 +73,7 @@ struct adc122s051;
  *
  * @return struct adc122s051* Pointer to the created adc122s051 structure.
  */
-struct adc122s051 *adc122s051_create(struct spi_device *spi,
+struct adc122s051 *adc122s051_create(struct lm_spi_device *spi,
 		uint16_t *buf, const uint16_t bufsize);
 
 /**

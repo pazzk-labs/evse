@@ -1,7 +1,7 @@
 #include "CppUTestExt/MockSupport.h"
 #include "relay.h"
 
-struct relay *relay_create(struct pwm_channel *pwm_handle) {
+struct relay *relay_create(struct lm_pwm_channel *pwm_handle) {
 	return (struct relay *)mock().actualCall(__func__).returnPointerValue();
 }
 
