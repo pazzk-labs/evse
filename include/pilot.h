@@ -40,7 +40,7 @@ extern "C" {
 #include <stdint.h>
 #include <stdbool.h>
 
-struct pwm_channel;
+struct lm_pwm_channel;
 struct adc122s051;
 
 #if !defined(PILOT_NUMBER_OF_SAMPLES)
@@ -112,7 +112,7 @@ struct pilot;
  * @return struct pilot* Pointer to the created pilot structure.
  */
 struct pilot *pilot_create(const struct pilot_params *params,
-        struct adc122s051 *adc, struct pwm_channel *pwm, uint16_t *buf);
+        struct adc122s051 *adc, struct lm_pwm_channel *pwm, uint16_t *buf);
 
 /**
  * @brief Deletes a pilot instance.

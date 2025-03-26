@@ -35,6 +35,7 @@
 #include <pthread.h>
 #include <semaphore.h>
 
+#include "libmcu/gpio.h"
 #include "libmcu/button.h"
 #include "libmcu/board.h"
 #include "libmcu/timext.h"
@@ -48,7 +49,7 @@
 #endif
 
 struct debug_button {
-	struct gpio *gpio;
+	struct lm_gpio *gpio;
 	struct button *button;
 	struct button_param param;
 
@@ -91,13 +92,13 @@ struct usrinp {
 
 static struct usrinp usrinp;
 
-static void on_gpio_intr(struct gpio *gpio, void *ctx)
+static void on_gpio_intr(struct lm_gpio *gpio, void *ctx)
 {
 	struct usrinp *self = (struct usrinp *)ctx;
 
 	sem_post(&self->poll);
 
-	gpio_disable_interrupt(gpio);
+	lm_gpio_disable_interrupt(gpio);
 	self->dbgbtn.raised = true;
 }
 
@@ -171,8 +172,8 @@ static void on_debug_button_event(struct button *btn,
 
 static button_level_t get_gpio_state(void *ctx)
 {
-	struct gpio *gpio = (struct gpio *)ctx;
-	int level = gpio_get(gpio);
+	struct lm_gpio *gpio = (struct lm_gpio *)ctx;
+	int level = lm_gpio_get(gpio);
 	return level? BUTTON_LEVEL_LOW : BUTTON_LEVEL_HIGH;
 }
 
@@ -214,7 +215,7 @@ static bool process_button(struct debug_button *dbgbtn,
 
 	if (!busy && dbgbtn->raised) {
 		dbgbtn->raised = false;
-		gpio_enable_interrupt(dbgbtn->gpio);
+		lm_gpio_enable_interrupt(dbgbtn->gpio);
 	}
 
 	return busy;
@@ -279,7 +280,7 @@ static void *task(void *e)
 	return 0;
 }
 
-static void initialize_dbgbtn(struct debug_button *dbgbtn, struct gpio *gpio)
+static void initialize_dbgbtn(struct debug_button *dbgbtn, struct lm_gpio *gpio)
 {
 	dbgbtn->gpio = gpio;
 	dbgbtn->param = (struct button_param) {
@@ -295,8 +296,8 @@ static void initialize_dbgbtn(struct debug_button *dbgbtn, struct gpio *gpio)
 	button_set_param(dbgbtn->button, &dbgbtn->param);
 	button_enable(dbgbtn->button);
 
-	gpio_register_callback(dbgbtn->gpio, on_gpio_intr, &usrinp);
-	gpio_enable(dbgbtn->gpio);
+	lm_gpio_register_callback(dbgbtn->gpio, on_gpio_intr, &usrinp);
+	lm_gpio_enable(dbgbtn->gpio);
 }
 
 static void initialize_estop(struct emergency_stop *estop,
@@ -357,7 +358,7 @@ int usrinp_raise(usrinp_t type)
 	return sem_post(&usrinp.poll);
 }
 
-int usrinp_init(struct gpio *debug_button, usrinp_get_state_t f_get_state)
+int usrinp_init(struct lm_gpio *debug_button, usrinp_get_state_t f_get_state)
 {
 	initialize_dbgbtn(&usrinp.dbgbtn, debug_button);
 	initialize_estop(&usrinp.estop, f_get_state);

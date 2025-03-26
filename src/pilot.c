@@ -86,7 +86,7 @@ struct waveform {
 
 struct pilot {
 	struct adc122s051 *adc;
-	struct pwm_channel *pwm;
+	struct lm_pwm_channel *pwm;
 	struct apptmr *timer;
 	struct wdt *wdt;
 	struct ratelim log_ratelim;
@@ -526,10 +526,10 @@ static void on_timeout(struct apptmr *timer, void *arg)
 	p->running = false;
 }
 
-static int init_pwm(struct pwm_channel *pwm)
+static int init_pwm(struct lm_pwm_channel *pwm)
 {
-	int err = pwm_enable(pwm);
-	err |= pwm_start(pwm, CP_FREQ, PWM_PCT_TO_MILLI(0));
+	int err = lm_pwm_enable(pwm);
+	err |= lm_pwm_start(pwm, CP_FREQ, LM_PWM_PCT_TO_MILLI(0));
 	return err;
 }
 
@@ -541,7 +541,7 @@ static void set_params(struct pilot_params *dst, const struct pilot_params *src)
 int pilot_set_duty(struct pilot *pilot, const uint8_t pct)
 {
 	pilot->duty_pct = pct;
-	return pwm_update_duty(pilot->pwm, PWM_PCT_TO_MILLI(pct));
+	return lm_pwm_update_duty(pilot->pwm, LM_PWM_PCT_TO_MILLI(pct));
 }
 
 uint8_t pilot_get_duty_set(const struct pilot *pilot)
@@ -671,13 +671,13 @@ int pilot_disable(struct pilot *pilot)
 
 	int err = apptmr_stop(pilot->timer);
 	err |= apptmr_disable(pilot->timer);
-	err |= pwm_stop(pilot->pwm);
-	err |= pwm_disable(pilot->pwm);
+	err |= lm_pwm_stop(pilot->pwm);
+	err |= lm_pwm_disable(pilot->pwm);
 	return err;
 }
 
 struct pilot *pilot_create(const struct pilot_params *params,
-        struct adc122s051 *adc, struct pwm_channel *pwm, uint16_t *buf)
+        struct adc122s051 *adc, struct lm_pwm_channel *pwm, uint16_t *buf)
 {
 	static struct pilot pilot;
 	struct pilot *p = &pilot;

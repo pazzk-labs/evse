@@ -61,7 +61,7 @@ struct metering {
 	struct metering_energy energy;
 
 	struct hlw811x *hlw811x;
-	struct uart *uart;
+	struct lm_uart *uart;
 
 	metering_save_cb_t save_cb;
 	void *save_cb_ctx;
@@ -72,14 +72,14 @@ struct metering {
 
 int hlw811x_ll_write(const uint8_t *data, size_t datalen, void *ctx)
 {
-	struct uart *uart = (struct uart *)ctx;
-	return uart_write(uart, data, datalen);
+	struct lm_uart *uart = (struct lm_uart *)ctx;
+	return lm_uart_write(uart, data, datalen);
 }
 
 int hlw811x_ll_read(uint8_t *buf, size_t bufsize, void *ctx)
 {
-	struct uart *uart = (struct uart *)ctx;
-	return uart_read(uart, buf, bufsize);
+	struct lm_uart *uart = (struct lm_uart *)ctx;
+	return lm_uart_read(uart, buf, bufsize);
 }
 
 static int enable(struct metering *self)

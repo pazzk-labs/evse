@@ -39,6 +39,8 @@
 #include "libmcu/board.h"
 #include "libmcu/ringbuf.h"
 #include "libmcu/apptmr.h"
+#include "libmcu/gpio.h"
+
 #include "usrinp.h"
 #include "logger.h"
 
@@ -54,7 +56,7 @@ struct waveform {
 };
 
 struct entry {
-	struct gpio *gpio;
+	struct lm_gpio *gpio;
 	struct ringbuf *ringbuf;
 	uint32_t last_falling_time;
 	uint32_t time_updated;
@@ -186,7 +188,7 @@ static safety_status_t check_status(struct entry *entry,
 	return SAFETY_STATUS_OK;
 }
 
-static void on_gpio_event(struct gpio *gpio, void *ctx)
+static void on_gpio_event(struct lm_gpio *gpio, void *ctx)
 {
 	unused(gpio);
 	struct entry *entry = (struct entry *)ctx;
@@ -279,12 +281,12 @@ uint8_t safety_get_frequency(safety_t type)
 
 int safety_enable(void)
 {
-	gpio_register_callback(safety.output_power.gpio,
+	lm_gpio_register_callback(safety.output_power.gpio,
 			on_gpio_event, &safety.output_power);
-	gpio_register_callback(safety.input_power.gpio,
+	lm_gpio_register_callback(safety.input_power.gpio,
 			on_gpio_event, &safety.input_power);
-	gpio_enable(safety.output_power.gpio);
-	gpio_enable(safety.input_power.gpio);
+	lm_gpio_enable(safety.output_power.gpio);
+	lm_gpio_enable(safety.input_power.gpio);
 
 	apptmr_enable(safety.timer);
 	apptmr_start(safety.timer, UPTODATE_DUE_MS);
@@ -300,13 +302,13 @@ int safety_disable(void)
 	apptmr_stop(safety.timer);
 	apptmr_disable(safety.timer);
 
-	gpio_disable(safety.output_power.gpio);
-	gpio_disable(safety.input_power.gpio);
+	lm_gpio_disable(safety.output_power.gpio);
+	lm_gpio_disable(safety.input_power.gpio);
 
 	return 0;
 }
 
-int safety_init(struct gpio *input_power, struct gpio *output_power)
+int safety_init(struct lm_gpio *input_power, struct lm_gpio *output_power)
 {
 	safety.input_power.gpio = input_power;
 	safety.output_power.gpio = output_power;

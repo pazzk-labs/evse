@@ -1,7 +1,7 @@
 #include "CppUTestExt/MockSupport.h"
 #include "safety.h"
 
-int safety_init(struct gpio *input_power, struct gpio *output_power) {
+int safety_init(struct lm_gpio *input_power, struct lm_gpio *output_power) {
 	return mock().actualCall(__func__).returnIntValue();
 }
 

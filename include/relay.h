@@ -38,7 +38,7 @@ extern "C" {
 #endif
 
 struct relay;
-struct pwm_channel;
+struct lm_pwm_channel;
 
 /**
  * @brief Creates a relay instance.
@@ -50,7 +50,7 @@ struct pwm_channel;
  *
  * @return struct relay* Pointer to the created relay structure.
  */
-struct relay *relay_create(struct pwm_channel *pwm_handle);
+struct relay *relay_create(struct lm_pwm_channel *pwm_handle);
 
 /**
  * @brief Destroys a relay instance.

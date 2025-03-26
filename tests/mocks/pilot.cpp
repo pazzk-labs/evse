@@ -2,7 +2,7 @@
 #include "pilot.h"
 
 struct pilot *pilot_create(const struct pilot_params *params,
-        struct adc122s051 *adc, struct pwm_channel *pwm, uint16_t *buf) {
+        struct adc122s051 *adc, struct lm_pwm_channel *pwm, uint16_t *buf) {
 	return (struct pilot *)mock().actualCall(__func__).returnPointerValue();
 }
 
