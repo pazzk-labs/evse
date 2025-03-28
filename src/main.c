@@ -303,8 +303,8 @@ int main(void)
 	uptime_init();
 	cleanup_init();
 	wdt_init(on_watchdog_periodic, NULL);
-	config_init(nvs_kvstore_new(), on_config_save, NULL);
 	secret_init(nvs_kvstore_new());
+	config_init(nvs_kvstore_new(), on_config_save, NULL);
 
 	app.fs = fs_create(flash_create(0));
 	fs_mount(app.fs);
