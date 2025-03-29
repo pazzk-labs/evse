@@ -51,7 +51,6 @@
 #include "config.h"
 #include "secret.h"
 #include "buzzer.h"
-#include "safety.h"
 #include "usrinp.h"
 #include "uptime.h"
 #include "fs/kvstore.h"
@@ -332,9 +331,6 @@ int main(void)
 	actor_set(&exio_actor, exio_handler, 0);
 	actor_set(&metric_actor, metric_handler, 0);
 	actor_set(&cleanup_actor, cleanup_handler, 0);
-
-	safety_init(periph->input_power, periph->output_power);
-	safety_enable();
 
 	config_get("net.health", &network_healthchk_interval_ms,
 			sizeof(network_healthchk_interval_ms));

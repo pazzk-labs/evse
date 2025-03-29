@@ -88,6 +88,7 @@ typedef enum {
 
 struct iec61851;
 struct metering;
+struct safety;
 
 struct connector;
 
@@ -101,6 +102,7 @@ struct connector_param {
 
 	struct iec61851 *iec61851;
 	struct metering *metering;
+	struct safety *safety;
 
 	const char *name;
 	int priority;

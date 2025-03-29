@@ -54,6 +54,10 @@
 #include "usrinp.h"
 #include "net/netmgr.h"
 #include "net/eth_w5500.h"
+#include "safety.h"
+#include "safety/input_power_safety.h"
+#include "safety/output_power_safety.h"
+#include "safety/emergency_stop_safety.h"
 
 #include "charger/factory.h"
 #include "charger/ocpp.h"
@@ -225,6 +229,13 @@ static void start_charger(struct app *app)
 
 	config_get(metering_ch1_key, &conn1.energy, sizeof(conn1.energy));
 
+	struct safety *safety = safety_create();
+	safety_add_and_enable(safety, input_power_safety_create("ip",
+			app->periph.input_power, param.input_frequency));
+	safety_add_and_enable(safety, output_power_safety_create("op",
+			app->periph.output_power, param.input_frequency));
+	safety_add_and_enable(safety, emergency_stop_safety_create("es"));
+
 	struct connector_param conn_param = {
 		.max_output_current_mA = param.max_output_current_mA,
 		.min_output_current_mA = param.min_output_current_mA,
@@ -232,6 +243,7 @@ static void start_charger(struct app *app)
 		.iec61851 = iec61851_create(app->pilot, app->relay),
 		.metering = metering_create(METERING_HLW811X, &conn1,
 				on_metering_save, conn1_key.p),
+		.safety = safety,
 		.name = "c1",
 		.priority = 0,
 	};
