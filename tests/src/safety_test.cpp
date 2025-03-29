@@ -211,8 +211,8 @@ TEST(SafetyTestGroup, MultipleEntriesWithPartialFailure) {
 	mock().expectOneCall("check").andReturnValue(SAFETY_STATUS_EMERGENCY_STOP);
 
 	int error_count = 0;
-	LONGS_EQUAL(1, safety_check(ctx, [](struct safety_entry*, safety_entry_status_t, void* ctx) {
-		int* c = static_cast<int*>(ctx);
+	LONGS_EQUAL(1, safety_check(ctx, [](struct safety_entry*, safety_entry_status_t, void* t) {
+		int* c = static_cast<int*>(t);
 		(*c)++;
 	}, &error_count));
 	LONGS_EQUAL(1, error_count);
@@ -230,8 +230,8 @@ TEST(SafetyTestGroup, AllEntriesFailCheck) {
 	mock().expectNCalls(2, "check").andReturnValue(SAFETY_STATUS_STALE);
 
 	int error_count = 0;
-	LONGS_EQUAL(2, safety_check(ctx, [](struct safety_entry*, safety_entry_status_t, void* ctx) {
-		int* c = static_cast<int*>(ctx);
+	LONGS_EQUAL(2, safety_check(ctx, [](struct safety_entry*, safety_entry_status_t, void* t) {
+		int* c = static_cast<int*>(t);
 		(*c)++;
 	}, &error_count));
 	LONGS_EQUAL(2, error_count);
