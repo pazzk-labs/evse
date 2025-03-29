@@ -29,7 +29,7 @@ interface hlc_api
 
 interface fsm
 interface metering
-interface safety
+interface safety_entry
 interface pilot
 interface relay
 interface pp
@@ -71,8 +71,8 @@ iec61851 --> pp
 
 connector --> fsm
 connector --> iec61851
-safety "many" *-- "1" connector
 connector --> metering
+connector --> safety
 
 free_connector ..|> connector
 ocpp_connector ..|> connector
@@ -95,10 +95,12 @@ websocket ..|> server
 
 hlc_connector --> plc
 
-safety <|.. input_power
-safety <|.. output_power
-safety <|.. temperature
-safety <|.. emergency_stop
+safety_entry <|.. input_power
+safety_entry <|.. output_power
+safety_entry <|.. temperature
+safety_entry <|.. emergency_stop
+
+safety "1" *-- "many" safety_entry
 
 charger "1" *--- "many" connector
 charger -> charger_extension
