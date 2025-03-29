@@ -9,14 +9,27 @@
 
 #include <time.h>
 
+struct safety_ctx {
+	const char *name;
+	safety_entry_status_t status;
+	int freq;
+};
+
 static time_t fake_time;
 static bool fake_time_expected;
+static safety_entry_status_t fake_safety_status;
 
 time_t time(time_t *t) {
 	if (fake_time_expected) {
 		return (time_t)mock().actualCall("time").returnLongIntValue();
 	}
 	return fake_time++;
+}
+
+int safety_check(struct safety *self, safety_error_callback_t cb, void *cb_ctx) {
+	struct safety_ctx *p = (struct safety_ctx *)cb_ctx;
+	p->status = fake_safety_status;
+	return mock().actualCall("safety_check").returnIntValue();
 }
 
 static void on_connector_event(struct connector *self, connector_event_t event,
@@ -31,6 +44,7 @@ TEST_GROUP(FreeConnector) {
 	void setup(void) {
 		fake_time = 0;
 		fake_time_expected = false;
+		fake_safety_status = SAFETY_STATUS_OK;
 
 		param = (struct connector_param) {
 			.max_output_current_mA = 32,
@@ -153,10 +167,7 @@ TEST(FreeConnector, ShouldGoStateFWithEvent_WhenEVSEErrorInStateA) {
 	mock().expectOneCall("iec61851_is_supplying_power").andReturnValue(false);
 	mock().expectOneCall("iec61851_set_state_f");
 	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_F);
-	mock().expectOneCall("safety_status")
-		.withParameter("type", SAFETY_TYPE_OUTPUT_POWER)
-		.withParameter("expected_freq", 60)
-		.andReturnValue(SAFETY_STATUS_STALE);
+	mock().expectOneCall("safety_check").ignoreOtherParameters().andReturnValue(0);
 
 	mock().expectOneCall("on_connector_event")
 		.withParameter("event", CONNECTOR_EVENT_ERROR);
@@ -246,25 +257,17 @@ TEST(FreeConnector, ShouldGoStateFWithEvent_WhenEVErrorInStateC) {
 TEST(FreeConnector, ShouldGoStateFWithEvent_WhenEVSEErrorInStateC) {
 	go_c();
 
+	fake_safety_status = SAFETY_STATUS_STALE;
 	mock().expectNCalls(4, "iec61851_state").andReturnValue(IEC61851_STATE_F);
 	// connector_is_evse_error
 	mock().expectOneCall("iec61851_get_pwm_duty_target").andReturnValue(53);
-	mock().expectOneCall("safety_status")
-		.withParameter("type", SAFETY_TYPE_INPUT_POWER)
-		.withParameter("expected_freq", 60)
-		.andReturnValue(SAFETY_STATUS_STALE);
-	mock().expectOneCall("safety_get_frequency")
-		.withParameter("type", SAFETY_TYPE_INPUT_POWER)
-		.andReturnValue(60);
+	mock().expectOneCall("safety_check").ignoreOtherParameters().andReturnValue(1);
 	// do_evse_error
 	mock().expectOneCall("iec61851_is_supplying_power").andReturnValue(true);
 	mock().expectOneCall("iec61851_stop_power_supply");
 	mock().expectOneCall("iec61851_set_state_f");
 	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_F);
-	mock().expectOneCall("safety_status")
-		.withParameter("type", SAFETY_TYPE_OUTPUT_POWER)
-		.withParameter("expected_freq", 60)
-		.andReturnValue(SAFETY_STATUS_STALE);
+	mock().expectOneCall("safety_check").ignoreOtherParameters().andReturnValue(0);
 
 	mock().expectOneCall("on_connector_event")
 		.withParameter("event", CONNECTOR_EVENT_CHARGING_ENDED | CONNECTOR_EVENT_ERROR);
@@ -276,15 +279,9 @@ TEST(FreeConnector, ShouldGetBackToStateAWithEvent_WhenRecoveredFromEVSEError) {
 
 	mock().expectNCalls(5, "iec61851_state").andReturnValue(IEC61851_STATE_F);
 	// is_input_power_ok
-	mock().expectOneCall("safety_status")
-		.withParameter("type", SAFETY_TYPE_INPUT_POWER)
-		.withParameter("expected_freq", 60)
-		.andReturnValue(SAFETY_STATUS_OK);
+	mock().expectOneCall("safety_check").ignoreOtherParameters().andReturnValue(0);
 	// is_emergency_stop
-	mock().expectOneCall("safety_status")
-		.withParameter("type", SAFETY_TYPE_OUTPUT_POWER)
-		.withParameter("expected_freq", 60)
-		.andReturnValue(SAFETY_STATUS_STALE);
+	mock().expectOneCall("safety_check").ignoreOtherParameters().andReturnValue(0);
 	
 	mock().expectOneCall("iec61851_set_current")
 		.withParameter("milliampere", 0);
@@ -302,15 +299,9 @@ TEST(FreeConnector, ShouldStayInStateF_WhenEVResponseTimeIsNotElapsed) {
 
 	mock().expectNCalls(5, "iec61851_state").andReturnValue(IEC61851_STATE_F);
 	// is_input_power_ok
-	mock().expectOneCall("safety_status")
-		.withParameter("type", SAFETY_TYPE_INPUT_POWER)
-		.withParameter("expected_freq", 60)
-		.andReturnValue(SAFETY_STATUS_OK);
+	mock().expectOneCall("safety_check").ignoreOtherParameters().andReturnValue(0);
 	// is_emergency_stop
-	mock().expectOneCall("safety_status")
-		.withParameter("type", SAFETY_TYPE_OUTPUT_POWER)
-		.withParameter("expected_freq", 60)
-		.andReturnValue(SAFETY_STATUS_STALE);
+	mock().expectOneCall("safety_check").ignoreOtherParameters().andReturnValue(0);
 	
 	LONGS_EQUAL(0, connector_process(c));
 }

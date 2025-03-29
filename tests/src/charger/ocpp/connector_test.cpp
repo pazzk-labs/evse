@@ -64,14 +64,9 @@ TEST_GROUP(OcppConnector) {
 		// 1. fault check(is_evse_error)
 		mock().expectOneCall("iec61851_get_pwm_duty_target")
 			.andReturnValue(100);
-		mock().expectOneCall("safety_status")
-			.withParameter("type", SAFETY_TYPE_INPUT_POWER)
-			.withParameter("expected_freq", 60)
-			.andReturnValue(SAFETY_STATUS_OK);
-		mock().expectOneCall("safety_status")
-			.withParameter("type", SAFETY_TYPE_OUTPUT_POWER)
-			.withParameter("expected_freq", 60)
-			.andReturnValue(SAFETY_STATUS_STALE);
+		mock().expectNCalls(2, "safety_check")
+			.ignoreOtherParameters()
+			.andReturnValue(0);
 		// 2. is_unavailable, is_preparing, do_preparing
 		mock().expectNCalls(3, "iec61851_state")
 			.andReturnValue(IEC61851_STATE_A);
@@ -155,14 +150,7 @@ TEST(OcppConnector, ShouldDispatchUnoccupiedEvent_WhenAuthorizationTimeout) {
 
 	// 1. fault check(is_evse_error)
 	mock().expectOneCall("iec61851_get_pwm_duty_target").andReturnValue(100);
-	mock().expectOneCall("safety_status")
-		.withParameter("type", SAFETY_TYPE_INPUT_POWER)
-		.withParameter("expected_freq", 60)
-		.andReturnValue(SAFETY_STATUS_OK);
-	mock().expectOneCall("safety_status")
-		.withParameter("type", SAFETY_TYPE_OUTPUT_POWER)
-		.withParameter("expected_freq", 60)
-		.andReturnValue(SAFETY_STATUS_STALE);
+	mock().expectNCalls(2, "safety_check").ignoreOtherParameters().andReturnValue(0);
 	// 2. is_unavailable, is_available, do_preparing
 	mock().expectNCalls(2, "iec61851_state").andReturnValue(IEC61851_STATE_A);
 	mock().expectOneCall("csms_request")

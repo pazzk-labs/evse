@@ -1,6 +1,6 @@
 /*
  * This file is part of the Pazzk project <https://pazzk.net/>.
- * Copyright (c) 2024 Pazzk <team@pazzk.net>.
+ * Copyright (c) 2025 Pazzk <team@pazzk.net>.
  *
  * Community Version License (GPLv3):
  * This software is open-source and licensed under the GNU General Public
@@ -37,95 +37,123 @@
 extern "C" {
 #endif
 
-#include <stdint.h>
-
-typedef enum {
-	SAFETY_STATUS_UNKNOWN,
-	SAFETY_STATUS_OK,
-	SAFETY_STATUS_ABNORMAL_FREQUENCY,
-	SAFETY_STATUS_SAMPLING_ERROR, /**< Not enough samples to determine the
-					frequency. */
-	SAFETY_STATUS_STALE, /**< The frequency is not updated for a long time.
-				This will happen when the power is not normal,
-				keeping the line high. */
-	SAFETY_STATUS_EMERGENCY_STOP, /**< This status is checked only in
-				the SAFETY_TYPE_OUTPUT_POWER type. */
-} safety_status_t;
-
-typedef enum {
-	SAFETY_TYPE_ALL,
-	SAFETY_TYPE_INPUT_POWER,
-	SAFETY_TYPE_OUTPUT_POWER,
-} safety_t;
-
-struct lm_gpio;
+#include "safety_entry.h"
 
 /**
- * @brief Initializes the safety module.
+ * @brief Error callback type for safety checks.
  *
- * This function initializes the safety module with the specified input and
- * output power GPIOs. It sets up the necessary configurations for power
- * monitoring.
+ * Called when an entry returns a non-OK status during safety_check().
  *
- * @param[in] input_power Pointer to the GPIO structure for input power.
- * @param[in] output_power Pointer to the GPIO structure for output power.
- *
- * @return int Status code (0 for success, non-zero for error).
+ * @param[in] entry    The entry that failed the check.
+ * @param[in] status   The status returned by the entry.
+ * @param[in] ctx      User-defined context pointer.
  */
-int safety_init(struct lm_gpio *input_power, struct lm_gpio *output_power);
+typedef void (*safety_error_callback_t)(struct safety_entry *entry,
+		safety_entry_status_t status, void *ctx);
 
 /**
- * @brief Deinitializes the safety module.
+ * @brief Iterator callback type for iterating all entries.
  *
- * This function deinitializes the safety module, cleaning up any resources
- * that were allocated during initialization.
+ * Called once per registered entry in safety_iterate().
+ *
+ * @param[in] entry    The current entry.
+ * @param[in] ctx      User-defined context pointer.
  */
-void safety_deinit(void);
+typedef void (*safety_iterator_t)(struct safety_entry *entry, void *ctx);
+
+struct safety;
 
 /**
- * @brief Enables the safety module.
+ * @brief Create a new safety instance.
  *
- * This function enables the safety module, allowing it to start monitoring
- * input and output power.
+ * Allocates and initializes an empty safety context.
  *
- * @return int Status code (0 for success, non-zero for error).
+ * @return Pointer to a new safety instance, or NULL on failure.
  */
-int safety_enable(void);
+struct safety *safety_create(void);
 
 /**
- * @brief Disables the safety module.
+ * @brief Destroy a safety instance and all of its entries.
  *
- * This function disables the safety module, stopping it from monitoring
- * input and output power.
+ * This function frees all resources associated with the given
+ * safety context. All entries registered with the context will
+ * be destroyed automatically by calling their destroy() method.
  *
- * @return int Status code (0 for success, non-zero for error).
+ * @param[in] self Pointer to the safety instance to destroy.
  */
-int safety_disable(void);
+void safety_destroy(struct safety *self);
 
 /**
- * @brief Retrieves the current safety status.
+ * @brief Add an entry to the safety context.
  *
- * This function retrieves the current safety status for the specified type
- * and compares it with the expected frequency.
+ * Registers a new entry to be included in future safety checks.
  *
- * @param[in] type The type of safety status to retrieve.
- * @param[in] expected_freq The expected frequency to compare against.
- *
- * @return safety_status_t The current safety status.
+ * @param[in] self   Safety context.
+ * @param[in] entry  Entry to be added.
+ * @return 0 on success, or a negative error code on failure.
+ *         -EINVAL: null pointer.  
+ *         -EALREADY: entry already added.  
+ *         -ENOMEM / -ENOSPC: capacity exceeded.
  */
-safety_status_t safety_status(safety_t type, const uint8_t expected_freq);
+int safety_add(struct safety *self, struct safety_entry *entry);
 
 /**
- * @brief Retrieves the frequency of the power signals.
+ * @brief Add and enable an entry in one operation.
  *
- * This function retrieves the frequency of the power signals for the
- * specified type.
+ * Registers an entry to the safety context and immediately enables it.
  *
- * @param[in] type The type of power signal to retrieve the frequency for.
- *
- * @return uint8_t The frequency of the power signals.
+ * @param[in] self   Safety context.
+ * @param[in] entry  Entry to add and enable.
+ * @return 0 on success, or negative error code on failure.
+ *         -EINVAL: null pointer.
+ *         -EALREADY: already added.
+ *         -ENOMEM / -ENOSPC: out of memory.
+ *         -EIO: enable() failed after add, entry will be removed again.
  */
-uint8_t safety_get_frequency(safety_t type);
+int safety_add_and_enable(struct safety *self, struct safety_entry *entry);
+
+/**
+ * @brief Remove an entry from the safety context.
+ *
+ * Deregisters the given entry, if present.
+ *
+ * @param[in] self   Safety context.
+ * @param[in] entry  Entry to remove.
+ * @return 0 on success, or a negative error code on failure.
+ *         -EINVAL: null pointer.  
+ *         -ENOENT: entry not found.
+ */
+int safety_remove(struct safety *self, struct safety_entry *entry);
+
+/**
+ * @brief Perform safety checks on all registered entries.
+ *
+ * Iterates through all registered entries and invokes their check()
+ * method. For each entry that returns a non-OK status, the callback
+ * is invoked.
+ *
+ * @param[in] self     Safety context.
+ * @param[in] cb       Callback for reporting failed entries (nullable).
+ * @param[in] cb_ctx   User-defined context pointer for callback.
+ * @return 0 if all entries returned OK status (i.e. system is safe).  
+ *         Otherwise, returns the number of failed entries (> 0).  
+ *         Returns a negative error code on failure:
+ *         -EINVAL: null pointer.
+ */
+int safety_check(struct safety *self, safety_error_callback_t cb, void *cb_ctx);
+
+/**
+ * @brief Iterate over all registered entries.
+ *
+ * Invokes the given callback once per registered entry.
+ *
+ * @param[in] self     Safety context.
+ * @param[in] cb       Callback to invoke for each entry.
+ * @param[in] cb_ctx   User-defined context pointer for callback.
+ * @return 0 on success, or a negative error code on failure.
+ *         -EINVAL: null pointer.
+ */
+int safety_iterate(struct safety *self, safety_iterator_t cb, void *cb_ctx);
 
 #if defined(__cplusplus)
 }

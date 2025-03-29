@@ -1,31 +1,47 @@
 #include "CppUTestExt/MockSupport.h"
 #include "safety.h"
 
-int safety_init(struct lm_gpio *input_power, struct lm_gpio *output_power) {
-	return mock().actualCall(__func__).returnIntValue();
+struct safety *safety_create(void) {
+	return (struct safety *)mock().actualCall("safety_create").returnPointerValue();
 }
 
-void safety_deinit(void) {
-	mock().actualCall(__func__);
+void safety_destroy(struct safety *self) {
+	mock().actualCall("safety_destroy").withPointerParameter("self", self);
 }
 
-int safety_enable(void) {
-	return mock().actualCall(__func__).returnIntValue();
-}
-
-int safety_disable(void) {
-	return mock().actualCall(__func__).returnIntValue();
-}
-
-safety_status_t safety_status(safety_t type, const uint8_t expected_freq) {
-	return (safety_status_t)mock().actualCall(__func__)
-		.withParameter("type", type)
-		.withParameter("expected_freq", expected_freq)
+int safety_add(struct safety *self, struct safety_entry *entry) {
+	return mock().actualCall("safety_add")
+		.withPointerParameter("self", self)
+		.withPointerParameter("entry", entry)
 		.returnIntValue();
 }
 
-uint8_t safety_get_frequency(safety_t type) {
-	return (uint8_t)mock().actualCall(__func__)
-		.withParameter("type", type)
+int safety_add_and_enable(struct safety *self, struct safety_entry *entry) {
+	return mock().actualCall("safety_add_and_enable")
+		.withPointerParameter("self", self)
+		.withPointerParameter("entry", entry)
+		.returnIntValue();
+}
+
+int safety_remove(struct safety *self, struct safety_entry *entry) {
+	return mock().actualCall("safety_remove")
+		.withPointerParameter("self", self)
+		.withPointerParameter("entry", entry)
+		.returnIntValue();
+}
+
+int safety_check(struct safety *self, safety_error_callback_t cb, void *cb_ctx) {
+	return mock().actualCall("safety_check")
+		.withPointerParameter("self", self)
+		.withPointerParameter("cb", (void *)cb)
+		.withPointerParameter("cb_ctx", cb_ctx)
+		.returnIntValue();
+}
+
+int safety_iterate(struct safety *self, safety_iterator_t cb, void *cb_ctx) {
+	return mock().actualCall("safety_iterate")
+		.withPointerParameter("self", self)
+		.withPointerParameter("cb", (void *)cb)
+		.withPointerParameter("cb_ctx", cb_ctx)
 		.returnIntValue();
 }

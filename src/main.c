@@ -51,7 +51,6 @@
 #include "config.h"
 #include "secret.h"
 #include "buzzer.h"
-#include "safety.h"
 #include "usrinp.h"
 #include "uptime.h"
 #include "fs/kvstore.h"
@@ -303,8 +302,8 @@ int main(void)
 	uptime_init();
 	cleanup_init();
 	wdt_init(on_watchdog_periodic, NULL);
-	config_init(nvs_kvstore_new(), on_config_save, NULL);
 	secret_init(nvs_kvstore_new());
+	config_init(nvs_kvstore_new(), on_config_save, NULL);
 
 	app.fs = fs_create(flash_create(0));
 	fs_mount(app.fs);
@@ -332,9 +331,6 @@ int main(void)
 	actor_set(&exio_actor, exio_handler, 0);
 	actor_set(&metric_actor, metric_handler, 0);
 	actor_set(&cleanup_actor, cleanup_handler, 0);
-
-	safety_init(periph->input_power, periph->output_power);
-	safety_enable();
 
 	config_get("net.health", &network_healthchk_interval_ms,
 			sizeof(network_healthchk_interval_ms));

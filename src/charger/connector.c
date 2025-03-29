@@ -56,6 +56,23 @@
 #define ARRAY_COUNT(x)			(sizeof(x) / sizeof((x)[0]))
 #endif
 
+struct safety_ctx {
+	const char *name;
+	safety_entry_status_t status;
+	int freq;
+};
+
+static void on_safety_check(struct safety_entry *entry,
+		safety_entry_status_t status, void *ctx)
+{
+	struct safety_ctx *p = (struct safety_ctx *)ctx;
+
+	if (p->name && strcmp(safety_entry_name(entry), p->name) == 0) {
+		p->status = status;
+		p->freq = safety_entry_get_frequency(entry);
+	}
+}
+
 static bool is_charging(connector_state_t state)
 {
 	return state == C || state == D;
@@ -63,37 +80,35 @@ static bool is_charging(connector_state_t state)
 
 static bool is_input_power_ok(struct connector *c)
 {
-	const uint8_t f = (uint8_t)c->param.input_frequency;
-	const safety_status_t err = safety_status(SAFETY_TYPE_INPUT_POWER, f);
+	struct safety_ctx ctx = { .name = "ip", .status = SAFETY_STATUS_OK, };
+	const int errcnt = safety_check(c->param.safety, on_safety_check, &ctx);
 
-	if (err != SAFETY_STATUS_OK) {
+	if (errcnt && ctx.status != SAFETY_STATUS_OK) {
 		ratelim_request_format(&c->log_ratelim, logger_error,
-				"input power: %d, %dHz", err,
-				safety_get_frequency(SAFETY_TYPE_INPUT_POWER));
+				"input power: %d, %dHz", ctx.status, ctx.freq);
 	}
 
-	return err == SAFETY_STATUS_OK;
+	return ctx.status == SAFETY_STATUS_OK;
 }
 
 static bool is_output_power_ok(struct connector *c)
 {
-	const uint8_t f = (uint8_t)c->param.input_frequency;
-	const safety_status_t err = safety_status(SAFETY_TYPE_OUTPUT_POWER, f);
+	struct safety_ctx ctx = { .name = "ip", .status = SAFETY_STATUS_OK, };
+	const int errcnt = safety_check(c->param.safety, on_safety_check, &ctx);
 
-	if (err != SAFETY_STATUS_OK) {
+	if (errcnt && ctx.status != SAFETY_STATUS_OK) {
 		ratelim_request_format(&c->log_ratelim, logger_error,
-				"output power: %d, %dHz", err,
-				safety_get_frequency(SAFETY_TYPE_OUTPUT_POWER));
+				"output power: %d, %dHz", ctx.status, ctx.freq);
 	}
 
-	return err == SAFETY_STATUS_OK;
+	return ctx.status == SAFETY_STATUS_OK;
 }
 
 static bool is_emergency_stop(const struct connector *c)
 {
-	const uint8_t freq = (uint8_t)c->param.input_frequency;
-	return safety_status(SAFETY_TYPE_OUTPUT_POWER, freq)
-		== SAFETY_STATUS_EMERGENCY_STOP;
+	struct safety_ctx ctx = { .name = "es", };
+	safety_check(c->param.safety, on_safety_check, &ctx);
+	return ctx.status == SAFETY_STATUS_EMERGENCY_STOP;
 }
 
 static connector_state_t get_state_from_iec61851(const iec61851_state_t state)
