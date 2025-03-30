@@ -1,0 +1,16 @@
+set(LIBMCU_MODULES
+	actor
+	apptimer
+	bitmap
+	button
+	cleanup
+	cli
+	common
+	dfu
+	logging
+	metrics
+	ratelim
+	retry
+	runner
+	fsm
+)
