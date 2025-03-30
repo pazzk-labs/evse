@@ -33,7 +33,19 @@
 #include "fs/fs.h"
 #include <errno.h>
 #include <pthread.h>
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wsign-conversion"
+#elif defined(__GNUC__) || defined(__GNUG__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsign-conversion"
+#endif
 #include "lfs.h"
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#elif defined(__GNUC__) || defined(__GNUG__)
+#pragma GCC diagnostic pop
+#endif
 #include "logger.h"
 #include "libmcu/metrics.h"
 #include "libmcu/board.h"

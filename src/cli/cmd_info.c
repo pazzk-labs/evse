@@ -109,10 +109,14 @@ static void print_cpuload(struct cli_io const *io)
 static void print_board_time(struct cli_io const *io)
 {
 	char buf[32];
-	snprintf(buf, sizeof(buf)-1, "%lu", board_get_time_since_boot_ms());
+	snprintf(buf, sizeof(buf)-1, "%"PRIu32, board_get_time_since_boot_ms());
 	printini(io, "monotonic-time", buf);
 
+#if defined(__APPLE__)
+	snprintf(buf, sizeof(buf)-1, "%"PRId64, (uint64_t)time(NULL));
+#else
 	snprintf(buf, sizeof(buf)-1, "%"PRId64, time(NULL));
+#endif
 	printini(io, "walltime", buf);
 }
 
@@ -122,11 +126,12 @@ static void print_device_info(struct cli_io const *io)
 			board_get_reboot_reason()));
 
 	char buf[32];
-	snprintf(buf, sizeof(buf)-1, "%lu/%lu", board_get_heap_watermark(),
-			board_get_free_heap_bytes());
+	snprintf(buf, sizeof(buf)-1, "%"PRIu32"/%"PRIu32,
+			board_get_heap_watermark(), board_get_free_heap_bytes());
 	printini(io, "heap", buf);
 
-	snprintf(buf, sizeof(buf)-1, "%lu", board_get_current_stack_watermark());
+	snprintf(buf, sizeof(buf)-1, "%"PRIu32,
+			board_get_current_stack_watermark());
 	printini(io, "stack", buf);
 }
 

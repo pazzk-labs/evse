@@ -30,11 +30,6 @@ target_compile_definitions(${PROJECT_EXECUTABLE}
 )
 endif()
 
-target_compile_options(${PROJECT_EXECUTABLE}
-	PRIVATE
-		${COMMON_COMPILE_OPTIONS}
-)
-
 target_include_directories(${PROJECT_EXECUTABLE}
 	PRIVATE
 		${APP_INCS}
@@ -42,10 +37,13 @@ target_include_directories(${PROJECT_EXECUTABLE}
 )
 
 target_link_libraries(${PROJECT_EXECUTABLE}
-	libmcu
-	hlw811x
-	ocpp
-	littlefs
-	cbor
-	cjson
+	PRIVATE
+		warnings
+
+		libmcu
+		hlw811x
+		ocpp
+		littlefs
+		cbor
+		cjson
 )

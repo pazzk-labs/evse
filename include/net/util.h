@@ -39,6 +39,7 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #if !defined(MAC_ADDR_LEN)
 #define MAC_ADDR_LEN		6

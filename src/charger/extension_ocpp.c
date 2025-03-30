@@ -41,6 +41,7 @@
 #include "updater.h"
 #include "config.h"
 #include "libmcu/compiler.h"
+#include "logger.h"
 
 #if !defined(ARRAY_COUNT)
 #define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))

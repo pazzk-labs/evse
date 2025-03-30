@@ -38,6 +38,7 @@
 #include "libmcu/compiler.h"
 
 #include "usrinp.h"
+#include "logger.h"
 
 struct safety_entry {
 	struct safety_entry_api api;

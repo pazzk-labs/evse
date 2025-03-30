@@ -31,20 +31,17 @@
  */
 
 #include "libmcu/timext.h"
-
 #include <stdio.h>
-#include <stdbool.h>
-#include <time.h>
 
-void timeout_set(unsigned long *goal, unsigned long msec)
+void timeout_set(uint32_t *goal, uint32_t msec)
 {
 	struct timespec now;
 	clock_gettime(CLOCK_MONOTONIC, &now);
 
-	*goal = now.tv_sec * 1000 + now.tv_nsec / 1000000L + msec;
+	*goal = (uint32_t)(now.tv_sec * 1000 + now.tv_nsec / 1000000L + msec);
 }
 
-bool timeout_is_expired(unsigned long goal)
+bool timeout_is_expired(uint32_t goal)
 {
 	struct timespec now;
 	clock_gettime(CLOCK_MONOTONIC, &now);
@@ -63,7 +60,7 @@ bool timeout_is_expired(unsigned long goal)
 	}
 }
 
-void sleep_ms(unsigned long msec)
+void sleep_ms(uint32_t msec)
 {
 	struct timespec req, rem;
 

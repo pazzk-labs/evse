@@ -63,6 +63,8 @@ target_include_directories(${PROJECT_EXECUTABLE}
 )
 
 target_link_libraries(${PROJECT_EXECUTABLE}
+	warnings
+
 	libmcu
 	hlw811x
 	ocpp
@@ -76,14 +78,10 @@ target_compile_options(${PROJECT_EXECUTABLE}
 		-include ${LIBMCU_ROOT}/modules/logging/include/libmcu/logging.h
 )
 
-set(ADDITIONAL_COMPILE_OPTIONS
-	"-Wno-error=redundant-decls"
-	"-Wno-error=missing-include-dirs"
-	"-Wno-error"
-)
-set_source_files_properties(${APP_SRCS}
-	PROPERTIES COMPILE_OPTIONS
-		"${COMMON_COMPILE_OPTIONS};${ADDITIONAL_COMPILE_OPTIONS}"
+target_compile_options(warnings INTERFACE
+	-Wno-error=redundant-decls
+	-Wno-error=missing-include-dirs
+	-Wno-error
 )
 
 target_include_directories(libmcu PUBLIC

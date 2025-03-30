@@ -33,16 +33,7 @@
 #include "lis2dw12.h"
 
 #include <errno.h>
-#include <string.h>
 #include <assert.h>
-
-#if !defined(LIS2DW12_I2C_ADDR)
-#define LIS2DW12_I2C_ADDR	0x19U
-#endif
-#if !defined(LIS2DW12_I2C_FREQ)
-#define LIS2DW12_I2C_FREQ	400000U
-#endif
-#define TIMEOUT_MS		100U
 
 enum registers {
 	OUT_T_L			= 0x0DU,

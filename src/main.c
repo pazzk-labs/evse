@@ -282,6 +282,7 @@ static void run_network_updater(void *ctx)
 	netmgr_register_task(update, ctx);
 }
 
+void reboot_gracefully(void);
 void reboot_gracefully(void)
 {
 	raise_cleanup();

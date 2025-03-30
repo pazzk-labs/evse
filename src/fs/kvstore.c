@@ -32,6 +32,7 @@
 
 #include "fs/kvstore.h"
 #include <stdlib.h>
+#include "libmcu/compiler.h"
 
 struct kvstore {
 	struct kvstore_api api;

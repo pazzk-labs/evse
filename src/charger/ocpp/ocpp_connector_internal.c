@@ -33,6 +33,7 @@
 #include "ocpp_connector_internal.h"
 #include <string.h>
 #include "metering.h"
+#include "logger.h"
 
 static bool is_time_expired(const struct ocpp_connector *c)
 {

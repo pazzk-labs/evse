@@ -59,7 +59,7 @@ static void on_data_reception(const void *data, size_t datasize, void *ctx)
 
 static void on_response(const struct http_client_response *response, void *ctx)
 {
-	struct downloader *self = (struct downloader *)ctx;
+	(void)ctx;
 	debug("HTTP status code=%u", response->status_code);
 }
 
