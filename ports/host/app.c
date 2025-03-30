@@ -45,7 +45,10 @@ void app_reboot(void)
 
 int app_process(uint32_t *next_period_ms)
 {
-	unused(next_period_ms);
+#define DEFAULT_STEP_INTERVAL_MS	50
+	if (next_period_ms) {
+		*next_period_ms = DEFAULT_STEP_INTERVAL_MS;
+	}
 	return 0;
 }
 

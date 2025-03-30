@@ -2,7 +2,9 @@ list(REMOVE_ITEM APP_SRCS
 	src/app.c
 	src/pilot.c
 	src/pinmap.c
+	src/periph.c
 	src/relay.c
+	src/usrinp.c
 	src/driver/adc122s051.c
 	src/metering/adapter/hlw8112.c
 )
@@ -16,6 +18,7 @@ endforeach()
 
 if(APPLE)
 list(REMOVE_ITEM APP_SRCS ports/host/apptmr.c)
+list(APPEND APP_SRCS ${CMAKE_SOURCE_DIR}/external/libmcu/ports/apple/semaphore.c)
 else()
 list(REMOVE_ITEM APP_SRCS ports/host/apptmr_ios.c)
 endif()
@@ -25,6 +28,8 @@ set(PROJECT_BIN ${CMAKE_PROJECT_NAME}.bin)
 
 add_executable(${PROJECT_EXECUTABLE}
 	${APP_SRCS}
+	${CMAKE_SOURCE_DIR}/external/libmcu/examples/memory_kvstore.c
+	${CMAKE_SOURCE_DIR}/external/libmcu/ports/posix/actor.c
 )
 
 target_compile_definitions(${PROJECT_EXECUTABLE}
@@ -44,6 +49,7 @@ target_include_directories(${PROJECT_EXECUTABLE}
 		${APP_INCS}
 		${CMAKE_CURRENT_LIST_DIR}
 		${CMAKE_SOURCE_DIR}/external/libmcu/modules/buzzer/include
+		${CMAKE_SOURCE_DIR}/external/libmcu/examples
 )
 
 target_link_libraries(${PROJECT_EXECUTABLE}

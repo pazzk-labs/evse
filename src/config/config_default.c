@@ -103,6 +103,16 @@ static void set_default_model(struct config *cfg)
 	strcpy(cfg->ocpp.model, "EVSE-7S");
 }
 
+static void set_default_log_mode(struct config *cfg)
+{
+	cfg->log_mode = LOG_WRITER_ALL;
+}
+
+static void set_default_log_level(struct config *cfg)
+{
+	cfg->log_level = LOGGING_TYPE_DEBUG;
+}
+
 static const struct {
 	const char *key;
 	default_handler_t handler;
@@ -117,6 +127,8 @@ static const struct {
 	{ "net.server.url",  set_default_server_url },
 	{ "ocpp.vendor",     set_default_vendor },
 	{ "ocpp.model",      set_default_model },
+	{ "log.mode",        set_default_log_mode },
+	{ "log.level",       set_default_log_level },
 };
 
 bool config_set_default(const char *key, struct config *cfg)

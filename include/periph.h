@@ -30,60 +30,18 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "libmcu/flash.h"
-#include <errno.h>
-#include <string.h>
-#include "libmcu/compiler.h"
+#ifndef PERIPH_H
+#define PERIPH_H
 
-#define FAKE_STORAGE_SIZE	(8 * 1024 * 1024)
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
-struct flash {
-	struct flash_api api;
-	uint8_t storage[FAKE_STORAGE_SIZE];
-};
+struct pinmap_periph;
+int periph_init(struct pinmap_periph *periph);
 
-static int do_erase(struct flash *self, uintptr_t offset, size_t size)
-{
-	memset(&self->storage[offset], 0xff, size);
-	return 0;
+#if defined(__cplusplus)
 }
+#endif
 
-static int do_write(struct flash *self,
-		uintptr_t offset, const void *data, size_t len)
-{
-	const uint8_t *src = data;
-	uint8_t *dst = &self->storage[offset];
-	memcpy(dst, src, len);
-	return 0;
-}
-
-static int do_read(struct flash *self, uintptr_t offset, void *buf, size_t len)
-{
-	const uint8_t *src = &self->storage[offset];
-	memcpy(buf, src, len);
-	return 0;
-}
-
-static size_t do_size(struct flash *self)
-{
-	unused(self);
-	return 0;
-}
-
-struct flash *flash_create(int partition)
-{
-	static struct flash fs_partition = {
-		.api = {
-			.erase = do_erase,
-			.write = do_write,
-			.read = do_read,
-			.size = do_size,
-		},
-	};
-
-	if (partition != 0) {
-		return NULL;
-	}
-
-	return &fs_partition;
-}
+#endif /* PERIPH_H */

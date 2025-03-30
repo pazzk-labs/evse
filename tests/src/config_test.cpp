@@ -70,7 +70,7 @@ TEST(Config, ShouldReturnDefaultConfig) {
 	config_get("device.mode", &actual.device_mode, sizeof(actual.device_mode));
 	LONGS_EQUAL(0, actual.device_mode);
 	config_get("log.mode", &actual.log_mode, sizeof(actual.log_mode));
-	LONGS_EQUAL(0, actual.log_mode);
+	LONGS_EQUAL(3, actual.log_mode);
 	config_get("chg.mode", &actual.charger.mode, sizeof(actual.charger.mode));
 	STRCMP_EQUAL("free", actual.charger.mode);
 	config_get("chg.count", &actual.charger.connector_count, sizeof(actual.charger.connector_count));

@@ -32,13 +32,9 @@
 
 #include "libmcu/nvs_kvstore.h"
 #include <errno.h>
+#include "memory_kvstore.h"
 
 struct kvstore *nvs_kvstore_new(void)
 {
-	return NULL;
-}
-
-int nvs_kvstore_count(void)
-{
-	return -ENOTSUP;
+	return memory_kvstore_create("nvs");
 }
