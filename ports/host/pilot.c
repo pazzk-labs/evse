@@ -31,30 +31,42 @@
  */
 
 #include "pilot.h"
+#include <stdlib.h>
+#include <string.h>
 #include "libmcu/compiler.h"
+
+struct pilot {
+	uint8_t duty_pct;
+	pilot_status_t status;
+
+	pilot_status_cb_t cb;
+	void *cb_ctx;
+};
 
 struct pilot *pilot_create(const struct pilot_params *params,
         struct adc122s051 *adc, struct lm_pwm_channel *pwm, uint16_t *buf)
 {
+	struct pilot *pilot = (struct pilot *)malloc(sizeof(*pilot));
+	memset(pilot, 0, sizeof(*pilot));
+
 	unused(params);
 	unused(adc);
 	unused(pwm);
 	unused(buf);
 
-	return 0;
+	return pilot;
 }
 
 void pilot_delete(struct pilot *pilot)
 {
-	unused(pilot);
+	free(pilot);
 }
 
 void pilot_set_status_cb(struct pilot *pilot,
 		pilot_status_cb_t cb, void *cb_ctx)
 {
-	unused(pilot);
-	unused(cb);
-	unused(cb_ctx);
+	pilot->cb = cb;
+	pilot->cb_ctx = cb_ctx;
 }
 
 int pilot_enable(struct pilot *pilot)
@@ -71,27 +83,30 @@ int pilot_disable(struct pilot *pilot)
 
 int pilot_set_duty(struct pilot *pilot, const uint8_t pct)
 {
-	unused(pilot);
-	unused(pct);
+	pilot->duty_pct = pct;
 	return 0;
 }
 
 uint8_t pilot_get_duty_set(const struct pilot *pilot)
 {
-	unused(pilot);
-	return 0;
+	return pilot->duty_pct;
 }
 
 uint8_t pilot_duty(const struct pilot *pilot)
 {
-	unused(pilot);
-	return 0;
+	return pilot->duty_pct;
 }
+
+#if defined(HOST_BUILD)
+void pilot_set_status(struct pilot *pilot, const pilot_status_t status)
+{
+	pilot->status = status;
+}
+#endif
 
 pilot_status_t pilot_status(const struct pilot *pilot)
 {
-	unused(pilot);
-	return PILOT_STATUS_UNKNOWN;
+	return pilot->status;
 }
 
 uint16_t pilot_millivolt(const struct pilot *pilot, const bool low_voltage)
@@ -104,7 +119,7 @@ uint16_t pilot_millivolt(const struct pilot *pilot, const bool low_voltage)
 bool pilot_ok(const struct pilot *pilot)
 {
 	unused(pilot);
-	return false;
+	return true;
 }
 
 pilot_error_t pilot_error(const struct pilot *pilot)
@@ -115,11 +130,47 @@ pilot_error_t pilot_error(const struct pilot *pilot)
 
 const char *pilot_stringify_status(const pilot_status_t status)
 {
-	unused(status);
-	return "Unknown";
+	switch (status) {
+	case PILOT_STATUS_A:
+		return "A(12V)";
+	case PILOT_STATUS_B:
+		return "B(9V)";
+	case PILOT_STATUS_C:
+		return "C(6V)";
+	case PILOT_STATUS_D:
+		return "D(3V)";
+	case PILOT_STATUS_E:
+		return "E(0V)";
+	case PILOT_STATUS_F:
+		return "F(-12V)";
+	default:
+		return "Unknown";
+	}
 }
 
 void pilot_default_params(struct pilot_params *params)
 {
-	unused(params);
+	*params = (struct pilot_params) {
+		.scan_interval_ms = 10,
+		.cutoff_voltage_mv = 1996,
+		.noise_tolerance_mv = 50,
+		.max_transition_clocks = 15,
+		.boundary = {
+			.upward = {
+				.a = 3038,
+				.b = 2718,
+				.c = 2397,
+				.d = 2076,
+				.e = 767,
+			},
+			.downward = {
+				.a = 2985,
+				.b = 2644,
+				.c = 2344,
+				.d = 2022,
+				.e = 767,
+			},
+		},
+		.sample_count = 500,
+	};
 }

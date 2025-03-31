@@ -679,18 +679,20 @@ int pilot_disable(struct pilot *pilot)
 struct pilot *pilot_create(const struct pilot_params *params,
         struct adc122s051 *adc, struct lm_pwm_channel *pwm, uint16_t *buf)
 {
-	static struct pilot pilot;
-	struct pilot *p = &pilot;
+	struct pilot *p = (struct pilot *)malloc(sizeof(*p));
+
+	if (!p) {
+		goto out;
+	}
 
 	memset(p, 0, sizeof(*p));
 	set_params(&p->params, params);
 
 	if ((p->wdt = wdt_new("pilot", PILOT_WDT_TIMEOUT_MS, 0, 0)) == NULL) {
-		return NULL;
+		goto out_free;
 	}
 	if ((p->timer = apptmr_create(true, on_timeout, p)) == NULL) {
-		wdt_delete(p->wdt);
-		return NULL;
+		goto out_free_wdt;
 	}
 
 	const size_t buffer_size = sizeof(*buf) * p->params.sample_count;
@@ -727,8 +729,14 @@ struct pilot *pilot_create(const struct pilot_params *params,
 			p->params.boundary.downward.c,
 			p->params.boundary.downward.d,
 			p->params.boundary.downward.e);
-
 	return p;
+
+out_free_wdt:
+	free(p->wdt);
+out_free:
+	free(p);
+out:
+	return NULL;
 }
 
 void pilot_delete(struct pilot *pilot)
@@ -742,4 +750,6 @@ void pilot_delete(struct pilot *pilot)
 
 	apptmr_delete(pilot->timer);
 	wdt_delete(pilot->wdt);
+
+	free(pilot);
 }

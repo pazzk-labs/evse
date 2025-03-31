@@ -55,7 +55,6 @@
 
 static struct {
 	struct cli cli;
-	struct charger *charger;
 	struct termios orig_termios;
 	struct app *app;
 } m;
@@ -137,12 +136,14 @@ static void start_charger(struct app *app)
 {
 	struct charger_param param;
 	struct charger_extension *extension;
-	m.charger = charger_factory_create(&param, &extension, NULL);
-	charger_init(m.charger, &param, extension);
-	charger_register_event_cb(m.charger, on_charger_event, m.charger);
+	app->charger = charger_factory_create(&param, &extension, NULL);
+	charger_init(app->charger, &param, extension);
+	charger_register_event_cb(app->charger, on_charger_event, app->charger);
 
 	struct safety *safety = safety_create();
 	safety_add_and_enable(safety, emergency_stop_safety_create("es"));
+
+	app->pilot = pilot_create(0, 0, 0, 0);
 
 	struct connector_param conn_param = {
 		.max_output_current_mA = param.max_output_current_mA,
@@ -156,8 +157,8 @@ static void start_charger(struct app *app)
 	};
 
 	struct connector *c = connector_factory_create(&conn_param);
-	charger_attach_connector(m.charger, c);
-	connector_register_event_cb(c, on_connector_event, m.charger);
+	charger_attach_connector(app->charger, c);
+	connector_register_event_cb(c, on_connector_event, app->charger);
 	connector_enable(c);
 }
 
@@ -168,7 +169,7 @@ static void enable_cli_raw_mode(void)
 	tcgetattr(STDIN_FILENO, &m.orig_termios);
 	raw = m.orig_termios;
 
-	raw.c_lflag &= (tcflag_t)~(ICANON | ECHO);
+	raw.c_lflag &= (tcflag_t)~(ICANON | ECHO | ISIG);
 
 	raw.c_cc[VMIN] = 1;
 	raw.c_cc[VTIME] = 0;
@@ -200,7 +201,7 @@ void app_reboot(void)
 int app_process(uint32_t *next_period_ms)
 {
 #define DEFAULT_STEP_INTERVAL_MS	50
-	charger_process(m.charger);
+	charger_process(m.app->charger);
 
 	if (next_period_ms) {
 		*next_period_ms = DEFAULT_STEP_INTERVAL_MS;
@@ -217,8 +218,8 @@ void app_init(struct app *app)
 #define CLI_MAX_HISTORY		10U
 	static char buf[CLI_CMD_MAXLEN * CLI_MAX_HISTORY];
 
-	DEFINE_CLI_CMD_LIST(commands, config, exit, help, info, log, net, ocpp,
-			reboot, metric, sec, xmodem);
+	DEFINE_CLI_CMD_LIST(commands, chg, config, exit, help, info, log, net,
+			ocpp, reboot, metric, sec, test, xmodem);
 
 	cli_init(&m.cli, cli_io_create(), buf, sizeof(buf), app);
 	cli_register_cmdlist(&m.cli, commands);

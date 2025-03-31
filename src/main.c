@@ -323,16 +323,17 @@ int main(int argc, char *argv[])
 			METRICS_VALUE(board_get_current_stack_watermark()));
 	metrics_set(BootingTime, METRICS_VALUE(board_get_time_since_boot_ms()));
 
-#if defined(HOST_BUILD) && !defined(DISABLE_HOST_MAIN_LOOP)
+#if defined(HOST_BUILD)
 	app.argv = argv;
-
+#if !defined(DISABLE_HOST_MAIN_LOOP)
 	/* NOTE: This is for host testing. On host builds, main() would normally
 	 * return immediately, which causes the process to exit even if
 	 * background threads or actor systems are still running. To prevent
 	 * this, we block the main thread indefinitely. */
 	while (!app.exit) {
 	}
-#endif
+#endif /* DISABLE_HOST_MAIN_LOOP */
+#endif /* HOST_BUILD */
 	unused(argc);
 	unused(argv);
 

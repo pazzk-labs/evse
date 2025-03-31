@@ -228,6 +228,11 @@ bool connector_is_evse_error(struct connector *self, connector_state_t state)
 		}
 	}
 
+	const connector_state_t current_state = get_state(self);
+	if (current_state == F || current_state == E) {
+		return true;
+	}
+
 	return false;
 }
 
