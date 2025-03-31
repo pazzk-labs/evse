@@ -31,7 +31,6 @@
  */
 
 #include "metering.h"
-#include <string.h>
 #include "adapter/hlw8112.h"
 
 typedef struct metering *(*metering_ctor)(const struct metering_param *param,

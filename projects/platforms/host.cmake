@@ -30,19 +30,17 @@ add_executable(${PROJECT_EXECUTABLE}
 	${APP_SRCS}
 	${CMAKE_SOURCE_DIR}/external/libmcu/examples/memory_kvstore.c
 	${CMAKE_SOURCE_DIR}/external/libmcu/ports/posix/actor.c
+	${CMAKE_SOURCE_DIR}/external/libmcu/ports/openssl/pki.c
 )
 
-target_compile_definitions(${PROJECT_EXECUTABLE}
-	PRIVATE
-		${APP_DEFS}
-)
-
+target_compile_definitions(${PROJECT_EXECUTABLE} PRIVATE ${APP_DEFS})
 if(APPLE)
-target_compile_definitions(${PROJECT_EXECUTABLE}
-	PRIVATE
-	    _DARWIN_C_SOURCE
-)
+target_compile_definitions(${PROJECT_EXECUTABLE} PRIVATE _DARWIN_C_SOURCE)
 endif()
+
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(LWS REQUIRED libwebsockets)
+pkg_check_modules(OPENSSL REQUIRED openssl)
 
 target_include_directories(${PROJECT_EXECUTABLE}
 	PRIVATE
@@ -50,6 +48,15 @@ target_include_directories(${PROJECT_EXECUTABLE}
 		${CMAKE_CURRENT_LIST_DIR}
 		${CMAKE_SOURCE_DIR}/external/libmcu/modules/buzzer/include
 		${CMAKE_SOURCE_DIR}/external/libmcu/examples
+
+		${LWS_INCLUDE_DIRS}
+		${OPENSSL_INCLUDE_DIRS}
+)
+
+target_link_directories(${PROJECT_EXECUTABLE}
+	PRIVATE
+		${LWS_LIBRARY_DIRS}
+		${OPENSSL_LIBRARY_DIRS}
 )
 
 target_link_libraries(${PROJECT_EXECUTABLE}
@@ -62,6 +69,9 @@ target_link_libraries(${PROJECT_EXECUTABLE}
 		littlefs
 		cbor
 		cjson
+
+		${LWS_LIBRARIES}
+		${OPENSSL_LIBRARIES}
 )
 
 find_program(OBJCOPY_EXECUTABLE NAMES llvm-objcopy gobjcopy objcopy)

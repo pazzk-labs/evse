@@ -250,7 +250,7 @@ void reboot_gracefully(void)
 	raise_cleanup();
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
 	const board_reboot_reason_t reboot_reason = board_get_reboot_reason();
 	struct pinmap_periph *periph = &app.periph;
@@ -324,13 +324,17 @@ int main(void)
 	metrics_set(BootingTime, METRICS_VALUE(board_get_time_since_boot_ms()));
 
 #if defined(HOST_BUILD) && !defined(DISABLE_HOST_MAIN_LOOP)
+	app.argv = argv;
+
 	/* NOTE: This is for host testing. On host builds, main() would normally
 	 * return immediately, which causes the process to exit even if
 	 * background threads or actor systems are still running. To prevent
 	 * this, we block the main thread indefinitely. */
-	while (1) {
+	while (!app.exit) {
 	}
 #endif
+	unused(argc);
+	unused(argv);
 
 	return 0;
 }

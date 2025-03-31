@@ -118,3 +118,120 @@ TEST(NetUtil, ShouldReturnMacString_WhenValidMacGiven) {
 	net_stringify_mac(mac, buf, sizeof(buf));
 	STRCMP_EQUAL("00:11:22:33:44:55", buf);
 }
+
+TEST(NetUtil, GetHostFromUrl_ValidUrl) {
+	const char *url = "http://example.com/path";
+	char buffer[256] = {0, };
+	int result = net_get_host_from_url(url, buffer, sizeof(buffer));
+	STRCMP_EQUAL("example.com", buffer);
+	CHECK_EQUAL(0, result);
+}
+TEST(NetUtil, GetHostFromUrl_ValidUrl_WhenPortGiven) {
+	const char *url = "http://example.com:8080/path";
+	char buffer[256] = {0, };
+	int result = net_get_host_from_url(url, buffer, sizeof(buffer));
+	STRCMP_EQUAL("example.com", buffer);
+	CHECK_EQUAL(0, result);
+}
+TEST(NetUtil, GetHostFromUrl_InvalidUrl) {
+	const char *url = "invalid_url";
+	char buffer[256] = {0, };
+	int result = net_get_host_from_url(url, buffer, sizeof(buffer));
+	CHECK_EQUAL(-EINVAL, result);
+}
+TEST(NetUtil, GetHostFromUrl_BufferTooSmall) {
+	const char *url = "http://example.com/path";
+	char buffer[256] = {0, };
+	int result = net_get_host_from_url(url, buffer, 5); // Buffer too small
+	STRCMP_EQUAL("exam", buffer); // Partial copy
+	CHECK_EQUAL(0, result);
+}
+
+TEST(NetUtil, GetPathFromUrl_ValidUrl) {
+	const char *url = "http://example.com/path/to/resource";
+	char buffer[256] = {0, };
+	int result = net_get_path_from_url(url, buffer, sizeof(buffer));
+	STRCMP_EQUAL("/path/to/resource", buffer);
+	CHECK_EQUAL(0, result);
+}
+TEST(NetUtil, GetPathFromUrl_ValidUrl_WhenPortGiven) {
+	const char *url = "http://example.com:8080/path/to/resource";
+	char buffer[256] = {0, };
+	int result = net_get_path_from_url(url, buffer, sizeof(buffer));
+	STRCMP_EQUAL("/path/to/resource", buffer);
+	CHECK_EQUAL(0, result);
+}
+TEST(NetUtil, GetPathFromUrl_NoPath) {
+	const char *url = "http://example.com";
+	char buffer[256] = {0, };
+	int result = net_get_path_from_url(url, buffer, sizeof(buffer));
+	STRCMP_EQUAL("/", buffer); // Slash should be returned
+	CHECK_EQUAL(0, result);
+}
+TEST(NetUtil, GetPathFromUrl_InvalidUrl) {
+	const char *url = "invalid_url";
+	char buffer[256] = {0, };
+	int result = net_get_path_from_url(url, buffer, sizeof(buffer));
+	CHECK_EQUAL(-EINVAL, result);
+}
+TEST(NetUtil, GetPathFromUrl_BufferTooSmall) {
+	const char *url = "http://example.com/path/to/resource";
+	char buffer[256] = {0, };
+	int result = net_get_path_from_url(url, buffer, 10); // Buffer too small
+	STRCMP_EQUAL("/path/to/", buffer); // Partial copy
+	CHECK_EQUAL(0, result);
+}
+TEST(NetUtil, GetPathFromUrl_NoPathWithSlash) {
+	const char *url = "http://example.com/";
+	char buffer[256] = {0, };
+	int result = net_get_path_from_url(url, buffer, sizeof(buffer));
+	STRCMP_EQUAL("/", buffer); // Slash should be returned
+	CHECK_EQUAL(0, result);
+}
+TEST(NetUtil, GetPathFromUrl_NoPathWithoutSlash) {
+	const char *url = "http://example.com";
+	char buffer[256] = {0, };
+	int result = net_get_path_from_url(url, buffer, sizeof(buffer));
+	STRCMP_EQUAL("/", buffer); // Slash should be returned even if no slash in URL
+	CHECK_EQUAL(0, result);
+}
+TEST(NetUtil, GetPathFromUrl_NoPathWithSlash_WhenPortGiven) {
+	const char *url = "http://example.com:8080/";
+	char buffer[256] = {0, };
+	int result = net_get_path_from_url(url, buffer, sizeof(buffer));
+	STRCMP_EQUAL("/", buffer); // Slash should be returned
+	CHECK_EQUAL(0, result);
+}
+TEST(NetUtil, GetPathFromUrl_NoPathWithoutSlash_WhenPortGiven) {
+	const char *url = "http://example.com:8080";
+	char buffer[256] = {0, };
+	int result = net_get_path_from_url(url, buffer, sizeof(buffer));
+	STRCMP_EQUAL("/", buffer); // Slash should be returned even if no slash in URL
+	CHECK_EQUAL(0, result);
+}
+
+TEST(NetUtil, GetPortFromUrl_ValidUrlWithPort) {
+	const char *url = "http://example.com:8080";
+	uint16_t port = net_get_port_from_url(url);
+	CHECK_EQUAL(8080, port);
+}
+TEST(NetUtil, GetPortFromUrl_ValidUrlWithPort_WhenPathGiven) {
+	const char *url = "http://example.com:8080/path";
+	uint16_t port = net_get_port_from_url(url);
+	CHECK_EQUAL(8080, port);
+}
+TEST(NetUtil, GetPortFromUrl_ValidUrlWithoutPort) {
+	const char *url = "http://example.com";
+	uint16_t port = net_get_port_from_url(url);
+	CHECK_EQUAL(0, port); // No port specified, should return 0
+}
+TEST(NetUtil, GetPortFromUrl_InvalidUrl) {
+	const char *url = "invalid_url";
+	uint16_t port = net_get_port_from_url(url);
+	CHECK_EQUAL(0, port); // Invalid URL, should return 0
+}
+TEST(NetUtil, GetPortFromUrl_UrlWithInvalidPort) {
+	const char *url = "http://example.com:invalid";
+	uint16_t port = net_get_port_from_url(url);
+	CHECK_EQUAL(0, port); // Invalid port, should return 0
+}

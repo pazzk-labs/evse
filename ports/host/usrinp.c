@@ -1,6 +1,6 @@
 /*
  * This file is part of the Pazzk project <https://pazzk.net/>.
- * Copyright (c) 2024 Pazzk <team@pazzk.net>.
+ * Copyright (c) 2025 Pazzk <team@pazzk.net>.
  *
  * Community Version License (GPLv3):
  * This software is open-source and licensed under the GNU General Public
@@ -30,49 +30,25 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "libmcu/pki.h"
-#include <errno.h>
+#include "usrinp.h"
 #include "libmcu/compiler.h"
 
-int pki_generate_prikey(uint8_t *key_buf, size_t key_bufsize)
+void usrinp_register_event_cb(usrinp_t type, usrinp_event_cb_t cb, void *cb_ctx)
 {
-	unused(key_buf);
-	unused(key_bufsize);
-
-	return -ENOTSUP;
+	unused(type);
+	unused(cb);
+	unused(cb_ctx);
 }
 
-int pki_generate_keypair(uint8_t *key_buf, size_t key_bufsize,
-                         uint8_t *pub_buf, size_t pub_bufsize)
+int usrinp_raise(usrinp_t type)
 {
-	unused(key_buf);
-	unused(key_bufsize);
-	unused(pub_buf);
-	unused(pub_bufsize);
-
-	return -ENOTSUP;
+	unused(type);
+	return 0;
 }
 
-int pki_generate_csr(uint8_t *csr_buf, size_t csr_bufsize,
-                     const uint8_t *prikey, size_t prikey_len,
-                     const struct pki_csr_params *params)
+int usrinp_init(struct lm_gpio *debug_button, usrinp_get_state_t f_get_state)
 {
-	unused(csr_buf);
-	unused(csr_bufsize);
-	unused(prikey);
-	unused(prikey_len);
-	unused(params);
-
-	return -ENOTSUP;
-}
-
-int pki_verify_cert(const uint8_t *cacert, size_t cacert_len,
-                    const uint8_t *cert, size_t cert_len)
-{
-	unused(cacert);
-	unused(cacert_len);
-	unused(cert);
-	unused(cert_len);
-
-	return -ENOTSUP;
+	unused(debug_button);
+	unused(f_get_state);
+	return 0;
 }

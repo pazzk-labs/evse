@@ -31,10 +31,138 @@
  */
 
 #include "libmcu/nvs_kvstore.h"
+
+#include <stdlib.h>
 #include <errno.h>
-#include "memory_kvstore.h"
+#include <stdio.h>
+#include <sys/stat.h>
+#include <pthread.h>
+#include <ctype.h>
+
+#include "libmcu/compiler.h"
+
+#if !defined(KVSTORE_MAX_KEY_LENGTH)
+#define KVSTORE_MAX_KEY_LENGTH			32
+#endif
+
+struct kvstore {
+	struct kvstore_api api;
+	const char *namespace;
+	pthread_mutex_t lock;
+};
+
+static void sanitize_key(const char *key, char *out, size_t maxlen)
+{
+	size_t i, j = 0;
+	for (i = 0; key[i] != '\0' && j < maxlen - 1; i++) {
+		char c = key[i];
+		if (isalnum((unsigned char)c) || c == '-' || c == '_') {
+			out[j++] = c;
+		}
+	}
+	out[j] = '\0';
+}
+
+static char *kvstore_make_path(const char *ns, const char *key)
+{
+	static char path[256];
+	char sanitized_key[KVSTORE_MAX_KEY_LENGTH];
+	sanitize_key(key, sanitized_key, sizeof(sanitized_key));
+
+	snprintf(path, sizeof(path), "./%s/%s.kv", ns, sanitized_key);
+	return path;
+}
+
+static int file_kvstore_write(struct kvstore *kvstore,
+		const char *key, const void *value, size_t size)
+{
+	pthread_mutex_lock(&kvstore->lock);
+
+	char *filepath = kvstore_make_path(kvstore->namespace, key);
+	FILE *fp = fopen(filepath, "wb");
+	if (!fp) {
+		pthread_mutex_unlock(&kvstore->lock);
+		return 0;
+	}
+
+	size_t written = fwrite(value, 1, size, fp);
+	fclose(fp);
+
+	pthread_mutex_unlock(&kvstore->lock);
+	return (int)written;
+}
+
+static int file_kvstore_read(struct kvstore *kvstore,
+		const char *key, void *buf, size_t bufsize)
+{
+	pthread_mutex_lock(&kvstore->lock);
+
+	char *filepath = kvstore_make_path(kvstore->namespace, key);
+	FILE *fp = fopen(filepath, "rb");
+	if (!fp) {
+		pthread_mutex_unlock(&kvstore->lock);
+		return 0;
+	}
+
+	fseek(fp, 0, SEEK_END);
+	long fsize = ftell(fp);
+	fseek(fp, 0, SEEK_SET);
+
+	if (fsize <= 0) {
+		fclose(fp);
+		pthread_mutex_unlock(&kvstore->lock);
+		return 0;
+	}
+
+	size_t to_read = (size_t)fsize < bufsize ? (size_t)fsize : bufsize;
+	size_t read = fread(buf, 1, to_read, fp);
+	fclose(fp);
+
+	pthread_mutex_unlock(&kvstore->lock);
+	return (int)read;
+}
+
+static int file_kvstore_open(struct kvstore *kvstore, const char *ns)
+{
+	unused(kvstore);
+
+	struct stat st = { 0, };
+
+	if (stat(ns, &st) == -1) {
+		if (mkdir(ns, 0700) != 0) {
+			return -ENOENT;
+		}
+	}
+
+	return 0;
+}
 
 struct kvstore *nvs_kvstore_new(void)
 {
-	return memory_kvstore_create("nvs");
+	struct kvstore *kv = malloc(sizeof(*kv));
+	if (!kv) {
+		return NULL;
+	}
+
+	kv->namespace = "build/config";
+	if (!kv->namespace) {
+		free(kv);
+		return NULL;
+	}
+
+	if (file_kvstore_open(kv, kv->namespace) < 0) {
+		free(kv);
+		return NULL;
+	}
+
+	if (pthread_mutex_init(&kv->lock, NULL) != 0) {
+		free(kv);
+		return NULL;
+	}
+
+	kv->api.write = file_kvstore_write;
+	kv->api.read = file_kvstore_read;
+	kv->api.open = file_kvstore_open;
+
+	return kv;
 }

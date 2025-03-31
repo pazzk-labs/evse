@@ -37,6 +37,10 @@ $(BUILDIR)/$(PROJECT).bin: compile
 $(BUILDIR):
 	$(CMAKE) -S . -B $(BUILDIR) -DTARGET_PLATFORM=$(PLATFORM)
 
+.PHONY: run
+run: compile
+	$(BUILDIR)/$(PROJECT).elf
+
 .PHONY: compile
 compile: $(BUILDIR)
 	$(CMAKE) --build $(BUILDIR)

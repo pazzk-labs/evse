@@ -36,9 +36,14 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
 
 #if !defined(ARRAY_COUNT)
 #define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
+#endif
+
+#if !defined(MIN)
+#define MIN(a, b)		((a) > (b)? (b) : (a))
 #endif
 
 struct proto_tbl {
@@ -87,6 +92,65 @@ bool net_is_secure_protocol(net_protocol_t proto)
 	};
 
 	return secure[proto];
+}
+
+uint16_t net_get_port_from_url(const char *url)
+{
+	const char *p = strstr(url, "://");
+	if (!p) {
+		return 0;
+	}
+
+	p += 3;
+	const char *end = strchr(p, ':');
+	if (!end) {
+		return 0;
+	}
+
+	return (uint16_t)strtol(end + 1, NULL, 10);
+}
+
+int net_get_path_from_url(const char *url, char *buf, size_t bufsize)
+{
+	memset(buf, 0, bufsize);
+
+	const char *p = strstr(url, "://");
+	if (!p) {
+		return -EINVAL;
+	}
+
+	p = strchr(p + 3, '/');
+	if (!p) {
+		buf[0] = '/';
+		return 0;
+	}
+
+	strncpy(buf, p, MIN(strlen(p), bufsize - 1));
+
+	return 0;
+}
+
+int net_get_host_from_url(const char *url, char *buf, size_t bufsize)
+{
+	memset(buf, 0, bufsize);
+
+	const net_protocol_t proto = net_get_protocol_from_url(url);
+
+	if (proto == NET_PROTO_UNKNOWN) {
+		return -EINVAL;
+	}
+
+	const char *p = strstr(url, "://");
+	const char *end = strchr(p + 3, ':');
+	if (!end) {
+		if (!(end = strchr(p + 3, '/'))) {
+			end = p + strlen(p);
+		}
+	}
+
+	strncpy(buf, p + 3, MIN((size_t)(end - p - 3), bufsize - 1));
+
+	return 0;
 }
 
 bool net_is_ipv4_str_valid(const char *ipstr)
