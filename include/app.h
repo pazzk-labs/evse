@@ -75,6 +75,13 @@ struct app {
 	} adc;
 
 	struct charger *charger;
+
+#if defined(HOST_BUILD)
+	char **argv;
+#if !defined(DISABLE_HOST_MAIN_LOOP)
+	bool exit;
+#endif /* DISABLE_HOST_MAIN_LOOP */
+#endif /* HOST_BUILD */
 };
 
 /**

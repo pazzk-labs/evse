@@ -49,12 +49,12 @@ int ntp_start(void (*cb)(struct timeval *, void *ctx), void *cb_ctx) {
 		.returnIntValue();
 }
 
-unsigned long board_get_time_since_boot_ms(void) {
-	return mock().actualCall(__func__)
-		.returnUnsignedLongIntValue();
+uint32_t board_get_time_since_boot_ms(void) {
+	return (uint32_t)mock().actualCall(__func__)
+		.returnUnsignedIntValue();
 }
 
-unsigned long board_get_current_stack_watermark(void) {
+uint32_t board_get_current_stack_watermark(void) {
 	return 0;
 }
 
@@ -64,7 +64,7 @@ uint32_t board_random(void) {
 
 TEST_GROUP(NetworkManager) {
 	struct netif *netif;
-	unsigned long time;
+	uint32_t time;
 
 	void setup(void) {
 		SimpleString groupName = UtestShell::getCurrent()->getGroup();
@@ -85,10 +85,10 @@ TEST_GROUP(NetworkManager) {
 		mock().clear();
 	}
 
-	void set_time(unsigned long t) {
+	void set_time(uint32_t t) {
 		time = t;
 	}
-	unsigned long get_time(void) {
+	uint32_t get_time(void) {
 		return time;
 	}
 
@@ -151,7 +151,7 @@ TEST(NetworkManager, state_ShouldReturnDisconnected_WhenDisconnected) {
 TEST(NetworkManager, state_ShouldReturnExhausted_WhenRetryExceeded) {
 	mock().ignoreOtherCalls();
 	go_enabled();
-	unsigned long t = get_time();
+	uint32_t t = get_time();
 	for (unsigned i = 0; i < NETMGR_MAX_RETRY; i++) {
 		set_time(get_time() + NETMGR_CONNECT_TIMEOUT_MS);
 		step(1);
@@ -271,7 +271,7 @@ TEST(NetworkManager, ShouldReconnectWithBackoff_WhenConnectFailed) {
 TEST(NetworkManager, ShouldGoOff_WhenConnectFailedTooMany) {
 	mock().ignoreOtherCalls();
 	go_enabled();
-	unsigned long t = get_time();
+	uint32_t t = get_time();
 
 	for (unsigned i = 0; i < NETMGR_MAX_RETRY; i++) {
 		t *= 2;
@@ -288,7 +288,7 @@ TEST(NetworkManager, ShouldGoOff_WhenConnectFailedTooMany) {
 TEST(NetworkManager, ShouldRetryConnecting_WhenReenabledAfterConnectFailedTooMany) {
 	mock().ignoreOtherCalls();
 	go_enabled();
-	unsigned long t = get_time();
+	uint32_t t = get_time();
 
 	for (unsigned i = 0; i < NETMGR_MAX_RETRY; i++) {
 		t *= 2;

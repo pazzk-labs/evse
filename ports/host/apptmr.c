@@ -35,6 +35,7 @@
 #include <time.h>
 #include <signal.h>
 #include <errno.h>
+#include "libmcu/compiler.h"
 
 #if !defined(APPTMR_MAX)
 #define APPTMR_MAX			8
@@ -95,7 +96,6 @@ static void trigger(struct apptmr *self)
 static int start_apptmr(struct apptmr *self, const uint32_t timeout_ms)
 {
 	const uint64_t usec = timeout_ms * 1000;
-	int err;
 
 	struct itimerspec its = {
 		.it_value.tv_nsec = usec * 1000,
@@ -110,6 +110,8 @@ static int start_apptmr(struct apptmr *self, const uint32_t timeout_ms)
 
 static int restart_apptmr(struct apptmr *self, const uint32_t timeout_ms)
 {
+	unused(self);
+	unused(timeout_ms);
 	return -ENOTSUP;
 }
 
@@ -121,11 +123,13 @@ static int stop_apptmr(struct apptmr *self)
 
 static int enable_apptmr(struct apptmr *self)
 {
+	unused(self);
 	return 0;
 }
 
 static int disable_apptmr(struct apptmr *self)
 {
+	unused(self);
 	return 0;
 }
 

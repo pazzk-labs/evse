@@ -281,6 +281,10 @@ const char *pilot_stringify_status(const pilot_status_t status);
  */
 void pilot_default_params(struct pilot_params *params);
 
+#if defined(HOST_BUILD)
+void pilot_set_status(struct pilot *pilot, const pilot_status_t status);
+#endif
+
 #if defined(__cplusplus)
 }
 #endif

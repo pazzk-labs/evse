@@ -33,6 +33,7 @@
 #include "libmcu/flash.h"
 #include <errno.h>
 #include "esp_partition.h"
+#include "libmcu/compiler.h"
 
 #define FS_PARTITION			"fs"
 
@@ -88,6 +89,7 @@ static int do_read(struct flash *self, uintptr_t offset, void *buf, size_t len)
 
 static size_t do_size(struct flash *self)
 {
+	unused(self);
 	return -ENOTSUP;
 }
 

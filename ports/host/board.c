@@ -36,31 +36,31 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-unsigned long board_get_time_since_boot_ms(void)
+uint32_t board_get_time_since_boot_ms(void)
 {
 	struct timespec spec;
 	clock_gettime(CLOCK_MONOTONIC, &spec);
-	return spec.tv_sec * 1000LL + spec.tv_nsec / 1000000LL;
+	return (uint32_t)(spec.tv_sec * 1000LL + spec.tv_nsec / 1000000LL);
 }
 
 uint64_t board_get_time_since_boot_us(void)
 {
 	struct timespec spec;
 	clock_gettime(CLOCK_MONOTONIC, &spec);
-	return spec.tv_sec * 1000000LL + spec.tv_nsec / 1000LL;
+	return (uint64_t)(spec.tv_sec * 1000000LL + spec.tv_nsec / 1000LL);
 }
 
-unsigned long board_get_current_stack_watermark(void)
+uint32_t board_get_current_stack_watermark(void)
 {
 	return 0;
 }
 
-unsigned long board_get_heap_watermark(void)
+uint32_t board_get_heap_watermark(void)
 {
 	return 0;
 }
 
-unsigned long board_get_free_heap_bytes(void)
+uint32_t board_get_free_heap_bytes(void)
 {
 	return 0;
 }
@@ -76,7 +76,7 @@ uint32_t board_random(void)
 
 	if (!initialized) {
 		initialized = true;
-		srand(time(NULL));
+		srand((unsigned)time(NULL));
 	}
 
 	return (uint32_t)rand();

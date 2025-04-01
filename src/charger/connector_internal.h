@@ -223,15 +223,6 @@ bool connector_clear_reserved(struct connector *self);
 bool connector_validate_param(const struct connector_param *param);
 
 /**
- * @brief Convert the connector state to a string representation.
- *
- * @param[in] state The connector state.
- *
- * @return The string representation of the state.
- */
-const char *connector_stringify_state(const connector_state_t state);
-
-/**
  * @brief Get the error state of the connector.
  *
  * @param[in] self Pointer to the connector structure.

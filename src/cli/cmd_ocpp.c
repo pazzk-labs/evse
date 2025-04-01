@@ -35,6 +35,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#include "libmcu/compiler.h"
 #include "ocpp/ocpp.h"
 
 static void println(const struct cli_io *io, const char *str)
@@ -80,6 +81,7 @@ static void print_ocpp_configurations(const struct cli_io *io)
 }
 
 DEFINE_CLI_CMD(ocpp, "ocpp") {
+	unused(argv);
 	struct cli const *cli = (struct cli const *)env;
 
 	if (argc == 1) {

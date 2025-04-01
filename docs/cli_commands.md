@@ -4,6 +4,7 @@
 
 | Command   | Description                             |
 | --------- | --------------------------------------- |
+| `chg`     | 충전기 관련 설정 확인 및 변경           |
 | `config`  | 설정 확인 및 변경                       |
 | `exit`    | CLI 종료                                |
 | `help`    | 도움말                                  |
@@ -21,6 +22,19 @@
 | `xmodem`  | 시리얼 터미널 XMODEM 통신               |
 
 ## 커맨드 설명
+### `chg`
+
+| subcommand          | Description | Example               | Note            |
+| ------------------- | ----------- | --------------------- | --------------- |
+| show                | 현재 상태 확인 | `chg show`              |            |
+| set {pilot}         | 상태 변경   | `chg set pilot A`      | 설정 리스트는 아래 테이블 참고 |
+
+### 설정 목록
+
+| Function | Description    | Options               | Note                  |
+| -------- | -------------- | --------------------- | --------------------- |
+| pilot    | Control Pilot  | `A`, `B`, `C`, `D`, `E`, `F` | _HOST_BUILD_ 에서만 동작|
+
 ### `config`
 
 | subcommand          | Description | Example               | Note            |

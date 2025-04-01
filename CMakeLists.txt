@@ -27,6 +27,9 @@ include(${CMAKE_SOURCE_DIR}/projects/version.cmake)
 include(${CMAKE_SOURCE_DIR}/projects/sources.cmake)
 include(${CMAKE_SOURCE_DIR}/projects/external.cmake)
 
+add_library(warnings INTERFACE)
+target_compile_options(warnings INTERFACE ${COMMON_COMPILE_OPTIONS})
+
 set(PLATFORM_CMAKE_FILE "${CMAKE_SOURCE_DIR}/projects/platforms/${TARGET_PLATFORM}.cmake")
 if (NOT EXISTS ${PLATFORM_CMAKE_FILE})
 	message(FATAL_ERROR "Platform CMake file not found: ${PLATFORM_CMAKE_FILE}")

@@ -195,6 +195,15 @@ int connector_register_event_cb(struct connector *self,
 connector_state_t connector_state(const struct connector *self);
 
 /**
+ * @brief Convert the connector state to a string representation.
+ *
+ * @param[in] state The connector state.
+ *
+ * @return The string representation of the state.
+ */
+const char *connector_stringify_state(const connector_state_t state);
+
+/**
  * @brief Set the priority of the connector.
  *
  * @param[in] self Pointer to the connector structure.

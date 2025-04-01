@@ -75,8 +75,8 @@ static_assert(sizeof(struct pilot_params)
 static const char *metering_ch1_key = "chg.c1.metering";
 
 static struct {
+	struct app *app;
 	struct cli cli;
-	struct charger *charger;
 } m;
 
 static void on_charger_event(struct charger *charger, struct connector *c,
@@ -212,9 +212,9 @@ static void start_charger(struct app *app)
 {
 	struct charger_param param;
 	struct charger_extension *extension;
-	m.charger = charger_factory_create(&param, &extension, NULL);
-	charger_init(m.charger, &param, extension);
-	charger_register_event_cb(m.charger, on_charger_event, &m);
+	app->charger = charger_factory_create(&param, &extension, NULL);
+	charger_init(app->charger, &param, extension);
+	charger_register_event_cb(app->charger, on_charger_event, app->charger);
 
 	struct metering_io conn1_io = {
 		.uart = app->periph.uart1,
@@ -249,8 +249,8 @@ static void start_charger(struct app *app)
 	};
 
 	struct connector *c = connector_factory_create(&conn_param);
-	charger_attach_connector(m.charger, c);
-	connector_register_event_cb(c, on_connector_event, m.charger);
+	charger_attach_connector(app->charger, c);
+	connector_register_event_cb(c, on_connector_event, app->charger);
 	connector_enable(c);
 }
 
@@ -280,7 +280,7 @@ void app_reboot(void)
 int app_process(uint32_t *next_period_ms)
 {
 #define DEFAULT_STEP_INTERVAL_MS	50
-	charger_process(m.charger);
+	charger_process(m.app->charger);
 
 	if (next_period_ms) {
 		*next_period_ms = DEFAULT_STEP_INTERVAL_MS;
@@ -292,6 +292,7 @@ int app_process(uint32_t *next_period_ms)
 void app_init(struct app *app)
 {
 	struct pinmap_periph *periph = &app->periph;
+	m.app = app;
 
 	exio_set_sensor_power(true);
 	exio_set_w5500_reset(true);

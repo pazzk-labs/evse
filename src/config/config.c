@@ -457,6 +457,9 @@ int config_reset(const char *key)
 
 int config_update_json(const char *json, size_t json_len)
 {
+	/* TODO: Implement this function. */
+	(void)json;
+	(void)json_len;
 	return -ENOTSUP;
 }
 

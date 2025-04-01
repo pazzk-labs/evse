@@ -41,6 +41,7 @@
 #include "updater.h"
 #include "config.h"
 #include "libmcu/compiler.h"
+#include "logger.h"
 
 #if !defined(ARRAY_COUNT)
 #define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
@@ -190,9 +191,11 @@ static int ext_init(struct charger *self)
 
 	int err = csms_init(self);
 
-	if (!err) {
-		err = updater_register_event_callback(on_updater_event, self);
+	if (err) {
+		error("failed to initialize CSMS: %d", err);
 	}
+
+	err |= updater_register_event_callback(on_updater_event, self);
 
 	struct charger_support_entry *support = (struct charger_support_entry *)
 			malloc(sizeof(*support));

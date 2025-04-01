@@ -34,6 +34,7 @@
 #include <string.h>
 #include <errno.h>
 #include <dispatch/dispatch.h>
+#include "libmcu/compiler.h"
 
 #if !defined(APPTMR_MAX)
 #define APPTMR_MAX			8
@@ -92,7 +93,6 @@ static void trigger(struct apptmr *self)
 
 static int start_apptmr(struct apptmr *self, const uint32_t timeout_ms)
 {
-	int err;
 	uint64_t interval = self->periodic ?
 		timeout_ms * NSEC_PER_MSEC : DISPATCH_TIME_FOREVER;
 
@@ -107,6 +107,8 @@ static int start_apptmr(struct apptmr *self, const uint32_t timeout_ms)
 
 static int restart_apptmr(struct apptmr *self, const uint32_t timeout_ms)
 {
+	unused(self);
+	unused(timeout_ms);
 	return -ENOTSUP;
 }
 
@@ -114,15 +116,18 @@ static int stop_apptmr(struct apptmr *self)
 {
 	dispatch_source_cancel(self->handle);
 	dispatch_release(self->handle);
+	return 0;
 }
 
 static int enable_apptmr(struct apptmr *self)
 {
+	unused(self);
 	return 0;
 }
 
 static int disable_apptmr(struct apptmr *self)
 {
+	unused(self);
 	return 0;
 }
 
