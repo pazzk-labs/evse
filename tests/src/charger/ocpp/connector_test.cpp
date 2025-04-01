@@ -67,6 +67,8 @@ TEST_GROUP(OcppConnector) {
 		mock().expectNCalls(2, "safety_check")
 			.ignoreOtherParameters()
 			.andReturnValue(0);
+		mock().expectOneCall("iec61851_state")
+			.andReturnValue(IEC61851_STATE_A);
 		// 2. is_unavailable, is_preparing, do_preparing
 		mock().expectNCalls(3, "iec61851_state")
 			.andReturnValue(IEC61851_STATE_A);
@@ -82,6 +84,66 @@ TEST_GROUP(OcppConnector) {
 			.withParameter("event", CONNECTOR_EVENT_OCCUPIED);
 
 		ocpp_connector_set_session_current_uid(oc, "test");
+
+		connector_process(c);
+	}
+	void go_start_transaction(void) {
+		go_preparing_occupied();
+
+		// 1. fault check(is_evse_error)
+		mock().expectOneCall("iec61851_get_pwm_duty_target")
+			.andReturnValue(100);
+		mock().expectNCalls(2, "safety_check")
+			.ignoreOtherParameters().andReturnValue(0);
+		mock().expectOneCall("iec61851_state")
+			.andReturnValue(IEC61851_STATE_B);
+		// 2. is_unavailable, is_available
+		mock().expectNCalls(2, "iec61851_state")
+			.andReturnValue(IEC61851_STATE_B);
+		// 3. is_charging_rdy
+		mock().expectOneCall("iec61851_state")
+			.andReturnValue(IEC61851_STATE_B);
+		mock().expectOneCall("ocpp_count_pending_requests")
+			.andReturnValue(0);
+		// 4. do_request_tid
+		mock().expectOneCall("csms_request")
+			.withParameter("msgtype", OCPP_MSG_START_TRANSACTION);
+		connector_process(c);
+	}
+	void go_charging(void) {
+		go_start_transaction();
+
+		ocpp_connector_set_session_trial_uid(oc, "test");
+		ocpp_connector_accept_session_trial_uid(oc);
+		ocpp_connector_set_tid(oc, 1);
+
+		// 1. fault check(is_evse_error)
+		mock().expectOneCall("iec61851_get_pwm_duty_target")
+			.andReturnValue(100);
+		mock().expectNCalls(2, "safety_check")
+			.ignoreOtherParameters().andReturnValue(0);
+		mock().expectOneCall("iec61851_state")
+			.andReturnValue(IEC61851_STATE_B);
+		// 2. is_unavailable, is_available
+		mock().expectNCalls(2, "iec61851_state").
+			andReturnValue(IEC61851_STATE_B);
+		// 3. is_charging_rdy
+		mock().expectOneCall("iec61851_state")
+			.andReturnValue(IEC61851_STATE_B);
+		// 4. is_charging
+		mock().expectOneCall("iec61851_state")
+			.andReturnValue(IEC61851_STATE_B);
+		// 5. do_charging
+		mock().expectOneCall("iec61851_set_current")
+			.withParameter("milliampere", 32);
+		// 6. on_state_change()
+		mock().expectOneCall("iec61851_state")
+			.andReturnValue(IEC61851_STATE_C);
+		mock().expectOneCall("iec61851_is_occupied_state")
+			.withParameter("state", IEC61851_STATE_C)
+			.andReturnValue(true);
+		mock().expectOneCall("on_connector_event")
+			.withParameter("event", CONNECTOR_EVENT_CHARGING_STARTED);
 
 		connector_process(c);
 	}
@@ -151,6 +213,7 @@ TEST(OcppConnector, ShouldDispatchUnoccupiedEvent_WhenAuthorizationTimeout) {
 	// 1. fault check(is_evse_error)
 	mock().expectOneCall("iec61851_get_pwm_duty_target").andReturnValue(100);
 	mock().expectNCalls(2, "safety_check").ignoreOtherParameters().andReturnValue(0);
+	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_A);
 	// 2. is_unavailable, is_available, do_preparing
 	mock().expectNCalls(2, "iec61851_state").andReturnValue(IEC61851_STATE_A);
 	mock().expectOneCall("csms_request")
@@ -162,6 +225,38 @@ TEST(OcppConnector, ShouldDispatchUnoccupiedEvent_WhenAuthorizationTimeout) {
 		.andReturnValue(false);
 	mock().expectOneCall("on_connector_event")
 		.withParameter("event", CONNECTOR_EVENT_UNOCCUPIED);
+
+	connector_process(c);
+}
+TEST(OcppConnector, ShouldSendStartTransaction_WhenGotStateBAfterAuthorized) {
+	go_start_transaction();
+}
+TEST(OcppConnector, ShouldGoCharging_WhenPluggedAfterAuthorizedFirst) {
+	go_start_transaction();
+
+	ocpp_connector_set_session_trial_uid(oc, "test");
+	ocpp_connector_accept_session_trial_uid(oc);
+	ocpp_connector_set_tid(oc, 1);
+
+	// 1. fault check(is_evse_error)
+	mock().expectOneCall("iec61851_get_pwm_duty_target").andReturnValue(100);
+	mock().expectNCalls(2, "safety_check").ignoreOtherParameters().andReturnValue(0);
+	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_B);
+	// 2. is_unavailable, is_available
+	mock().expectNCalls(2, "iec61851_state").andReturnValue(IEC61851_STATE_B);
+	// 3. is_charging_rdy
+	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_B);
+	// 4. is_charging
+	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_B);
+	// 5. do_charging
+	mock().expectOneCall("iec61851_set_current").withParameter("milliampere", 32);
+	// 6. on_state_change()
+	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_C);
+	mock().expectOneCall("iec61851_is_occupied_state")
+		.withParameter("state", IEC61851_STATE_C)
+		.andReturnValue(true);
+	mock().expectOneCall("on_connector_event")
+		.withParameter("event", CONNECTOR_EVENT_CHARGING_STARTED);
 
 	connector_process(c);
 }

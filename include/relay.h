@@ -37,6 +37,8 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
+
 struct relay;
 struct lm_pwm_channel;
 

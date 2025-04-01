@@ -43,13 +43,12 @@
 #include "libmcu/cleanup.h"
 #include "libmcu/apptmr.h"
 #include "libmcu/ratelim.h"
-#include "libmcu/i2c.h"
-#include "libmcu/gpio.h"
 
 #include "logger.h"
 #include "exio.h"
 #include "config.h"
 #include "secret.h"
+#include "periph.h"
 #include "buzzer.h"
 #include "usrinp.h"
 #include "uptime.h"
@@ -73,7 +72,6 @@ static uint8_t actor_mem[ACTOR_MEMSIZE_BYTES];
 static uint8_t actor_timer_mem[ACTOR_MEMSIZE_BYTES];
 
 static struct actor runner_actor;
-static struct actor exio_actor;
 static struct actor metric_actor;
 static struct actor cleanup_actor;
 static struct apptmr *cleanup_timer;
@@ -150,24 +148,6 @@ static void runner_handler(struct actor *actor, struct actor_msg *msg)
 	actor_send_defer(actor, NULL, interval_ms);
 }
 
-static void exio_handler(struct actor *actor, struct actor_msg *msg)
-{
-	unused(actor);
-	exio_intr_t intr = exio_get_intr_source();
-
-	if (intr & EXIO_INTR_EMERGENCY) {
-		usrinp_raise(USRINP_EMERGENCY_STOP);
-	}
-	if (intr & EXIO_INTR_USB_CONNECT) {
-		usrinp_raise(USRINP_USB_CONNECT);
-	}
-	if (intr & EXIO_INTR_ACCELEROMETER) {
-	}
-
-	actor_free(msg);
-	metrics_increase(ExioDispatchCount);
-}
-
 static void metric_handler(struct actor *actor, struct actor_msg *msg)
 {
 	static uint32_t t0;
@@ -240,13 +220,6 @@ static void on_watchdog_periodic(void *ctx)
 			METRICS_VALUE(board_get_current_stack_watermark()));
 }
 
-static void on_exio_intr(struct lm_gpio *gpio, void *ctx)
-{
-	unused(gpio);
-	unused(ctx);
-	actor_send(&exio_actor, NULL);
-}
-
 static int get_exio_state(usrinp_t source)
 {
 	if (source == USRINP_EMERGENCY_STOP) {
@@ -255,17 +228,6 @@ static int get_exio_state(usrinp_t source)
 		return exio_get_intr_level(EXIO_INTR_USB_CONNECT);
 	}
 	return -EINVAL;
-}
-
-static void create_i2c_devices(struct pinmap_periph *p)
-{
-	lm_i2c_enable(p->i2c0);
-	lm_i2c_reset(p->i2c0);
-
-	p->io_expander = lm_i2c_create_device(p->i2c0, 0x74, 400000);
-	p->codec = lm_i2c_create_device(p->i2c0, 0x18, 400000);
-	p->temp = lm_i2c_create_device(p->i2c0, 0x49, 400000);
-	p->acc = lm_i2c_create_device(p->i2c0, 0x19, 400000);
 }
 
 static bool update(void *ctx)
@@ -282,12 +244,13 @@ static void run_network_updater(void *ctx)
 	netmgr_register_task(update, ctx);
 }
 
+void reboot_gracefully(void);
 void reboot_gracefully(void)
 {
 	raise_cleanup();
 }
 
-int main(void)
+int main(int argc, char *argv[])
 {
 	const board_reboot_reason_t reboot_reason = board_get_reboot_reason();
 	struct pinmap_periph *periph = &app.periph;
@@ -321,16 +284,14 @@ int main(void)
 			board_get_version_string(),
 			board_get_reboot_reason_string(reboot_reason));
 
-	create_i2c_devices(periph);
-	exio_init(periph->io_expander, periph->io_expander_reset);
-	exio_set_audio_power(false);
-
 	actor_init(actor_mem, sizeof(actor_mem), ACTOR_STACKSIZE_BYTES);
 	actor_timer_init(actor_timer_mem, sizeof(actor_timer_mem));
+
 	actor_set(&runner_actor, runner_handler, 0);
-	actor_set(&exio_actor, exio_handler, 0);
 	actor_set(&metric_actor, metric_handler, 0);
 	actor_set(&cleanup_actor, cleanup_handler, 0);
+
+	periph_init(periph);
 
 	config_get("net.health", &network_healthchk_interval_ms,
 			sizeof(network_healthchk_interval_ms));
@@ -339,8 +300,6 @@ int main(void)
 	updater_set_runner(run_network_updater, NULL);
 
 	usrinp_init(periph->debug_button, get_exio_state);
-	lm_gpio_register_callback(periph->io_expander_int, on_exio_intr, NULL);
-	lm_gpio_enable(periph->io_expander_int);
 
 	/* NOTE: around 3kHz and 9kHz will be the most high-pitched sound on our
 	 * buzzer. which is G note in octave 7 and B note in octave 8. */
@@ -363,6 +322,20 @@ int main(void)
 	metrics_set(InitStackHighWatermark,
 			METRICS_VALUE(board_get_current_stack_watermark()));
 	metrics_set(BootingTime, METRICS_VALUE(board_get_time_since_boot_ms()));
+
+#if defined(HOST_BUILD)
+	app.argv = argv;
+#if !defined(DISABLE_HOST_MAIN_LOOP)
+	/* NOTE: This is for host testing. On host builds, main() would normally
+	 * return immediately, which causes the process to exit even if
+	 * background threads or actor systems are still running. To prevent
+	 * this, we block the main thread indefinitely. */
+	while (!app.exit) {
+	}
+#endif /* DISABLE_HOST_MAIN_LOOP */
+#endif /* HOST_BUILD */
+	unused(argc);
+	unused(argv);
 
 	return 0;
 }

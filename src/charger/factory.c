@@ -41,6 +41,7 @@
 #include "charger/free_connector.h"
 #include "charger/ocpp_connector.h"
 #include "config.h"
+#include "logger.h"
 
 static_assert(sizeof(struct charger_param)
 		== sizeof(((struct config *)0)->charger.param),

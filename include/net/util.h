@@ -39,6 +39,7 @@ extern "C" {
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stddef.h>
 
 #if !defined(MAC_ADDR_LEN)
 #define MAC_ADDR_LEN		6
@@ -80,6 +81,37 @@ net_protocol_t net_get_protocol_from_url(const char *url);
  * @return true if the protocol is secure, false otherwise.
  */
 bool net_is_secure_protocol(net_protocol_t proto);
+
+/**
+ * @brief Extracts the port number from a given URL.
+ *
+ * @param[in] url The input URL string.
+ * @return The port number as a 16-bit unsigned integer.
+ *         Returns 0 if the port is not specified in the URL.
+ */
+uint16_t net_get_port_from_url(const char *url);
+
+/**
+ * @brief Extracts the path component from a given URL.
+ *
+ * @param[in]  url The input URL string.
+ * @param[out] buf The buffer to store the extracted path.
+ * @param[in]  bufsize The size of the buffer.
+ *
+ * @return 0 on success, or a negative error code on failure.
+ */
+int net_get_path_from_url(const char *url, char *buf, size_t bufsize);
+
+/**
+ * @brief Extracts the host component from a given URL.
+ *
+ * @param[in]  url The input URL string.
+ * @param[out] buf The buffer to store the extracted host.
+ * @param[in]  bufsize The size of the buffer.
+ *
+ * @return 0 on success, or a negative error code on failure.
+ */
+int net_get_host_from_url(const char *url, char *buf, size_t bufsize);
 
 /**
  * @brief Validate an IPv4 address string.

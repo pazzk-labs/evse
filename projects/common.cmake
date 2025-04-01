@@ -32,31 +32,40 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 	)
 	# Additional code quality and optimization related options
 	list(APPEND COMMON_COMPILE_OPTIONS
+		-Wnull-dereference
+		-Wsign-conversion
+		-Wstack-protector
+		-Walloca
+		#-Wpadded
+		-Wdisabled-optimization
+		-Wimplicit-fallthrough
+	)
+	# Handle errors as warnings
+	list(APPEND COMMON_COMPILE_OPTIONS
+	)
+	if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+		list(APPEND COMMON_COMPILE_OPTIONS
+			-Wno-error=deprecated-declarations
+		)
+	endif()
+if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
+	list(APPEND COMMON_COMPILE_OPTIONS
 		-Wlogical-op
 		-Wduplicated-cond
 		-Wduplicated-branches
 		-Wrestrict
-		-Wnull-dereference
-		-Wsign-conversion
-		-Wstack-protector
 		-Wunsafe-loop-optimizations
 		-Wvector-operation-performance
 		-Wsuggest-attribute=pure
 		-Wsuggest-attribute=const
 		-Wsuggest-attribute=noreturn
 		-Wsuggest-attribute=format
-		-Walloca
 		-Wstack-usage=1024
 		-Wuseless-cast
-		#-Wpadded
-		-Wdisabled-optimization
-		-Wimplicit-fallthrough
 		-Wsuggest-final-types
 		-Wsuggest-final-methods
 	)
-	# Handle errors as warnings
-	list(APPEND COMMON_COMPILE_OPTIONS
-	)
+endif()
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 	# MSVC specific warning options (different from GCC/Clang)
 	set(COMMON_COMPILE_OPTIONS

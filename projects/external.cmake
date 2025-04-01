@@ -29,6 +29,8 @@ target_compile_definitions(libmcu
 target_compile_options(libmcu
 	PRIVATE
 		-include ${PROJECT_SOURCE_DIR}/external/libmcu/modules/logging/include/libmcu/logging.h
+	PUBLIC
+		-I${PROJECT_SOURCE_DIR}/external/libmcu/ports/mbedtls/include
 )
 
 target_compile_definitions(littlefs PUBLIC LFS_THREADSAFE)

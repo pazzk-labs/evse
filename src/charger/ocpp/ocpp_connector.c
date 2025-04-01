@@ -129,6 +129,7 @@ static bool is_charging_rdy(fsm_state_t state, fsm_state_t next_state, void *ctx
 
 	return connector_is_state_x(c, B) &&
 		ocpp_connector_is_session_active(oc) &&
+		!ocpp_connector_is_transaction_started(oc) &&
 		ocpp_count_pending_requests() == 0;
 }
 
@@ -158,6 +159,7 @@ static bool is_finishing(fsm_state_t state, fsm_state_t next_state, void *ctx)
 
 	if (ocpp_connector_is_remote_reset_requested(oc, NULL) ||
 			connector_is_state_x(c, A) ||
+			connector_is_state_x(c, E) ||
 			connector_is_state_x(c, F) ||
 			!ocpp_connector_is_session_established(oc)/*2nd tag*/) {
 		return true;

@@ -33,9 +33,6 @@
 #include "tca9539.h"
 #include "tca9539_port.h"
 
-#define DEFAULT_ADDR		0x74U
-#define DEFAULT_FREQ		400000U
-
 enum {
 	REG_INPUT_PORT0,
 	REG_INPUT_PORT1,

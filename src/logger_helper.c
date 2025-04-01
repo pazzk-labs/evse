@@ -36,7 +36,19 @@
 static void logger_helper(logging_t type, const char *format, va_list args)
 {
 	char buf[256];
+#if defined(__clang__)
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wformat-nonliteral"
+#elif defined(__GNUC__) || defined(__GNUG__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
+#endif
 	vsnprintf(buf, sizeof(buf), format, args);
+#if defined(__clang__)
+#pragma clang diagnostic pop
+#elif defined(__GNUC__) || defined(__GNUG__)
+#pragma GCC diagnostic pop
+#endif
 
 	switch (type) {
 	case LOGGING_TYPE_DEBUG:

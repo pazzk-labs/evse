@@ -41,6 +41,7 @@
 #include "libmcu/board.h"
 #include "libmcu/timext.h"
 #include "libmcu/dfu.h"
+#include "libmcu/compiler.h"
 
 #include "fs/fs.h"
 

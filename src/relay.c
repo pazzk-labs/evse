@@ -37,6 +37,7 @@
 #include "libmcu/pwm.h"
 #include "libmcu/apptmr.h"
 #include "libmcu/metrics.h"
+#include "libmcu/compiler.h"
 
 #if !defined(RELAY_MAX)
 #define RELAY_MAX			1

@@ -30,7 +30,7 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "libmcu/cli.h"
+#include "helper.h"
 
 #include <string.h>
 #include <inttypes.h>
@@ -43,61 +43,9 @@
 #include "libmcu/timext.h"
 #include "libmcu/pki.h"
 
-#if !defined(ARRAY_COUNT)
-#define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
-#endif
-
-struct cmd;
-typedef void (*cmd_handler_t)(const struct cli_io *io,
-		int argc, const char *argv[], const struct cmd *cmd);
-
-struct cmd {
-	const char *name;
-	const char *opt;
-	const char *usage;
-	int argc_min;
-	int argc_max;
-	cmd_handler_t handler;
+struct ctx {
+	const struct cli_io *io;
 };
-
-static void println(const struct cli_io *io, const char *str)
-{
-	io->write(str, strlen(str));
-	io->write("\n", 1);
-}
-
-static void printini(const struct cli_io *io,
-		const char *key, const char *value)
-{
-	io->write(key, strlen(key));
-	io->write("=", 1);
-	println(io, value);
-}
-
-static void print_help(const struct cli_io *io, const struct cmd *cmd,
-		const char *extra)
-{
-	io->write(cmd->usage, strlen(cmd->usage));
-
-	if (cmd->opt) {
-		io->write(" ", 1);
-		io->write(cmd->opt, strlen(cmd->opt));
-	}
-
-	if (extra) {
-		io->write(" ", 1);
-		io->write(extra, strlen(extra));
-	}
-
-	io->write("\n", 1);
-}
-
-static void print_usage(const struct cli_io *io, const struct cmd *cmd,
-		const char *extra)
-{
-	io->write("usage: ", 7);
-	print_help(io, cmd, extra);
-}
 
 static void print_config_version(const struct cli_io *io)
 {
@@ -177,38 +125,43 @@ static void print_ocpp(const struct cli_io *io)
 	printini(io, "ocpp.version", buf);
 }
 
-static void do_show(const struct cli_io *io, int argc, const char *argv[],
-		const struct cmd *cmd)
+static void do_show(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
 	unused(argc);
 	unused(argv);
 	unused(cmd);
-	print_config_version(io);
-	print_charge_mode(io);
-	print_charge_param(io);
-	print_x509_ca(io);
-	print_x509_cert(io);
-	print_ocpp(io);
+
+	struct ctx *p = (struct ctx *)ctx;
+
+	print_config_version(p->io);
+	print_charge_mode(p->io);
+	print_charge_param(p->io);
+	print_x509_ca(p->io);
+	print_x509_cert(p->io);
+	print_ocpp(p->io);
 }
 
-static void do_reset(const struct cli_io *io, int argc, const char *argv[],
-		const struct cmd *cmd)
+static void do_reset(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
 	unused(argc);
 	unused(argv);
 	unused(cmd);
+	struct ctx *p = (struct ctx *)ctx;
 	config_reset(NULL);
-	println(io, "Configuration reset.");
+	println(p->io, "Configuration reset.");
 }
 
-static void do_save(const struct cli_io *io, int argc, const char *argv[],
-		const struct cmd *cmd)
+static void do_save(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
 	unused(argc);
 	unused(argv);
 	unused(cmd);
+	struct ctx *p = (struct ctx *)ctx;
 	config_save();
-	println(io, "Configuration saved.");
+	println(p->io, "Configuration saved.");
 }
 
 static size_t read_until_eot(const struct cli_io *io,
@@ -297,22 +250,27 @@ out_free:
 	free(buf);
 }
 
-static void do_read_set(const struct cli_io *io, int argc, const char *argv[],
-		const struct cmd *cmd)
+static void do_read_set(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
 	unused(argc);
+
+	struct ctx *p = (struct ctx *)ctx;
+
 	if (strcmp(argv[2], "x509.ca") == 0) {
-		change_ca(io);
+		change_ca(p->io);
 	} else if (strcmp(argv[2], "x509.cert") == 0) {
-		change_cert(io);
+		change_cert(p->io);
 	} else {
-		print_usage(io, cmd, NULL);
+		print_usage(p->io, cmd, NULL);
 	}
 }
 
-static void do_set_mode(const struct cli_io *io, int argc, const char *argv[],
-		const struct cmd *cmd)
+static void do_set_mode(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
+	struct ctx *p = (struct ctx *)ctx;
+
 	if (argc != cmd->argc_max) {
 		goto out_help;
 	}
@@ -328,17 +286,19 @@ static void do_set_mode(const struct cli_io *io, int argc, const char *argv[],
 	}
 
 	if (config_set("chg.mode", mode, strlen(mode)+1/*null*/) == 0) {
-		println(io, "Reboot to apply the changes after saving");
+		println(p->io, "Reboot to apply the changes after saving");
 	}
 	return;
 
 out_help:
-	print_usage(io, cmd, "free | ocpp | hlc");
+	print_usage(p->io, cmd, "free | ocpp | hlc");
 }
 
-static void do_set_input_voltage(const struct cli_io *io,
-		int argc, const char *argv[], const struct cmd *cmd)
+static void do_set_input_voltage(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
+	struct ctx *p = (struct ctx *)ctx;
+
 	if (argc != cmd->argc_max) {
 		goto out_help;
 	}
@@ -357,12 +317,14 @@ static void do_set_input_voltage(const struct cli_io *io,
 	return;
 
 out_help:
-	print_usage(io, cmd, "100 ~ 300");
+	print_usage(p->io, cmd, "100 ~ 300");
 }
 
-static void do_set_input_frequency(const struct cli_io *io,
-		int argc, const char *argv[], const struct cmd *cmd)
+static void do_set_input_frequency(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
+	struct ctx *p = (struct ctx *)ctx;
+
 	if (argc != cmd->argc_max) {
 		goto out_help;
 	}
@@ -381,12 +343,14 @@ static void do_set_input_frequency(const struct cli_io *io,
 	return;
 
 out_help:
-	print_usage(io, cmd, "50 ~ 60");
+	print_usage(p->io, cmd, "50 ~ 60");
 }
 
-static void do_set_input_current(const struct cli_io *io,
-		int argc, const char *argv[], const struct cmd *cmd)
+static void do_set_input_current(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
+	struct ctx *p = (struct ctx *)ctx;
+
 	if (argc != cmd->argc_max) {
 		goto out_help;
 	}
@@ -405,12 +369,14 @@ static void do_set_input_current(const struct cli_io *io,
 	return;
 
 out_help:
-	print_usage(io, cmd, "6 ~ 50");
+	print_usage(p->io, cmd, "6 ~ 50");
 }
 
-static void do_set_output_max_current(const struct cli_io *io,
-		int argc, const char *argv[], const struct cmd *cmd)
+static void do_set_output_max_current(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
+	struct ctx *p = (struct ctx *)ctx;
+
 	if (argc != cmd->argc_max) {
 		goto out_help;
 	}
@@ -430,12 +396,14 @@ static void do_set_output_max_current(const struct cli_io *io,
 	return;
 
 out_help:
-	print_usage(io, cmd, "6 ~ 50");
+	print_usage(p->io, cmd, "6 ~ 50");
 }
 
-static void do_set_output_min_current(const struct cli_io *io,
-		int argc, const char *argv[], const struct cmd *cmd)
+static void do_set_output_min_current(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
+	struct ctx *p = (struct ctx *)ctx;
+
 	if (argc != cmd->argc_max) {
 		goto out_help;
 	}
@@ -456,27 +424,31 @@ static void do_set_output_min_current(const struct cli_io *io,
 	return;
 
 out_help:
-	print_usage(io, cmd, "6 ~ 50, max. output current");
+	print_usage(p->io, cmd, "6 ~ 50, max. output current");
 }
 
-static void do_set_multi_chg_param(const struct cli_io *io,
-		int argc, const char *argv[], const struct cmd *cmd)
+static void do_set_multi_chg_param(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
+	struct ctx *p = (struct ctx *)ctx;
+
 	if (argc != cmd->argc_max) {
-		print_usage(io, cmd, "<voltage> <current> <frequency> <min> <max>");
+		print_usage(p->io, cmd, "<voltage> <current> <frequency> <min> <max>");
 		return;
 	}
 
-	do_set_input_voltage(io, 4, argv, cmd);
-	do_set_input_current(io, 4, &argv[1], cmd);
-	do_set_input_frequency(io, 4, &argv[2], cmd);
-	do_set_output_max_current(io, 4, &argv[3], cmd);
-	do_set_output_min_current(io, 4, &argv[4], cmd);
+	do_set_input_voltage(cmd, 4, argv, ctx);
+	do_set_input_current(cmd, 4, &argv[1], ctx);
+	do_set_input_frequency(cmd, 4, &argv[2], ctx);
+	do_set_output_max_current(cmd, 4, &argv[3], ctx);
+	do_set_output_min_current(cmd, 4, &argv[4], ctx);
 }
 
-static void do_set_mac(const struct cli_io *io, int argc, const char *argv[],
-		const struct cmd *cmd)
+static void do_set_mac(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
+	struct ctx *p = (struct ctx *)ctx;
+
 	if (argc != cmd->argc_max) {
 		goto out_help;
 	}
@@ -490,7 +462,7 @@ static void do_set_mac(const struct cli_io *io, int argc, const char *argv[],
 	return;
 
 out_help:
-	print_usage(io, cmd, "01:23:45:67:89:ab");
+	print_usage(p->io, cmd, "01:23:45:67:89:ab");
 }
 
 static const struct cmd cmds[] = {
@@ -511,26 +483,19 @@ static const struct cmd cmds[] = {
 
 DEFINE_CLI_CMD(config, NULL) {
 	const struct cli *cli = (struct cli const *)env;
+	struct ctx ctx = { .io = cli->io };
 
 	if (argc < 2) {
-		do_show(cli->io, argc, argv, NULL);
+		do_show(NULL, argc, argv, &ctx);
 		return CLI_CMD_SUCCESS;
 	}
 
-	for (size_t i = 0; i < ARRAY_COUNT(cmds); i++) {
-		if (argc >= cmds[i].argc_min && argc <= cmds[i].argc_max &&
-				strcmp(argv[1], cmds[i].name) == 0 &&
-				(!cmds[i].opt ||
-					strcmp(argv[2], cmds[i].opt) == 0)) {
-			cmds[i].handler(cli->io, argc, argv, &cmds[i]);
-			return CLI_CMD_SUCCESS;
+	if (process_cmd(cmds, ARRAY_COUNT(cmds), argc, argv, &ctx)
+			!= CLI_CMD_SUCCESS) {
+		println(cli->io, "usage:");
+		for (size_t i = 0; i < ARRAY_COUNT(cmds); i++) {
+			print_help(cli->io, &cmds[i], NULL);
 		}
-	}
-
-	println(cli->io, "usage:");
-
-	for (size_t i = 0; i < ARRAY_COUNT(cmds); i++) {
-		print_help(cli->io, &cmds[i], NULL);
 	}
 
 	return CLI_CMD_SUCCESS;
