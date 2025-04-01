@@ -30,7 +30,7 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "libmcu/cli.h"
+#include "helper.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -40,73 +40,14 @@
 #include "charger/connector.h"
 #include "app.h"
 
-#if !defined(ARRAY_COUNT)
-#define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
-#endif
-
-struct cmd;
-typedef void (*cmd_handler_t)(const struct cmd *cmd, const struct cli_io *io,
-		int argc, const char *argv[], struct app *app);
-
-struct cmd {
-	const char *name;
-	const char *opt;
-	const char *usage;
-	int argc_min;
-	int argc_max;
-	cmd_handler_t handler;
-};
-
-struct conn_ctx {
+struct ctx {
 	const struct cli_io *io;
+	struct app *app;
 };
-
-static void println(const struct cli_io *io, const char *str)
-{
-	io->write(str, strlen(str));
-	io->write("\n", 1);
-}
-
-static void printini(const struct cli_io *io,
-		const char *key, const char *value)
-{
-	io->write(key, strlen(key));
-	io->write("=", 1);
-	if (value && value[0] != '\0') {
-		println(io, value);
-	} else {
-		println(io, "null");
-	}
-}
-
-static void print_help(const struct cli_io *io, const struct cmd *cmd,
-		const char *extra)
-{
-	io->write(cmd->usage, strlen(cmd->usage));
-
-	if (cmd->opt) {
-		io->write(" ", 1);
-		io->write(cmd->opt, strlen(cmd->opt));
-	}
-
-	if (extra) {
-		io->write(" ", 1);
-		io->write(extra, strlen(extra));
-	}
-
-	io->write("\n", 1);
-}
-
-static void print_usage(const struct cli_io *io, const struct cmd *cmd,
-		const char *extra)
-{
-	io->write("usage: ", 7);
-	print_help(io, cmd, extra);
-}
 
 static void on_each_connector(struct connector *c, void *ctx)
 {
-	struct conn_ctx *p = (struct conn_ctx *)ctx;
+	struct ctx *p = (struct ctx *)ctx;
 	const char *name = connector_name(c);
 	const char *state = connector_stringify_state(connector_state(c));
 	char buf[64];
@@ -114,52 +55,53 @@ static void on_each_connector(struct connector *c, void *ctx)
 	printini(p->io, buf, state);
 }
 
-static void do_show(const struct cmd *cmd, const struct cli_io *io,
-		int argc, const char *argv[], struct app *app)
+static void do_show(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
 	unused(argc);
 	unused(argv);
 	unused(cmd);
 
-	struct conn_ctx ctx = {
-		.io = io,
-	};
+	struct ctx *p = (struct ctx *)ctx;
 
-	const int n = charger_count_connectors(app->charger);
+	const int n = charger_count_connectors(p->app->charger);
 	char buf[16];
 	snprintf(buf, sizeof(buf), "%d", n);
-	printini(io, "charger.connectors", buf);
+	printini(p->io, "charger.connectors", buf);
 
-	charger_iterate_connectors(app->charger, on_each_connector, &ctx);
+	charger_iterate_connectors(p->app->charger, on_each_connector, ctx);
 }
 
 #if defined(HOST_BUILD)
-static void do_pilot_set(const struct cmd *cmd, const struct cli_io *io,
-		int argc, const char *argv[], struct app *app)
+static void do_pilot_set(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
 {
+	struct ctx *p = (struct ctx *)ctx;
+
 	if (argc != cmd->argc_max || strlen(argv[3]) != 1) {
 		goto out_help;
 	}
 
 	if (argv[3][0] == 'A' || argv[3][0] == 'a') {
-		pilot_set_status(app->pilot, PILOT_STATUS_A);
+		pilot_set_status(p->app->pilot, PILOT_STATUS_A);
 	} else if (argv[3][0] == 'B' || argv[3][0] == 'b') {
-		pilot_set_status(app->pilot, PILOT_STATUS_B);
+		pilot_set_status(p->app->pilot, PILOT_STATUS_B);
 	} else if (argv[3][0] == 'C' || argv[3][0] == 'c') {
-		pilot_set_status(app->pilot, PILOT_STATUS_C);
+		pilot_set_status(p->app->pilot, PILOT_STATUS_C);
 	} else if (argv[3][0] == 'D' || argv[3][0] == 'd') {
-		pilot_set_status(app->pilot, PILOT_STATUS_D);
+		pilot_set_status(p->app->pilot, PILOT_STATUS_D);
 	} else if (argv[3][0] == 'E' || argv[3][0] == 'e') {
-		pilot_set_status(app->pilot, PILOT_STATUS_E);
+		pilot_set_status(p->app->pilot, PILOT_STATUS_E);
 	} else if (argv[3][0] == 'F' || argv[3][0] == 'f') {
-		pilot_set_status(app->pilot, PILOT_STATUS_F);
+		pilot_set_status(p->app->pilot, PILOT_STATUS_F);
 	} else {
 		goto out_help;
 	}
+	printini(p->io, "pilot.status", argv[3]);
 	return;
 
 out_help:
-	print_usage(io, cmd, "A | B | C | D | E | F");
+	print_usage(p->io, cmd, "{A|B|C|D|E|F}");
 }
 #endif /* HOST_BUILD */
 
@@ -173,26 +115,19 @@ static const struct cmd cmds[] = {
 DEFINE_CLI_CMD(chg, 0) {
 	struct cli const *cli = (struct cli const *)env;
 	struct app *app = (struct app *)cli->env;
+	struct ctx ctx = { .io = cli->io, .app = app };
 
 	if (argc < 2) {
-		do_show(NULL, cli->io, argc, argv, app);
+		do_show(NULL, argc, argv, &ctx);
 		return CLI_CMD_SUCCESS;
 	}
 
-	for (size_t i = 0; i < ARRAY_COUNT(cmds); i++) {
-		if (argc >= cmds[i].argc_min && argc <= cmds[i].argc_max &&
-				strcmp(argv[1], cmds[i].name) == 0 &&
-				(!cmds[i].opt ||
-					strcmp(argv[2], cmds[i].opt) == 0)) {
-			(*cmds[i].handler)(&cmds[i], cli->io, argc, argv, app);
-			return CLI_CMD_SUCCESS;
+	if (process_cmd(cmds, ARRAY_COUNT(cmds), argc, argv, &ctx)
+			!= CLI_CMD_SUCCESS) {
+		println(cli->io, "usage:");
+		for (size_t i = 0; i < ARRAY_COUNT(cmds); i++) {
+			print_help(cli->io, &cmds[i], NULL);
 		}
-	}
-
-	println(cli->io, "usage:");
-
-	for (size_t i = 0; i < ARRAY_COUNT(cmds); i++) {
-		print_help(cli->io, &cmds[i], NULL);
 	}
 
 	return CLI_CMD_SUCCESS;

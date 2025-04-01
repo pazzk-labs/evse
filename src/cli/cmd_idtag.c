@@ -1,6 +1,6 @@
 /*
  * This file is part of the Pazzk project <https://pazzk.net/>.
- * Copyright (c) 2024 Pazzk <team@pazzk.net>.
+ * Copyright (c) 2025 Pazzk <team@pazzk.net>.
  *
  * Community Version License (GPLv3):
  * This software is open-source and licensed under the GNU General Public
@@ -30,20 +30,39 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "libmcu/cli.h"
+#include "helper.h"
 #include "libmcu/compiler.h"
-#include "app.h"
 
-DEFINE_CLI_CMD(exit, "Exit the application") {
-	struct cli *cli = (struct cli *)env;
-	struct app *app = (struct app *)cli->env;
+struct ctx {
+	const struct cli_io *io;
+};
 
-#if defined(HOST_BUILD) && !defined(DISABLE_HOST_MAIN_LOOP)
-	app->exit = true;
-#endif
-
+static void do_tag(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
+{
 	unused(argc);
-	unused(argv);
+	unused(cmd);
 
-	return CLI_CMD_EXIT;
+	struct ctx *c = (struct ctx *)ctx;
+	const struct cli_io *io = c->io;
+	printini(io, "tag", argv[1]);
+}
+
+static const struct cmd cmds[] = {
+	{ NULL, NULL, "idtag {string}", 2, 2, do_tag },
+};
+
+DEFINE_CLI_CMD(idtag, "Set ID tag") {
+	struct cli const *cli = (struct cli const *)env;
+	struct ctx ctx = { .io = cli->io, };
+
+	if (process_cmd(cmds, ARRAY_COUNT(cmds), argc, argv, &ctx)
+			!= CLI_CMD_SUCCESS) {
+		println(cli->io, "usage:");
+		for (size_t i = 0; i < ARRAY_COUNT(cmds); i++) {
+			print_help(cli->io, &cmds[i], NULL);
+		}
+	}
+
+	return CLI_CMD_SUCCESS;
 }

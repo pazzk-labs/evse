@@ -1,6 +1,6 @@
 /*
  * This file is part of the Pazzk project <https://pazzk.net/>.
- * Copyright (c) 2024 Pazzk <team@pazzk.net>.
+ * Copyright (c) 2025 Pazzk <team@pazzk.net>.
  *
  * Community Version License (GPLv3):
  * This software is open-source and licensed under the GNU General Public
@@ -30,20 +30,64 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "libmcu/cli.h"
-#include "libmcu/compiler.h"
-#include "app.h"
+#include "helper.h"
+#include <string.h>
 
-DEFINE_CLI_CMD(exit, "Exit the application") {
-	struct cli *cli = (struct cli *)env;
-	struct app *app = (struct app *)cli->env;
+void println(const struct cli_io *io, const char *str)
+{
+	io->write(str, strlen(str));
+	io->write("\n", 1);
+}
 
-#if defined(HOST_BUILD) && !defined(DISABLE_HOST_MAIN_LOOP)
-	app->exit = true;
-#endif
+void printini(const struct cli_io *io, const char *key, const char *value)
+{
+	io->write(key, strlen(key));
+	io->write("=", 1);
+	if (value && value[0] != '\0') {
+		println(io, value);
+	} else {
+		println(io, "null");
+	}
+}
 
-	unused(argc);
-	unused(argv);
+void print_help(const struct cli_io *io,
+		const struct cmd *cmd, const char *extra)
+{
+	io->write(cmd->usage, strlen(cmd->usage));
 
-	return CLI_CMD_EXIT;
+	if (cmd->opt) {
+		io->write(" ", 1);
+		io->write(cmd->opt, strlen(cmd->opt));
+	}
+
+	if (extra) {
+		io->write(" ", 1);
+		io->write(extra, strlen(extra));
+	}
+
+	io->write("\n", 1);
+}
+
+void print_usage(const struct cli_io *io,
+		const struct cmd *cmd, const char *extra)
+{
+	io->write("usage: ", 7);
+	print_help(io, cmd, extra);
+}
+
+cli_cmd_error_t process_cmd(const struct cmd *cmds, size_t n,
+		int argc, const char *argv[], void *ctx)
+{
+	for (size_t i = 0; i < n; i++) {
+		if (argc >= cmds[i].argc_min && argc <= cmds[i].argc_max &&
+				(!cmds[i].name ||
+					strcmp(argv[1], cmds[i].name) == 0) &&
+				(!cmds[i].opt ||
+					strcmp(argv[2], cmds[i].opt) == 0)) {
+			(*cmds[i].handler)(&cmds[i], argc, argv, ctx);
+			return CLI_CMD_SUCCESS;
+		}
+	}
+
+	return CLI_CMD_INVALID_PARAM;
 }

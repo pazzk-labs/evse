@@ -1,6 +1,6 @@
 /*
  * This file is part of the Pazzk project <https://pazzk.net/>.
- * Copyright (c) 2024 Pazzk <team@pazzk.net>.
+ * Copyright (c) 2025 Pazzk <team@pazzk.net>.
  *
  * Community Version License (GPLv3):
  * This software is open-source and licensed under the GNU General Public
@@ -30,20 +30,43 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "libmcu/cli.h"
-#include "libmcu/compiler.h"
-#include "app.h"
+#ifndef CLI_HELPER_H
+#define CLI_HELPER_H
 
-DEFINE_CLI_CMD(exit, "Exit the application") {
-	struct cli *cli = (struct cli *)env;
-	struct app *app = (struct app *)cli->env;
-
-#if defined(HOST_BUILD) && !defined(DISABLE_HOST_MAIN_LOOP)
-	app->exit = true;
+#if defined(__cplusplus)
+extern "C" {
 #endif
 
-	unused(argc);
-	unused(argv);
+#include "libmcu/cli.h"
 
-	return CLI_CMD_EXIT;
+#if !defined(ARRAY_COUNT)
+#define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
+#endif
+
+struct cmd;
+typedef void (*cmd_handler_t)(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx);
+
+struct cmd {
+	const char *name;
+	const char *opt;
+	const char *usage;
+	int argc_min;
+	int argc_max;
+	cmd_handler_t handler;
+};
+
+void println(const struct cli_io *io, const char *str);
+void printini(const struct cli_io *io, const char *key, const char *value);
+void print_help(const struct cli_io *io,
+		const struct cmd *cmd, const char *extra);
+void print_usage(const struct cli_io *io,
+		const struct cmd *cmd, const char *extra);
+cli_cmd_error_t process_cmd(const struct cmd *cmds, size_t n,
+		int argc, const char *argv[], void *ctx);
+
+#if defined(__cplusplus)
 }
+#endif
+
+#endif /* CLI_HELPER_H */
