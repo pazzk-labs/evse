@@ -32,6 +32,7 @@ COMPONENT_NAME = UID
 
 SRC_FILES = \
 	../src/uid.c \
+	../external/libmcu/modules/common/src/hexdump.c \
 
 TEST_SRC_FILES = \
 	src/uid_test.cpp \
@@ -43,6 +44,7 @@ INCLUDE_DIRS = \
 	../include \
 	../external/libmcu/modules/common/include \
 	../external/libmcu/modules/logging/include \
+	../external/libmcu/interfaces/flash/include \
 
 MOCKS_SRC_DIRS =
 CPPUTEST_CPPFLAGS =

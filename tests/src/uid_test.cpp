@@ -34,15 +34,96 @@
 #include "CppUTestExt/MockSupport.h"
 
 #include "uid.h"
+#include <string.h>
+#include <time.h>
+
+#define CACHE_CAPACITY 1024
+
+static void on_uid_update(const uid_id_t id, uid_status_t status,
+		time_t expiry, void *ctx) {
+	mock().actualCall(__func__)
+		.withMemoryBufferParameter("id", id, sizeof(uid_id_t))
+		.withParameter("status", status)
+		.withParameter("expiry", expiry)
+		.withParameter("ctx", ctx);
+}
 
 TEST_GROUP(UID) {
-	void setup(void) {
+	uid_id_t id1, id2;
+	uid_id_t pid;
+	time_t now;
+
+	void setup() {
+		memset(id1, 0x01, sizeof(uid_id_t));
+		memset(id2, 0x02, sizeof(uid_id_t));
+		memset(pid, 0xA0, sizeof(uid_id_t));
+		now = time(NULL);
+		uid_init(NULL, CACHE_CAPACITY);
 	}
-	void teardown(void) {
+
+	void teardown() {
+		uid_deinit();
 		mock().checkExpectations();
 		mock().clear();
 	}
 };
 
-TEST(UID, t) {
+TEST(UID, EmptyCache_ShouldReturnNoEntry) {
+	LONGS_EQUAL(UID_STATUS_NO_ENTRY, uid_status(id1, NULL));
+}
+
+TEST(UID, InsertAndRetrieveUID) {
+	uid_update_cache(id1, pid, UID_STATUS_ACCEPTED, now + 60);
+	time_t expiry = 0;
+	uid_status_t status = uid_status(id1, &expiry);
+
+	LONGS_EQUAL(UID_STATUS_ACCEPTED, status);
+	LONGS_EQUAL(now + 60, expiry);
+}
+
+TEST(UID, OverwriteUIDEntry) {
+	uid_update_cache(id1, pid, UID_STATUS_ACCEPTED, now + 60);
+	uid_update_cache(id1, pid, UID_STATUS_BLOCKED, now + 120);
+
+	time_t expiry = 0;
+	uid_status_t status = uid_status(id1, &expiry);
+
+	LONGS_EQUAL(UID_STATUS_BLOCKED, status);
+	LONGS_EQUAL(now + 120, expiry);
+}
+
+TEST(UID, DifferentUIDsShouldNotCollide) {
+	uid_update_cache(id1, pid, UID_STATUS_ACCEPTED, now + 60);
+	uid_update_cache(id2, pid, UID_STATUS_EXPIRED, now + 30);
+
+	time_t expiry1 = 0, expiry2 = 0;
+	uid_status_t status1 = uid_status(id1, &expiry1);
+	uid_status_t status2 = uid_status(id2, &expiry2);
+
+	LONGS_EQUAL(UID_STATUS_ACCEPTED, status1);
+	LONGS_EQUAL(UID_STATUS_EXPIRED, status2);
+	LONGS_EQUAL(now + 60, expiry1);
+	LONGS_EQUAL(now + 30, expiry2);
+}
+
+TEST(UID, DeleteUID_ShouldRemoveFromCache) {
+	uid_update_cache(id1, pid, UID_STATUS_ACCEPTED, now + 60);
+	LONGS_EQUAL(0, uid_delete(id1));
+	LONGS_EQUAL(UID_STATUS_NO_ENTRY, uid_status(id1, NULL));
+}
+
+TEST(UID, DeleteUID_NotFound) {
+	LONGS_EQUAL(-ENOENT, uid_delete(id1));
+}
+
+TEST(UID, UpdateCallbackIsCalled) {
+	uid_register_update_cb(on_uid_update, NULL);
+
+	mock().expectOneCall("on_uid_update")
+		.withMemoryBufferParameter("id", id1, sizeof(uid_id_t))
+		.withParameter("status", UID_STATUS_ACCEPTED)
+		.withParameter("expiry", now + 10)
+		.withParameter("ctx", (void *)0);
+
+	uid_update_cache(id1, pid, UID_STATUS_ACCEPTED, now + 10);
 }

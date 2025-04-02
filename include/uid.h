@@ -57,7 +57,8 @@ typedef enum {
 typedef void (*uid_update_cb_t)(const uid_id_t id, uid_status_t status,
 		time_t expiry, void *ctx);
 
-int uid_init(void);
+struct fs;
+int uid_init(struct fs *fs, uint16_t cache_capacity);
 void uid_deinit(void);
 
 /**
@@ -69,10 +70,11 @@ void uid_deinit(void);
  * @param[in] id     The UID to update.
  * @param[in] status The new status to associate with the UID.
  * @param[in] expiry The expiration time for the UID status.
- * o
+ *
  * @return 0 on success, negative value on failure.
  */
-int uid_update_cache(const uid_id_t id, uid_status_t status, time_t expiry);
+int uid_update_cache(const uid_id_t id, const uid_id_t pid,
+		uid_status_t status, time_t expiry);
 
 /**
  * @brief Removes a UID entry from the local cache.
