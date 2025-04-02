@@ -30,16 +30,10 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#ifndef AUTH_H
-#define AUTH_H
+#include "uid.h"
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-
-#if defined(__cplusplus)
-}
-#endif
-
-#endif /* AUTH_H */
+struct uid {
+	uid_id_t id;
+	time_t expiry;
+	uid_status_t status;
+};

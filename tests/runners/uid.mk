@@ -28,13 +28,13 @@
 # maintainers be held liable for any damages, whether direct, indirect,
 # incidental, special, or consequential, arising from the use of this software.
 
-COMPONENT_NAME = Auth
+COMPONENT_NAME = UID
 
 SRC_FILES = \
-	../src/auth.c \
+	../src/uid.c \
 
 TEST_SRC_FILES = \
-	src/auth_test.cpp \
+	src/uid_test.cpp \
 	src/test_all.cpp \
 	stubs/logging.c \
 

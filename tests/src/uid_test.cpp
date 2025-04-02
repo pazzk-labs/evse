@@ -33,9 +33,9 @@
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
 
-#include "auth.h"
+#include "uid.h"
 
-TEST_GROUP(Auth) {
+TEST_GROUP(UID) {
 	void setup(void) {
 	}
 	void teardown(void) {
@@ -44,5 +44,5 @@ TEST_GROUP(Auth) {
 	}
 };
 
-TEST(Auth, t) {
+TEST(UID, t) {
 }
