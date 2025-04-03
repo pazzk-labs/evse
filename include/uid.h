@@ -46,75 +46,111 @@ extern "C" {
 typedef uint8_t uid_id_t[UID_ID_MAXLEN];
 
 typedef enum {
-	UID_STATUS_UNKNOWN, /**< ID has not been processed yet. */
+	UID_STATUS_UNKNOWN,  /**< ID has not been processed yet. */
 	UID_STATUS_ACCEPTED, /**< ID is valid and recognized, access allowed. */
-	UID_STATUS_BLOCKED, /**< ID is explicitly blocked from access. */
-	UID_STATUS_EXPIRED, /**< ID was valid but has expired. */
-	UID_STATUS_INVALID, /**< ID is invalid, blacklisted, or corrupted. */
-	UID_STATUS_NO_ENTRY /**< ID is not found in the local cache. */
+	UID_STATUS_BLOCKED,  /**< ID is explicitly blocked from access. */
+	UID_STATUS_EXPIRED,  /**< ID was valid but has expired. */
+	UID_STATUS_INVALID,  /**< ID is invalid, blacklisted, or corrupted. */
+	UID_STATUS_NO_ENTRY  /**< ID is not found in the local cache or store. */
 } uid_status_t;
 
 typedef void (*uid_update_cb_t)(const uid_id_t id, uid_status_t status,
 		time_t expiry, void *ctx);
 
+struct uid_store;
 struct fs;
-int uid_init(struct fs *fs, uint16_t cache_capacity);
-void uid_deinit(void);
+
+struct uid_store_config {
+	struct fs *fs;           /**< Filesystem backend to use. */
+	const char *ns;          /**< Filesystem namespace for isolation (e.g., "local", "cache"). */
+	uint16_t cache_capacity; /**< Maximum number of cache entries in RAM. */
+};
 
 /**
- * @brief Updates the local UID cache with a new status and expiry time.
+ * @brief Creates and initializes a UID store instance.
  *
- * This function is typically called when a response is received from the server,
- * or when a local decision is made to override the cached status.
+ * This initializes both in-memory cache and backing storage under the specified
+ * namespace.
  *
+ * @param[in] config  Store configuration including fs, namespace, and cache
+ * size.
+ *
+ * @return Pointer to initialized store instance, or NULL on failure.
+ */
+struct uid_store *uid_store_create(const struct uid_store_config *config);
+
+/**
+ * @brief Destroys a previously created UID store instance.
+ *
+ * Frees all associated memory and internal structures.
+ *
+ * @param[in] store The UID store instance to destroy.
+ */
+void uid_store_destroy(struct uid_store *store);
+
+/**
+ * @brief Updates or inserts a UID entry into the store (cache + persistent
+ * storage).
+ *
+ * This function is typically called when a response is received from the
+ * server, or when a local decision is made to override the cached status.
+ *
+ * @param[in] store  The UID store instance.
  * @param[in] id     The UID to update.
+ * @param[in] pid    Provisioning or parent ID to associate (optional).
  * @param[in] status The new status to associate with the UID.
  * @param[in] expiry The expiration time for the UID status.
  *
  * @return 0 on success, negative value on failure.
  */
-int uid_update_cache(const uid_id_t id, const uid_id_t pid,
-		uid_status_t status, time_t expiry);
+int uid_update(struct uid_store *store, const uid_id_t id,
+		const uid_id_t pid, uid_status_t status, time_t expiry);
 
 /**
- * @brief Removes a UID entry from the local cache.
+ * @brief Removes a UID entry from the store (RAM only).
  *
- * This function explicitly purges the UID from the local memory cache.
+ * This function explicitly purges the UID from the in-memory cache.
  * It does not affect any persistent storage or remote server state.
  *
- * @param[in] id The UID to remove from the cache.
+ * @param[in] store The UID store instance.
+ * @param[in] id    The UID to remove from the cache.
  *
  * @return 0 on success, negative value if the UID was not found.
  */
-int uid_delete(const uid_id_t id);
+int uid_delete(struct uid_store *store, const uid_id_t id);
 
 /**
- * @brief Retrieves the status and expiry time of a UID from the local cache.
+ * @brief Retrieves the status and expiry time of a UID.
  *
- * If the UID is found, its current status and expiry time are returned.
- * If the UID is not found, UID_STATUS_NO_ENTRY is returned.
+ * This function first checks the cache; if not found, it searches the
+ * persistent storage. If the UID is found, its current status and expiry time
+ * are returned.
  *
+ * @param[in]  store  The UID store instance.
  * @param[in]  id     The UID to query.
  * @param[out] expiry Pointer to store the UID's expiry time (can be NULL).
  *
  * @return The status of the UID.
  */
-uid_status_t uid_status(const uid_id_t id, time_t *expiry);
+uid_status_t uid_status(struct uid_store *store,
+		const uid_id_t id, time_t *expiry);
 
 /**
  * @brief Registers a callback to be invoked when a UID is updated.
  *
- * The callback is called when the cache is updated with new UID information,
- * typically after a server response or local status update.
- * Only one callback can be registered at a time. Subsequent calls overwrite
- * the previous registration.
+ * The callback is called when a UID entry is updated or inserted via
+ * `uid_update()`, even if the new value is the same as the existing one. Only
+ * one callback can be registered per store. Subsequent calls overwrite the
+ * previous registration.
  *
- * @param[in] cb   The callback function to register.
- * @param[in] ctx  A user-defined context pointer to pass to the callback.
+ * @param[in] store The UID store instance.
+ * @param[in] cb    The callback function to register.
+ * @param[in] ctx   A user-defined context pointer passed to the callback.
  *
  * @return 0 on success, negative value on failure.
  */
-int uid_register_update_cb(uid_update_cb_t cb, void *ctx);
+int uid_register_update_cb(struct uid_store *store,
+		uid_update_cb_t cb, void *ctx);
 
 #if defined(__cplusplus)
 }
