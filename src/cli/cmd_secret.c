@@ -117,7 +117,7 @@ static void print_x509_key_csr(const struct cli_io *io)
 	println(io, (char *)csr);
 }
 
-DEFINE_CLI_CMD(sec, "sec {dfu|x509.key|x509.key.csr}") {
+DEFINE_CLI_CMD(sec, "Security operations (DFU, X.509 key, CSR)") {
 	struct cli const *cli = (struct cli const *)env;
 
 	if (argc == 1) {

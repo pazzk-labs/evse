@@ -112,15 +112,10 @@ static const struct cmd cmds[] = {
 #endif /* HOST_BUILD */
 };
 
-DEFINE_CLI_CMD(chg, 0) {
+DEFINE_CLI_CMD(chg, "Configure and simulate charging behavior") {
 	struct cli const *cli = (struct cli const *)env;
 	struct app *app = (struct app *)cli->env;
 	struct ctx ctx = { .io = cli->io, .app = app };
-
-	if (argc < 2) {
-		do_show(NULL, argc, argv, &ctx);
-		return CLI_CMD_SUCCESS;
-	}
 
 	if (process_cmd(cmds, ARRAY_COUNT(cmds), argc, argv, &ctx)
 			!= CLI_CMD_SUCCESS) {

@@ -481,14 +481,9 @@ static const struct cmd cmds[] = {
 	{ "set",   "chg.param",        "config set",   3, 8, do_set_multi_chg_param },
 };
 
-DEFINE_CLI_CMD(config, NULL) {
+DEFINE_CLI_CMD(config, "View or modify system configuration") {
 	const struct cli *cli = (struct cli const *)env;
 	struct ctx ctx = { .io = cli->io };
-
-	if (argc < 2) {
-		do_show(NULL, argc, argv, &ctx);
-		return CLI_CMD_SUCCESS;
-	}
 
 	if (process_cmd(cmds, ARRAY_COUNT(cmds), argc, argv, &ctx)
 			!= CLI_CMD_SUCCESS) {

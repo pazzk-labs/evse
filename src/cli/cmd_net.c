@@ -288,7 +288,7 @@ static struct {
 		.key = "net.server.ping", .is_number = true },
 };
 
-DEFINE_CLI_CMD(net, "Network commands") {
+DEFINE_CLI_CMD(net, "Network configuration and diagnostics") {
 	struct cli const *cli = (struct cli const *)env;
 
 	if (argc == 1) {

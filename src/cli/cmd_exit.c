@@ -34,7 +34,7 @@
 #include "libmcu/compiler.h"
 #include "app.h"
 
-DEFINE_CLI_CMD(exit, "Exit the application") {
+DEFINE_CLI_CMD(exit, "Exit the CLI") {
 	struct cli *cli = (struct cli *)env;
 	struct app *app = (struct app *)cli->env;
 
