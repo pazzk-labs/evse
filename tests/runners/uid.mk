@@ -28,28 +28,29 @@
 # maintainers be held liable for any damages, whether direct, indirect,
 # incidental, special, or consequential, arising from the use of this software.
 
-COMPONENT_NAME = Charger
+COMPONENT_NAME = UID
 
 SRC_FILES = \
-	../src/charger/charger.c \
+	../src/uid.c \
+	../external/libmcu/modules/common/src/hexdump.c \
 
 TEST_SRC_FILES = \
-	src/charger/charger_test.cpp \
+	src/uid_test.cpp \
 	src/test_all.cpp \
 	stubs/logging.c \
-	mocks/connector.cpp \
-	mocks/connector_internal.cpp \
+	../external/libmcu/tests/stubs/board.cpp \
+	../external/libmcu/tests/stubs/metrics.cpp \
+	../external/libmcu/tests/mocks/assert.cpp \
 
 INCLUDE_DIRS = \
 	$(CPPUTEST_HOME)/include \
 	../include \
-	../src/charger \
 	../external/libmcu/modules/common/include \
 	../external/libmcu/modules/logging/include \
-	../external/libmcu/modules/fsm/include \
-	../external/libmcu/modules/ratelim/include \
+	../external/libmcu/interfaces/flash/include \
+	../external/libmcu/modules/metrics/include \
 
 MOCKS_SRC_DIRS =
-CPPUTEST_CPPFLAGS = -include ../include/logger.h
+CPPUTEST_CPPFLAGS =
 
 include runners/MakefileRunner

@@ -175,7 +175,7 @@ static void print_logger_info(struct cli *cli)
 	println(cli->io, buf);
 }
 
-DEFINE_CLI_CMD(log, "Show logs") {
+DEFINE_CLI_CMD(log, "Display recent system logs") {
 	struct cli *cli = (struct cli *)env;
 	struct app *app = (struct app *)cli->env;
 

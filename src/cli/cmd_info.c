@@ -160,7 +160,7 @@ static void print_fs_info(struct cli_io const *io, struct app *app)
 	printini(io, "Filesystem", buf);
 }
 
-DEFINE_CLI_CMD(info, "Display device info") {
+DEFINE_CLI_CMD(info, "Display device hardware and firmware information") {
 	struct cli *cli = (struct cli *)env;
 	struct app *app = (struct app *)cli->env;
 

@@ -226,8 +226,7 @@ struct connector *charger_get_connector_available(const struct charger *self)
 			list_entry(p, struct connector_entry, link);
 		struct connector *c = entry->connector;
 
-		if (connector_is_enabled(c) && !connector_is_reserved(c) &&
-				connector_state(c) == A) {
+		if (connector_is_enabled(c) && !connector_is_occupied(c)) {
 			return c;
 		}
 	}

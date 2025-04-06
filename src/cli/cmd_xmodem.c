@@ -198,7 +198,7 @@ static void update_firmware(const struct cli_io *io)
 	dfu_delete(dfu);
 }
 
-DEFINE_CLI_CMD(xmodem, "XMODEM") {
+DEFINE_CLI_CMD(xmodem, "Transfer files using the XMODEM protocol") {
 	struct cli *cli = (struct cli *)env;
 
 	if (argc == 2) {

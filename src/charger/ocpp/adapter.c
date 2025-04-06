@@ -562,7 +562,7 @@ static int do_stoptransaction(struct ocpp_connector *c,
 		.reason = (ocpp_stop_reason_t)(uintptr_t)ctx, /* optional */
 	};
 
-	if (ocpp_connector_is_session_trial_uid_exist(c)) {
+	if (ocpp_connector_is_session_pending(c)) {
 		memcpy(p->idTag, c->session.auth.trial.uid, sizeof(p->idTag));
 	} else {
 		memcpy(p->idTag, c->session.auth.current.uid, sizeof(p->idTag));
