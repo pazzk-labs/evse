@@ -409,14 +409,14 @@ TEST(UID, ShouldOverwriteSecondEntry_WhenUIDUpdatedWithMiddleOffset) {
 	const uint8_t empty_entry[ENTRY_SIZE] = { 0 };
 	uint8_t second_entry[ENTRY_SIZE] = { 0 };
 	memset(second_entry, 0x02, sizeof(uid_id_t)); // id2
-	memset(&second_entry[21], 0xA0, sizeof(uid_id_t)); // pid
-	*((uint64_t *)(void *)&second_entry[42]) = 0x3C; // expiry
-	second_entry[50] = UID_STATUS_ACCEPTED;
+	memset(&second_entry[UID_ID_MAXLEN], 0xA0, sizeof(uid_id_t)); // pid
+	*((uint64_t *)(void *)&second_entry[UID_ID_MAXLEN*2]) = 0x3C; // expiry
+	second_entry[UID_ID_MAXLEN*2+8] = UID_STATUS_ACCEPTED;
 
 	uint8_t updated_entry[ENTRY_SIZE];
 	memcpy(updated_entry, second_entry, sizeof(updated_entry));
-	*((uint64_t *)(void *)&updated_entry[42]) = 0x78; // new expiry
-	updated_entry[50] = UID_STATUS_BLOCKED;
+	*((uint64_t *)(void *)&updated_entry[UID_ID_MAXLEN*2]) = 0x78; // new expiry
+	updated_entry[UID_ID_MAXLEN*2+8] = UID_STATUS_BLOCKED;
 
 	// 1. append id1
 	expect_size("uid/cache/01/01.bin", &size[1]);
@@ -460,9 +460,9 @@ TEST(UID, ShouldSkipZeroedEntry_WhenSearchingInFile) {
 	uint8_t zeroed[ENTRY_SIZE] = { 0 };
 	uint8_t valid[ENTRY_SIZE] = { 0 };
 	memcpy(valid, id2, sizeof(uid_id_t));
-	memcpy(&valid[21], pid, sizeof(uid_id_t));
-	*((uint64_t *)(void *)&valid[42]) = 123;
-	valid[50] = UID_STATUS_ACCEPTED;
+	memcpy(&valid[UID_ID_MAXLEN], pid, sizeof(uid_id_t));
+	*((uint64_t *)(void *)&valid[UID_ID_MAXLEN*2]) = 123;
+	valid[UID_ID_MAXLEN*2+8] = UID_STATUS_ACCEPTED;
 
 	expect_size("uid/cache/02/02.bin", &file_size);
 	expect_read("uid/cache/02/02.bin", zeroed, &size, &offset0);
@@ -479,9 +479,9 @@ TEST(UID, ShouldHandleMultipleZeroedEntriesBeforeValidOne) {
 	const uint8_t zeroed[ENTRY_SIZE] = {0};
 	uint8_t valid[ENTRY_SIZE];
 	memset(valid, 0x03, sizeof(uid_id_t));
-	memset(&valid[21], 0xA0, sizeof(uid_id_t));
-	*((uint64_t *)(void *)&valid[42]) = 789;
-	*((uint32_t *)(void *)&valid[50]) = UID_STATUS_EXPIRED;
+	memset(&valid[UID_ID_MAXLEN], 0xA0, sizeof(uid_id_t));
+	*((uint64_t *)(void *)&valid[UID_ID_MAXLEN*2]) = 789;
+	*((uint32_t *)(void *)&valid[UID_ID_MAXLEN*2+8]) = UID_STATUS_EXPIRED;
 
 	const size_t size = ENTRY_SIZE;
 	const size_t off[] = { 0, ENTRY_SIZE, ENTRY_SIZE*2, ENTRY_SIZE*3 };

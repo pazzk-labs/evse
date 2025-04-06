@@ -39,6 +39,8 @@
 
 #include "libmcu/compiler.h"
 #include "libmcu/hexdump.h"
+#include "libmcu/metrics.h"
+#include "libmcu/board.h"
 #include "fs/fs.h"
 #include "logger.h"
 
@@ -155,6 +157,7 @@ static int save_entry_into_file(struct uid_store *store,
 	return fs_append(store->fs, filepath, record, sizeof(*record));
 }
 
+/* FIXME: this will introduce internal fragmentation in flash */
 static int remove_entry_from_file(struct uid_store *store, const uid_id_t id)
 {
 	struct uid_record dummy;
@@ -172,6 +175,24 @@ static int remove_entry_from_file(struct uid_store *store, const uid_id_t id)
 	return -ENOENT;
 }
 
+static void on_clear_dir(struct fs *fs, const fs_file_t type,
+		const char *filename, void *ctx)
+{
+	struct uid_store *store = (struct uid_store *)ctx;
+
+	if (type == FS_FILE_TYPE_DIR) {
+		info("recursive delete: %s", filename);
+		fs_dir(store->fs, filename, on_clear_dir, store);
+	}
+
+	debug("deleting file: %s", filename);
+
+	if (fs_delete(fs, filename) < 0) {
+		error("Failed to delete file: %s", filename);
+		return;
+	}
+}
+
 uid_status_t uid_status(struct uid_store *store,
 		const uid_id_t id, uid_id_t pid, time_t *expiry)
 {
@@ -179,6 +200,7 @@ uid_status_t uid_status(struct uid_store *store,
 		return UID_STATUS_NO_ENTRY;
 	}
 
+	const uint32_t t0 = board_get_time_since_boot_ms();
 	const uint32_t h = hash_uid(id, store->capacity);
 	struct cache_entry *entry = store->cache[h];
 
@@ -199,6 +221,10 @@ uid_status_t uid_status(struct uid_store *store,
 	}
 
 	if (read_entry_from_file(store, id, &entry->record, NULL) == 0) {
+		const uint32_t elapsed = board_get_time_since_boot_ms() - t0;
+		metrics_set_if_max(UIDStatusTimeMax, METRICS_VALUE(elapsed));
+		metrics_set_if_min(UIDStatusTimeMin, METRICS_VALUE(elapsed));
+
 		char buf[sizeof(uid_id_t)*2+1];
 		hexdump(buf, sizeof(buf), id, sizeof(uid_id_t));
 		info("cache miss: %s", buf);
@@ -227,6 +253,7 @@ int uid_update(struct uid_store *store, const uid_id_t id,
 		return -EINVAL;
 	}
 
+	const uint32_t t0 = board_get_time_since_boot_ms();
 	const uint32_t h = hash_uid(id, store->capacity);
 	struct cache_entry *entry = store->cache[h];
 
@@ -248,6 +275,10 @@ int uid_update(struct uid_store *store, const uid_id_t id,
 		error("Failed to save UID to flash.");
 		return -EIO;
 	}
+
+	const uint32_t elapsed = board_get_time_since_boot_ms() - t0;
+	metrics_set_if_max(UIDUpdateTimeMax, METRICS_VALUE(elapsed));
+	metrics_set_if_min(UIDUpdateTimeMin, METRICS_VALUE(elapsed));
 
 	char buf[sizeof(uid_id_t)*2+1];
 	hexdump(buf, sizeof(buf), id, sizeof(uid_id_t));
@@ -274,7 +305,6 @@ int uid_delete(struct uid_store *store, const uid_id_t id)
 		store->cache[h] = NULL;
 	}
 
-	/* FIXME: this will introduce internal fragmentation in flash */
 	int err = remove_entry_from_file(store, id);
 
 	if (err >= 0) {
@@ -292,6 +322,8 @@ int uid_clear(struct uid_store *store)
 		return -EINVAL;
 	}
 
+	const uint32_t t0 = board_get_time_since_boot_ms();
+
 	for (uint16_t i = 0; i < store->capacity; i++) {
 		if (store->cache[i]) {
 			free_entry(store->cache[i]);
@@ -299,12 +331,15 @@ int uid_clear(struct uid_store *store)
 		}
 	}
 
-	/* FIXME: it only deletes an empty directory. To delete all files,
-	 * we need to iterate through the directory and delete each file
-	 * individually. */
 	char filepath[FILEPATH_MAXLEN + FILENAME_MAXLEN];
 	snprintf(filepath, sizeof(filepath), "%s/%s", STORAGE_ROOT, store->ns);
-	return fs_delete(store->fs, filepath);
+	int err = fs_dir(store->fs, filepath, on_clear_dir, store);
+
+	const uint32_t elapsed = board_get_time_since_boot_ms() - t0;
+	metrics_set_if_max(UIDClearTimeMax, METRICS_VALUE(elapsed));
+	metrics_set_if_min(UIDClearTimeMin, METRICS_VALUE(elapsed));
+
+	return err;
 }
 
 int uid_register_update_cb(struct uid_store *store,

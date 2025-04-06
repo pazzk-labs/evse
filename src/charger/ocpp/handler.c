@@ -281,8 +281,11 @@ static void do_change_configuration(struct ocpp_charger *charger,
 static void do_clear_cache(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
-	unused(charger);
-	/* TODO: implement. always responses accepted as no cache implemented */
+	/* NOTE: cache is shared by all connectors */
+	struct connector *c = charger_get_connector_by_id((struct charger *)
+			charger, 1);
+	uid_clear(c->param.cache);
+
 	csms_response(OCPP_MSG_CLEAR_CACHE, message, NULL,
 			(void *)OCPP_REMOTE_STATUS_ACCEPTED);
 }
