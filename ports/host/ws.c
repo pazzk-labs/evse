@@ -40,6 +40,7 @@
 
 #include "libmcu/compiler.h"
 #include "libmcu/ringbuf.h"
+#include "libmcu/base64.h"
 #include "net/util.h"
 #include "logger.h"
 
@@ -66,10 +67,38 @@ struct ws_server {
 
 	char host[URL_MAXLEN];
 	char path[URL_MAXLEN];
+	char header[WS_HEADER_MAXLEN];
 
 	time_t last_reconnect;
 	bool is_connected;
 };
+
+static void add_basic_auth_header(struct ws_server *ws,
+		struct lws *wsi, void *in, size_t in_len)
+{
+	if (ws->param.auth.id[0] == '\0') {
+		return;
+	}
+
+	char b[WS_AUTH_ID + WS_AUTH_PASS + 2];
+	const int b_len = snprintf(b, sizeof(b), "%s:%s",
+			ws->param.auth.id, ws->param.auth.pass);
+	const int len = snprintf(ws->header, sizeof(ws->header), "Basic ");
+	const size_t needed = (((size_t)b_len + 2) / 3) * 4;
+	if (len > 0 && b_len > 0 && (size_t)len + needed < sizeof(ws->header)) {
+		size_t n = base64_encode(&ws->header[len], b, (size_t)b_len);
+		ws->header[(size_t)len + n] = '\0';
+
+		uint8_t **p = (uint8_t **)in;
+		uint8_t *end = (*p) + in_len;
+		if (lws_add_http_header_by_name(wsi,
+				  (const unsigned char *)"Authorization:",
+				  (const unsigned char *)ws->header,
+				  (int)strlen(ws->header), p, end) < 0) {
+			error("failed to add Authorization header");
+		}
+	}
+}
 
 static int on_ws_event(struct lws *wsi, enum lws_callback_reasons reason,
 		void *user, void *in, size_t len)
@@ -97,6 +126,9 @@ static int on_ws_event(struct lws *wsi, enum lws_callback_reasons reason,
 	case LWS_CALLBACK_CLIENT_CONNECTION_ERROR:
 		ws->is_connected = false;
 		info("connection closed");
+		break;
+	case LWS_CALLBACK_CLIENT_APPEND_HANDSHAKE_HEADER:
+		add_basic_auth_header(ws, wsi, in, len);
 		break;
 	default:
 		break;
