@@ -99,8 +99,7 @@ TEST(Charger, ShouldReturnConnector_WhenConnectorIdGiven) {
 TEST(Charger, ShouldReturnAvailableConnector_WhenAvailable) {
 	struct connector c;
 	mock().expectOneCall("connector_is_enabled").andReturnValue(true);
-	mock().expectOneCall("connector_is_reserved").andReturnValue(false);
-	mock().expectOneCall("connector_state").andReturnValue(A);
+	mock().expectOneCall("connector_is_occupied").andReturnValue(false);
 	LONGS_EQUAL(0, charger_attach_connector(&charger, &c));
 	LONGS_EQUAL(&c, charger_get_connector_available(&charger));
 }

@@ -51,6 +51,7 @@
 
 #include "ocpp/ocpp.h"
 #include "config.h"
+#include "uid.h"
 #include "logger.h"
 
 static struct {
@@ -155,6 +156,17 @@ static void start_charger(struct app *app)
 		.name = "c1",
 		.priority = 0,
 	};
+
+	conn_param.cache = uid_store_create(&(const struct uid_store_config) {
+		.fs = app->fs,
+		.ns = "cache",
+		.capacity = 1024,
+	});
+	conn_param.local_list = uid_store_create(&(const struct uid_store_config) {
+		.fs = app->fs,
+		.ns = "localList",
+		.capacity = 1024,
+	});
 
 	struct connector *c = connector_factory_create(&conn_param);
 	charger_attach_connector(app->charger, c);

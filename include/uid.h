@@ -40,7 +40,7 @@ extern "C" {
 #include <stdint.h>
 #include <time.h>
 
-#define UID_ID_MAXLEN		20
+#define UID_ID_MAXLEN		21
 
 /* Avoid conflict with POSIX's uid_t by using uid_id_t instead. */
 typedef uint8_t uid_id_t[UID_ID_MAXLEN];
@@ -61,9 +61,9 @@ struct uid_store;
 struct fs;
 
 struct uid_store_config {
-	struct fs *fs;           /**< Filesystem backend to use. */
-	const char *ns;          /**< Filesystem namespace for isolation (e.g., "local", "cache"). */
-	uint16_t cache_capacity; /**< Maximum number of cache entries in RAM. */
+	struct fs *fs; /**< Filesystem backend to use. */
+	const char *ns; /**< Filesystem namespace for isolation (e.g., "localList", "cache"). */
+	uint16_t capacity; /**< Maximum number of entries in RAM. */
 };
 
 /**
@@ -133,7 +133,19 @@ int uid_delete(struct uid_store *store, const uid_id_t id);
  * @return The status of the UID.
  */
 uid_status_t uid_status(struct uid_store *store,
-		const uid_id_t id, time_t *expiry);
+		const uid_id_t id, uid_id_t pid, time_t *expiry);
+
+/**
+ * @brief Clears all entries in the UID store.
+ * 
+ * This function removes all user identification (UID) entries from the
+ * specified UID store, effectively resetting it to an empty state.
+ * 
+ * @param[in] store Pointer to the UID store structure to be cleared.
+ *
+ * @return 0 on success, or a negative error code on failure.
+ */
+int uid_clear(struct uid_store *store);
 
 /**
  * @brief Registers a callback to be invoked when a UID is updated.

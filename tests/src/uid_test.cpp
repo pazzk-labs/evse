@@ -39,7 +39,7 @@
 #include <time.h>
 
 #define CACHE_CAPACITY	1024
-#define ENTRY_SIZE	52
+#define ENTRY_SIZE	54
 
 struct fs {
 	struct fs_api api;
@@ -112,7 +112,7 @@ TEST_GROUP(UID) {
 		config = (struct uid_store_config) {
 			.fs = &fs,
 			.ns = "cache",
-			.cache_capacity = CACHE_CAPACITY,
+			.capacity = CACHE_CAPACITY,
 		};
 		cache = uid_store_create(&config);
 
@@ -192,15 +192,15 @@ TEST_GROUP(UID) {
 TEST(UID, ShouldReturnNoEntry_WhenCacheIsEmpty) {
 	size_t size = (size_t)-ENOENT;
 	expect_size("uid/cache/01/01.bin", &size);
-	LONGS_EQUAL(UID_STATUS_NO_ENTRY, uid_status(cache, id1, NULL));
+	LONGS_EQUAL(UID_STATUS_NO_ENTRY, uid_status(cache, id1, NULL, NULL));
 }
 
 TEST(UID, ShouldReturnAccepted_WhenUIDAccepted) {
 	const uint8_t expected[] = {
 		0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
-		0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
+		0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
 		0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
-		0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
+		0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
 		0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x00,
 		0x00,0x00
 	};
@@ -212,7 +212,7 @@ TEST(UID, ShouldReturnAccepted_WhenUIDAccepted) {
 	uid_update(cache, id1, pid, UID_STATUS_ACCEPTED, mock_time + 60);
 
 	time_t expiry = 0;
-	uid_status_t status = uid_status(cache, id1, &expiry);
+	uid_status_t status = uid_status(cache, id1, NULL, &expiry);
 
 	LONGS_EQUAL(UID_STATUS_ACCEPTED, status);
 	LONGS_EQUAL(mock_time + 60, expiry);
@@ -221,17 +221,17 @@ TEST(UID, ShouldReturnAccepted_WhenUIDAccepted) {
 TEST(UID, ShouldOverwriteStatus_WhenUIDUpdated) {
 	const uint8_t expected[] = {
 		0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
-		0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
+		0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
 		0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
-		0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
+		0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
 		0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x00,
 		0x00,0x00
 	};
 	const uint8_t expected2[] = {
 		0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
-		0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
+		0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
 		0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
-		0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
+		0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
 		0x78,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x02,0x00,
 		0x00,0x00
 	};
@@ -247,7 +247,7 @@ TEST(UID, ShouldOverwriteStatus_WhenUIDUpdated) {
 	uid_update(cache, id1, pid, UID_STATUS_BLOCKED, mock_time + 120);
 
 	time_t expiry = 0;
-	uid_status_t status = uid_status(cache, id1, &expiry);
+	uid_status_t status = uid_status(cache, id1, NULL, &expiry);
 
 	LONGS_EQUAL(UID_STATUS_BLOCKED, status);
 	LONGS_EQUAL(mock_time + 120, expiry);
@@ -264,8 +264,8 @@ TEST(UID, ShouldNotCollide_WhenDifferentUIDsUpdated) {
 	uid_update(cache, id2, pid, UID_STATUS_EXPIRED, mock_time + 30);
 
 	time_t expiry1 = 0, expiry2 = 0;
-	uid_status_t status1 = uid_status(cache, id1, &expiry1);
-	uid_status_t status2 = uid_status(cache, id2, &expiry2);
+	uid_status_t status1 = uid_status(cache, id1, NULL, &expiry1);
+	uid_status_t status2 = uid_status(cache, id2, NULL, &expiry2);
 
 	LONGS_EQUAL(UID_STATUS_ACCEPTED, status1);
 	LONGS_EQUAL(UID_STATUS_EXPIRED, status2);
@@ -298,17 +298,17 @@ TEST(UID, ShouldRunCallback_WhenUIDUpdated) {
 TEST(UID, ShouldDeleteUIDBothCacheAndFlash_WhenUIDDeleted) {
 	const uint8_t dummy[] = {
 		0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
-		0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
+		0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,0x01,
 		0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
-		0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
+		0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,0xA0,
 		0x3C,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x01,0x00,
 		0x00,0x00,
 	};
 	const uint8_t expected[] = {
 		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
-		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
+		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 		0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,
 		0x00,0x00,
 	};
@@ -324,11 +324,11 @@ TEST(UID, ShouldDeleteUIDBothCacheAndFlash_WhenUIDDeleted) {
 	LONGS_EQUAL(0, uid_delete(cache, id1));
 
 	expect_size("uid/cache/01/01.bin", &size[0]);
-	LONGS_EQUAL(UID_STATUS_NO_ENTRY, uid_status(cache, id1, NULL));
+	LONGS_EQUAL(UID_STATUS_NO_ENTRY, uid_status(cache, id1, NULL, NULL));
 }
 
 TEST(UID, ShouldReturnNoEntry_WhenNullIDGiven) {
-	LONGS_EQUAL(UID_STATUS_NO_ENTRY, uid_status(cache, NULL, NULL));
+	LONGS_EQUAL(UID_STATUS_NO_ENTRY, uid_status(cache, NULL, NULL, NULL));
 }
 
 TEST(UID, ShouldFailUpdate_WhenNullStoreGiven) {
@@ -362,7 +362,7 @@ TEST(UID, ShouldAllowOverwrite_WhenHashConflicts) {
 
 	// Ensure both are correctly returned (one from cache, one from disk)
 	time_t expiry = 0;
-	uid_status_t status = uid_status(cache, idA, &expiry);
+	uid_status_t status = uid_status(cache, idA, NULL, &expiry);
 	LONGS_EQUAL(UID_STATUS_ACCEPTED, status);
 	LONGS_EQUAL(5, expiry);
 }
@@ -392,8 +392,8 @@ TEST(UID, ShouldAllowMultipleStores_IsolatedBehavior) {
 	uid_update(other, id_other, pid, UID_STATUS_BLOCKED, 2);
 
 	time_t exp1 = 0, exp2 = 0;
-	LONGS_EQUAL(UID_STATUS_ACCEPTED, uid_status(cache, id1, &exp1));
-	LONGS_EQUAL(UID_STATUS_BLOCKED, uid_status(other, id_other, &exp2));
+	LONGS_EQUAL(UID_STATUS_ACCEPTED, uid_status(cache, id1, NULL, &exp1));
+	LONGS_EQUAL(UID_STATUS_BLOCKED, uid_status(other, id_other, NULL, &exp2));
 
 	uid_store_destroy(other);
 }
@@ -409,14 +409,14 @@ TEST(UID, ShouldOverwriteSecondEntry_WhenUIDUpdatedWithMiddleOffset) {
 	const uint8_t empty_entry[ENTRY_SIZE] = { 0 };
 	uint8_t second_entry[ENTRY_SIZE] = { 0 };
 	memset(second_entry, 0x02, sizeof(uid_id_t)); // id2
-	memset(&second_entry[20], 0xA0, sizeof(uid_id_t)); // pid
-	*((uint64_t *)(void *)&second_entry[40]) = 0x3C; // expiry
-	second_entry[48] = UID_STATUS_ACCEPTED;
+	memset(&second_entry[21], 0xA0, sizeof(uid_id_t)); // pid
+	*((uint64_t *)(void *)&second_entry[42]) = 0x3C; // expiry
+	second_entry[50] = UID_STATUS_ACCEPTED;
 
 	uint8_t updated_entry[ENTRY_SIZE];
 	memcpy(updated_entry, second_entry, sizeof(updated_entry));
-	*((uint64_t *)(void *)&updated_entry[40]) = 0x78; // new expiry
-	updated_entry[48] = UID_STATUS_BLOCKED;
+	*((uint64_t *)(void *)&updated_entry[42]) = 0x78; // new expiry
+	updated_entry[50] = UID_STATUS_BLOCKED;
 
 	// 1. append id1
 	expect_size("uid/cache/01/01.bin", &size[1]);
@@ -442,7 +442,7 @@ TEST(UID, ShouldOverwriteSecondEntry_WhenUIDUpdatedWithMiddleOffset) {
 	uid_update(cache, id2, pid, UID_STATUS_BLOCKED, 120);
 
 	time_t expiry = 0;
-	uid_status_t status = uid_status(cache, id2, &expiry);
+	uid_status_t status = uid_status(cache, id2, NULL, &expiry);
 
 	LONGS_EQUAL(UID_STATUS_BLOCKED, status);
 	LONGS_EQUAL(120, expiry);
@@ -460,16 +460,16 @@ TEST(UID, ShouldSkipZeroedEntry_WhenSearchingInFile) {
 	uint8_t zeroed[ENTRY_SIZE] = { 0 };
 	uint8_t valid[ENTRY_SIZE] = { 0 };
 	memcpy(valid, id2, sizeof(uid_id_t));
-	memcpy(&valid[20], pid, sizeof(uid_id_t));
-	*((uint64_t *)(void *)&valid[40]) = 123;
-	valid[48] = UID_STATUS_ACCEPTED;
+	memcpy(&valid[21], pid, sizeof(uid_id_t));
+	*((uint64_t *)(void *)&valid[42]) = 123;
+	valid[50] = UID_STATUS_ACCEPTED;
 
 	expect_size("uid/cache/02/02.bin", &file_size);
 	expect_read("uid/cache/02/02.bin", zeroed, &size, &offset0);
 	expect_read("uid/cache/02/02.bin", valid, &size, &offset1);
 
 	time_t expiry = 0;
-	uid_status_t status = uid_status(cache, id2, &expiry);
+	uid_status_t status = uid_status(cache, id2, NULL, &expiry);
 
 	LONGS_EQUAL(UID_STATUS_ACCEPTED, status);
 	LONGS_EQUAL(123, expiry);
@@ -479,9 +479,9 @@ TEST(UID, ShouldHandleMultipleZeroedEntriesBeforeValidOne) {
 	const uint8_t zeroed[ENTRY_SIZE] = {0};
 	uint8_t valid[ENTRY_SIZE];
 	memset(valid, 0x03, sizeof(uid_id_t));
-	memset(&valid[20], 0xA0, sizeof(uid_id_t));
-	*((uint64_t *)(void *)&valid[40]) = 789;
-	*((uint32_t *)(void *)&valid[48]) = UID_STATUS_EXPIRED;
+	memset(&valid[21], 0xA0, sizeof(uid_id_t));
+	*((uint64_t *)(void *)&valid[42]) = 789;
+	*((uint32_t *)(void *)&valid[50]) = UID_STATUS_EXPIRED;
 
 	const size_t size = ENTRY_SIZE;
 	const size_t off[] = { 0, ENTRY_SIZE, ENTRY_SIZE*2, ENTRY_SIZE*3 };
@@ -496,7 +496,7 @@ TEST(UID, ShouldHandleMultipleZeroedEntriesBeforeValidOne) {
 	time_t expiry = 0;
 	uid_id_t id3;
 	memset(id3, 0x03, sizeof(uid_id_t));
-	uid_status_t status = uid_status(cache, id3, &expiry);
+	uid_status_t status = uid_status(cache, id3, NULL, &expiry);
 
 	LONGS_EQUAL(UID_STATUS_EXPIRED, status);
 	LONGS_EQUAL(789, expiry);
@@ -520,5 +520,5 @@ TEST(UID, ShouldReturnNoEntry_WhenFileContainsOnlyZeroedRecords) {
 	expect_read("uid/cache/01/01.bin", zero, &size, &off[0]);
 	expect_read("uid/cache/01/01.bin", zero, &size, &off[1]);
 
-	LONGS_EQUAL(UID_STATUS_NO_ENTRY, uid_status(cache, id1, NULL));
+	LONGS_EQUAL(UID_STATUS_NO_ENTRY, uid_status(cache, id1, NULL, NULL));
 }

@@ -53,6 +53,21 @@ typedef enum {
 	Unavailable,	/* 9 */
 } ocpp_connector_state_t;
 
+typedef enum {
+	OCPP_SESSION_RESULT_OK,
+	OCPP_SESSION_RESULT_REJECTED,
+	OCPP_SESSION_RESULT_NOT_ALLOWED,
+	OCPP_SESSION_RESULT_ALREADY_OCCUPIED,
+	OCPP_SESSION_RESULT_NOT_MATCHED, /* no entry or release UID mismatch */
+	OCPP_SESSION_RESULT_NOT_SUPPORTED,
+	OCPP_SESSION_RESULT_TIMEOUT,
+	OCPP_SESSION_RESULT_PENDING,
+	OCPP_SESSION_RESULT_ERROR,
+} ocpp_session_result_t;
+
+typedef void (*ocpp_session_result_cb_t)(struct connector *c,
+		ocpp_session_result_t result, void *ctx);
+
 struct ocpp_connector;
 
 /**
@@ -103,6 +118,92 @@ int ocpp_connector_link_checkpoint(struct connector *c,
  */
 bool ocpp_connector_has_transaction(struct connector *c,
 		const ocpp_transaction_id_t tid);
+
+/**
+ * @brief Attempts to verify whether the connector can be occupied by a given
+ * id.
+ *
+ * This function performs authorization checks (local list, authorization cache,
+ * or CSMS via Authorize.req) and reports the result asynchronously via the
+ * callback. It does not change the internal session or connector state.
+ *
+ * @param[in] c          The connector instance to be verified.
+ * @param[in] id         Pointer to the idTag (or equivalent ID) to be verified.
+ * @param[in] id_len     Length in bytes of the idTag.
+ * @param[in] remote     Whether the request is initiated by a remote command
+ *                       (e.g., via CSMS).
+ * @param[in] cb         Callback function to be invoked with the result.
+ * @param[in] cb_ctx     User-defined context to be passed to the callback.
+ *
+ * @return 0 on success of scheduling the check, negative errno otherwise.
+ *
+ * @note This function may return asynchronously after remote server
+ *       interaction. To proceed with actual occupation, call
+ *       `ocpp_connector_occupy()` inside the callback.
+ */
+int ocpp_connector_try_occupy(struct connector *c,
+		const void *id, size_t id_len, bool remote,
+		ocpp_session_result_cb_t cb, void *cb_ctx);
+
+/**
+ * @brief Occupies the connector for a session with the previously verified ID.
+ *
+ * This function finalizes the connector occupation, marking the beginning of a
+ * new session. It must be called after a successful
+ * `ocpp_connector_try_occupy()` operation.
+ *
+ * @param[in] c      The connector instance to be occupied.
+ *
+ * @return 0 on success, or negative errno on failure (e.g., no matching prior
+ *         try_occupy call).
+ */
+int ocpp_connector_occupy(struct connector *c);
+
+/**
+ * @brief Attempts to verify whether the current session can be released with
+ * the provided ID.
+ *
+ * This function checks whether the given ID is authorized to stop the current
+ * charging session. It may perform authorization checks (e.g., idTag match,
+ * parentIdTag match, CSMS check), and invokes the result callback with the
+ * decision.
+ *
+ * @param[in] c          The connector instance from which the session may be
+ *                       released.
+ * @param[in] id         Pointer to the idTag (or equivalent ID) to be verified.
+ * @param[in] id_len     Length in bytes of the idTag.
+ * @param[in] cb         Callback function to be invoked with the verification
+ *                       result.
+ * @param[in] cb_ctx     User-defined context to be passed to the callback.
+ *
+ * @return 0 if the check is initiated successfully, or negative errno on
+ *           failure.
+ *
+ * @note This function does not modify any connector state. It only performs
+ *       verification. To actually release the session, call
+ *       `ocpp_connector_release()` inside the callback.
+ */
+int ocpp_connector_try_release(struct connector *c,
+		const void *id, size_t id_len,
+		ocpp_session_result_cb_t cb, void *cb_ctx);
+
+/**
+ * @brief Finalizes the release of a session previously verified via `try_release`.
+ *
+ * This function stops the current charging session and clears the internal session state.
+ * It must be called only after a successful result from `ocpp_connector_try_release()`.
+ *
+ * @param c      The connector instance whose session should be released.
+ *
+ * @return 0 on success, or negative errno on failure (e.g., no session, id mismatch).
+ *
+ * @note This function may send OCPP StopTransaction.req if appropriate.
+ *       Ensure that session validation (e.g., id match) is already performed.
+ */
+int ocpp_connector_release(struct connector *c, bool remote);
+
+bool ocpp_connector_has_active_authorization(struct connector *c);
+bool ocpp_connector_can_user_release(struct connector *c);
 
 #if defined(__cplusplus)
 }

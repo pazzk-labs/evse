@@ -52,7 +52,7 @@ struct uid {
 	time_t expiry;
 	uid_status_t status;
 } LIBMCU_PACKED;
-static_assert(sizeof(struct uid) == 52,
+static_assert(sizeof(struct uid) == 54,
 		"Size of struct uid is not equal to 52 bytes");
 
 struct uid_record {
@@ -70,7 +70,7 @@ struct uid_store {
 	void *cb_ctx;
 
 	struct cache_entry **cache;
-	uint16_t cache_capacity;
+	uint16_t capacity;
 };
 
 static uint32_t hash_uid(const uid_id_t id, uint16_t cap)
@@ -173,18 +173,21 @@ static int remove_entry_from_file(struct uid_store *store, const uid_id_t id)
 }
 
 uid_status_t uid_status(struct uid_store *store,
-		const uid_id_t id, time_t *expiry)
+		const uid_id_t id, uid_id_t pid, time_t *expiry)
 {
 	if (!store || !id) {
 		return UID_STATUS_NO_ENTRY;
 	}
 
-	const uint32_t h = hash_uid(id, store->cache_capacity);
+	const uint32_t h = hash_uid(id, store->capacity);
 	struct cache_entry *entry = store->cache[h];
 
 	if (entry && memcmp(entry->record.uid.id, id, sizeof(uid_id_t)) == 0) {
 		if (expiry) {
 			*expiry = entry->record.uid.expiry;
+		}
+		if (pid) {
+			memcpy(pid, entry->record.uid.pid, sizeof(uid_id_t));
 		}
 		return entry->record.uid.status;
 	}
@@ -205,6 +208,9 @@ uid_status_t uid_status(struct uid_store *store,
 		if (expiry) {
 			*expiry = entry->record.uid.expiry;
 		}
+		if (pid) {
+			memcpy(pid, entry->record.uid.pid, sizeof(uid_id_t));
+		}
 
 		return entry->record.uid.status;
 	}
@@ -221,7 +227,7 @@ int uid_update(struct uid_store *store, const uid_id_t id,
 		return -EINVAL;
 	}
 
-	const uint32_t h = hash_uid(id, store->cache_capacity);
+	const uint32_t h = hash_uid(id, store->capacity);
 	struct cache_entry *entry = store->cache[h];
 
 	if (!entry) {
@@ -260,7 +266,7 @@ int uid_delete(struct uid_store *store, const uid_id_t id)
 		return -EINVAL;
 	}
 
-	const uint32_t h = hash_uid(id, store->cache_capacity);
+	const uint32_t h = hash_uid(id, store->capacity);
 	struct cache_entry *entry = store->cache[h];
 
 	if (entry && memcmp(entry->record.uid.id, id, sizeof(uid_id_t)) == 0) {
@@ -278,6 +284,27 @@ int uid_delete(struct uid_store *store, const uid_id_t id)
 	}
 
 	return err >= 0? 0 : err;
+}
+
+int uid_clear(struct uid_store *store)
+{
+	if (!store) {
+		return -EINVAL;
+	}
+
+	for (uint16_t i = 0; i < store->capacity; i++) {
+		if (store->cache[i]) {
+			free_entry(store->cache[i]);
+			store->cache[i] = NULL;
+		}
+	}
+
+	/* FIXME: it only deletes an empty directory. To delete all files,
+	 * we need to iterate through the directory and delete each file
+	 * individually. */
+	char filepath[FILEPATH_MAXLEN + FILENAME_MAXLEN];
+	snprintf(filepath, sizeof(filepath), "%s/%s", STORAGE_ROOT, store->ns);
+	return fs_delete(store->fs, filepath);
 }
 
 int uid_register_update_cb(struct uid_store *store,
@@ -299,9 +326,9 @@ struct uid_store *uid_store_create(const struct uid_store_config *config)
 	if (store) {
 		store->fs = config->fs;
 		store->ns = config->ns;
-		store->cache_capacity = config->cache_capacity;
+		store->capacity = config->capacity;
 		store->cache = (struct cache_entry **)calloc(1,
-			config->cache_capacity * sizeof(struct cache_entry *));
+			config->capacity * sizeof(struct cache_entry *));
 		if (!store->cache) {
 			error("Failed to allocate memory for UID cache.");
 			free(store);
@@ -315,7 +342,7 @@ struct uid_store *uid_store_create(const struct uid_store_config *config)
 void uid_store_destroy(struct uid_store *store)
 {
 	if (store) {
-		for (uint16_t i = 0; i < store->cache_capacity; i++) {
+		for (uint16_t i = 0; i < store->capacity; i++) {
 			if (store->cache[i]) {
 				free_entry(store->cache[i]);
 			}

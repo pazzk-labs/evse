@@ -115,7 +115,7 @@ TEST_GROUP(OcppConnector) {
 		mock().expectOneCall("on_connector_event")
 			.withParameter("event", CONNECTOR_EVENT_OCCUPIED);
 
-		ocpp_connector_set_session_current_uid(oc, "test");
+		ocpp_connector_set_session_uid(oc, "test");
 
 		connector_process(c);
 	}
@@ -145,8 +145,7 @@ TEST_GROUP(OcppConnector) {
 	void go_charging(void) {
 		go_start_transaction();
 
-		ocpp_connector_set_session_trial_uid(oc, "test");
-		ocpp_connector_accept_session_trial_uid(oc);
+		ocpp_connector_set_session_uid(oc, "test");
 		ocpp_connector_set_tid(oc, 1);
 
 		// 1. fault check(is_evse_error)
@@ -266,8 +265,7 @@ TEST(OcppConnector, ShouldSendStartTransaction_WhenGotStateBAfterAuthorized) {
 TEST(OcppConnector, ShouldGoCharging_WhenPluggedAfterAuthorizedFirst) {
 	go_start_transaction();
 
-	ocpp_connector_set_session_trial_uid(oc, "test");
-	ocpp_connector_accept_session_trial_uid(oc);
+	ocpp_connector_set_session_uid(oc, "test");
 	ocpp_connector_set_tid(oc, 1);
 
 	// 1. fault check(is_evse_error)

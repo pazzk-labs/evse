@@ -214,6 +214,26 @@ bool connector_set_reserved(struct connector *self);
 bool connector_clear_reserved(struct connector *self);
 
 /**
+ * @brief Marks the connector as occupied.
+ *
+ * This function sets the occupied state for the specified connector,
+ * indicating that it is currently in use.
+ *
+ * @param[in] self Pointer to the connector structure to be marked as occupied.
+ */
+void connector_set_occupied(struct connector *self);
+
+/**
+ * @brief Clears the occupied state of the connector.
+ *
+ * This function resets the occupied state for the specified connector,
+ * indicating that it is no longer in use.
+ *
+ * @param[in] self Pointer to the connector structure to be cleared.
+ */
+void connector_clear_occupied(struct connector *self);
+
+/**
  * @brief Validate the connector parameters.
  *
  * @param[in] param Pointer to the connector parameter structure.
