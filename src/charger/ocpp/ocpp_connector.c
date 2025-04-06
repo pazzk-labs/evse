@@ -38,7 +38,12 @@
 
 #include "csms.h"
 #include "metering.h"
+#include "uid.h"
 #include "logger.h"
+
+#include "libmcu/compiler.h"
+static_assert(UID_ID_MAXLEN == OCPP_ID_TOKEN_MAXLEN,
+		"UID_ID_MAXLEN and OCPP_ID_TOKEN_MAXLEN must be equal");
 
 #define MAX_EVENTS			4
 
@@ -172,9 +177,11 @@ static bool is_reserved(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	unused(state);
 	unused(next_state);
-	unused(ctx);
-	/* TODO: implement */
-	return false;
+
+	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
+	struct connector *c = &oc->base;
+
+	return c->reserved;
 }
 
 static bool is_unavailable(fsm_state_t state, fsm_state_t next_state, void *ctx)
@@ -280,6 +287,8 @@ static void do_available(fsm_state_t state, fsm_state_t next_state, void *ctx)
 	ocpp_connector_clear_session(oc);
 
 	do_missing_transaction(state, next_state, ctx);
+
+	connector_clear_occupied(&oc->base);
 }
 
 static void do_preparing(fsm_state_t state, fsm_state_t next_state, void *ctx)
@@ -295,6 +304,8 @@ static void do_preparing(fsm_state_t state, fsm_state_t next_state, void *ctx)
 	}
 
 	do_missing_transaction(state, next_state, ctx);
+
+	connector_set_occupied(&oc->base);
 }
 
 static void do_request_tid(fsm_state_t state, fsm_state_t next_state, void *ctx)
@@ -580,6 +591,259 @@ static const struct connector_api *get_api(void)
 	};
 
 	return &api;
+}
+
+static uid_status_t authorize_locally(struct ocpp_connector *oc,
+		const uid_id_t uid)
+{
+	uid_status_t status = UID_STATUS_NO_ENTRY;
+	bool local_list = false;
+	bool cache = false;
+
+	ocpp_get_configuration("LocalAuthListEnabled",
+			&local_list, sizeof(local_list), NULL);
+	ocpp_get_configuration("AuthorizationCacheEnabled",
+			&cache, sizeof(cache), NULL);
+
+	if (local_list) {
+		status = uid_status(oc->base.param.local_list, uid, NULL, NULL);
+	}
+	if (status == UID_STATUS_NO_ENTRY && cache) {
+		status = uid_status(oc->base.param.cache, uid, NULL, NULL);
+	}
+
+	return status;
+}
+
+static int occupy_online(struct connector *c,
+		const void *id, size_t id_len, bool remote,
+		ocpp_session_result_cb_t cb, void *cb_ctx)
+{
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+
+	bool pre_auth = false;
+	ocpp_get_configuration("LocalPreAuthorize",
+			&pre_auth, sizeof(pre_auth), NULL);
+	if (!remote && pre_auth) {
+		uid_id_t uid = { 0 };
+		memcpy(uid, id, id_len);
+		if (authorize_locally(oc, uid) == UID_STATUS_ACCEPTED) {
+			ocpp_connector_dispatch_auth_result(oc,
+					OCPP_SESSION_RESULT_OK);
+		}
+	}
+
+	ocpp_connector_set_auth_result_cb(oc, cb, cb_ctx);
+	if (remote) {
+		/* FIXME: This is a workaround to ensure
+		 * RemoteStartTransaction.conf is sent before Authorize.req */
+		csms_request_defer(OCPP_MSG_AUTHORIZE, c, NULL, 1);
+	} else {
+		csms_request(OCPP_MSG_AUTHORIZE, c, NULL);
+	}
+
+	return 0;
+}
+
+static int occupy_offline(struct connector *c, const void *id, size_t id_len)
+{
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+	bool offline_authorize = false;
+	bool unknown = false;
+	int err = 0;
+	ocpp_session_result_t result = OCPP_SESSION_RESULT_OK;
+
+	ocpp_get_configuration("LocalAuthorizeOffline",
+			&offline_authorize, sizeof(offline_authorize), NULL);
+	ocpp_get_configuration("AllowOfflineTxForUnknownId",
+			&unknown, sizeof(unknown), NULL);
+
+	if (!offline_authorize) {
+		err = -ENOTSUP;
+		result = OCPP_SESSION_RESULT_NOT_SUPPORTED;
+		ocpp_connector_clear_session_pending(oc);
+		goto out;
+	}
+
+	uid_id_t uid = { 0 };
+	memcpy(uid, id, id_len);
+	uid_status_t status = authorize_locally(oc, uid);
+
+	if (status == UID_STATUS_NO_ENTRY && unknown) {
+		status = UID_STATUS_ACCEPTED;
+	}
+
+	if (status != UID_STATUS_ACCEPTED) {
+		err = -EPERM;
+		result = OCPP_SESSION_RESULT_REJECTED;
+		ocpp_connector_clear_session_pending(oc);
+	}
+
+out:
+	ocpp_connector_dispatch_auth_result(oc, result);
+	return err;
+}
+
+static int release_pending_request_if_timedout(struct ocpp_connector *oc)
+{
+	if (!ocpp_connector_is_session_pending(oc)) {
+		return -ENOENT;
+	}
+
+	const uint32_t elapsed = (uint32_t)
+		(time(NULL) - oc->session.auth.timestamp);
+	uint32_t conn_timeout;
+
+	ocpp_get_configuration("ConnectionTimeOut",
+			&conn_timeout, sizeof(conn_timeout), NULL);
+
+	if (elapsed >= conn_timeout) {
+		warn("connector %d authorization timeout", oc->base.id);
+		ocpp_connector_dispatch_auth_result(oc,
+				OCPP_SESSION_RESULT_TIMEOUT);
+		ocpp_connector_clear_session_pending(oc);
+	}
+
+	return 0;
+}
+
+int ocpp_connector_try_occupy(struct connector *c,
+		const void *id, size_t id_len, bool remote,
+		ocpp_session_result_cb_t cb, void *cb_ctx)
+{
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+	uid_id_t tid = { 0 };
+	memcpy(tid, id, id_len);
+
+	release_pending_request_if_timedout(oc);
+
+	ocpp_connector_set_auth_result_cb(oc, cb, cb_ctx);
+
+	if (ocpp_connector_has_active_authorization(c)) {
+		ocpp_connector_dispatch_auth_result(oc,
+				OCPP_SESSION_RESULT_ALREADY_OCCUPIED);
+		return -EBUSY;
+	}
+
+	ocpp_connector_set_session_pending(oc, (const char *)tid);
+
+	if (remote) {
+		bool auth_required = false;
+		ocpp_get_configuration("AuthorizeRemoteTxRequests",
+				&auth_required, sizeof(auth_required), NULL);
+		if (!auth_required) {
+			ocpp_connector_dispatch_auth_result(oc,
+					OCPP_SESSION_RESULT_OK);
+			return 0;
+		}
+	}
+
+	if (csms_is_up()) {
+		return occupy_online(c, tid, id_len, remote, cb, cb_ctx);
+	}
+
+	return occupy_offline(c, tid, id_len);
+}
+
+int ocpp_connector_occupy(struct connector *c)
+{
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+
+	ocpp_connector_set_session_uid(oc,
+			(const char *)oc->session.auth.trial.uid);
+	ocpp_connector_clear_session_pending(oc);
+
+	uint32_t conn_timeout_sec;
+	ocpp_get_configuration("ConnectionTimeOut",
+			&conn_timeout_sec, sizeof(conn_timeout_sec), 0);
+	const time_t expiry = time(NULL) + conn_timeout_sec;
+	ocpp_connector_set_session_current_expiry(oc, expiry);
+
+	info("user \"%s\" authorized", oc->session.auth.current.uid);
+
+	return 0;
+}
+
+int ocpp_connector_try_release(struct connector *c,
+		const void *id, size_t id_len,
+		ocpp_session_result_cb_t cb, void *cb_ctx)
+{
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+	ocpp_session_result_t result = OCPP_SESSION_RESULT_OK;
+	int err = 0;
+	uid_id_t tid = { 0 };
+	memcpy(tid, id, id_len);
+
+	release_pending_request_if_timedout(oc);
+
+	ocpp_connector_set_auth_result_cb(oc, cb, cb_ctx);
+
+	if (!ocpp_connector_is_session_established(oc)) {
+		/* still in progress. wait until timeout or response from CSMS */
+		result = OCPP_SESSION_RESULT_PENDING;
+		err = -EBUSY;
+		goto out;
+	}
+
+	if (ocpp_connector_is_session_uid_equal(c, (const char *)tid)) {
+		ocpp_connector_set_session_pending(oc, (const char *)tid);
+	} else { /* check parent id */
+		result = OCPP_SESSION_RESULT_NOT_MATCHED;
+		err = -EPERM;
+
+		if (csms_is_up()) {
+			ocpp_connector_set_session_pending(oc, (const char *)tid);
+			csms_request(OCPP_MSG_AUTHORIZE, c, NULL);
+			return 0;
+		}
+	}
+
+out:
+	ocpp_connector_dispatch_auth_result(oc, result);
+
+	return err;
+}
+
+int ocpp_connector_release(struct connector *c, bool remote)
+{
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+	const ocpp_connector_state_t state = ocpp_connector_state(oc);
+
+	if (state == Charging || state == SuspendedEV) {
+		/* Stop the session and clear the current session ID. The trial
+		 * session ID is used for the StopTransaction request. */
+		if (!ocpp_connector_is_session_pending(oc)) {
+			ocpp_connector_set_session_pending(oc, (const char *)
+					oc->session.auth.current.uid);
+		}
+		ocpp_connector_clear_session_id(&oc->session.auth.current);
+		oc->session.remote_stop = remote;
+	} else {
+		ocpp_connector_clear_session(oc);
+	}
+
+	return 0;
+}
+
+bool ocpp_connector_has_active_authorization(struct connector *c)
+{
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+	return ocpp_connector_is_session_established(oc) ||
+		ocpp_connector_is_session_pending(oc);
+}
+
+bool ocpp_connector_can_user_release(struct connector *c)
+{
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+
+	if (ocpp_connector_is_session_uid_equal(c,
+			(const char *)oc->session.auth.trial.uid)) {
+		return true;
+	}
+
+	uid_id_t pid = { 0 };
+	uid_status(c->param.cache, oc->session.auth.trial.uid, pid, NULL);
+	return ocpp_connector_is_session_pid_equal(c, (const char *)pid);
 }
 
 int ocpp_connector_link_checkpoint(struct connector *c,

@@ -80,7 +80,7 @@ static void print_ocpp_configurations(const struct cli_io *io)
 	}
 }
 
-DEFINE_CLI_CMD(ocpp, "ocpp") {
+DEFINE_CLI_CMD(ocpp, "Interact with OCPP client module") {
 	unused(argv);
 	struct cli const *cli = (struct cli const *)env;
 

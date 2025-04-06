@@ -256,20 +256,17 @@ bool ocpp_connector_has_missing_transaction(struct ocpp_connector *oc)
 	return oc->checkpoint->transaction_id != 0;
 }
 
+void ocpp_connector_set_session_uid(struct ocpp_connector *oc,
+		const char uid[OCPP_ID_TOKEN_MAXLEN])
+{
+	memcpy(oc->session.auth.current.uid, uid,
+			sizeof(oc->session.auth.current.uid));
+}
+
 void ocpp_connector_clear_session_id(struct auth *auth)
 {
 	memset(&auth->uid, 0, sizeof(auth->uid));
 	memset(&auth->pid, 0, sizeof(auth->pid));
-}
-
-void ocpp_connector_set_session_current_uid(struct ocpp_connector *c,
-		const char uid[OCPP_ID_TOKEN_MAXLEN])
-{
-	memcpy(&c->session.auth.current.uid, uid,
-			sizeof(c->session.auth.current.uid));
-
-	ocpp_connector_clear_session_id(&c->session.auth.trial);
-	info("user \"%s\" authorized", c->session.auth.current.uid);
 }
 
 void ocpp_connector_set_session_pid(struct ocpp_connector *c,
@@ -282,57 +279,23 @@ void ocpp_connector_set_session_pid(struct ocpp_connector *c,
 	}
 }
 
-void ocpp_connector_set_session_trial_uid(struct ocpp_connector *c,
+void ocpp_connector_set_session_pending(struct ocpp_connector *c,
 		const char uid[OCPP_ID_TOKEN_MAXLEN])
 {
 	memcpy(&c->session.auth.trial.uid, uid, sizeof(c->session.auth.trial.uid));
+	c->session.auth.timestamp = time(NULL);
 	info("user \"%s\" in trial", uid);
 }
 
-void ocpp_connector_accept_session_trial_uid(struct ocpp_connector *c)
-{
-	ocpp_connector_set_session_current_uid(c,
-			(const char *)c->session.auth.trial.uid);
-}
-
-void ocpp_connector_clear_session_trial_uid(struct ocpp_connector *c)
+void ocpp_connector_clear_session_pending(struct ocpp_connector *c)
 {
 	ocpp_connector_clear_session_id(&c->session.auth.trial);
 }
 
-bool ocpp_connector_is_session_trial_uid_exist(const struct ocpp_connector *oc)
+bool ocpp_connector_is_session_pending(const struct ocpp_connector *oc)
 {
 	const uint8_t empty[OCPP_ID_TOKEN_MAXLEN] = {0, };
 	return memcmp(oc->session.auth.trial.uid, empty, sizeof(empty)) != 0;
-}
-
-bool ocpp_connector_is_trial_uid_equal(const struct ocpp_connector *c)
-{
-	if (ocpp_connector_is_session_established(c)) {
-		return memcmp(c->session.auth.current.uid,
-				c->session.auth.trial.uid,
-				sizeof(c->session.auth.current.uid))
-			== 0;
-	}
-
-	if (ocpp_connector_is_session_trial_uid_exist(c)) {
-		return memcmp(c->session.auth.current.uid,
-				c->session.auth.trial.uid,
-				sizeof(c->session.auth.current.uid))
-			== 0;
-	}
-
-	return false;
-}
-
-void ocpp_connector_trigger_stop_session(struct ocpp_connector *c, bool remote)
-{
-	/* Stop the session and clear the current session ID. The trial session
-	 * ID is used for the StopTransaction request. */
-	ocpp_connector_set_session_trial_uid(c,
-			(const char *)c->session.auth.current.uid);
-	ocpp_connector_clear_session_id(&c->session.auth.current);
-	c->session.remote_stop = remote;
 }
 
 ocpp_measurand_t ocpp_connector_update_metering(struct ocpp_connector *oc)
@@ -382,4 +345,46 @@ bool ocpp_connector_has_transaction(struct connector *c,
 	struct ocpp_connector *oc = (struct ocpp_connector *)c;
 	return oc->session.transaction_id == tid ||
 		oc->checkpoint->transaction_id == tid;
+}
+
+void ocpp_connector_set_auth_result_cb(struct ocpp_connector *oc,
+		ocpp_session_result_cb_t cb, void *cb_ctx)
+{
+	oc->auth.cb = cb;
+	oc->auth.cb_ctx = cb_ctx;
+}
+
+void ocpp_connector_clear_auth_result_cb(struct ocpp_connector *oc)
+{
+	oc->auth.cb = NULL;
+	oc->auth.cb_ctx = NULL;
+}
+
+void ocpp_connector_dispatch_auth_result(struct ocpp_connector *oc,
+		ocpp_session_result_t result)
+{
+	if (oc->auth.cb) {
+		(*oc->auth.cb)(&oc->base, result, oc->auth.cb_ctx);
+		oc->auth.cb = NULL;
+	}
+}
+
+bool ocpp_connector_is_session_uid_equal(struct connector *c,
+		const char uid[OCPP_ID_TOKEN_MAXLEN])
+{
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+	const uint8_t empty[OCPP_ID_TOKEN_MAXLEN] = {0, };
+	return memcmp(uid, empty, sizeof(empty)) &&
+		memcmp(oc->session.auth.current.uid, uid,
+			sizeof(oc->session.auth.current.uid)) == 0;
+}
+
+bool ocpp_connector_is_session_pid_equal(struct connector *c,
+		const char pid[OCPP_ID_TOKEN_MAXLEN])
+{
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+	const uint8_t empty[OCPP_ID_TOKEN_MAXLEN] = {0, };
+	return memcmp(pid, empty, sizeof(empty)) != 0 &&
+		memcmp(oc->session.auth.current.pid, pid,
+			sizeof(oc->session.auth.current.pid)) == 0;
 }

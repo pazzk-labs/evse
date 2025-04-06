@@ -38,7 +38,7 @@ bool connector_is_enabled(const struct connector *self) {
 		.returnBoolValueOrDefault(false);
 }
 
-bool connector_is_reserved(const struct connector *self) {
-	return mock().actualCall("connector_is_reserved")
+bool connector_is_occupied(const struct connector *self) {
+	return mock().actualCall("connector_is_occupied")
 		.returnBoolValueOrDefault(false);
 }

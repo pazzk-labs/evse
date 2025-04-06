@@ -46,13 +46,10 @@
 #include "logger.h"
 #include "libmcu/strext.h"
 #include "ocpp/strconv.h"
+#include "uid.h"
 
 #if !defined(ARRAY_COUNT)
 #define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
-#endif
-
-#if !defined(MIN)
-#define MIN(a, b)		((a) > (b)? (b) : (a))
 #endif
 
 typedef void (*handler_fn_t)(struct ocpp_charger *charger,
@@ -83,35 +80,30 @@ static void do_auth(struct ocpp_charger *charger,
 
 	if (!oc) {
 		error("connector not found for message id %s", message->id);
-	} else if (p->idTagInfo.status == OCPP_AUTH_STATUS_ACCEPTED) {
-		if (ocpp_connector_is_session_established(oc)) { /* 2nd tag */
-			if (ocpp_connector_is_trial_uid_equal(oc)) {
-				ocpp_connector_trigger_stop_session(oc, false);
-				info("session will stop by 2nd idTag");
-			} else {
-				error("session already established");
-			}
-			return;
-		} else if (p->idTagInfo.expiryDate &&
-				p->idTagInfo.expiryDate <= oc->now) {
-			error("already expired");
-			return;
-		}
-		ocpp_connector_accept_session_trial_uid(oc);
-		ocpp_connector_set_session_pid(oc, p->idTagInfo.parentIdTag);
-
-		uint32_t conn_timeout_sec;
-		ocpp_get_configuration("ConnectionTimeOut",
-				&conn_timeout_sec, sizeof(conn_timeout_sec), 0);
-		time_t expiry = oc->now + conn_timeout_sec;
-		if (p->idTagInfo.expiryDate) {
-			expiry = MIN(expiry, p->idTagInfo.expiryDate);
-		}
-		ocpp_connector_set_session_current_expiry(oc, expiry);
-	} else {
-		ocpp_connector_clear_session_trial_uid(oc);
-		error("session trial cleared: authorization failure");
+		return;
 	}
+
+	if (ocpp_connector_is_session_pending(oc)) {
+		uid_update(oc->base.param.cache, oc->session.auth.trial.uid,
+				(const uint8_t *)p->idTagInfo.parentIdTag,
+				(uid_status_t)p->idTagInfo.status,
+				p->idTagInfo.expiryDate);
+		if (p->idTagInfo.status != OCPP_AUTH_STATUS_ACCEPTED) {
+			ocpp_connector_clear_session_pending(oc);
+		}
+	}
+
+	const  ocpp_session_result_t result[] = {
+		[OCPP_AUTH_STATUS_UNKNOWN] = OCPP_SESSION_RESULT_ERROR,
+		[OCPP_AUTH_STATUS_ACCEPTED] = OCPP_SESSION_RESULT_OK,
+		[OCPP_AUTH_STATUS_BLOCKED] = OCPP_SESSION_RESULT_REJECTED,
+		[OCPP_AUTH_STATUS_EXPIRED] = OCPP_SESSION_RESULT_NOT_ALLOWED,
+		[OCPP_AUTH_STATUS_INVALID] = OCPP_SESSION_RESULT_ERROR,
+		[OCPP_AUTH_STATUS_CONCURRENT_TX] =
+			OCPP_SESSION_RESULT_NOT_SUPPORTED,
+	};
+
+	ocpp_connector_dispatch_auth_result(oc, result[p->idTagInfo.status]);
 }
 
 static void do_bootnoti(struct ocpp_charger *charger,
@@ -228,7 +220,7 @@ static void do_change_availability(struct ocpp_charger *charger,
 			(void *)ctx.status);
 }
 
-static bool is_configuration_reboot_required(const char *key)
+static bool is_reboot_required_configuration(const char *key)
 {
 	unused(key);
 	/* TODO: implement */
@@ -275,7 +267,7 @@ static void do_change_configuration(struct ocpp_charger *charger,
 		status = OCPP_CONFIG_STATUS_REJECTED;
 		error("failed to set configuration %s", p->key);
 	} else {
-		if (is_configuration_reboot_required(p->key)) {
+		if (is_reboot_required_configuration(p->key)) {
 			status = OCPP_CONFIG_STATUS_REBOOT_REQUIRED;
 		}
 		ocpp_charger_mq_send((struct charger *)charger,
@@ -289,8 +281,11 @@ static void do_change_configuration(struct ocpp_charger *charger,
 static void do_clear_cache(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
-	unused(charger);
-	/* TODO: implement. always responses accepted as no cache implemented */
+	/* NOTE: cache is shared by all connectors */
+	struct connector *c = charger_get_connector_by_id((struct charger *)
+			charger, 1);
+	uid_clear(c->param.cache);
+
 	csms_response(OCPP_MSG_CLEAR_CACHE, message, NULL,
 			(void *)OCPP_REMOTE_STATUS_ACCEPTED);
 }
@@ -314,14 +309,27 @@ static void do_heartbeat(struct ocpp_charger *charger,
 	app_adjust_time_on_drift(p->currentTime, SYSTEM_TIME_MAX_DRIFT_SEC);
 }
 
+static void on_remote_start_result(struct connector *c,
+		ocpp_session_result_t result, void *ctx)
+{
+	unused(ctx);
+
+	if (result == OCPP_SESSION_RESULT_OK) {
+		ocpp_connector_occupy(c);
+	}
+
+	info("remotely occupy %s", result == OCPP_SESSION_RESULT_OK?
+			"success" : "failed");
+}
+
 static void do_remote_start(struct ocpp_charger *charger,
 		const struct ocpp_message *message)
 {
 	const struct ocpp_RemoteStartTransaction *p =
 		(const struct ocpp_RemoteStartTransaction *)
 		message->payload.fmt.request;
+	void *result = (void *)OCPP_REMOTE_STATUS_REJECTED;
 	struct connector *c;
-	struct ocpp_connector *oc;
 
 	if (p->connectorId == 0) {
 		if ((c = charger_get_connector_available((struct charger *)
@@ -329,42 +337,18 @@ static void do_remote_start(struct ocpp_charger *charger,
 			error("no available connector");
 			goto out;
 		}
-	}
-	if ((c = charger_get_connector_by_id((struct charger *)charger,
+	} else if ((c = charger_get_connector_by_id((struct charger *)charger,
 			p->connectorId)) == NULL) {
 		error("connector %d not found", p->connectorId);
 		goto out;
 	}
 
-	oc = (struct ocpp_connector *)c;
-
-	if (ocpp_connector_is_session_active(oc) ||
-			ocpp_connector_is_session_trial_uid_exist(oc)) {
-		error("connector %d is already occupied", p->connectorId);
-		goto out;
+	if (ocpp_connector_try_occupy(c, p->idTag, strlen(p->idTag), true,
+			on_remote_start_result, NULL) == 0) {
+		result = (void *)OCPP_REMOTE_STATUS_ACCEPTED;
 	}
-
-	ocpp_connector_state_t state = ocpp_connector_state(oc);
-
-	if (state == Available || state == Preparing) {
-		csms_response(OCPP_MSG_REMOTE_START_TRANSACTION, message, c,
-				(void *)OCPP_REMOTE_STATUS_ACCEPTED);
-
-		bool auth_required = false;
-		ocpp_get_configuration("AuthorizeRemoteTxRequests",
-				&auth_required, sizeof(auth_required), NULL);
-		if (!auth_required) {
-			ocpp_connector_set_session_current_uid(oc, p->idTag);
-		} else {
-			ocpp_connector_set_session_trial_uid(oc, p->idTag);
-			csms_request(OCPP_MSG_AUTHORIZE, c, NULL);
-		}
-		return;
-	}
-
 out:
-	csms_response(OCPP_MSG_REMOTE_START_TRANSACTION,
-			message, c, (void *)OCPP_REMOTE_STATUS_REJECTED);
+	csms_response(OCPP_MSG_REMOTE_START_TRANSACTION, message, c, result);
 }
 
 static void do_remote_stop(struct ocpp_charger *charger,
@@ -383,11 +367,7 @@ static void do_remote_stop(struct ocpp_charger *charger,
 		error("connector not found for transaction id %d",
 				p->transactionId);
 	} else {
-		ocpp_connector_state_t state = ocpp_connector_state(c);
-		if (state != Charging && state != SuspendedEV) {
-			error("connector %d is not charging", c->base.id);
-		}
-		ocpp_connector_trigger_stop_session(c, true);
+		ocpp_connector_release((struct connector *)c, true);
 		csms_response(OCPP_MSG_REMOTE_STOP_TRANSACTION, message, c,
 				(void *)OCPP_REMOTE_STATUS_ACCEPTED);
 	}
@@ -469,7 +449,7 @@ static void do_updatefirmware(struct ocpp_charger *charger,
 	};
 	strcpy(param.url, p->url);
 
-	/* TODO: support other protocols. https is only supported now */
+	/* TODO: support other protocols. Only https is supported now */
 	if (net_get_protocol_from_url(param.url) == NET_PROTO_HTTPS) {
 		updater_request(&param, downloader_http_create());
 	} else {

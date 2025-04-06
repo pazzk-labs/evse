@@ -114,7 +114,7 @@ static void read_metrics(const metricfs_id_t id,
 	}
 }
 
-DEFINE_CLI_CMD(metric, "Show metrics") {
+DEFINE_CLI_CMD(metric, "Show system and charging metrics") {
 	struct cli *cli = (struct cli *)env;
 	struct app *app = (struct app *)cli->env;
 

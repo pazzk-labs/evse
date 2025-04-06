@@ -63,6 +63,7 @@
 #include "charger/ocpp.h"
 #include "charger/ocpp_connector.h"
 #include "ocpp/ocpp.h"
+#include "uid.h"
 #include "logger.h"
 
 static_assert(sizeof(struct metering_energy)
@@ -71,6 +72,13 @@ static_assert(sizeof(struct metering_energy)
 static_assert(sizeof(struct pilot_params)
 		== sizeof(((struct config *)0)->charger.connector[0].pilot),
 		"pilot_params size mismatch");
+
+#if !defined(MAX_AUTH_CACHE_SIZE)
+#define MAX_AUTH_CACHE_SIZE		1024
+#endif
+#if !defined(MAX_AUTH_LOCAL_LIST_SIZE)
+#define MAX_AUTH_LOCAL_LIST_SIZE	1024
+#endif
 
 static const char *metering_ch1_key = "chg.c1.metering";
 
@@ -248,6 +256,17 @@ static void start_charger(struct app *app)
 		.priority = 0,
 	};
 
+	conn_param.cache = uid_store_create(&(const struct uid_store_config) {
+		.fs = app->fs,
+		.ns = "cache",
+		.capacity = MAX_AUTH_CACHE_SIZE,
+	});
+	conn_param.local_list = uid_store_create(&(const struct uid_store_config) {
+		.fs = app->fs,
+		.ns = "localList",
+		.capacity = MAX_AUTH_LOCAL_LIST_SIZE,
+	});
+
 	struct connector *c = connector_factory_create(&conn_param);
 	charger_attach_connector(app->charger, c);
 	connector_register_event_cb(c, on_connector_event, app->charger);
@@ -314,7 +333,7 @@ void app_init(struct app *app)
 #define CLI_MAX_HISTORY		10U
 	static char buf[CLI_CMD_MAXLEN * CLI_MAX_HISTORY];
 
-	DEFINE_CLI_CMD_LIST(commands, config, help, info, log, net, ocpp,
+	DEFINE_CLI_CMD_LIST(commands, config, help, idtag, info, log, net, ocpp,
 			reboot, metric, sec, xmodem);
 
 	cli_init(&m.cli, cli_io_create(), buf, sizeof(buf), app);

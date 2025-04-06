@@ -23,10 +23,6 @@ ocpp_error_t ocpp_connector_map_error_to_ocpp(connector_error_t error) {
 		.returnIntValueOrDefault(OCPP_ERROR_OTHER);
 }
 
-bool ocpp_connector_is_occupied(const ocpp_connector_state_t state) {
-	return mock().actualCall("ocpp_connector_is_occupied")
-		.returnBoolValueOrDefault(false);
-}
 bool ocpp_connector_is_csms_up(const struct ocpp_connector *oc) {
 	return mock().actualCall("ocpp_connector_is_csms_up")
 		.returnBoolValueOrDefault(false);

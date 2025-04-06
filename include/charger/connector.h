@@ -89,6 +89,7 @@ typedef enum {
 struct iec61851;
 struct metering;
 struct safety;
+struct uid_store;
 
 struct connector;
 
@@ -106,6 +107,9 @@ struct connector_param {
 
 	const char *name;
 	int priority;
+
+	struct uid_store *cache;
+	struct uid_store *local_list;
 };
 
 struct connector_api {
@@ -113,8 +117,6 @@ struct connector_api {
 	int (*disable)(struct connector *self);
 	int (*process)(struct connector *self);
 };
-
-struct charger;
 
 struct connector {
 	struct connector_param param;
@@ -134,6 +136,7 @@ struct connector {
 
 	bool enabled;
 	bool reserved;
+	bool occupied;
 };
 
 /**
@@ -270,17 +273,18 @@ size_t connector_stringify_event(const connector_event_t event,
 bool connector_is_enabled(const struct connector *self);
 
 /**
- * @brief Check if the connector is reserved.
+ * @brief Checks if the connector is currently occupied.
  *
- * @note The reserved state is added to handle cases where the connector is not
- * plugged in but has been reserved or preempted by user authentication through
- * higher-level protocols such as OCPP.
+ * This function determines whether the specified connector is in use.
  *
- * @param[in] self Pointer to the connector structure.
+ * @note Even if the vehicle is not connected, the connector is considered
+ *       occupied if it is reserved or undergoing user authentication.
  *
- * @return true if the connector is reserved, false otherwise.
+ * @param[in] self Pointer to the connector structure to check.
+ *
+ * @return true if the connector is occupied, false otherwise.
  */
-bool connector_is_reserved(const struct connector *self);
+bool connector_is_occupied(const struct connector *self);
 
 #if defined(__cplusplus)
 }

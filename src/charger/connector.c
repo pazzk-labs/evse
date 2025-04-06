@@ -263,9 +263,9 @@ bool connector_is_enabled(const struct connector *self)
 	return self->enabled;
 }
 
-bool connector_is_reserved(const struct connector *self)
+bool connector_is_occupied(const struct connector *self)
 {
-	return self->reserved;
+	return self->occupied || self->reserved || get_state(self) != A;
 }
 
 bool connector_set_reserved(struct connector *self)
@@ -278,6 +278,16 @@ bool connector_clear_reserved(struct connector *self)
 {
 	self->reserved = false;
 	return true;
+}
+
+void connector_set_occupied(struct connector *self)
+{
+	self->occupied = true;
+}
+
+void connector_clear_occupied(struct connector *self)
+{
+	self->occupied = false;
 }
 
 bool connector_validate_param(const struct connector_param *param)
