@@ -661,6 +661,7 @@ static int occupy_offline(struct connector *c, const void *id, size_t id_len)
 	if (!offline_authorize) {
 		err = -ENOTSUP;
 		result = OCPP_SESSION_RESULT_NOT_SUPPORTED;
+		ocpp_connector_clear_session_pending(oc);
 		goto out;
 	}
 
@@ -675,6 +676,7 @@ static int occupy_offline(struct connector *c, const void *id, size_t id_len)
 	if (status != UID_STATUS_ACCEPTED) {
 		err = -EPERM;
 		result = OCPP_SESSION_RESULT_REJECTED;
+		ocpp_connector_clear_session_pending(oc);
 	}
 
 out:

@@ -33,14 +33,13 @@ COMPONENT_NAME = UID
 SRC_FILES = \
 	../src/uid.c \
 	../external/libmcu/modules/common/src/hexdump.c \
-	../external/libmcu/modules/metrics/src/metrics.c \
-	../external/libmcu/modules/metrics/src/metrics_overrides.c \
 
 TEST_SRC_FILES = \
 	src/uid_test.cpp \
 	src/test_all.cpp \
 	stubs/logging.c \
 	../external/libmcu/tests/stubs/board.cpp \
+	../external/libmcu/tests/stubs/metrics.cpp \
 	../external/libmcu/tests/mocks/assert.cpp \
 
 INCLUDE_DIRS = \
@@ -52,6 +51,6 @@ INCLUDE_DIRS = \
 	../external/libmcu/modules/metrics/include \
 
 MOCKS_SRC_DIRS =
-CPPUTEST_CPPFLAGS = -DMETRICS_USER_DEFINES=\"../include/metrics.def\"
+CPPUTEST_CPPFLAGS =
 
 include runners/MakefileRunner

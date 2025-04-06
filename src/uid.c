@@ -73,6 +73,8 @@ struct uid_store {
 
 	struct cache_entry **cache;
 	uint16_t capacity;
+
+	char dir[FILEPATH_MAXLEN];
 };
 
 static uint32_t hash_uid(const uid_id_t id, uint16_t cap)
@@ -107,6 +109,23 @@ static void free_entry(struct cache_entry *entry)
 }
 
 static void get_filepath(char *filepath, size_t maxlen,
+		const char *ns, const char *dir, const char *filename)
+{
+	size_t len = 0;
+	int t = snprintf(filepath, maxlen, "%s/%s", STORAGE_ROOT, ns);
+
+	if (t > 0 && dir && strlen(dir)) {
+		len += (size_t)t;
+		t = snprintf(filepath + len, maxlen - len, "/%s", dir);
+	}
+
+	if (t > 0 && filename && strlen(filename)) {
+		len += (size_t)t;
+		t = snprintf(filepath + len, maxlen - len, "/%s", filename);
+	}
+}
+
+static void get_filename(char *filepath, size_t maxlen,
 		const char *ns, const uid_id_t id)
 {
 	snprintf(filepath, maxlen, "%s/%s/%02X/%02X.bin",
@@ -119,7 +138,7 @@ static int read_entry_from_file(struct uid_store *store,
 	char filepath[FILEPATH_MAXLEN + FILENAME_MAXLEN];
 	size_t filesize;
 
-	get_filepath(filepath, sizeof(filepath), store->ns, id);
+	get_filename(filepath, sizeof(filepath), store->ns, id);
 
 	if (fs_size(store->fs, filepath, &filesize) < 0) {
 		return -ENOENT;
@@ -147,7 +166,9 @@ static int save_entry_into_file(struct uid_store *store,
 	char filepath[FILEPATH_MAXLEN + FILENAME_MAXLEN];
 	size_t offset;
 
-	get_filepath(filepath, sizeof(filepath), store->ns, record->uid.id);
+	get_filename(filepath, sizeof(filepath), store->ns, record->uid.id);
+
+	debug("Saving UID to file: %s", filepath);
 
 	if (read_entry_from_file(store, record->uid.id, &dummy, &offset) == 0) {
 		return fs_write(store->fs,
@@ -164,7 +185,7 @@ static int remove_entry_from_file(struct uid_store *store, const uid_id_t id)
 	char filepath[FILEPATH_MAXLEN + FILENAME_MAXLEN];
 	size_t offset;
 
-	get_filepath(filepath, sizeof(filepath), store->ns, id);
+	get_filename(filepath, sizeof(filepath), store->ns, id);
 
 	if (read_entry_from_file(store, id, &dummy, &offset) == 0) {
 		memset(&dummy, 0, sizeof(dummy));
@@ -178,18 +199,25 @@ static int remove_entry_from_file(struct uid_store *store, const uid_id_t id)
 static void on_clear_dir(struct fs *fs, const fs_file_t type,
 		const char *filename, void *ctx)
 {
+	char filepath[FILEPATH_MAXLEN + FILENAME_MAXLEN];
 	struct uid_store *store = (struct uid_store *)ctx;
 
 	if (type == FS_FILE_TYPE_DIR) {
-		info("recursive delete: %s", filename);
-		fs_dir(store->fs, filename, on_clear_dir, store);
+		const size_t len = strlen(store->dir);
+		strncat(store->dir, filename, sizeof(store->dir) - 1);
+		get_filepath(filepath, sizeof(filepath),
+				store->ns, store->dir, NULL);
+		info("recursive delete: %s", filepath);
+		fs_dir(store->fs, filepath, on_clear_dir, store);
+		store->dir[len] = '\0';
 	}
 
-	debug("deleting file: %s", filename);
+	get_filepath(filepath, sizeof(filepath),
+			store->ns, store->dir, filename);
+	debug("deleting file: %s", filepath);
 
-	if (fs_delete(fs, filename) < 0) {
-		error("Failed to delete file: %s", filename);
-		return;
+	if (fs_delete(fs, filepath) < 0) {
+		error("Failed to delete file: %s", filepath);
 	}
 }
 
@@ -332,7 +360,10 @@ int uid_clear(struct uid_store *store)
 	}
 
 	char filepath[FILEPATH_MAXLEN + FILENAME_MAXLEN];
-	snprintf(filepath, sizeof(filepath), "%s/%s", STORAGE_ROOT, store->ns);
+	get_filepath(filepath, sizeof(filepath), store->ns, NULL, NULL);
+	memset(store->dir, 0, sizeof(store->dir));
+
+	info("Clearing UID store: %s", filepath);
 	int err = fs_dir(store->fs, filepath, on_clear_dir, store);
 
 	const uint32_t elapsed = board_get_time_since_boot_ms() - t0;

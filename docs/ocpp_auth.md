@@ -36,23 +36,26 @@ flowchart TD
     C -->|Yes| D{"Is Local List or Cache enabled?"}
     D -->|No| Z2["Reject: No local authorization source available"]
 
-    D -->|Yes| E["Call uid_status()"]
+    D -->|Yes| E["Check cache or localList"]
     E -->|ACCEPTED| F["Authorize immediately (local)"]
     E -->|"BLOCKED or INVALID"| G["Reject immediately (local)"]
     E -->|"EXPIRED, UNKNOWN, NO_ENTRY"| Z3["Reject: Cannot determine status locally"]
 
     %% Online handling
     B -->|Yes| H{"LocalPreAuthorize = true?"}
-    H -->|Yes| I["Call uid_status() (Check Cache)"]
+    H -->|Yes| I["Check cache"]
     I -->|ACCEPTED| J["Temporarily authorize"]
     I -->|"BLOCKED or INVALID"| K["Reject immediately (cache)"]
     I -->|"EXPIRED, UNKNOWN, NO_ENTRY"| L["Send authorization request to server"]
+    K --> L
+    J --> L
 
     H -->|No| L["Send authorization request to server"]
 
     L --> M{"Server response"}
-    M -->|ACCEPTED| N["Call uid_update() to update status"] --> N2["Trigger callback to connector"]
-    M -->|"BLOCKED, EXPIRED, INVALID"| O["Call uid_update() to update status"] --> O2["Trigger callback to connector"]
+    M -->|ACCEPTED| N["Update cache"]
+    M -->|"BLOCKED, EXPIRED, INVALID"| O["Cancel transaction"]
+    O --> N
 ```
 
 ### 1. Offline Authorization Conditions
