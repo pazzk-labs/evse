@@ -8,6 +8,12 @@ Pazzk documentation
 
 .. toctree::
    :maxdepth: 1
+   :caption: Getting Started
+
+   quickstart
+
+.. toctree::
+   :maxdepth: 1
    :caption: Architecture
 
    architecture/charger

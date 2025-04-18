@@ -74,7 +74,7 @@ For more details, please refer to the developer documentation: [docs.pazzk.net](
 ### Build and Run
 
 > [!NOTE]
-> Additional configuration may be required depending on the build environment. Refer to the [documentation](docs/markdown/build.md) for details.
+> Additional configuration may be required depending on the build environment. Refer to the [documentation](docs/markdown/quickstart.md) for details.
 
 (Real hardware image to be added)
 
