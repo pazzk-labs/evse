@@ -18,6 +18,8 @@ Pazzk documentation
 
    architecture/charger
    architecture/network
+   architecture/system_quality
+   architecture/adr
 
 .. toctree::
    :maxdepth: 1
