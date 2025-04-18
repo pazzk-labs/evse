@@ -1,0 +1,799 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Quickstart &#8212; Pazzk  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'quickstart';</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="_static/mermaid-init.js?v=b11fa8ae"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Charger" href="architecture/charger.html" />
+    <link rel="prev" title="Pazzk documentation" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/pazzk-logo.png" class="logo__image only-light" alt="Pazzk  documentation - Home"/>
+    <script>document.write(`<img src="_static/pazzk-logo.png" class="logo__image only-dark" alt="Pazzk  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Quickstart</a></li>
+
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="architecture/charger.html">Charger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture/network.html">Network</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="cli/cli_commands.html">CLI</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Communication / OCPP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="comms/ocpp_auth.html">OCPP Auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="comms/ocpp_boot.html">OCPP Boot</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electrical Interfaces</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="electrical/control_pilot.html">Control Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="electrical/flash.html">Flash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="electrical/input.html">Input Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="electrical/power.html">Power Management</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Firmware Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="firmware/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="firmware/device_serial_number.html">Device Serial Number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="firmware/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="firmware/operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="firmware/uid_storage.html">UID Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="api-reference/config.html">Confing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/exio.html">EXIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/fs.html">File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/iec61851.html">IEC 61851</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/logfs.html">Log File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/metering.html">Metering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/periph.html">Peripheral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/pilot.html">Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/pinmap.html">Pinmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/relay.html">Relay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/safety.html">Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/secret.html">Secret</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/uid.html">UID</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/updater.html">Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/uptime.html">Uptime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference/usrinp.html">User Input</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/quickstart.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Quickstart</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Quickstart</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-environments">Supported Environments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clone-the-repository">Clone the Repository</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-the-esp-idf-environment-esp32-target-only">Set Up the ESP-IDF Environment (esp32 target only)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-the-firmware">Build the Firmware</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-build-recommended">Quick Build (Recommended)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-optional">Advanced (Optional)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#esp32-s3">ESP32-S3</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#host">Host</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-host-cli-simulation">Run Host CLI Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flash-the-firmware-esp32-only">Flash the Firmware (esp32 only)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monitor-the-output-esp32-only">Monitor the Output (esp32 only)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#quickstart-ko">Quickstart-ko</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#지원-환경">지원 환경</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#사전-요구-사항">사전 요구 사항</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#저장소-클론">저장소 클론</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#esp-idf-환경-설정-esp32-대상-전용">ESP-IDF 환경 설정 (esp32 대상 전용)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#펌웨어-빌드">펌웨어 빌드</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#빠른-빌드-권장">빠른 빌드 (권장)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#고급-빌드-옵션">고급 빌드 (옵션)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#esp32-s3">ESP32-S3</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#호스트">호스트</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#호스트-cli-시뮬레이션-실행">호스트 CLI 시뮬레이션 실행</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#펌웨어-플래시-esp32-전용">펌웨어 플래시 (esp32 전용)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#출력-모니터링-esp32-전용">출력 모니터링 (esp32 전용)</a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <p><a class="reference internal" href="#quickstart-ko"><span class="xref myst">한국어</span></a></p>
+<section id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading">#</a></h1>
+<p>This guide will walk you through setting up your environment and building the firmware to run on a compatible EVSE (Electric Vehicle Supply Equipment) device.</p>
+<section id="supported-environments">
+<h2>Supported Environments<a class="headerlink" href="#supported-environments" title="Link to this heading">#</a></h2>
+<p>The Pazzk firmware can be built and executed across multiple environments. Currently, the following build targets are supported:</p>
+<ul class="simple">
+<li><p><strong>esp32s3</strong>: ESP32-S3 based embedded EVSE firmware (default target)</p></li>
+<li><p><strong>host</strong>: x86_64 or aarch64 host-native binary for local testing and debugging</p></li>
+</ul>
+<blockquote>
+<div><p>Additional targets and platforms will be supported in future releases.</p>
+</div></blockquote>
+<p>Please refer to the target-specific instructions in the sections below.</p>
+</section>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">#</a></h2>
+<p>Before you begin, ensure the following tools are installed on your development machine:</p>
+<ul class="simple">
+<li><p>Git (version &gt;= 2.30)</p></li>
+<li><p>Python (version &gt;= 3.9)</p></li>
+<li><p>ESP-IDF (version &gt;= 5.4) for ESP32 builds only</p></li>
+<li><p>CMake (version &gt;= 3.16)</p></li>
+<li><p>Ninja or GNU Make</p></li>
+</ul>
+</section>
+<section id="clone-the-repository">
+<h2>Clone the Repository<a class="headerlink" href="#clone-the-repository" title="Link to this heading">#</a></h2>
+<p>Clone the project repository and initialize submodules:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>--recursive<span class="w"> </span>https://github.com/pazzk-labs/evse.git
+<span class="nb">cd</span><span class="w"> </span>evse
+</pre></div>
+</div>
+<p>If you already cloned the repository without <code class="docutils literal notranslate"><span class="pre">--recursive</span></code>, you can initialize submodules manually:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+</pre></div>
+</div>
+</section>
+<section id="set-up-the-esp-idf-environment-esp32-target-only">
+<h2>Set Up the ESP-IDF Environment (esp32 target only)<a class="headerlink" href="#set-up-the-esp-idf-environment-esp32-target-only" title="Link to this heading">#</a></h2>
+<p>Ensure you have the ESP-IDF toolchain properly installed. If not, follow the official ESP-IDF installation guide:
+<a class="reference external" href="https://docs.espressif.com/projects/esp-idf/en/v5.4.1/esp32s3/get-started/index.html">https://docs.espressif.com/projects/esp-idf/en/v5.4.1/esp32s3/get-started</a></p>
+<p>Once installed, activate the environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span><span class="nv">$IDF_PATH</span>/export.sh
+</pre></div>
+</div>
+<blockquote>
+<div><p>Replace <code class="docutils literal notranslate"><span class="pre">$IDF_PATH</span></code> with the path to your local esp-idf clone if not set globally.</p>
+</div></blockquote>
+</section>
+<section id="build-the-firmware">
+<h2>Build the Firmware<a class="headerlink" href="#build-the-firmware" title="Link to this heading">#</a></h2>
+<section id="quick-build-recommended">
+<h3>Quick Build (Recommended)<a class="headerlink" href="#quick-build-recommended" title="Link to this heading">#</a></h3>
+<p>Use the unified Makefile interface:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span><span class="nv">PLATFORM</span><span class="o">=</span>esp32s3<span class="w">   </span><span class="c1"># for ESP32-S3 firmware</span>
+make<span class="w"> </span><span class="nv">PLATFORM</span><span class="o">=</span>host<span class="w">      </span><span class="c1"># for host-native binary</span>
+</pre></div>
+</div>
+<p>Artifacts will be located in the <code class="docutils literal notranslate"><span class="pre">build/</span></code> directory for each platform.</p>
+</section>
+<section id="advanced-optional">
+<h3>Advanced (Optional)<a class="headerlink" href="#advanced-optional" title="Link to this heading">#</a></h3>
+<p>If you prefer using toolchain-specific commands:</p>
+<section id="esp32-s3">
+<h4>ESP32-S3<a class="headerlink" href="#esp32-s3" title="Link to this heading">#</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>idf.py<span class="w"> </span>build
+</pre></div>
+</div>
+</section>
+<section id="host">
+<h4>Host<a class="headerlink" href="#host" title="Link to this heading">#</a></h4>
+<p>Ensure required system dependencies are installed.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-B<span class="w"> </span>build/host<span class="w"> </span>-DTARGET_PLATFORM<span class="o">=</span>host<span class="w"> </span>-G<span class="w"> </span>Ninja
+cmake<span class="w"> </span>--build<span class="w"> </span>build/host
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="run-host-cli-simulation">
+<h2>Run Host CLI Simulation<a class="headerlink" href="#run-host-cli-simulation" title="Link to this heading">#</a></h2>
+<p>The host-targeted firmware includes a lightweight command-line interface (CLI) for simulating EVSE behavior.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span><span class="nv">PLATFORM</span><span class="o">=</span>host<span class="w"> </span>run
+</pre></div>
+</div>
+<p>Once launched, you can interact using the following commands:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&gt; help
+&gt; config show
+&gt; chg set pilot a
+&gt; idtag your_id
+</pre></div>
+</div>
+<p>To exit the CLI:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&gt; exit
+</pre></div>
+</div>
+<p>This is useful for verifying logic without flashing to hardware.</p>
+<blockquote>
+<div><p>A web-based simulator frontend is under development to provide a graphical interface on top of the CLI.</p>
+</div></blockquote>
+</section>
+<section id="flash-the-firmware-esp32-only">
+<h2>Flash the Firmware (esp32 only)<a class="headerlink" href="#flash-the-firmware-esp32-only" title="Link to this heading">#</a></h2>
+<p>Connect your ESP32-S3 device via USB and flash the firmware:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>idf.py<span class="w"> </span>flash<span class="w"> </span>--port<span class="w"> </span>/dev/ttyUSB0
+</pre></div>
+</div>
+<blockquote>
+<div><p>Replace <code class="docutils literal notranslate"><span class="pre">/dev/ttyUSB0</span></code> with the appropriate serial port for your platform (e.g., <code class="docutils literal notranslate"><span class="pre">COM3</span></code> on Windows).</p>
+</div></blockquote>
+</section>
+<section id="monitor-the-output-esp32-only">
+<h2>Monitor the Output (esp32 only)<a class="headerlink" href="#monitor-the-output-esp32-only" title="Link to this heading">#</a></h2>
+<p>To monitor the serial output of the device after flashing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>idf.py<span class="w"> </span>-p<span class="w"> </span>/dev/ttyUSB0<span class="w"> </span>monitor
+</pre></div>
+</div>
+<p>You should see logs from the bootloader, system init, and application start-up.</p>
+</section>
+<section id="next-steps">
+<h2>Next Steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Check available CLI commands and syntax in the <a class="reference external" href="https://docs.pazzk.net/cli/cli_commands.html">CLI Reference</a>.</p></li>
+<li><p>Learn how to customize firmware behavior in <a class="reference external" href="https://docs.pazzk.net/firmware/configuration.html">Configuration Guide</a>.</p></li>
+<li><p>Review the <a class="reference external" href="https://docs.pazzk.net/architecture/charger.html">Architecture Overview</a> to understand the system structure.</p></li>
+<li><p>Explore unit tests directly in the <a class="reference external" href="https://github.com/pazzk-labs/evse/tree/main/tests/src">tests/ directory</a>.</p></li>
+</ul>
+</section>
+</section>
+<section id="quickstart-ko">
+<h1>Quickstart-ko<a class="headerlink" href="#quickstart-ko" title="Link to this heading">#</a></h1>
+<p>이 가이드는 EVSE(Electric Vehicle Supply Equipment) 장치에서 실행할 수 있는 펌웨어를 설정하고 빌드하는 방법을 안내합니다.</p>
+<section id="지원-환경">
+<h2>지원 환경<a class="headerlink" href="#지원-환경" title="Link to this heading">#</a></h2>
+<p>Pazzk 펌웨어는 여러 환경에서 빌드 및 실행할 수 있습니다. 현재 지원되는 빌드 대상은 다음과 같습니다:</p>
+<ul class="simple">
+<li><p><strong>esp32s3</strong>: ESP32-S3 기반의 임베디드 EVSE 펌웨어 (기본 대상)</p></li>
+<li><p><strong>host</strong>: x86_64 또는 aarch64 호스트에서 로컬 테스트 및 디버깅을 위한 네이티브 바이너리</p></li>
+</ul>
+<blockquote>
+<div><p>향후 추가적인 대상 및 플랫폼이 지원될 예정입니다.</p>
+</div></blockquote>
+<p>아래 섹션에서 대상별 지침을 참고하세요.</p>
+</section>
+<section id="사전-요구-사항">
+<h2>사전 요구 사항<a class="headerlink" href="#사전-요구-사항" title="Link to this heading">#</a></h2>
+<p>개발을 시작하기 전에 다음 도구들이 개발 머신에 설치되어 있는지 확인하세요:</p>
+<ul class="simple">
+<li><p>Git (버전 &gt;= 2.30)</p></li>
+<li><p>Python (버전 &gt;= 3.9)</p></li>
+<li><p>ESP-IDF (버전 &gt;= 5.4) - ESP32 빌드에만 필요</p></li>
+<li><p>CMake (버전 &gt;= 3.16)</p></li>
+<li><p>Ninja 또는 GNU Make</p></li>
+</ul>
+</section>
+<section id="저장소-클론">
+<h2>저장소 클론<a class="headerlink" href="#저장소-클론" title="Link to this heading">#</a></h2>
+<p>프로젝트 저장소를 클론하고 서브모듈을 초기화하세요:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>--recursive<span class="w"> </span>https://github.com/pazzk-labs/evse.git
+<span class="nb">cd</span><span class="w"> </span>evse
+</pre></div>
+</div>
+<p>이미 <code class="docutils literal notranslate"><span class="pre">--recursive</span></code> 없이 클론한 경우, 서브모듈을 수동으로 초기화할 수 있습니다:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init<span class="w"> </span>--recursive
+</pre></div>
+</div>
+</section>
+<section id="esp-idf-환경-설정-esp32-대상-전용">
+<h2>ESP-IDF 환경 설정 (esp32 대상 전용)<a class="headerlink" href="#esp-idf-환경-설정-esp32-대상-전용" title="Link to this heading">#</a></h2>
+<p>ESP-IDF 툴체인이 올바르게 설치되어 있는지 확인하세요. 설치되지 않았다면, 공식 ESP-IDF 설치 가이드를 참고하세요:
+<a class="reference external" href="https://docs.espressif.com/projects/esp-idf/en/v5.4.1/esp32s3/get-started/index.html">https://docs.espressif.com/projects/esp-idf/en/v5.4.1/esp32s3/get-started</a></p>
+<p>설치 후, 환경을 활성화하세요:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>.<span class="w"> </span><span class="nv">$IDF_PATH</span>/export.sh
+</pre></div>
+</div>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">$IDF_PATH</span></code>는 로컬 esp-idf 클론의 경로로, 전역으로 설정되지 않은 경우 직접 지정해야 합니다.</p>
+</div></blockquote>
+</section>
+<section id="펌웨어-빌드">
+<h2>펌웨어 빌드<a class="headerlink" href="#펌웨어-빌드" title="Link to this heading">#</a></h2>
+<section id="빠른-빌드-권장">
+<h3>빠른 빌드 (권장)<a class="headerlink" href="#빠른-빌드-권장" title="Link to this heading">#</a></h3>
+<p>통합된 Makefile 인터페이스를 사용하세요:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span><span class="nv">PLATFORM</span><span class="o">=</span>esp32s3<span class="w">   </span><span class="c1"># ESP32-S3 펌웨어 빌드</span>
+make<span class="w"> </span><span class="nv">PLATFORM</span><span class="o">=</span>host<span class="w">      </span><span class="c1"># 호스트 네이티브 바이너리 빌드</span>
+</pre></div>
+</div>
+<p>각 플랫폼의 아티팩트는 <code class="docutils literal notranslate"><span class="pre">build/</span></code> 디렉토리에 생성됩니다.</p>
+</section>
+<section id="고급-빌드-옵션">
+<h3>고급 빌드 (옵션)<a class="headerlink" href="#고급-빌드-옵션" title="Link to this heading">#</a></h3>
+<p>툴체인별 명령어를 선호하는 경우:</p>
+<section id="esp32-s3">
+<h4>ESP32-S3<a class="headerlink" href="#esp32-s3" title="Link to this heading">#</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>idf.py<span class="w"> </span>build
+</pre></div>
+</div>
+</section>
+<section id="호스트">
+<h4>호스트<a class="headerlink" href="#호스트" title="Link to this heading">#</a></h4>
+<p>필요한 시스템 종속성이 설치되어 있는지 확인하세요.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake<span class="w"> </span>-B<span class="w"> </span>build/host<span class="w"> </span>-DTARGET_PLATFORM<span class="o">=</span>host<span class="w"> </span>-G<span class="w"> </span>Ninja
+cmake<span class="w"> </span>--build<span class="w"> </span>build/host
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="호스트-cli-시뮬레이션-실행">
+<h2>호스트 CLI 시뮬레이션 실행<a class="headerlink" href="#호스트-cli-시뮬레이션-실행" title="Link to this heading">#</a></h2>
+<p>호스트 대상 펌웨어에는 EVSE 동작을 시뮬레이션할 수 있는 경량의 커맨드라인 인터페이스(CLI)가 포함되어 있습니다.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>make<span class="w"> </span><span class="nv">PLATFORM</span><span class="o">=</span>host<span class="w"> </span>run
+</pre></div>
+</div>
+<p>실행 후, 다음과 같은 명령어로 상호작용할 수 있습니다:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&gt; help
+&gt; config show
+&gt; chg set pilot a
+&gt; idtag your_id
+</pre></div>
+</div>
+<p>CLI를 종료하려면:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>&gt; exit
+</pre></div>
+</div>
+<p>하드웨어에 플래시하지 않고도 로직을 검증하는 데 유용합니다.</p>
+<blockquote>
+<div><p>웹 기반 시뮬레이터 프론트엔드를 개발 중입니다. 기여 및 피드백을 환영합니다.</p>
+</div></blockquote>
+</section>
+<section id="펌웨어-플래시-esp32-전용">
+<h2>펌웨어 플래시 (esp32 전용)<a class="headerlink" href="#펌웨어-플래시-esp32-전용" title="Link to this heading">#</a></h2>
+<p>ESP32-S3 장치를 USB를 통해 연결하고 펌웨어를 플래시하세요:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>idf.py<span class="w"> </span>flash<span class="w"> </span>--port<span class="w"> </span>/dev/ttyUSB0
+</pre></div>
+</div>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">/dev/ttyUSB0</span></code>를 플랫폼에 맞는 적절한 시리얼 포트로 교체하세요 (예: Windows에서는 <code class="docutils literal notranslate"><span class="pre">COM3</span></code>).</p>
+</div></blockquote>
+</section>
+<section id="출력-모니터링-esp32-전용">
+<h2>출력 모니터링 (esp32 전용)<a class="headerlink" href="#출력-모니터링-esp32-전용" title="Link to this heading">#</a></h2>
+<p>플래시 후 장치의 시리얼 출력을 모니터링하려면:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>idf.py<span class="w"> </span>-p<span class="w"> </span>/dev/ttyUSB0<span class="w"> </span>monitor
+</pre></div>
+</div>
+<p>부트로더, 시스템 초기화 및 애플리케이션 시작 로그를 확인할 수 있습니다.</p>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Pazzk documentation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="architecture/charger.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Charger</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Quickstart</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#supported-environments">Supported Environments</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#prerequisites">Prerequisites</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clone-the-repository">Clone the Repository</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-up-the-esp-idf-environment-esp32-target-only">Set Up the ESP-IDF Environment (esp32 target only)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#build-the-firmware">Build the Firmware</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-build-recommended">Quick Build (Recommended)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-optional">Advanced (Optional)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#esp32-s3">ESP32-S3</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#host">Host</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#run-host-cli-simulation">Run Host CLI Simulation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#flash-the-firmware-esp32-only">Flash the Firmware (esp32 only)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#monitor-the-output-esp32-only">Monitor the Output (esp32 only)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#quickstart-ko">Quickstart-ko</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#지원-환경">지원 환경</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#사전-요구-사항">사전 요구 사항</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#저장소-클론">저장소 클론</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#esp-idf-환경-설정-esp32-대상-전용">ESP-IDF 환경 설정 (esp32 대상 전용)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#펌웨어-빌드">펌웨어 빌드</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#빠른-빌드-권장">빠른 빌드 (권장)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#고급-빌드-옵션">고급 빌드 (옵션)</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#esp32-s3">ESP32-S3</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#호스트">호스트</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#호스트-cli-시뮬레이션-실행">호스트 CLI 시뮬레이션 실행</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#펌웨어-플래시-esp32-전용">펌웨어 플래시 (esp32 전용)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#출력-모니터링-esp32-전용">출력 모니터링 (esp32 전용)</a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pazzk.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
