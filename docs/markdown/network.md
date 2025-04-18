@@ -96,8 +96,8 @@ The network module provides a unified framework for managing and utilizing multi
 | S4      | Connect                | S5   |                                     |
 | S5      | Turn off               | S0   |                                     |
 | S5      | Disabled               | S2   |                                     |
-| S5      | Connecing error        | S4   |                                     |
-| S5      | Connecing timeout      | S4   |                                     |
+| S5      | Connecting error        | S4   |                                     |
+| S5      | Connecting timeout      | S4   |                                     |
 | S5      | Disconnected           | S4   |                                     |
 | S5      | Too many retries       | S0   |                                     |
 | S5      | Connected              | S6   |                                     |
