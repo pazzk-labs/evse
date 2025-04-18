@@ -7,6 +7,9 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: read
+      pull-requests: write
     name: Create Release
     runs-on: ubuntu-latest
     container: espressif/idf:v5.4

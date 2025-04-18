@@ -9,6 +9,9 @@ on:
 
 jobs:
   unit-test:
+    permissions:
+      contents: read
+      pull-requests: write
     name: Unit test
     runs-on: ubuntu-latest
     steps:
