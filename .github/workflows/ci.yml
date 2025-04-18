@@ -10,8 +10,7 @@ on:
 jobs:
   build-on-esp-idf-v5_4:
     permissions:
-      contents: read
-      pull-requests: write
+      contents: write
     name: Build on ESP-IDF v5.4
     runs-on: ubuntu-latest
     container: espressif/idf:v5.4
