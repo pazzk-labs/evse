@@ -1,4 +1,4 @@
-# UID Storage Architecture
+# UID Storage
 
 이 문서는 UID 인증 캐시 또는 Local Authorization List를 flash 파일 시스템
 기반으로 저장하고 조회하기 위한 설계 원칙을 설명합니다. 목표는 수십만 개 UID를

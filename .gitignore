@@ -56,3 +56,4 @@ dkms.conf
 build
 sdkconfig
 tests/cpputest
+docs/website/build

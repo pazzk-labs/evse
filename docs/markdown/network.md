@@ -1,45 +1,5 @@
 # Network
 ## Network Module Design
-![Network Module State Diagram](images/network_module_state_diagram.png)
-
-### State Transition Table
-
-- S0: Off
-- S1: Initializing
-- S2: Initialized or Disabled
-- S3: Enabling
-- S4: Enabled
-- S5: Connecting
-- S6: Connected
-
-| Current | Event                  | Next | Note                                |
-| ------- | ---------------------- | ---- | ----------------------------------- |
-| S0      | Turn on                | S1   |                                     |
-| S1      | Turn off               | S0   |                                     |
-| S1      | Initializing error     | S0   |                                     |
-| S1      | Initializing timeout   | S0   |                                     |
-| S1      | Initialized            | S2   |                                     |
-| S2      | Turn off               | S0   |                                     |
-| S2      | Enable                 | S3   |                                     |
-| S3      | Turn off               | S0   |                                     |
-| S3      | Enabling error         | S2   |                                     |
-| S3      | Enabling timeout       | S2   |                                     |
-| S3      | Too many retries       | S0   |                                     |
-| S3      | Enabled                | S4   |                                     |
-| S4      | Turn off               | S0   |                                     |
-| S4      | Disabled               | S2   |                                     |
-| S4      | Connect                | S5   |                                     |
-| S5      | Turn off               | S0   |                                     |
-| S5      | Disabled               | S2   |                                     |
-| S5      | Connecing error        | S4   |                                     |
-| S5      | Connecing timeout      | S4   |                                     |
-| S5      | Disconnected           | S4   |                                     |
-| S5      | Too many retries       | S0   |                                     |
-| S5      | Connected              | S6   |                                     |
-| S6      | Turn off               | S0   |                                     |
-| S6      | Disabled               | S2   |                                     |
-| S6      | Disconnected           | S4   |                                     |
-
 ### Overview
 The network module provides a unified framework for managing and utilizing multiple network interfaces, specifically Ethernet and Wi-Fi. It is designed to support scenarios where either one or both interfaces are used concurrently, ensuring flexibility, efficiency, and reliability.
 
@@ -103,6 +63,47 @@ The network module provides a unified framework for managing and utilizing multi
 - connection_monitor:
   - Periodically checks interface connectivity.
   - Initiates reconnection attempts if necessary.
+
+### State Transition Diagram
+<img src="../images/network_module_state_diagram.png" alt="Network Module State Diagram" />
+
+### State Transition Table
+
+- S0: Off
+- S1: Initializing
+- S2: Initialized or Disabled
+- S3: Enabling
+- S4: Enabled
+- S5: Connecting
+- S6: Connected
+
+| Current | Event                  | Next | Note                                |
+| ------- | ---------------------- | ---- | ----------------------------------- |
+| S0      | Turn on                | S1   |                                     |
+| S1      | Turn off               | S0   |                                     |
+| S1      | Initializing error     | S0   |                                     |
+| S1      | Initializing timeout   | S0   |                                     |
+| S1      | Initialized            | S2   |                                     |
+| S2      | Turn off               | S0   |                                     |
+| S2      | Enable                 | S3   |                                     |
+| S3      | Turn off               | S0   |                                     |
+| S3      | Enabling error         | S2   |                                     |
+| S3      | Enabling timeout       | S2   |                                     |
+| S3      | Too many retries       | S0   |                                     |
+| S3      | Enabled                | S4   |                                     |
+| S4      | Turn off               | S0   |                                     |
+| S4      | Disabled               | S2   |                                     |
+| S4      | Connect                | S5   |                                     |
+| S5      | Turn off               | S0   |                                     |
+| S5      | Disabled               | S2   |                                     |
+| S5      | Connecing error        | S4   |                                     |
+| S5      | Connecing timeout      | S4   |                                     |
+| S5      | Disconnected           | S4   |                                     |
+| S5      | Too many retries       | S0   |                                     |
+| S5      | Connected              | S6   |                                     |
+| S6      | Turn off               | S0   |                                     |
+| S6      | Disabled               | S2   |                                     |
+| S6      | Disconnected           | S4   |                                     |
 
 ### APIs
 #### Initialization and Deinitialization

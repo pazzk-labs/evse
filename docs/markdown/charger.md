@@ -1,39 +1,21 @@
-![Charger Class Diagram](images/charger_class_diagram.png)
+# Charger
 
 ## 충전 방식
+
 인증 방식에 따라 세가지 충전 방식을 지원함
-### Backend Authentication Method 백엔드 인증 방식
-OCPP를 활용하여 충전기와 백엔드 서버 간 인증 및 결제를 처리.
-모듈명은 `ocpp`임
-### Automatic Authentication Method 자동 인증 방식
-차량과 충전기가 ISO 15118 기반으로 자동 인증 및 결제를 수행.
-모듈명은 `hlc`임
-### Non-Authenticated Method 비인증 방식
-별도의 인증 없이 충전기와 차량 연결 시 충전이 시작됨.
-모듈명은 `free`임
 
-## 노트
-- connected면 occupied 임
-- occupied 라도 connected가 아닐 수 있음
-  - remote start 같은 경우
-- occupied나 connected 상태더라도 충전은 시작되지 않음
-  - 인증과 같은 추가 프로세스가 필요할 수 있기 때문
-- session started
-  - 충전은 시작안했을 수도 있음. 사용자 인증등 충전에 필요한 프로세스는 완료됨
-  - 이 상태 이전에는 충전이 시작될 수 없음
-- charging started
-  - 릴레이가 붙어 실제로 충전이 시작됨
-  - 차량에서 실제로 전력을 끌어가지 않을 수도 있음
-- charging stopped
-  - 릴레이가 떨어짐. 충전 안함
-  - 충전 종료가 아닐 수 있음
-  - session started 상태라면 다시 충전할 수 있음
-- 릴레이 붙이기 전에 low side of pwm-signal 전압 확인해야 함. -12V(-11V ~ -13V)이어야 함
+| 모듈명 | 인증 방식 | 설명 |
+| ------ | --------- | ---- |
+| ocpp   | Backend Authentication Method | OCPP를 활용하여 충전기와 백엔드 서버 간 인증 및 결제를 처리 |
+| hlc    | Automatic Authentication Method | 차량과 충전기가 ISO 15118 기반으로 자동 인증 및 결제를 수행 |
+| free   | Non-Authenticated Method | 별도의 인증 없이 충전기와 차량 연결 시 충전이 시작됨 |
 
-## 충전 방식
-![Charger State Diagram](images/charger_state_diagram.png)
 ### Non-Authenticated Method 비인증 방식
 - 별도의 인증 없이 충전기와 차량 연결 시 충전이 시작됨
+
+#### State Transition Diagram
+
+<img src="../images/charger_state_diagram.png" alt="Charger State Diagram" />
 
 #### State Transition Table
 
@@ -78,7 +60,8 @@ OCPP를 활용하여 충전기와 백엔드 서버 간 인증 및 결제를 처�
 - ocpp_checkpoint.h: `OCPP_CONNECTOR_MAX`로 커넥터 수를 설정할 수 있음
 
 ### Backend Authentication Method 백엔드 인증 방식
-![Charger State Diagram](images/charger_state_diagram_ocpp.png)
+
+<img src="../images/charger_state_diagram_ocpp.png" alt="Charger State Diagram OCPP" />
 
 - Unavailable 상태에서 Reserved 상태로 전환 가능성이 사양에 빠져있음
 - Preparing 상태에서 Finishing 상태로 전환은 Preparing 상태를 유지하는 방향으로 변경
@@ -136,3 +119,26 @@ OCPP를 활용하여 충전기와 백엔드 서버 간 인증 및 결제를 처�
 | Faulted       |                          | Preparing     | |
 | Faulted       |                          | SuspendedEVSE | |
 | Faulted       |                          | Unavailable   | |
+
+## 내부 구조
+
+### Charger Class Diagram
+<img src="../images/charger_class_diagram.png" alt="Charger Class Diagram" />
+
+## 노트
+- connected면 occupied 임
+- occupied 라도 connected가 아닐 수 있음
+  - remote start 같은 경우
+- occupied나 connected 상태더라도 충전은 시작되지 않음
+  - 인증과 같은 추가 프로세스가 필요할 수 있기 때문
+- session started
+  - 충전은 시작안했을 수도 있음. 사용자 인증등 충전에 필요한 프로세스는 완료됨
+  - 이 상태 이전에는 충전이 시작될 수 없음
+- charging started
+  - 릴레이가 붙어 실제로 충전이 시작됨
+  - 차량에서 실제로 전력을 끌어가지 않을 수도 있음
+- charging stopped
+  - 릴레이가 떨어짐. 충전 안함
+  - 충전 종료가 아닐 수 있음
+  - session started 상태라면 다시 충전할 수 있음
+- 릴레이 붙이기 전에 low side of pwm-signal 전압 확인해야 함. -12V(-11V ~ -13V)이어야 함
