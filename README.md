@@ -7,6 +7,8 @@ Pazzk EVSE is an open-source project designed to provide a reliable and scalable
 
 This project is available under both the GPLv3 open-source license and a commercial license. The open-source version is free to use, while the commercial license includes additional features and support services.
 
+In addition to our own reference board, we actively support migration to existing commercial products and custom hardware.
+
 [![pazzk-logo](docs/images/pazzk-logo.png)](https://pazzk.net)
 
 > [!WARNING]
