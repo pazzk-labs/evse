@@ -1,0 +1,1147 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>CLI &#8212; Pazzk  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'cli/cli_commands';</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../_static/mermaid-init.js?v=b11fa8ae"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="OCPP Auth" href="../comms/ocpp_auth.html" />
+    <link rel="prev" title="Network" href="../architecture/network.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pazzk-logo.png" class="logo__image only-light" alt="Pazzk  documentation - Home"/>
+    <script>document.write(`<img src="../_static/pazzk-logo.png" class="logo__image only-dark" alt="Pazzk  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/charger.html">Charger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/network.html">Network</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">CLI</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Communication / OCPP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_auth.html">OCPP Auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_boot.html">OCPP Boot</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electrical Interfaces</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../electrical/control_pilot.html">Control Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/flash.html">Flash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/input.html">Input Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/power.html">Power Management</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Firmware Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/device_serial_number.html">Device Serial Number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/uid_storage.html">UID Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/config.html">Confing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/exio.html">EXIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/fs.html">File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/iec61851.html">IEC 61851</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/logfs.html">Log File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/metering.html">Metering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/periph.html">Peripheral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/pilot.html">Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/pinmap.html">Pinmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/relay.html">Relay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/safety.html">Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/secret.html">Secret</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/uid.html">UID</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/updater.html">Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/uptime.html">Uptime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/usrinp.html">User Input</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/cli/cli_commands.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>CLI</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#커맨드-목록">커맨드 목록</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#커맨드-설명">커맨드 설명</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chg"><code class="docutils literal notranslate"><span class="pre">chg</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#설정-목록">설정 목록</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#config"><code class="docutils literal notranslate"><span class="pre">config</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#설정-목록">설정 목록</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exit"><code class="docutils literal notranslate"><span class="pre">exit</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#help"><code class="docutils literal notranslate"><span class="pre">help</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#info"><code class="docutils literal notranslate"><span class="pre">info</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#log"><code class="docutils literal notranslate"><span class="pre">log</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#md"><code class="docutils literal notranslate"><span class="pre">md</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metrics"><code class="docutils literal notranslate"><span class="pre">metrics</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#net"><code class="docutils literal notranslate"><span class="pre">net</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ocpp"><code class="docutils literal notranslate"><span class="pre">ocpp</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pilot"><code class="docutils literal notranslate"><span class="pre">pilot</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plc"><code class="docutils literal notranslate"><span class="pre">plc</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reboot"><code class="docutils literal notranslate"><span class="pre">reboot</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec"><code class="docutils literal notranslate"><span class="pre">sec</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test"><code class="docutils literal notranslate"><span class="pre">test</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xmodem"><code class="docutils literal notranslate"><span class="pre">xmodem</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="cli">
+<h1>CLI<a class="headerlink" href="#cli" title="Link to this heading">#</a></h1>
+<section id="커맨드-목록">
+<h2>커맨드 목록<a class="headerlink" href="#커맨드-목록" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>command 혹은 subcommand 뒤에 값이 없으면 현재 설정값을 보여줍니다.</p></li>
+<li><p>커맨드별 세부사항 및 상세 설명은 하단 <a class="reference internal" href="#%EC%BB%A4%EB%A7%A8%EB%93%9C-%EC%84%A4%EB%AA%85"><span class="xref myst">커맨드 설명</span></a>을 참고하세요.</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Command</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">chg</span></code></p></td>
+<td><p>충전기 관련 설정 확인 및 변경</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">config</span></code></p></td>
+<td><p>설정 확인 및 변경</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">exit</span></code></p></td>
+<td><p>CLI 종료</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">help</span></code></p></td>
+<td><p>도움말</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">info</span></code></p></td>
+<td><p>시스템 정보</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">log</span></code></p></td>
+<td><p>시스템 로그</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">md</span></code></p></td>
+<td><p>메모리 덤프</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">metrics</span></code></p></td>
+<td><p>메트릭 정보</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">net</span></code></p></td>
+<td><p>네트워크 정보</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ocpp</span></code></p></td>
+<td><p>OCPP 설정 정보</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pilot</span></code></p></td>
+<td><p>Control Pilot</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plc</span></code></p></td>
+<td><p>PLC 모뎀 설정 확인 및 변경</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">reboot</span></code></p></td>
+<td><p>시스템 재부팅</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sec</span></code></p></td>
+<td><p>보안 설정</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test</span></code></p></td>
+<td><p>기능 테스트</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xmodem</span></code></p></td>
+<td><p>시리얼 터미널 XMODEM 통신</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="커맨드-설명">
+<h2>커맨드 설명<a class="headerlink" href="#커맨드-설명" title="Link to this heading">#</a></h2>
+<section id="chg">
+<h3><code class="docutils literal notranslate"><span class="pre">chg</span></code><a class="headerlink" href="#chg" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>subcommand</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>show</p></td>
+<td><p>현재 상태 확인</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">chg</span> <span class="pre">show</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>set {pilot}</p></td>
+<td><p>상태 변경</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">chg</span> <span class="pre">set</span> <span class="pre">pilot</span> <span class="pre">A</span></code></p></td>
+<td><p>설정 리스트는 아래 테이블 참고</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="설정-목록">
+<h3>설정 목록<a class="headerlink" href="#설정-목록" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Function</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Options</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>pilot</p></td>
+<td><p>Control Pilot</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">C</span></code>, <code class="docutils literal notranslate"><span class="pre">D</span></code>, <code class="docutils literal notranslate"><span class="pre">E</span></code>, <code class="docutils literal notranslate"><span class="pre">F</span></code></p></td>
+<td><p><em>HOST_BUILD</em> 에서만 동작</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="config">
+<h3><code class="docutils literal notranslate"><span class="pre">config</span></code><a class="headerlink" href="#config" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>subcommand</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>set {chg|mode}</p></td>
+<td><p>설정 변경</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">set</span> <span class="pre">chg.mode</span> <span class="pre">free</span></code></p></td>
+<td><p>설정 리스트는 아래 테이블 참고</p></td>
+</tr>
+<tr class="row-odd"><td><p>show</p></td>
+<td><p>설정 확인</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">show</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>reset</p></td>
+<td><p>설정 초기화</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">reset</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>save</p></td>
+<td><p>설정 저장</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">save</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Note</p>
+<p>
+설정 변경 후 <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">save</span></code>로 저장해야 시스템을 재부팅해도 설정이 유지됩니다.</p>
+</div>
+<section id="설정-목록">
+<h4>설정 목록<a class="headerlink" href="#설정-목록" title="Link to this heading">#</a></h4>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>config</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Options</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mode</p></td>
+<td><p>운영 모드</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">manufacturing</span></code>, <code class="docutils literal notranslate"><span class="pre">installing</span></code>, <code class="docutils literal notranslate"><span class="pre">production</span></code>, <code class="docutils literal notranslate"><span class="pre">development</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>mac</p></td>
+<td><p>MAC 주소</p></td>
+<td><p></p></td>
+<td><p>e.g. <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">set</span> <span class="pre">mac</span> <span class="pre">11:22:33:44:55:66</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>chg.mode</p></td>
+<td><p>충전 모드</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">free</span></code>, <code class="docutils literal notranslate"><span class="pre">ocpp</span></code>, <code class="docutils literal notranslate"><span class="pre">hlc</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>chg.vol</p></td>
+<td><p>입력 전압</p></td>
+<td><p></p></td>
+<td><p>단위: V</p></td>
+</tr>
+<tr class="row-even"><td><p>chg.freq</p></td>
+<td><p>입력 주파수</p></td>
+<td><p></p></td>
+<td><p>단위: Hz</p></td>
+</tr>
+<tr class="row-odd"><td><p>chg.input_curr</p></td>
+<td><p>입력 최대 전류</p></td>
+<td><p></p></td>
+<td><p>단위: A</p></td>
+</tr>
+<tr class="row-even"><td><p>chg.max_out_curr</p></td>
+<td><p>출력 최대 전류</p></td>
+<td><p></p></td>
+<td><p>단위: A</p></td>
+</tr>
+<tr class="row-odd"><td><p>chg.min_out_curr</p></td>
+<td><p>출력 최소 전류</p></td>
+<td><p></p></td>
+<td><p>단위: A</p></td>
+</tr>
+<tr class="row-even"><td><p>chg.param</p></td>
+<td><p>충전 파라미터(vol,input_curr,freq,min_out_curr,max_out_curr)</p></td>
+<td><p></p></td>
+<td><p>e.g. <code class="docutils literal notranslate"><span class="pre">config</span> <span class="pre">set</span> <span class="pre">chg.param</span> <span class="pre">220</span> <span class="pre">32</span> <span class="pre">60</span> <span class="pre">6</span> <span class="pre">32</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>x509.ca</p></td>
+<td><p>CA 인증서</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>x509.cert</p></td>
+<td><p>디바이스 인증서</p></td>
+<td><p></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="note admonition">
+<p class="admonition-title">Note</p>
+<p>
+디바이스 인증서 업데이트시 저장된 CA 인증서로 인증서 유효성 검사를 수행합니다. 따라서 CA 인증서를 먼저 업데이트하세요.</p>
+</div>
+</section>
+</section>
+<section id="exit">
+<h3><code class="docutils literal notranslate"><span class="pre">exit</span></code><a class="headerlink" href="#exit" title="Link to this heading">#</a></h3>
+</section>
+<section id="help">
+<h3><code class="docutils literal notranslate"><span class="pre">help</span></code><a class="headerlink" href="#help" title="Link to this heading">#</a></h3>
+</section>
+<section id="info">
+<h3><code class="docutils literal notranslate"><span class="pre">info</span></code><a class="headerlink" href="#info" title="Link to this heading">#</a></h3>
+<p>버전, 디바이스 시리얼, CPU 로드, 힙 메모리등 시스템 정보를 출력합니다.</p>
+</section>
+<section id="log">
+<h3><code class="docutils literal notranslate"><span class="pre">log</span></code><a class="headerlink" href="#log" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>subcommand</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>clear</p></td>
+<td><p>모든 로그 삭제</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log</span> <span class="pre">clear</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>rm</p></td>
+<td><p>특정 로그 삭제</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log</span> <span class="pre">rm</span> <span class="pre">1734652800</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>show</p></td>
+<td><p>특정 로그 보기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log</span> <span class="pre">show</span> <span class="pre">1734652800</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>level</p></td>
+<td><p>로그 레벨 확인</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log</span> <span class="pre">level</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>level</p></td>
+<td><p>로그 레벨 설정</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log</span> <span class="pre">level</span> <span class="pre">info</span></code></p></td>
+<td><p>debug, info, error, none</p></td>
+</tr>
+<tr class="row-odd"><td><p>set</p></td>
+<td><p>로그 출력 설정</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log</span> <span class="pre">set</span> <span class="pre">console</span></code></p></td>
+<td><p>console, file, all, none</p></td>
+</tr>
+<tr class="row-even"><td><p>flush</p></td>
+<td><p>버퍼에 있는 로그를 파일로 출력</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">log</span> <span class="pre">flush</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul class="simple">
+<li><p>로그 레벨 설정(<code class="docutils literal notranslate"><span class="pre">level</span></code>)은 <code class="docutils literal notranslate"><span class="pre">debug</span></code>가 디폴트이며, <code class="docutils literal notranslate"><span class="pre">info</span></code>로 설정하면 <code class="docutils literal notranslate"><span class="pre">debug</span></code> 로그가 출력되지 않습니다.</p></li>
+<li><p>로그 출력 설정(<code class="docutils literal notranslate"><span class="pre">set</span></code>)은 <code class="docutils literal notranslate"><span class="pre">all</span></code>이 디폴트이며, <code class="docutils literal notranslate"><span class="pre">stdout</span></code>로 설정하면 파일로 로그를 출력하지 않습니다. <code class="docutils literal notranslate"><span class="pre">file</span></code>로 설정하면 파일로 로그를 출력하고 <code class="docutils literal notranslate"><span class="pre">stdout</span></code>로 로그를 출력하지 않습니다.</p></li>
+</ul>
+</section>
+<section id="md">
+<h3><code class="docutils literal notranslate"><span class="pre">md</span></code><a class="headerlink" href="#md" title="Link to this heading">#</a></h3>
+<p>메모리 덤프를 출력합니다. <code class="docutils literal notranslate"><span class="pre">md</span> <span class="pre">[주소]</span> <span class="pre">[길이]</span></code> 형식으로 사용합니다. 주소는 16진수로 입력합니다. 길이는 10진수로 입력합니다. 주소와 길이는 생략 가능합니다.</p>
+</section>
+<section id="metrics">
+<h3><code class="docutils literal notranslate"><span class="pre">metrics</span></code><a class="headerlink" href="#metrics" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>subcommand</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">reset</span></code></p></td>
+<td><p>메트릭 데이터 초기화</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">metric</span> <span class="pre">reset</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">show</span></code></p></td>
+<td><p>메트릭 데이터 보기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">metric</span> <span class="pre">show</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="net">
+<h3><code class="docutils literal notranslate"><span class="pre">net</span></code><a class="headerlink" href="#net" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>subcommand</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">enable</span></code></p></td>
+<td><p>네트워크 활성화</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">net</span> <span class="pre">enable</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">disable</span></code></p></td>
+<td><p>네트워크 비활성화</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">net</span> <span class="pre">disable</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ping</span> <span class="pre">{ip</span> <span class="pre">addr}</span></code></p></td>
+<td><p>네트워크 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">net</span> <span class="pre">ping</span> <span class="pre">192.168.0.1</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mac</span></code></p></td>
+<td><p>MAC 주소</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">net</span> <span class="pre">mac</span> <span class="pre">11:22:33:44:55:66</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">url</span></code></p></td>
+<td><p>서버 URL 설정</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">net</span> <span class="pre">url</span> <span class="pre">wss://csms.pazzk.net:9000</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">id</span></code></p></td>
+<td><p>인증 ID 설정</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">net</span> <span class="pre">id</span> <span class="pre">id_str</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pw</span></code></p></td>
+<td><p>인증 PW 설정</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">net</span> <span class="pre">pw</span> <span class="pre">pass_str</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ws.ping</span></code></p></td>
+<td><p>웹소켓 핑 주기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">net</span> <span class="pre">ws.ping</span> <span class="pre">60</span></code></p></td>
+<td><p>단위: 초. 0일 경우 비활성화</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">health</span></code></p></td>
+<td><p>네트워크 health check 주기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">net</span> <span class="pre">health</span> <span class="pre">60000</span></code></p></td>
+<td><p>단위: 밀리초. 0일 경우 비활성화</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="ocpp">
+<h3><code class="docutils literal notranslate"><span class="pre">ocpp</span></code><a class="headerlink" href="#ocpp" title="Link to this heading">#</a></h3>
+</section>
+<section id="pilot">
+<h3><code class="docutils literal notranslate"><span class="pre">pilot</span></code><a class="headerlink" href="#pilot" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>subcommand</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>scan_interval</p></td>
+<td><p>CP 측정주기를 설정</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pilot</span> <span class="pre">scan_interval</span> <span class="pre">10</span></code></p></td>
+<td><p>단위: ms</p></td>
+</tr>
+<tr class="row-odd"><td><p>cutoff</p></td>
+<td><p>설정 전압보다 높으면 high로 인식</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pilot</span> <span class="pre">cutoff</span> <span class="pre">1996</span></code></p></td>
+<td><p>단위: mV</p></td>
+</tr>
+<tr class="row-even"><td><p>hysteresis {upward|downward} {A|B|C|D|E}</p></td>
+<td><p>상태별 전압 히스테리시스 설정</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pilot</span> <span class="pre">hysteresis</span> <span class="pre">upward</span> <span class="pre">A</span> <span class="pre">3038</span></code></p></td>
+<td><p>단위: mV</p></td>
+</tr>
+<tr class="row-odd"><td><p>sample_count</p></td>
+<td><p>ADC 샘플링 갯수 설정</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pilot</span> <span class="pre">sample_count</span> <span class="pre">500</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p>noise_tolerance</p></td>
+<td><p>노이즈 마진 설정</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pilot</span> <span class="pre">noise_tolerance</span> <span class="pre">50</span></code></p></td>
+<td><p>단위: mV</p></td>
+</tr>
+<tr class="row-odd"><td><p>transition_clock</p></td>
+<td><p>상태 변환 시간 설정</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">pilot</span> <span class="pre">transition_clock</span> <span class="pre">15</span></code></p></td>
+<td><p>단위: ADC 샘플링 클럭(샘플링 갯수)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="plc">
+<h3><code class="docutils literal notranslate"><span class="pre">plc</span></code><a class="headerlink" href="#plc" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>subcommand</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">reset</span></code></p></td>
+<td><p>모뎀 재시작</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plc</span> <span class="pre">reset</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mac</span></code></p></td>
+<td><p>MAC 주소 확인 또는 변경</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plc</span> <span class="pre">mac</span> <span class="pre">[11:22:33:44:55:66]</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dak</span></code></p></td>
+<td><p>Device Access Key 확인 또는 변경</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plc</span> <span class="pre">dak</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ver</span></code></p></td>
+<td><p>펌웨어 버전 보기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plc</span> <span class="pre">ver</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pib</span></code></p></td>
+<td><p>PIB 파일 헤더 정보 보기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plc</span> <span class="pre">pib</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fw</span></code></p></td>
+<td><p>FW 파일 헤더 정보 보기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plc</span> <span class="pre">fw</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">read</span></code></p></td>
+<td><p>모뎀으로부터 데이터 읽기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">plc</span> <span class="pre">read</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="reboot">
+<h3><code class="docutils literal notranslate"><span class="pre">reboot</span></code><a class="headerlink" href="#reboot" title="Link to this heading">#</a></h3>
+</section>
+<section id="sec">
+<h3><code class="docutils literal notranslate"><span class="pre">sec</span></code><a class="headerlink" href="#sec" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>subcommand</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dfu</span> <span class="pre">{image|sign}</span></code></p></td>
+<td><p>DFU 암호키 변경</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sec</span> <span class="pre">dfu</span> <span class="pre">image</span> <span class="pre">1234567890</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">x509.key</span></code></p></td>
+<td><p>X.509 인증서 비밀키 생성</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sec</span> <span class="pre">x509.key</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">x509.key.csr</span></code></p></td>
+<td><p>X.509 인증서 CSR 생성 및 읽기</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sec</span> <span class="pre">x509.key.csr</span></code></p></td>
+<td><p>생성할 경우 CN, C, O, E 순으로 입력. e.g. <code class="docutils literal notranslate"><span class="pre">sec</span> <span class="pre">x509.key.csr</span> <span class="pre">PZKC12411190001</span> <span class="pre">KR</span> <span class="pre">Pazzk</span> <span class="pre">op&#64;pazzk.net</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">image</span></code>: DFU 이미지 암호화용 AES-128 대칭키</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sign</span></code>: DFU 서명용 비대칭키</p></li>
+</ul>
+<div class="warning admonition">
+<p class="admonition-title">Warning</p>
+<p>
+CSR 생성시 CLI를 통해 입력한 정보는 유효성 검사를 거치지 않습니다. 올바른 정보를 입력하세요.</p>
+</div>
+</section>
+<section id="test">
+<h3><code class="docutils literal notranslate"><span class="pre">test</span></code><a class="headerlink" href="#test" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>subcommand</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">led</span></code></p></td>
+<td><p>LED 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">led</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cp</span></code></p></td>
+<td><p>Control Pilot 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">cp</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plc</span></code></p></td>
+<td><p>PLC 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">plc</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">relay</span></code></p></td>
+<td><p>Relay 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">relay</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">buzzer</span></code></p></td>
+<td><p>Buzzer 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">buzzer</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">temp</span></code></p></td>
+<td><p>온도 센서 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">temp</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">adc</span></code></p></td>
+<td><p>ADC 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">adc</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">acc</span></code></p></td>
+<td><p>가속도 센서 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">acc</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">metering</span></code></p></td>
+<td><p>전력량계 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">metering</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">net</span></code></p></td>
+<td><p>네트워크 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">net</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">power</span></code></p></td>
+<td><p>전원 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">power</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">all</span></code></p></td>
+<td><p>모든 테스트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">all</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="xmodem">
+<h3><code class="docutils literal notranslate"><span class="pre">xmodem</span></code><a class="headerlink" href="#xmodem" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>subcommand</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Example</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">dfu</span></code></p></td>
+<td><p>DFU 이미지 다운로드 후 업데이트</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xmodem</span> <span class="pre">dfu</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test</span></code></p></td>
+<td><p>아무 파일이나 다운로드 후 삭제</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xmodem</span> <span class="pre">test</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pib</span></code></p></td>
+<td><p>PLC PIB 파일을 <code class="docutils literal notranslate"><span class="pre">plc/pib.nvm</span></code>에 다운로드</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xmodem</span> <span class="pre">pib</span></code></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nvm</span></code></p></td>
+<td><p>PLC 펌웨어 파일을 <code class="docutils literal notranslate"><span class="pre">plc/fw.nvm</span></code>에 다운로드</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">xmodem</span> <span class="pre">nvm</span></code></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul class="simple">
+<li><p>XMODEM 통신 링크가 로그 출력 포트와 동일할 경우, 서로 간섭이 발생합니다. 따라서 파일을 다운로드할 때는 로그를 none으로 설정하고 진행하세요.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../architecture/network.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Network</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../comms/ocpp_auth.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">OCPP Auth</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#커맨드-목록">커맨드 목록</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#커맨드-설명">커맨드 설명</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chg"><code class="docutils literal notranslate"><span class="pre">chg</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#설정-목록">설정 목록</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#config"><code class="docutils literal notranslate"><span class="pre">config</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#설정-목록">설정 목록</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exit"><code class="docutils literal notranslate"><span class="pre">exit</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#help"><code class="docutils literal notranslate"><span class="pre">help</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#info"><code class="docutils literal notranslate"><span class="pre">info</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#log"><code class="docutils literal notranslate"><span class="pre">log</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#md"><code class="docutils literal notranslate"><span class="pre">md</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metrics"><code class="docutils literal notranslate"><span class="pre">metrics</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#net"><code class="docutils literal notranslate"><span class="pre">net</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ocpp"><code class="docutils literal notranslate"><span class="pre">ocpp</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pilot"><code class="docutils literal notranslate"><span class="pre">pilot</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#plc"><code class="docutils literal notranslate"><span class="pre">plc</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#reboot"><code class="docutils literal notranslate"><span class="pre">reboot</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sec"><code class="docutils literal notranslate"><span class="pre">sec</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#test"><code class="docutils literal notranslate"><span class="pre">test</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#xmodem"><code class="docutils literal notranslate"><span class="pre">xmodem</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pazzk.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

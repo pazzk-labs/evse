@@ -1,0 +1,731 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>UID &#8212; Pazzk  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api-reference/uid';</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../_static/mermaid-init.js?v=b11fa8ae"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Updater" href="updater.html" />
+    <link rel="prev" title="Secret" href="secret.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pazzk-logo.png" class="logo__image only-light" alt="Pazzk  documentation - Home"/>
+    <script>document.write(`<img src="../_static/pazzk-logo.png" class="logo__image only-dark" alt="Pazzk  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/charger.html">Charger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/network.html">Network</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli/cli_commands.html">CLI</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Communication / OCPP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_auth.html">OCPP Auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_boot.html">OCPP Boot</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electrical Interfaces</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../electrical/control_pilot.html">Control Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/flash.html">Flash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/input.html">Input Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/power.html">Power Management</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Firmware Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/device_serial_number.html">Device Serial Number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/uid_storage.html">UID Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="config.html">Confing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exio.html">EXIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fs.html">File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="iec61851.html">IEC 61851</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logfs.html">Log File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metering.html">Metering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="periph.html">Peripheral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pilot.html">Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pinmap.html">Pinmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relay.html">Relay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="safety.html">Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secret.html">Secret</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">UID</a></li>
+<li class="toctree-l1"><a class="reference internal" href="updater.html">Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uptime.html">Uptime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usrinp.html">User Input</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api-reference/uid.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>UID</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416uid_store_createPK16uid_store_config"><code class="docutils literal notranslate"><span class="pre">uid_store_create()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv417uid_store_destroyP9uid_store"><code class="docutils literal notranslate"><span class="pre">uid_store_destroy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410uid_updateP9uid_storeK8uid_id_tK8uid_id_t12uid_status_t6time_t"><code class="docutils literal notranslate"><span class="pre">uid_update()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410uid_deleteP9uid_storeK8uid_id_t"><code class="docutils literal notranslate"><span class="pre">uid_delete()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410uid_statusP9uid_storeK8uid_id_t8uid_id_tP6time_t"><code class="docutils literal notranslate"><span class="pre">uid_status()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv49uid_clearP9uid_store"><code class="docutils literal notranslate"><span class="pre">uid_clear()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv422uid_register_update_cbP9uid_store15uid_update_cb_tPv"><code class="docutils literal notranslate"><span class="pre">uid_register_update_cb()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv48uid_id_t"><code class="docutils literal notranslate"><span class="pre">uid_id_t</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415uid_update_cb_t"><code class="docutils literal notranslate"><span class="pre">uid_update_cb_t</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416uid_store_config"><code class="docutils literal notranslate"><span class="pre">uid_store_config</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16uid_store_config2fsE"><code class="docutils literal notranslate"><span class="pre">fs</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16uid_store_config2nsE"><code class="docutils literal notranslate"><span class="pre">ns</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16uid_store_config8capacityE"><code class="docutils literal notranslate"><span class="pre">capacity</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412uid_status_t"><code class="docutils literal notranslate"><span class="pre">uid_status_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12uid_status_t18UID_STATUS_UNKNOWNE"><code class="docutils literal notranslate"><span class="pre">UID_STATUS_UNKNOWN</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12uid_status_t19UID_STATUS_ACCEPTEDE"><code class="docutils literal notranslate"><span class="pre">UID_STATUS_ACCEPTED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12uid_status_t18UID_STATUS_BLOCKEDE"><code class="docutils literal notranslate"><span class="pre">UID_STATUS_BLOCKED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12uid_status_t18UID_STATUS_EXPIREDE"><code class="docutils literal notranslate"><span class="pre">UID_STATUS_EXPIRED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12uid_status_t18UID_STATUS_INVALIDE"><code class="docutils literal notranslate"><span class="pre">UID_STATUS_INVALID</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12uid_status_t19UID_STATUS_NO_ENTRYE"><code class="docutils literal notranslate"><span class="pre">UID_STATUS_NO_ENTRY</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.UID_ID_MAXLEN"><code class="docutils literal notranslate"><span class="pre">UID_ID_MAXLEN</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="uid">
+<h1>UID<a class="headerlink" href="#uid" title="Link to this heading">#</a></h1>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416uid_store_createPK16uid_store_config">
+<span id="_CPPv316uid_store_createPK16uid_store_config"></span><span id="_CPPv216uid_store_createPK16uid_store_config"></span><span id="uid_store_create__uid_store_configCP"></span><span class="target" id="uid_8h_1aa3f7211d6ad3e373221acd553e7e78fc"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">uid_store</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">uid_store_create</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv416uid_store_config" title="uid_store_config"><span class="n"><span class="pre">uid_store_config</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">config</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416uid_store_createPK16uid_store_config" title="Link to this definition">#</a><br /></dt>
+<dd><p>Creates and initializes a UID store instance. </p>
+<p>This initializes both in-memory cache and backing storage under the specified namespace.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config</strong> – <strong>[in]</strong> Store configuration including fs, namespace, and cache size.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to initialized store instance, or NULL on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417uid_store_destroyP9uid_store">
+<span id="_CPPv317uid_store_destroyP9uid_store"></span><span id="_CPPv217uid_store_destroyP9uid_store"></span><span id="uid_store_destroy__uid_storeP"></span><span class="target" id="uid_8h_1a962cd5565844faf30d61479bb31bdf7a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uid_store_destroy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">uid_store</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">store</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417uid_store_destroyP9uid_store" title="Link to this definition">#</a><br /></dt>
+<dd><p>Destroys a previously created UID store instance. </p>
+<p>Frees all associated memory and internal structures.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>store</strong> – <strong>[in]</strong> The UID store instance to destroy. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410uid_updateP9uid_storeK8uid_id_tK8uid_id_t12uid_status_t6time_t">
+<span id="_CPPv310uid_updateP9uid_storeK8uid_id_tK8uid_id_t12uid_status_t6time_t"></span><span id="_CPPv210uid_updateP9uid_storeK8uid_id_tK8uid_id_t12uid_status_t6time_t"></span><span id="uid_update__uid_storeP.uid_id_tC.uid_id_tC.uid_status_t.time_t"></span><span class="target" id="uid_8h_1a139c1a04c98993874b8b77e1dd0d7626"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uid_update</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">uid_store</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">store</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv48uid_id_t" title="uid_id_t"><span class="n"><span class="pre">uid_id_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">id</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv48uid_id_t" title="uid_id_t"><span class="n"><span class="pre">uid_id_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pid</span></span>, <a class="reference internal" href="#_CPPv412uid_status_t" title="uid_status_t"><span class="n"><span class="pre">uid_status_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">status</span></span>, <span class="n"><span class="pre">time_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">expiry</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410uid_updateP9uid_storeK8uid_id_tK8uid_id_t12uid_status_t6time_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Updates or inserts a UID entry into the store (cache + persistent storage). </p>
+<p>This function is typically called when a response is received from the server, or when a local decision is made to override the cached status.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>store</strong> – <strong>[in]</strong> The UID store instance. </p></li>
+<li><p><strong>id</strong> – <strong>[in]</strong> The UID to update. </p></li>
+<li><p><strong>pid</strong> – <strong>[in]</strong> Provisioning or parent ID to associate (optional). </p></li>
+<li><p><strong>status</strong> – <strong>[in]</strong> The new status to associate with the UID. </p></li>
+<li><p><strong>expiry</strong> – <strong>[in]</strong> The expiration time for the UID status.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative value on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410uid_deleteP9uid_storeK8uid_id_t">
+<span id="_CPPv310uid_deleteP9uid_storeK8uid_id_t"></span><span id="_CPPv210uid_deleteP9uid_storeK8uid_id_t"></span><span id="uid_delete__uid_storeP.uid_id_tC"></span><span class="target" id="uid_8h_1a607953e0f9c07ee29af5bb9caf5443cb"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uid_delete</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">uid_store</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">store</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv48uid_id_t" title="uid_id_t"><span class="n"><span class="pre">uid_id_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410uid_deleteP9uid_storeK8uid_id_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Removes a UID entry from the store (RAM only). </p>
+<p>This function explicitly purges the UID from the in-memory cache. It does not affect any persistent storage or remote server state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>store</strong> – <strong>[in]</strong> The UID store instance. </p></li>
+<li><p><strong>id</strong> – <strong>[in]</strong> The UID to remove from the cache.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative value if the UID was not found. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410uid_statusP9uid_storeK8uid_id_t8uid_id_tP6time_t">
+<span id="_CPPv310uid_statusP9uid_storeK8uid_id_t8uid_id_tP6time_t"></span><span id="_CPPv210uid_statusP9uid_storeK8uid_id_t8uid_id_tP6time_t"></span><span id="uid_status__uid_storeP.uid_id_tC.uid_id_t.time_tP"></span><span class="target" id="uid_8h_1ad6f11554d4229088146bc5e8dcd34428"></span><a class="reference internal" href="#_CPPv412uid_status_t" title="uid_status_t"><span class="n"><span class="pre">uid_status_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uid_status</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">uid_store</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">store</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv48uid_id_t" title="uid_id_t"><span class="n"><span class="pre">uid_id_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">id</span></span>, <a class="reference internal" href="#_CPPv48uid_id_t" title="uid_id_t"><span class="n"><span class="pre">uid_id_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">pid</span></span>, <span class="n"><span class="pre">time_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">expiry</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410uid_statusP9uid_storeK8uid_id_t8uid_id_tP6time_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Retrieves the status and expiry time of a UID. </p>
+<p>This function first checks the cache; if not found, it searches the persistent storage. If the UID is found, its current status and expiry time are returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>store</strong> – <strong>[in]</strong> The UID store instance. </p></li>
+<li><p><strong>id</strong> – <strong>[in]</strong> The UID to query. </p></li>
+<li><p><strong>expiry</strong> – <strong>[out]</strong> Pointer to store the UID’s expiry time (can be NULL).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The status of the UID. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv49uid_clearP9uid_store">
+<span id="_CPPv39uid_clearP9uid_store"></span><span id="_CPPv29uid_clearP9uid_store"></span><span id="uid_clear__uid_storeP"></span><span class="target" id="uid_8h_1a710f816831bbdc9833bc337d0543abba"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uid_clear</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">uid_store</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">store</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49uid_clearP9uid_store" title="Link to this definition">#</a><br /></dt>
+<dd><p>Clears all entries in the UID store. </p>
+<p>This function removes all user identification (UID) entries from the specified UID store, effectively resetting it to an empty state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>store</strong> – <strong>[in]</strong> Pointer to the UID store structure to be cleared.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, or a negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422uid_register_update_cbP9uid_store15uid_update_cb_tPv">
+<span id="_CPPv322uid_register_update_cbP9uid_store15uid_update_cb_tPv"></span><span id="_CPPv222uid_register_update_cbP9uid_store15uid_update_cb_tPv"></span><span id="uid_register_update_cb__uid_storeP.uid_update_cb_t.voidP"></span><span class="target" id="uid_8h_1a28e7aac1800541be026eba2ebee11fb3"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uid_register_update_cb</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">uid_store</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">store</span></span>, <a class="reference internal" href="#_CPPv415uid_update_cb_t" title="uid_update_cb_t"><span class="n"><span class="pre">uid_update_cb_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">cb</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422uid_register_update_cbP9uid_store15uid_update_cb_tPv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Registers a callback to be invoked when a UID is updated. </p>
+<p>The callback is called when a UID entry is updated or inserted via <code class="docutils literal notranslate"><a class="reference internal" href="#uid_8h_1a139c1a04c98993874b8b77e1dd0d7626"><span class="std std-ref"><span class="pre">uid_update()</span></span></a></code>, even if the new value is the same as the existing one. Only one callback can be registered per store. Subsequent calls overwrite the previous registration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>store</strong> – <strong>[in]</strong> The UID store instance. </p></li>
+<li><p><strong>cb</strong> – <strong>[in]</strong> The callback function to register. </p></li>
+<li><p><strong>ctx</strong> – <strong>[in]</strong> A user-defined context pointer passed to the callback.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative value on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv48uid_id_t">
+<span id="_CPPv38uid_id_t"></span><span id="_CPPv28uid_id_t"></span><span id="uid_id_t"></span><span class="target" id="uid_8h_1a8e5b8930548b81462745e693031aa927"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uid_id_t</span></span></span><span class="p"><span class="pre">[</span></span><span class="n"><span class="pre">UID_ID_MAXLEN</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv48uid_id_t" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv415uid_update_cb_t">
+<span id="_CPPv315uid_update_cb_t"></span><span id="_CPPv215uid_update_cb_t"></span><span id="uid_update_cb_t"></span><span class="target" id="uid_8h_1a3357934fb2490c31a5b5d5bc3413f589"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">uid_update_cb_t</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv48uid_id_t" title="uid_id_t"><span class="n"><span class="pre">uid_id_t</span></span></a><span class="w"> </span><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412uid_status_t" title="uid_status_t"><span class="n"><span class="pre">uid_status_t</span></span></a><span class="w"> </span><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">time_t</span></span><span class="w"> </span><span class="n"><span class="pre">expiry</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv415uid_update_cb_t" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv416uid_store_config">
+<span id="_CPPv316uid_store_config"></span><span id="_CPPv216uid_store_config"></span><span id="uid_store_config"></span><span class="target" id="structuid__store__config"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uid_store_config</span></span></span><a class="headerlink" href="#_CPPv416uid_store_config" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;uid.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N16uid_store_config2fsE">
+<span id="_CPPv3N16uid_store_config2fsE"></span><span id="_CPPv2N16uid_store_config2fsE"></span><span id="uid_store_config::fs__fsP"></span><span class="target" id="structuid__store__config_1aa0a44bd38c61403a684abe38b514e517"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv4N16uid_store_config2fsE" title="uid_store_config::fs"><span class="n"><span class="pre">fs</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">fs</span></span></span><a class="headerlink" href="#_CPPv4N16uid_store_config2fsE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Filesystem backend to use. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N16uid_store_config2nsE">
+<span id="_CPPv3N16uid_store_config2nsE"></span><span id="_CPPv2N16uid_store_config2nsE"></span><span id="uid_store_config::ns__cCP"></span><span class="target" id="structuid__store__config_1abec25b799917a14c770f8ad33a6247ae"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">ns</span></span></span><a class="headerlink" href="#_CPPv4N16uid_store_config2nsE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Filesystem namespace for isolation (e.g., “localList”, “cache”). </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N16uid_store_config8capacityE">
+<span id="_CPPv3N16uid_store_config8capacityE"></span><span id="_CPPv2N16uid_store_config8capacityE"></span><span id="uid_store_config::capacity__uint16_t"></span><span class="target" id="structuid__store__config_1a1e3ff6dfa5df66ec6ab5f55d8e3c4846"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">capacity</span></span></span><a class="headerlink" href="#_CPPv4N16uid_store_config8capacityE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Maximum number of entries in RAM. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv412uid_status_t">
+<span id="_CPPv312uid_status_t"></span><span id="_CPPv212uid_status_t"></span><span class="target" id="uid_8h_1aede1e660696741031e876d1b4fac537a"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">uid_status_t</span></span></span><a class="headerlink" href="#_CPPv412uid_status_t" title="Link to this definition">#</a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12uid_status_t18UID_STATUS_UNKNOWNE">
+<span id="_CPPv3N12uid_status_t18UID_STATUS_UNKNOWNE"></span><span id="_CPPv2N12uid_status_t18UID_STATUS_UNKNOWNE"></span><span class="target" id="uid_8h_1aede1e660696741031e876d1b4fac537aa26e2781bc8c635a44cb2a9150cd3bd39"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UID_STATUS_UNKNOWN</span></span></span><a class="headerlink" href="#_CPPv4N12uid_status_t18UID_STATUS_UNKNOWNE" title="Link to this definition">#</a><br /></dt>
+<dd><p>ID has not been processed yet. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12uid_status_t19UID_STATUS_ACCEPTEDE">
+<span id="_CPPv3N12uid_status_t19UID_STATUS_ACCEPTEDE"></span><span id="_CPPv2N12uid_status_t19UID_STATUS_ACCEPTEDE"></span><span class="target" id="uid_8h_1aede1e660696741031e876d1b4fac537aaa11fdde1ddf189099b31865db40aae73"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UID_STATUS_ACCEPTED</span></span></span><a class="headerlink" href="#_CPPv4N12uid_status_t19UID_STATUS_ACCEPTEDE" title="Link to this definition">#</a><br /></dt>
+<dd><p>ID is valid and recognized, access allowed. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12uid_status_t18UID_STATUS_BLOCKEDE">
+<span id="_CPPv3N12uid_status_t18UID_STATUS_BLOCKEDE"></span><span id="_CPPv2N12uid_status_t18UID_STATUS_BLOCKEDE"></span><span class="target" id="uid_8h_1aede1e660696741031e876d1b4fac537aa19850d33ff6a67259eae13ee11504da6"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UID_STATUS_BLOCKED</span></span></span><a class="headerlink" href="#_CPPv4N12uid_status_t18UID_STATUS_BLOCKEDE" title="Link to this definition">#</a><br /></dt>
+<dd><p>ID is explicitly blocked from access. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12uid_status_t18UID_STATUS_EXPIREDE">
+<span id="_CPPv3N12uid_status_t18UID_STATUS_EXPIREDE"></span><span id="_CPPv2N12uid_status_t18UID_STATUS_EXPIREDE"></span><span class="target" id="uid_8h_1aede1e660696741031e876d1b4fac537aafb9bdcdf0e93c6d7ff34e35e0c0e1ac7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UID_STATUS_EXPIRED</span></span></span><a class="headerlink" href="#_CPPv4N12uid_status_t18UID_STATUS_EXPIREDE" title="Link to this definition">#</a><br /></dt>
+<dd><p>ID was valid but has expired. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12uid_status_t18UID_STATUS_INVALIDE">
+<span id="_CPPv3N12uid_status_t18UID_STATUS_INVALIDE"></span><span id="_CPPv2N12uid_status_t18UID_STATUS_INVALIDE"></span><span class="target" id="uid_8h_1aede1e660696741031e876d1b4fac537aa0ad32240510a52b0a6666754ca1b5d03"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UID_STATUS_INVALID</span></span></span><a class="headerlink" href="#_CPPv4N12uid_status_t18UID_STATUS_INVALIDE" title="Link to this definition">#</a><br /></dt>
+<dd><p>ID is invalid, blacklisted, or corrupted. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N12uid_status_t19UID_STATUS_NO_ENTRYE">
+<span id="_CPPv3N12uid_status_t19UID_STATUS_NO_ENTRYE"></span><span id="_CPPv2N12uid_status_t19UID_STATUS_NO_ENTRYE"></span><span class="target" id="uid_8h_1aede1e660696741031e876d1b4fac537aa1d5970d45a447f42e3ff0a69f8da7f67"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UID_STATUS_NO_ENTRY</span></span></span><a class="headerlink" href="#_CPPv4N12uid_status_t19UID_STATUS_NO_ENTRYE" title="Link to this definition">#</a><br /></dt>
+<dd><p>ID is not found in the local cache or store. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.UID_ID_MAXLEN">
+<span class="target" id="uid_8h_1a6b6da7d15f795da10f02b01a321fc109"></span><span class="sig-name descname"><span class="n"><span class="pre">UID_ID_MAXLEN</span></span></span> <span class="pre">21</span><a class="headerlink" href="#c.UID_ID_MAXLEN" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="secret.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Secret</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="updater.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Updater</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416uid_store_createPK16uid_store_config"><code class="docutils literal notranslate"><span class="pre">uid_store_create()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv417uid_store_destroyP9uid_store"><code class="docutils literal notranslate"><span class="pre">uid_store_destroy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410uid_updateP9uid_storeK8uid_id_tK8uid_id_t12uid_status_t6time_t"><code class="docutils literal notranslate"><span class="pre">uid_update()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410uid_deleteP9uid_storeK8uid_id_t"><code class="docutils literal notranslate"><span class="pre">uid_delete()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410uid_statusP9uid_storeK8uid_id_t8uid_id_tP6time_t"><code class="docutils literal notranslate"><span class="pre">uid_status()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv49uid_clearP9uid_store"><code class="docutils literal notranslate"><span class="pre">uid_clear()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv422uid_register_update_cbP9uid_store15uid_update_cb_tPv"><code class="docutils literal notranslate"><span class="pre">uid_register_update_cb()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv48uid_id_t"><code class="docutils literal notranslate"><span class="pre">uid_id_t</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415uid_update_cb_t"><code class="docutils literal notranslate"><span class="pre">uid_update_cb_t</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416uid_store_config"><code class="docutils literal notranslate"><span class="pre">uid_store_config</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16uid_store_config2fsE"><code class="docutils literal notranslate"><span class="pre">fs</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16uid_store_config2nsE"><code class="docutils literal notranslate"><span class="pre">ns</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16uid_store_config8capacityE"><code class="docutils literal notranslate"><span class="pre">capacity</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412uid_status_t"><code class="docutils literal notranslate"><span class="pre">uid_status_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12uid_status_t18UID_STATUS_UNKNOWNE"><code class="docutils literal notranslate"><span class="pre">UID_STATUS_UNKNOWN</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12uid_status_t19UID_STATUS_ACCEPTEDE"><code class="docutils literal notranslate"><span class="pre">UID_STATUS_ACCEPTED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12uid_status_t18UID_STATUS_BLOCKEDE"><code class="docutils literal notranslate"><span class="pre">UID_STATUS_BLOCKED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12uid_status_t18UID_STATUS_EXPIREDE"><code class="docutils literal notranslate"><span class="pre">UID_STATUS_EXPIRED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12uid_status_t18UID_STATUS_INVALIDE"><code class="docutils literal notranslate"><span class="pre">UID_STATUS_INVALID</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12uid_status_t19UID_STATUS_NO_ENTRYE"><code class="docutils literal notranslate"><span class="pre">UID_STATUS_NO_ENTRY</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.UID_ID_MAXLEN"><code class="docutils literal notranslate"><span class="pre">UID_ID_MAXLEN</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pazzk.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

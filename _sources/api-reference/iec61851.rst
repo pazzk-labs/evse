@@ -1,0 +1,6 @@
+IEC 61851
+================
+
+.. doxygenfile:: iec61851.h
+   :project: pazzk
+   :sections: func typedef innerclass public-attrib enum define

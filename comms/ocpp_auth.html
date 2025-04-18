@@ -1,0 +1,1110 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>OCPP Auth &#8212; Pazzk  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'comms/ocpp_auth';</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../_static/mermaid-init.js?v=b11fa8ae"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="OCPP Boot" href="ocpp_boot.html" />
+    <link rel="prev" title="CLI" href="../cli/cli_commands.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pazzk-logo.png" class="logo__image only-light" alt="Pazzk  documentation - Home"/>
+    <script>document.write(`<img src="../_static/pazzk-logo.png" class="logo__image only-dark" alt="Pazzk  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/charger.html">Charger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/network.html">Network</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli/cli_commands.html">CLI</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Communication / OCPP</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">OCPP Auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ocpp_boot.html">OCPP Boot</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electrical Interfaces</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../electrical/control_pilot.html">Control Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/flash.html">Flash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/input.html">Input Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/power.html">Power Management</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Firmware Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/device_serial_number.html">Device Serial Number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/uid_storage.html">UID Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/config.html">Confing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/exio.html">EXIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/fs.html">File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/iec61851.html">IEC 61851</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/logfs.html">Log File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/metering.html">Metering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/periph.html">Peripheral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/pilot.html">Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/pinmap.html">Pinmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/relay.html">Relay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/safety.html">Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/secret.html">Secret</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/uid.html">UID</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/updater.html">Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/uptime.html">Uptime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/usrinp.html">User Input</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/comms/ocpp_auth.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>OCPP Auth</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ocpp-authorization-logic-summary">OCPP Authorization Logic Summary</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-configuration-parameters">Key Configuration Parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#authorization-source-priority">Authorization Source Priority</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#authorization-flowchart">Authorization Flowchart</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#1-offline-authorization-conditions">1. Offline Authorization Conditions</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#2-online-authorization-conditions">2. Online Authorization Conditions</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#authorization-behavior-matrix">Authorization Behavior Matrix</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-behavior-and-constraints">Advanced Behavior and Constraints</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#1-authorization-cache-update-conditions">1. Authorization Cache Update Conditions</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#2-cache-eviction-policy">2. Cache Eviction Policy</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#3-cache-is-not-final-authority-online">3. Cache is not final authority online</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#4-local-list-vs-server-conflict">4. Local List vs Server Conflict</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#5-list-size-limit">5. List Size Limit</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#6-profile-dependency">6. Profile Dependency</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#7-allowofflinetxforunknownid-behavior">7. AllowOfflineTxForUnknownId Behavior</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#stoptransactiononinvalidid-true">→ <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span> <span class="pre">=</span> <span class="pre">true</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#stoptransactiononinvalidid-false">→ <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span> <span class="pre">=</span> <span class="pre">false</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#notes">Notes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ocpp-인증-처리-로직-요약-korean-version">OCPP 인증 처리 로직 요약 (Korean Version)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#주요-설정-항목">주요 설정 항목</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#인증-우선순위-규칙">인증 우선순위 규칙</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#인증-처리-플로우">인증 처리 플로우</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#1-오프라인-인증-조건">1. 오프라인 인증 조건</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#2-온라인-인증-조건">2. 온라인 인증 조건</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#인증-동작-요약-테이블">인증 동작 요약 테이블</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#고급-동작-및-구현-제약-사항">고급 동작 및 구현 제약 사항</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#1-authorization-cache-업데이트-조건">1. Authorization Cache 업데이트 조건</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#2-authorization-cache-정리-정책">2. Authorization Cache 정리 정책</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#3-온라인-상태에서-cache는-최종-판단-기준이-아님">3. 온라인 상태에서 Cache는 최종 판단 기준이 아님</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#4-local-list와-서버-응답-충돌-시">4. Local List와 서버 응답 충돌 시</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#5-local-list-최대-크기">5. Local List 최대 크기</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#6-profile-종속성">6. Profile 종속성</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#7-allowofflinetxforunknownid-설정">7. AllowOfflineTxForUnknownId 설정</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#stoptransactiononinvalidid-true">→ <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span> <span class="pre">=</span> <span class="pre">true</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#stoptransactiononinvalidid-false">→ <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span> <span class="pre">=</span> <span class="pre">false</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#참고-사항">참고 사항</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#요약">요약</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="ocpp-auth">
+<h1>OCPP Auth<a class="headerlink" href="#ocpp-auth" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="#ocpp-%EC%9D%B8%EC%A6%9D-%EC%B2%98%EB%A6%AC-%EB%A1%9C%EC%A7%81-%EC%9A%94%EC%95%BD-korean-version"><span class="xref myst">한국어</span></a></p>
+<section id="ocpp-authorization-logic-summary">
+<h2>OCPP Authorization Logic Summary<a class="headerlink" href="#ocpp-authorization-logic-summary" title="Link to this heading">#</a></h2>
+<p>This document describes how Charge Points handle authorization in OCPP systems, focusing on key configuration flags that affect offline and online authentication behavior.
+Only the 4 most relevant parameters are covered. BootNotification and provisioning logic are out of scope.</p>
+<section id="key-configuration-parameters">
+<h3>Key Configuration Parameters<a class="headerlink" href="#key-configuration-parameters" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Key</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span></code></p></td>
+<td><p>Whether local authorization is allowed while offline</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthListEnabled</span></code></p></td>
+<td><p>Whether to enable Local Authorization List</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AuthorizationCacheEnabled</span></code></p></td>
+<td><p>Whether to store and reuse idTag status from the central system</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span></code></p></td>
+<td><p>Whether to authorize immediately from cache while online, before server response</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="authorization-source-priority">
+<h3>Authorization Source Priority<a class="headerlink" href="#authorization-source-priority" title="Link to this heading">#</a></h3>
+<p>When multiple sources are available, authorization follows this precedence:</p>
+<p><code class="docutils literal notranslate"><span class="pre">Local</span> <span class="pre">Authorization</span> <span class="pre">List</span> <span class="pre">&gt;</span> <span class="pre">Authorization</span> <span class="pre">Cache</span> <span class="pre">&gt;</span> <span class="pre">Central</span> <span class="pre">System</span></code></p>
+<ul class="simple">
+<li><p>If a UID is found in the Local Authorization List, it is always used first.</p></li>
+<li><p>Such UIDs must never be saved in the Authorization Cache.</p></li>
+</ul>
+</section>
+<section id="authorization-flowchart">
+<h3>Authorization Flowchart<a class="headerlink" href="#authorization-flowchart" title="Link to this heading">#</a></h3>
+<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>flowchart TD
+    A[&quot;UID presented (e.g. card tapped)&quot;] --&gt; B{&quot;Is Charge Point online?&quot;}
+
+    %% Offline handling
+    B --&gt;|No| C{&quot;LocalAuthorizeOffline = true?&quot;}
+    C --&gt;|No| Z1[&quot;Reject: Offline authorization not allowed&quot;]
+
+    C --&gt;|Yes| D{&quot;Is Local List or Cache enabled?&quot;}
+    D --&gt;|No| Z2[&quot;Reject: No local authorization source available&quot;]
+
+    D --&gt;|Yes| E[&quot;Check cache or localList&quot;]
+    E --&gt;|ACCEPTED| F[&quot;Authorize immediately (local)&quot;]
+    E --&gt;|&quot;BLOCKED or INVALID&quot;| G[&quot;Reject immediately (local)&quot;]
+    E --&gt;|&quot;EXPIRED, UNKNOWN, NO_ENTRY&quot;| Z3[&quot;Reject: Cannot determine status locally&quot;]
+
+    %% Online handling
+    B --&gt;|Yes| H{&quot;LocalPreAuthorize = true?&quot;}
+    H --&gt;|Yes| I[&quot;Check cache&quot;]
+    I --&gt;|ACCEPTED| J[&quot;Temporarily authorize&quot;]
+    I --&gt;|&quot;BLOCKED or INVALID&quot;| K[&quot;Reject immediately (cache)&quot;]
+    I --&gt;|&quot;EXPIRED, UNKNOWN, NO_ENTRY&quot;| L[&quot;Send authorization request to server&quot;]
+    K --&gt; L
+    J --&gt; L
+
+    H --&gt;|No| L[&quot;Send authorization request to server&quot;]
+
+    L --&gt; M{&quot;Server response&quot;}
+    M --&gt;|ACCEPTED| N[&quot;Update cache&quot;]
+    M --&gt;|&quot;BLOCKED, EXPIRED, INVALID&quot;| O[&quot;Cancel transaction&quot;]
+    O --&gt; N
+</pre></div>
+</div>
+<section id="1-offline-authorization-conditions">
+<h4>1. Offline Authorization Conditions<a class="headerlink" href="#1-offline-authorization-conditions" title="Link to this heading">#</a></h4>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Condition</p></th>
+<th class="head"><p>Behavior</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">false</span></code></p></td>
+<td><p>❌ Offline auth not allowed. Always rejected.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">true</span></code> + List = false + Cache = false</p></td>
+<td><p>❌ No local sources. Rejected.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">true</span></code> + List = true + Cache = false</p></td>
+<td><p>✅ Authorize using List only</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">true</span></code> + List = false + Cache = true</p></td>
+<td><p>✅ Authorize using Cache only</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">true</span></code> + List = true + Cache = true</p></td>
+<td><p>✅ Prefer List, fallback to Cache</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="2-online-authorization-conditions">
+<h4>2. Online Authorization Conditions<a class="headerlink" href="#2-online-authorization-conditions" title="Link to this heading">#</a></h4>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Config</p></th>
+<th class="head"><p>Behavior</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span> <span class="pre">=</span> <span class="pre">false</span></code></p></td>
+<td><p>Always request from Central System and wait for response</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span> <span class="pre">=</span> <span class="pre">true</span></code></p></td>
+<td><p>Use cache if status is <code class="docutils literal notranslate"><span class="pre">Accepted</span></code>, then follow up with server response</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span></code> is a setting that only applies when the Charge Point is online, allowing the system to authorize users more quickly by consulting the local cache before waiting for a server response.</p>
+</div></blockquote>
+</section>
+</section>
+<section id="authorization-behavior-matrix">
+<h3>Authorization Behavior Matrix<a class="headerlink" href="#authorization-behavior-matrix" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Network</p></th>
+<th class="head"><p>LocalAuthorizeOffline</p></th>
+<th class="head"><p>LocalAuthListEnabled</p></th>
+<th class="head"><p>AuthorizationCacheEnabled</p></th>
+<th class="head"><p>Behavior</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Offline</p></td>
+<td><p>false</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+<td><p>❌ Auth rejected</p></td>
+</tr>
+<tr class="row-odd"><td><p>Offline</p></td>
+<td><p>true</p></td>
+<td><p>false</p></td>
+<td><p>false</p></td>
+<td><p>❌ No local source</p></td>
+</tr>
+<tr class="row-even"><td><p>Offline</p></td>
+<td><p>true</p></td>
+<td><p>true</p></td>
+<td><p>false</p></td>
+<td><p>✅ Use List</p></td>
+</tr>
+<tr class="row-odd"><td><p>Offline</p></td>
+<td><p>true</p></td>
+<td><p>false</p></td>
+<td><p>true</p></td>
+<td><p>✅ Use Cache</p></td>
+</tr>
+<tr class="row-even"><td><p>Offline</p></td>
+<td><p>true</p></td>
+<td><p>true</p></td>
+<td><p>true</p></td>
+<td><p>✅ Prefer List, fallback to Cache</p></td>
+</tr>
+<tr class="row-odd"><td><p>Online</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+<td><p>🔁 Behavior depends on <code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="advanced-behavior-and-constraints">
+<h3>Advanced Behavior and Constraints<a class="headerlink" href="#advanced-behavior-and-constraints" title="Link to this heading">#</a></h3>
+<p>This section documents implementation-specific constraints and behavioral rules
+as per the OCPP specification and commonly accepted practices.</p>
+<section id="1-authorization-cache-update-conditions">
+<h4>1. Authorization Cache Update Conditions<a class="headerlink" href="#1-authorization-cache-update-conditions" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>The cache is updated when <code class="docutils literal notranslate"><span class="pre">idTagInfo</span></code> is received from:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Authorize.conf</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">StartTransaction.conf</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">StopTransaction.conf</span></code></p></li>
+</ul>
+</li>
+</ul>
+<p>This ensures the cache reflects the most recent status (e.g., <code class="docutils literal notranslate"><span class="pre">Accepted</span></code>, <code class="docutils literal notranslate"><span class="pre">Blocked</span></code>, <code class="docutils literal notranslate"><span class="pre">Expired</span></code>) and expiry timestamp for a UID.</p>
+</section>
+<section id="2-cache-eviction-policy">
+<h4>2. Cache Eviction Policy<a class="headerlink" href="#2-cache-eviction-policy" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>If storage is limited:</p>
+<ol class="arabic simple">
+<li><p>Remove invalid entries (<code class="docutils literal notranslate"><span class="pre">Expired</span></code>, <code class="docutils literal notranslate"><span class="pre">Blocked</span></code>, <code class="docutils literal notranslate"><span class="pre">Invalid</span></code>)</p></li>
+<li><p>If still full, remove the oldest entry</p></li>
+</ol>
+</li>
+</ul>
+<p>This ensures that valid and recently used entries are prioritized.</p>
+</section>
+<section id="3-cache-is-not-final-authority-online">
+<h4>3. Cache is not final authority online<a class="headerlink" href="#3-cache-is-not-final-authority-online" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Any ID not marked <code class="docutils literal notranslate"><span class="pre">Accepted</span></code> must trigger a server request</p></li>
+<li><p>Update cache using <code class="docutils literal notranslate"><span class="pre">uid_update()</span></code> based on server response</p></li>
+</ul>
+</section>
+<section id="4-local-list-vs-server-conflict">
+<h4>4. Local List vs Server Conflict<a class="headerlink" href="#4-local-list-vs-server-conflict" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>If server response conflicts with local list:</p>
+<ul>
+<li><p>Send <code class="docutils literal notranslate"><span class="pre">StatusNotification.req</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">connectorId</span> <span class="pre">=</span> <span class="pre">0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">errorCode</span> <span class="pre">=</span> <span class="pre">LocalListConflict</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="5-list-size-limit">
+<h4>5. List Size Limit<a class="headerlink" href="#5-list-size-limit" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Controlled by <code class="docutils literal notranslate"><span class="pre">LocalAuthListMaxLength</span></code></p></li>
+<li><p>New entries must be rejected if at max capacity</p></li>
+</ul>
+</section>
+<section id="6-profile-dependency">
+<h4>6. Profile Dependency<a class="headerlink" href="#6-profile-dependency" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>CP must support <code class="docutils literal notranslate"><span class="pre">LocalAuthListManagement</span></code> feature profile to allow remote updates to list</p></li>
+</ul>
+</section>
+<section id="7-allowofflinetxforunknownid-behavior">
+<h4>7. AllowOfflineTxForUnknownId Behavior<a class="headerlink" href="#7-allowofflinetxforunknownid-behavior" title="Link to this heading">#</a></h4>
+<p>If:
+<code class="docutils literal notranslate"><span class="pre">AllowOfflineTxForUnknownId</span> <span class="pre">=</span> <span class="pre">true</span></code></p>
+<p>Then:</p>
+<ul class="simple">
+<li><p>If UID not found in List or Cache, charging may begin</p></li>
+<li><p>When back online, if server responds with status ≠ Accepted:</p></li>
+</ul>
+<section id="stoptransactiononinvalidid-true">
+<h5>→ <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span> <span class="pre">=</span> <span class="pre">true</span></code><a class="headerlink" href="#stoptransactiononinvalidid-true" title="Link to this heading">#</a></h5>
+<ul class="simple">
+<li><p>Terminate transaction immediately</p></li>
+</ul>
+</section>
+<section id="stoptransactiononinvalidid-false">
+<h5>→ <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span> <span class="pre">=</span> <span class="pre">false</span></code><a class="headerlink" href="#stoptransactiononinvalidid-false" title="Link to this heading">#</a></h5>
+<ul class="simple">
+<li><p>Do not stop transaction, but:</p>
+<ul>
+<li><p>Stop power delivery</p></li>
+<li><p>Or limit to <code class="docutils literal notranslate"><span class="pre">MaxEnergyOnInvalidId</span></code></p></li>
+</ul>
+</li>
+</ul>
+<p>This policy allows operators to support fail-open behavior while retaining safety and usage limits.</p>
+</section>
+</section>
+</section>
+<section id="notes">
+<h3>Notes<a class="headerlink" href="#notes" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>UIDs in Local List are never added to the Cache</p></li>
+<li><p>The cache is updated with status from the server and used offline</p></li>
+<li><p>Expiry/TTL is implementation-defined</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span></code> requires care with rejected follow-up responses</p></li>
+</ul>
+</section>
+<section id="summary">
+<h3>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">true</span></code> required for offline auth</p></li>
+<li><p>Either List or Cache must be active to support it</p></li>
+<li><p>Local List always takes priority over Cache</p></li>
+<li><p>Online mode can pre-authorize using Cache if <code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span> <span class="pre">=</span> <span class="pre">true</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="ocpp-인증-처리-로직-요약-korean-version">
+<h2>OCPP 인증 처리 로직 요약 (Korean Version)<a class="headerlink" href="#ocpp-인증-처리-로직-요약-korean-version" title="Link to this heading">#</a></h2>
+<p>이 문서는 OCPP 기반 충전기에서 인증 처리에 영향을 미치는 주요 설정값들과,
+그 설정 조합에 따른 온라인/오프라인 인증 동작 방식을 설명합니다.
+아래 4가지 핵심 설정 항목에 초점을 맞춥니다.</p>
+<section id="주요-설정-항목">
+<h3>주요 설정 항목<a class="headerlink" href="#주요-설정-항목" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>설정 키</p></th>
+<th class="head"><p>설명</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span></code></p></td>
+<td><p>충전기가 오프라인 상태에서 로컬 인증을 허용할지 여부</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthListEnabled</span></code></p></td>
+<td><p>Local Authorization List를 활성화할지 여부</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">AuthorizationCacheEnabled</span></code></p></td>
+<td><p>서버 응답을 Authorization Cache에 저장하고 재사용할지 여부</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span></code></p></td>
+<td><p>온라인 상태에서도 캐시를 먼저 조회하여 인증을 선처리할지 여부</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="인증-우선순위-규칙">
+<h3>인증 우선순위 규칙<a class="headerlink" href="#인증-우선순위-규칙" title="Link to this heading">#</a></h3>
+<p>충전기가 여러 인증 소스를 동시에 사용할 수 있는 경우, 다음과 같은 우선순위가 적용됩니다:</p>
+<p><code class="docutils literal notranslate"><span class="pre">Local</span> <span class="pre">Authorization</span> <span class="pre">List</span> <span class="pre">&gt;</span> <span class="pre">Authorization</span> <span class="pre">Cache</span> <span class="pre">&gt;</span> <span class="pre">Central</span> <span class="pre">System</span></code></p>
+<ul class="simple">
+<li><p>Local Authorization List에 등록된 UID가 있는 경우, 항상 이를 우선 적용합니다.</p></li>
+<li><p>같은 UID가 Local List에 있으면, Authorization Cache에 저장하거나 조회하지 않습니다.</p></li>
+</ul>
+</section>
+<section id="인증-처리-플로우">
+<h3>인증 처리 플로우<a class="headerlink" href="#인증-처리-플로우" title="Link to this heading">#</a></h3>
+<p>(※ 동일한 Mermaid 흐름도는 영어 버전에 포함되어 있습니다)</p>
+<section id="1-오프라인-인증-조건">
+<h4>1. 오프라인 인증 조건<a class="headerlink" href="#1-오프라인-인증-조건" title="Link to this heading">#</a></h4>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>조건</p></th>
+<th class="head"><p>설명</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">false</span></code></p></td>
+<td><p>❌ 오프라인 인증 불가. 무조건 거부.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">true</span></code> + <code class="docutils literal notranslate"><span class="pre">List</span> <span class="pre">=</span> <span class="pre">false</span></code> + <code class="docutils literal notranslate"><span class="pre">Cache</span> <span class="pre">=</span> <span class="pre">false</span></code></p></td>
+<td><p>❌ 인증 불가 (로컬 인증 수단 없음)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">true</span></code> + <code class="docutils literal notranslate"><span class="pre">List</span> <span class="pre">=</span> <span class="pre">true</span></code> + <code class="docutils literal notranslate"><span class="pre">Cache</span> <span class="pre">=</span> <span class="pre">false</span></code></p></td>
+<td><p>✅ List만 사용하여 인증</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">true</span></code> + <code class="docutils literal notranslate"><span class="pre">List</span> <span class="pre">=</span> <span class="pre">false</span></code> + <code class="docutils literal notranslate"><span class="pre">Cache</span> <span class="pre">=</span> <span class="pre">true</span></code></p></td>
+<td><p>✅ Cache만 사용하여 인증</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">true</span></code> + <code class="docutils literal notranslate"><span class="pre">List</span> <span class="pre">=</span> <span class="pre">true</span></code> + <code class="docutils literal notranslate"><span class="pre">Cache</span> <span class="pre">=</span> <span class="pre">true</span></code></p></td>
+<td><p>✅ List 우선, 없으면 Cache 사용</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<blockquote>
+<div><p>List 또는 Cache 둘 중 하나 이상이 활성화되어야 오프라인 인증 가능</p>
+</div></blockquote>
+</section>
+<section id="2-온라인-인증-조건">
+<h4>2. 온라인 인증 조건<a class="headerlink" href="#2-온라인-인증-조건" title="Link to this heading">#</a></h4>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>설정</p></th>
+<th class="head"><p>동작 방식</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span> <span class="pre">=</span> <span class="pre">false</span></code></p></td>
+<td><p>UID 입력 시 서버에 요청 → 응답 기반으로 인증 결정</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span> <span class="pre">=</span> <span class="pre">true</span></code></p></td>
+<td><p>UID 입력 시 Authorization Cache 먼저 조회 → ACCEPTED인 경우 즉시 인증 진행, 이후 서버 응답 반영</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="인증-동작-요약-테이블">
+<h3>인증 동작 요약 테이블<a class="headerlink" href="#인증-동작-요약-테이블" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>연결 상태</p></th>
+<th class="head"><p>LocalAuthorizeOffline</p></th>
+<th class="head"><p>LocalAuthListEnabled</p></th>
+<th class="head"><p>AuthorizationCacheEnabled</p></th>
+<th class="head"><p>인증 동작</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>오프라인</strong></p></td>
+<td><p>false</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+<td><p>❌ 인증 불가</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>오프라인</strong></p></td>
+<td><p>true</p></td>
+<td><p>false</p></td>
+<td><p>false</p></td>
+<td><p>❌ 인증 불가 (로컬 인증 수단 없음)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>오프라인</strong></p></td>
+<td><p>true</p></td>
+<td><p>true</p></td>
+<td><p>false</p></td>
+<td><p>✅ List로 인증</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>오프라인</strong></p></td>
+<td><p>true</p></td>
+<td><p>false</p></td>
+<td><p>true</p></td>
+<td><p>✅ Cache로 인증</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>오프라인</strong></p></td>
+<td><p>true</p></td>
+<td><p>true</p></td>
+<td><p>true</p></td>
+<td><p>✅ List 우선, 없으면 Cache</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>온라인</strong></p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+<td><p>-</p></td>
+<td><p>🔁 <code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span></code> 설정에 따라 처리</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="고급-동작-및-구현-제약-사항">
+<h3>고급 동작 및 구현 제약 사항<a class="headerlink" href="#고급-동작-및-구현-제약-사항" title="Link to this heading">#</a></h3>
+<section id="1-authorization-cache-업데이트-조건">
+<h4>1. Authorization Cache 업데이트 조건<a class="headerlink" href="#1-authorization-cache-업데이트-조건" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Authorization Cache는 다음 메시지에서 <code class="docutils literal notranslate"><span class="pre">idTagInfo</span></code> 객체를 수신할 경우 업데이트됩니다:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Authorize.conf</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">StartTransaction.conf</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">StopTransaction.conf</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="2-authorization-cache-정리-정책">
+<h4>2. Authorization Cache 정리 정책<a class="headerlink" href="#2-authorization-cache-정리-정책" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>저장 공간이 부족할 경우 다음 순서로 엔트리를 제거해야 합니다:</p>
+<ol class="arabic simple">
+<li><p>유효하지 않은 엔트리(<code class="docutils literal notranslate"><span class="pre">Expired</span></code>, <code class="docutils literal notranslate"><span class="pre">Blocked</span></code>, <code class="docutils literal notranslate"><span class="pre">Invalid</span></code>) 우선 삭제</p></li>
+<li><p>여전히 부족하면 가장 오래된 엔트리 삭제 (FIFO 또는 LRU)</p></li>
+</ol>
+</li>
+</ul>
+</section>
+<section id="3-온라인-상태에서-cache는-최종-판단-기준이-아님">
+<h4>3. 온라인 상태에서 Cache는 최종 판단 기준이 아님<a class="headerlink" href="#3-온라인-상태에서-cache는-최종-판단-기준이-아님" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Cache에서 <code class="docutils literal notranslate"><span class="pre">Accepted</span></code>가 아닌 경우, 반드시 서버에 인증 요청을 전송해야 하며,</p></li>
+<li><p>서버 응답에 따라 Cache를 <code class="docutils literal notranslate"><span class="pre">uid_update()</span></code>로 갱신해야 합니다.</p></li>
+</ul>
+</section>
+<section id="4-local-list와-서버-응답-충돌-시">
+<h4>4. Local List와 서버 응답 충돌 시<a class="headerlink" href="#4-local-list와-서버-응답-충돌-시" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>동일한 UID에 대해 서버 응답과 Local List가 불일치하면,</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">StatusNotification.req</span></code>를 전송해야 합니다:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">connectorId</span> <span class="pre">=</span> <span class="pre">0</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">errorCode</span> <span class="pre">=</span> <span class="pre">LocalListConflict</span></code></p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="5-local-list-최대-크기">
+<h4>5. Local List 최대 크기<a class="headerlink" href="#5-local-list-최대-크기" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalAuthListMaxLength</span></code> 설정에 정의된 최대 개수까지만 저장할 수 있습니다.</p></li>
+</ul>
+</section>
+<section id="6-profile-종속성">
+<h4>6. Profile 종속성<a class="headerlink" href="#6-profile-종속성" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Local List 관리를 위해서는 프로파일에 <code class="docutils literal notranslate"><span class="pre">LocalAuthListManagement</span></code>가 포함되어 있어야 합니다.</p></li>
+</ul>
+</section>
+<section id="7-allowofflinetxforunknownid-설정">
+<h4>7. AllowOfflineTxForUnknownId 설정<a class="headerlink" href="#7-allowofflinetxforunknownid-설정" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">AllowOfflineTxForUnknownId</span> <span class="pre">=</span> <span class="pre">true</span></code>인 경우:</p>
+<ul>
+<li><p>List나 Cache에 없는 UID라도 충전을 시작할 수 있습니다.</p></li>
+<li><p>이후 온라인 상태가 되었을 때 Central System 응답이 <code class="docutils literal notranslate"><span class="pre">Accepted</span></code>가 아닌 경우:</p></li>
+</ul>
+</li>
+</ul>
+<section id="stoptransactiononinvalidid-true">
+<h5>→ <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span> <span class="pre">=</span> <span class="pre">true</span></code><a class="headerlink" href="#stoptransactiononinvalidid-true" title="Link to this heading">#</a></h5>
+<ul class="simple">
+<li><p>충전 세션 즉시 중단 (hard stop)</p></li>
+</ul>
+</section>
+<section id="stoptransactiononinvalidid-false">
+<h5>→ <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span> <span class="pre">=</span> <span class="pre">false</span></code><a class="headerlink" href="#stoptransactiononinvalidid-false" title="Link to this heading">#</a></h5>
+<ul class="simple">
+<li><p>충전은 중단하지 않지만:</p>
+<ul>
+<li><p>전력 공급을 중단하거나 (soft stop),</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MaxEnergyOnInvalidId</span></code> 설정 값만큼만 전력 공급</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="참고-사항">
+<h3>참고 사항<a class="headerlink" href="#참고-사항" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Local Authorization List에 등록된 UID는 Cache에 저장되지 않으며, 항상 우선 적용됩니다.</p></li>
+<li><p>Authorization Cache는 서버 응답을 저장하고, 오프라인 인증에 재사용됩니다.</p></li>
+<li><p>Cache 만료 시간(<code class="docutils literal notranslate"><span class="pre">expiry</span></code>) 또는 TTL은 시스템 정책에 따라 결정됩니다.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span> <span class="pre">=</span> <span class="pre">true</span></code> 설정 시, 서버 응답이 거부이면 충전 세션 중단을 고려해야 합니다.</p></li>
+</ul>
+</section>
+<section id="요약">
+<h3>요약<a class="headerlink" href="#요약" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">true</span></code>이어야 오프라인 인증이 가능함</p></li>
+<li><p>오프라인 인증 시에는 <code class="docutils literal notranslate"><span class="pre">List</span></code> 또는 <code class="docutils literal notranslate"><span class="pre">Cache</span></code> 중 하나 이상이 활성화되어야 함</p></li>
+<li><p>Local List가 항상 우선순위를 가지며, Cache에 중복 저장되지 않음</p></li>
+<li><p>온라인 상태에서는 <code class="docutils literal notranslate"><span class="pre">LocalPreAuthorize</span></code> 설정으로 Cache 선처리 가능</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../cli/cli_commands.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">CLI</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ocpp_boot.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">OCPP Boot</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ocpp-authorization-logic-summary">OCPP Authorization Logic Summary</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-configuration-parameters">Key Configuration Parameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#authorization-source-priority">Authorization Source Priority</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#authorization-flowchart">Authorization Flowchart</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#1-offline-authorization-conditions">1. Offline Authorization Conditions</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#2-online-authorization-conditions">2. Online Authorization Conditions</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#authorization-behavior-matrix">Authorization Behavior Matrix</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-behavior-and-constraints">Advanced Behavior and Constraints</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#1-authorization-cache-update-conditions">1. Authorization Cache Update Conditions</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#2-cache-eviction-policy">2. Cache Eviction Policy</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#3-cache-is-not-final-authority-online">3. Cache is not final authority online</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#4-local-list-vs-server-conflict">4. Local List vs Server Conflict</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#5-list-size-limit">5. List Size Limit</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#6-profile-dependency">6. Profile Dependency</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#7-allowofflinetxforunknownid-behavior">7. AllowOfflineTxForUnknownId Behavior</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#stoptransactiononinvalidid-true">→ <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span> <span class="pre">=</span> <span class="pre">true</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#stoptransactiononinvalidid-false">→ <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span> <span class="pre">=</span> <span class="pre">false</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#notes">Notes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ocpp-인증-처리-로직-요약-korean-version">OCPP 인증 처리 로직 요약 (Korean Version)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#주요-설정-항목">주요 설정 항목</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#인증-우선순위-규칙">인증 우선순위 규칙</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#인증-처리-플로우">인증 처리 플로우</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#1-오프라인-인증-조건">1. 오프라인 인증 조건</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#2-온라인-인증-조건">2. 온라인 인증 조건</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#인증-동작-요약-테이블">인증 동작 요약 테이블</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#고급-동작-및-구현-제약-사항">고급 동작 및 구현 제약 사항</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#1-authorization-cache-업데이트-조건">1. Authorization Cache 업데이트 조건</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#2-authorization-cache-정리-정책">2. Authorization Cache 정리 정책</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#3-온라인-상태에서-cache는-최종-판단-기준이-아님">3. 온라인 상태에서 Cache는 최종 판단 기준이 아님</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#4-local-list와-서버-응답-충돌-시">4. Local List와 서버 응답 충돌 시</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#5-local-list-최대-크기">5. Local List 최대 크기</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#6-profile-종속성">6. Profile 종속성</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#7-allowofflinetxforunknownid-설정">7. AllowOfflineTxForUnknownId 설정</a><ul class="nav section-nav flex-column">
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#stoptransactiononinvalidid-true">→ <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span> <span class="pre">=</span> <span class="pre">true</span></code></a></li>
+<li class="toc-h5 nav-item toc-entry"><a class="reference internal nav-link" href="#stoptransactiononinvalidid-false">→ <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span> <span class="pre">=</span> <span class="pre">false</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#참고-사항">참고 사항</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#요약">요약</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pazzk.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

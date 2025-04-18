@@ -1,0 +1,972 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Confing &#8212; Pazzk  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api-reference/config';</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../_static/mermaid-init.js?v=b11fa8ae"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Downloader" href="downloader.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pazzk-logo.png" class="logo__image only-light" alt="Pazzk  documentation - Home"/>
+    <script>document.write(`<img src="../_static/pazzk-logo.png" class="logo__image only-dark" alt="Pazzk  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/charger.html">Charger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/network.html">Network</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli/cli_commands.html">CLI</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Communication / OCPP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_auth.html">OCPP Auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_boot.html">OCPP Boot</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electrical Interfaces</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../electrical/control_pilot.html">Control Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/flash.html">Flash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/input.html">Input Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/power.html">Power Management</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Firmware Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/device_serial_number.html">Device Serial Number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/uid_storage.html">UID Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Confing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exio.html">EXIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fs.html">File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="iec61851.html">IEC 61851</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logfs.html">Log File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metering.html">Metering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="periph.html">Peripheral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pilot.html">Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pinmap.html">Pinmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relay.html">Relay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="safety.html">Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secret.html">Secret</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uid.html">UID</a></li>
+<li class="toctree-l1"><a class="reference internal" href="updater.html">Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uptime.html">Uptime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usrinp.html">User Input</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api-reference/config.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Confing</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv411config_initP7kvstore16config_save_cb_tPv"><code class="docutils literal notranslate"><span class="pre">config_init()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410config_getPKcPv6size_t"><code class="docutils literal notranslate"><span class="pre">config_get()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410config_setPKcPKv6size_t"><code class="docutils literal notranslate"><span class="pre">config_set()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415config_read_allP6config"><code class="docutils literal notranslate"><span class="pre">config_read_all()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416config_write_allPK6config"><code class="docutils literal notranslate"><span class="pre">config_write_all()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv411config_savev"><code class="docutils literal notranslate"><span class="pre">config_save()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv419config_set_and_savePKcPKv6size_t"><code class="docutils literal notranslate"><span class="pre">config_set_and_save()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412config_resetPKc"><code class="docutils literal notranslate"><span class="pre">config_reset()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv418config_update_jsonPKc6size_t"><code class="docutils literal notranslate"><span class="pre">config_update_json()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416config_is_zeroedPKc"><code class="docutils literal notranslate"><span class="pre">config_is_zeroed()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416config_save_cb_t"><code class="docutils literal notranslate"><span class="pre">config_save_cb_t</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414config_charger"><code class="docutils literal notranslate"><span class="pre">config_charger</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger4modeE"><code class="docutils literal notranslate"><span class="pre">mode</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger5paramE"><code class="docutils literal notranslate"><span class="pre">param</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger15connector_countE"><code class="docutils literal notranslate"><span class="pre">connector_count</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger8meteringE"><code class="docutils literal notranslate"><span class="pre">metering</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger5pilotE"><code class="docutils literal notranslate"><span class="pre">pilot</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger7plc_macE"><code class="docutils literal notranslate"><span class="pre">plc_mac</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger9connectorE"><code class="docutils literal notranslate"><span class="pre">connector</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410config_net"><code class="docutils literal notranslate"><span class="pre">config_net</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net3macE"><code class="docutils literal notranslate"><span class="pre">mac</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net21health_check_intervalE"><code class="docutils literal notranslate"><span class="pre">health_check_interval</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net13ping_intervalE"><code class="docutils literal notranslate"><span class="pre">ping_interval</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net10server_urlE"><code class="docutils literal notranslate"><span class="pre">server_url</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net9server_idE"><code class="docutils literal notranslate"><span class="pre">server_id</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net11server_passE"><code class="docutils literal notranslate"><span class="pre">server_pass</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv411config_ocpp"><code class="docutils literal notranslate"><span class="pre">config_ocpp</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N11config_ocpp7versionE"><code class="docutils literal notranslate"><span class="pre">version</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N11config_ocpp6configE"><code class="docutils literal notranslate"><span class="pre">config</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N11config_ocpp10checkpointE"><code class="docutils literal notranslate"><span class="pre">checkpoint</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N11config_ocpp6vendorE"><code class="docutils literal notranslate"><span class="pre">vendor</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N11config_ocpp5modelE"><code class="docutils literal notranslate"><span class="pre">model</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv46config"><code class="docutils literal notranslate"><span class="pre">config</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config7versionE"><code class="docutils literal notranslate"><span class="pre">version</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config9device_idE"><code class="docutils literal notranslate"><span class="pre">device_id</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config11device_nameE"><code class="docutils literal notranslate"><span class="pre">device_name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config11device_modeE"><code class="docutils literal notranslate"><span class="pre">device_mode</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config8log_modeE"><code class="docutils literal notranslate"><span class="pre">log_mode</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config9log_levelE"><code class="docutils literal notranslate"><span class="pre">log_level</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config19dfu_reboot_manuallyE"><code class="docutils literal notranslate"><span class="pre">dfu_reboot_manually</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config7chargerE"><code class="docutils literal notranslate"><span class="pre">charger</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config3netE"><code class="docutils literal notranslate"><span class="pre">net</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config4ocppE"><code class="docutils literal notranslate"><span class="pre">ocpp</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config3crcE"><code class="docutils literal notranslate"><span class="pre">crc</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_VERSION"><code class="docutils literal notranslate"><span class="pre">CONFIG_VERSION</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_DEVICE_ID_MAXLEN"><code class="docutils literal notranslate"><span class="pre">CONFIG_DEVICE_ID_MAXLEN</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_DEVICE_NAME_MAXLEN"><code class="docutils literal notranslate"><span class="pre">CONFIG_DEVICE_NAME_MAXLEN</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_CHARGER_MODE_MAXLEN"><code class="docutils literal notranslate"><span class="pre">CONFIG_CHARGER_MODE_MAXLEN</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_CHARGER_CONNECTOR_MAX"><code class="docutils literal notranslate"><span class="pre">CONFIG_CHARGER_CONNECTOR_MAX</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_X509_MAXLEN"><code class="docutils literal notranslate"><span class="pre">CONFIG_X509_MAXLEN</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="confing">
+<h1>Confing<a class="headerlink" href="#confing" title="Link to this heading">#</a></h1>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411config_initP7kvstore16config_save_cb_tPv">
+<span id="_CPPv311config_initP7kvstore16config_save_cb_tPv"></span><span id="_CPPv211config_initP7kvstore16config_save_cb_tPv"></span><span id="config_init__kvstoreP.config_save_cb_t.voidP"></span><span class="target" id="config_8h_1a91940f60e9e3e9f2c9cee9e11bd8d44b"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">kvstore</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">nvs</span></span>, <a class="reference internal" href="#_CPPv416config_save_cb_t" title="config_save_cb_t"><span class="n"><span class="pre">config_save_cb_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">cb</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">cb_ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411config_initP7kvstore16config_save_cb_tPv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initializes the configuration module. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nvs</strong> – <strong>[in]</strong> Handle to the non-volatile storage. </p></li>
+<li><p><strong>cb</strong> – <strong>[in]</strong> Callback function for configuration save events. </p></li>
+<li><p><strong>cb_ctx</strong> – <strong>[in]</strong> Context to be passed to the callback function. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410config_getPKcPv6size_t">
+<span id="_CPPv310config_getPKcPv6size_t"></span><span id="_CPPv210config_getPKcPv6size_t"></span><span id="config_get__cCP.voidP.s"></span><span class="target" id="config_8h_1af531681367de3b01df5f1ac92d217e75"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_get</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">key</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">buf</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">bufsize</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410config_getPKcPv6size_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Reads a configuration value. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – <strong>[in]</strong> Configuration key string (e.g., “device.id”). </p></li>
+<li><p><strong>buf</strong> – <strong>[out]</strong> Buffer to store the retrieved value. </p></li>
+<li><p><strong>bufsize</strong> – <strong>[in]</strong> Size of the buffer. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410config_setPKcPKv6size_t">
+<span id="_CPPv310config_setPKcPKv6size_t"></span><span id="_CPPv210config_setPKcPKv6size_t"></span><span id="config_set__cCP.voidCP.s"></span><span class="target" id="config_8h_1a9692b6864a37dca61d5706b31afd48b7"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_set</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">datasize</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410config_setPKcPKv6size_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Writes a configuration value. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – <strong>[in]</strong> Configuration key string (e.g., “device.id”). </p></li>
+<li><p><strong>data</strong> – <strong>[in]</strong> Data to be written. </p></li>
+<li><p><strong>datasize</strong> – <strong>[in]</strong> Size of the data to be written. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415config_read_allP6config">
+<span id="_CPPv315config_read_allP6config"></span><span id="_CPPv215config_read_allP6config"></span><span id="config_read_all__configP"></span><span class="target" id="config_8h_1a2d0230df7b4838cd2f69bd7096074ea6"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_read_all</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv46config" title="config"><span class="n"><span class="pre">config</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">cfg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415config_read_allP6config" title="Link to this definition">#</a><br /></dt>
+<dd><p>Reads all configuration settings. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> – <strong>[out]</strong> A pointer to the config structure where the settings will be stored. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>int Returns 0 on success, or a negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416config_write_allPK6config">
+<span id="_CPPv316config_write_allPK6config"></span><span id="_CPPv216config_write_allPK6config"></span><span id="config_write_all__configCP"></span><span class="target" id="config_8h_1a7cf7586ef7fa990df7f0a806f5f0cd15"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_write_all</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv46config" title="config"><span class="n"><span class="pre">config</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">cfg</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416config_write_allPK6config" title="Link to this definition">#</a><br /></dt>
+<dd><p>Writes all configuration settings. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>cfg</strong> – A pointer to the config structure containing the settings to be written. </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>int Returns 0 on success, or a negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411config_savev">
+<span id="_CPPv311config_savev"></span><span id="_CPPv211config_savev"></span><span id="config_save__void"></span><span class="target" id="config_8h_1a0dfd394003598bc2a5f7639a4dffabf7"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_save</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411config_savev" title="Link to this definition">#</a><br /></dt>
+<dd><p>Saves the modified configuration values. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419config_set_and_savePKcPKv6size_t">
+<span id="_CPPv319config_set_and_savePKcPKv6size_t"></span><span id="_CPPv219config_set_and_savePKcPKv6size_t"></span><span id="config_set_and_save__cCP.voidCP.s"></span><span class="target" id="config_8h_1a0645b99c4a72143387d728847eedc660"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_set_and_save</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">key</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">datasize</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419config_set_and_savePKcPKv6size_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Writes a configuration value and saves it. </p>
+<p>This function sets the configuration value associated with the given key and saves the configuration to persistent storage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> – <strong>[in]</strong> Configuration key string (e.g., “device.id”). </p></li>
+<li><p><strong>data</strong> – <strong>[in]</strong> Data to be written. </p></li>
+<li><p><strong>datasize</strong> – <strong>[in]</strong> Size of the data to be written.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412config_resetPKc">
+<span id="_CPPv312config_resetPKc"></span><span id="_CPPv212config_resetPKc"></span><span id="config_reset__cCP"></span><span class="target" id="config_8h_1a55993c6ee46a934938944eeba5f8afb5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_reset</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412config_resetPKc" title="Link to this definition">#</a><br /></dt>
+<dd><p>Resets a specific configuration key to its default value. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> – <strong>[in]</strong> Configuration key to reset (NULL resets all configurations). </p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418config_update_jsonPKc6size_t">
+<span id="_CPPv318config_update_jsonPKc6size_t"></span><span id="_CPPv218config_update_jsonPKc6size_t"></span><span id="config_update_json__cCP.s"></span><span class="target" id="config_8h_1a61d997f1d55daa3aebb3bb0175c5bdb2"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_update_json</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">json</span></span>, <span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">json_len</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418config_update_jsonPKc6size_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Updates configuration values using a JSON string. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json</strong> – <strong>[in]</strong> JSON-formatted configuration string. </p></li>
+<li><p><strong>json_len</strong> – <strong>[in]</strong> Length of the JSON string. </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416config_is_zeroedPKc">
+<span id="_CPPv316config_is_zeroedPKc"></span><span id="_CPPv216config_is_zeroedPKc"></span><span id="config_is_zeroed__cCP"></span><span class="target" id="config_8h_1a4bceb27bbaa39f24542cb85fc6916477"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_is_zeroed</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">key</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416config_is_zeroedPKc" title="Link to this definition">#</a><br /></dt>
+<dd><p>Checks if the configuration setting for the given key is zeroed. </p>
+<p>This function does not support custom settings. If the key corresponds to a custom setting, the function will return false.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Be cautious when using this function to determine initialization status, as the actual configuration value might be zero.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>key</strong> – <strong>[in]</strong> The key of the configuration setting to check.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool Returns true if the configuration setting is zeroed, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv416config_save_cb_t">
+<span id="_CPPv316config_save_cb_t"></span><span id="_CPPv216config_save_cb_t"></span><span id="config_save_cb_t"></span><span class="target" id="config_8h_1a0558e451106286e96070f50deab75405"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">config_save_cb_t</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv416config_save_cb_t" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv414config_charger">
+<span id="_CPPv314config_charger"></span><span id="_CPPv214config_charger"></span><span id="config_charger"></span><span class="target" id="structconfig__charger"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_charger</span></span></span><a class="headerlink" href="#_CPPv414config_charger" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;config.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14config_charger4modeE">
+<span id="_CPPv3N14config_charger4modeE"></span><span id="_CPPv2N14config_charger4modeE"></span><span id="config_charger::mode__cA"></span><span class="target" id="structconfig__charger_1af0d7dd42ac843c3f6202a942d3a1cf38"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mode</span></span></span><span class="p"><span class="pre">[</span></span><span class="n"><span class="pre">CONFIG_CHARGER_MODE_MAXLEN</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N14config_charger4modeE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14config_charger5paramE">
+<span id="_CPPv3N14config_charger5paramE"></span><span id="_CPPv2N14config_charger5paramE"></span><span id="config_charger::param__uint8_tA"></span><span class="target" id="structconfig__charger_1ac649f2402a1bebc468f8d3382442969c"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">param</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">16</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N14config_charger5paramE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14config_charger15connector_countE">
+<span id="_CPPv3N14config_charger15connector_countE"></span><span id="_CPPv2N14config_charger15connector_countE"></span><span id="config_charger::connector_count__uint8_t"></span><span class="target" id="structconfig__charger_1a9bf5855a1c99b5bc478e4a4d98228e73"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">connector_count</span></span></span><a class="headerlink" href="#_CPPv4N14config_charger15connector_countE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14config_charger8meteringE">
+<span id="_CPPv3N14config_charger8meteringE"></span><span id="_CPPv2N14config_charger8meteringE"></span><span id="config_charger::metering__uint8_tA"></span><span class="target" id="structconfig__charger_1a4e655719932455796eef9b4811c4380a"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">metering</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">16</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N14config_charger8meteringE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14config_charger5pilotE">
+<span id="_CPPv3N14config_charger5pilotE"></span><span id="_CPPv2N14config_charger5pilotE"></span><span id="config_charger::pilot__uint8_tA"></span><span class="target" id="structconfig__charger_1ae8b19e692728f8562c56911ad6240766"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">30</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N14config_charger5pilotE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14config_charger7plc_macE">
+<span id="_CPPv3N14config_charger7plc_macE"></span><span id="_CPPv2N14config_charger7plc_macE"></span><span id="config_charger::plc_mac__uint8_tA"></span><span class="target" id="structconfig__charger_1a59c2ba39947bf9d85a6e29ed4c0ff91c"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">plc_mac</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">6</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N14config_charger7plc_macE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14config_charger9connectorE">
+<span id="_CPPv3N14config_charger9connectorE"></span><span id="_CPPv2N14config_charger9connectorE"></span><span id="config_charger::connector__config_chargerA"></span><span class="target" id="structconfig__charger_1a9c81c4af6160ff4ff2fcca6d6ae24218"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv414config_charger" title="config_charger"><span class="n"><span class="pre">config_charger</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">connector</span></span></span><span class="p"><span class="pre">[</span></span><span class="n"><span class="pre">CONFIG_CHARGER_CONNECTOR_MAX</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N14config_charger9connectorE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv410config_net">
+<span id="_CPPv310config_net"></span><span id="_CPPv210config_net"></span><span id="config_net"></span><span class="target" id="structconfig__net"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_net</span></span></span><a class="headerlink" href="#_CPPv410config_net" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;config.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10config_net3macE">
+<span id="_CPPv3N10config_net3macE"></span><span id="_CPPv2N10config_net3macE"></span><span id="config_net::mac__uint8_tA"></span><span class="target" id="structconfig__net_1a6e0dfa43fa7de830ccb5e182d148f3cc"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mac</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">6</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N10config_net3macE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10config_net21health_check_intervalE">
+<span id="_CPPv3N10config_net21health_check_intervalE"></span><span id="_CPPv2N10config_net21health_check_intervalE"></span><span id="config_net::health_check_interval__uint32_t"></span><span class="target" id="structconfig__net_1a4a5d095764b50743c85594d36a0e2ed7"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">health_check_interval</span></span></span><a class="headerlink" href="#_CPPv4N10config_net21health_check_intervalE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10config_net13ping_intervalE">
+<span id="_CPPv3N10config_net13ping_intervalE"></span><span id="_CPPv2N10config_net13ping_intervalE"></span><span id="config_net::ping_interval__uint32_t"></span><span class="target" id="structconfig__net_1a2484b8e0b336536ac7dd444ffbe456fd"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ping_interval</span></span></span><a class="headerlink" href="#_CPPv4N10config_net13ping_intervalE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10config_net10server_urlE">
+<span id="_CPPv3N10config_net10server_urlE"></span><span id="_CPPv2N10config_net10server_urlE"></span><span id="config_net::server_url__cA"></span><span class="target" id="structconfig__net_1a66efb0eaa20b463a509b614835177832"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">server_url</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">256</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N10config_net10server_urlE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10config_net9server_idE">
+<span id="_CPPv3N10config_net9server_idE"></span><span id="_CPPv2N10config_net9server_idE"></span><span id="config_net::server_id__cA"></span><span class="target" id="structconfig__net_1a9b80abc411b9f1158bdec0b984c001fb"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">server_id</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">32</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N10config_net9server_idE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10config_net11server_passE">
+<span id="_CPPv3N10config_net11server_passE"></span><span id="_CPPv2N10config_net11server_passE"></span><span id="config_net::server_pass__cA"></span><span class="target" id="structconfig__net_1aab688201255fd510a6fd7ed211284ce2"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">server_pass</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">40</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N10config_net11server_passE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv411config_ocpp">
+<span id="_CPPv311config_ocpp"></span><span id="_CPPv211config_ocpp"></span><span id="config_ocpp"></span><span class="target" id="structconfig__ocpp"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_ocpp</span></span></span><a class="headerlink" href="#_CPPv411config_ocpp" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;config.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11config_ocpp7versionE">
+<span id="_CPPv3N11config_ocpp7versionE"></span><span id="_CPPv2N11config_ocpp7versionE"></span><span id="config_ocpp::version__uint32_t"></span><span class="target" id="structconfig__ocpp_1a54acedc86ede4f525832ec79d5174bce"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">version</span></span></span><a class="headerlink" href="#_CPPv4N11config_ocpp7versionE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11config_ocpp6configE">
+<span id="_CPPv3N11config_ocpp6configE"></span><span id="_CPPv2N11config_ocpp6configE"></span><span id="config_ocpp::config__uint8_tA"></span><span class="target" id="structconfig__ocpp_1accd49a287dee38cd6e4c3b30470186d9"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">546</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11config_ocpp6configE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11config_ocpp10checkpointE">
+<span id="_CPPv3N11config_ocpp10checkpointE"></span><span id="_CPPv2N11config_ocpp10checkpointE"></span><span id="config_ocpp::checkpoint__uint8_tA"></span><span class="target" id="structconfig__ocpp_1a2ceacbd0005755651f41c97ce26dcd33"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">checkpoint</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">16</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11config_ocpp10checkpointE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11config_ocpp6vendorE">
+<span id="_CPPv3N11config_ocpp6vendorE"></span><span id="_CPPv2N11config_ocpp6vendorE"></span><span id="config_ocpp::vendor__cA"></span><span class="target" id="structconfig__ocpp_1aea434cd55d044f09b84ce8b272158bf7"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vendor</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">20</span></span><span class="w"> </span><span class="o"><span class="pre">+</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11config_ocpp6vendorE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N11config_ocpp5modelE">
+<span id="_CPPv3N11config_ocpp5modelE"></span><span id="_CPPv2N11config_ocpp5modelE"></span><span id="config_ocpp::model__cA"></span><span class="target" id="structconfig__ocpp_1af80e09fa6ddbf3ed5d5473a68263d933"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">model</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">20</span></span><span class="w"> </span><span class="o"><span class="pre">+</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11config_ocpp5modelE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv46config">
+<span id="_CPPv36config"></span><span id="_CPPv26config"></span><span id="config"></span><span class="target" id="structconfig"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config</span></span></span><a class="headerlink" href="#_CPPv46config" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;config.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6config7versionE">
+<span id="_CPPv3N6config7versionE"></span><span id="_CPPv2N6config7versionE"></span><span id="config::version__uint32_t"></span><span class="target" id="structconfig_1ab7fa59bbc6c820dfabaca190f5a09754"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">version</span></span></span><a class="headerlink" href="#_CPPv4N6config7versionE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6config9device_idE">
+<span id="_CPPv3N6config9device_idE"></span><span id="_CPPv2N6config9device_idE"></span><span id="config::device_id__cA"></span><span class="target" id="structconfig_1a55414850895e3e65f6c8097eb5839f2e"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">device_id</span></span></span><span class="p"><span class="pre">[</span></span><span class="n"><span class="pre">CONFIG_DEVICE_ID_MAXLEN</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N6config9device_idE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6config11device_nameE">
+<span id="_CPPv3N6config11device_nameE"></span><span id="_CPPv2N6config11device_nameE"></span><span id="config::device_name__cA"></span><span class="target" id="structconfig_1ad4531e0f8273d7bb79e60f47d0bd08d3"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">device_name</span></span></span><span class="p"><span class="pre">[</span></span><span class="n"><span class="pre">CONFIG_DEVICE_NAME_MAXLEN</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N6config11device_nameE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6config11device_modeE">
+<span id="_CPPv3N6config11device_modeE"></span><span id="_CPPv2N6config11device_modeE"></span><span id="config::device_mode__uint8_t"></span><span class="target" id="structconfig_1a4054f54465fad3b010389b098e08b89d"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">device_mode</span></span></span><a class="headerlink" href="#_CPPv4N6config11device_modeE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6config8log_modeE">
+<span id="_CPPv3N6config8log_modeE"></span><span id="_CPPv2N6config8log_modeE"></span><span id="config::log_mode__uint8_t"></span><span class="target" id="structconfig_1a8ef3eab3b980fc0859ab332ea069e6e3"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">log_mode</span></span></span><a class="headerlink" href="#_CPPv4N6config8log_modeE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6config9log_levelE">
+<span id="_CPPv3N6config9log_levelE"></span><span id="_CPPv2N6config9log_levelE"></span><span id="config::log_level__uint8_t"></span><span class="target" id="structconfig_1a73ee1f0d429e2f6e0fb7bdea459a287e"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">log_level</span></span></span><a class="headerlink" href="#_CPPv4N6config9log_levelE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6config19dfu_reboot_manuallyE">
+<span id="_CPPv3N6config19dfu_reboot_manuallyE"></span><span id="_CPPv2N6config19dfu_reboot_manuallyE"></span><span id="config::dfu_reboot_manually__b"></span><span class="target" id="structconfig_1a67676e4bfabf4f29c77ff7a4315ff78b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dfu_reboot_manually</span></span></span><a class="headerlink" href="#_CPPv4N6config19dfu_reboot_manuallyE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6config7chargerE">
+<span id="_CPPv3N6config7chargerE"></span><span id="_CPPv2N6config7chargerE"></span><span id="config::charger__config_charger"></span><span class="target" id="structconfig_1a8de79d30b886056b62a208b4e08e9de2"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv414config_charger" title="config_charger"><span class="n"><span class="pre">config_charger</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">charger</span></span></span><a class="headerlink" href="#_CPPv4N6config7chargerE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6config3netE">
+<span id="_CPPv3N6config3netE"></span><span id="_CPPv2N6config3netE"></span><span id="config::net__config_net"></span><span class="target" id="structconfig_1a20dca8b6d70df08c4106a5524024052e"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv410config_net" title="config_net"><span class="n"><span class="pre">config_net</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">net</span></span></span><a class="headerlink" href="#_CPPv4N6config3netE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6config4ocppE">
+<span id="_CPPv3N6config4ocppE"></span><span id="_CPPv2N6config4ocppE"></span><span id="config::ocpp__config_ocpp"></span><span class="target" id="structconfig_1a776aa0121e34551867cc1e7726f453b6"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv411config_ocpp" title="config_ocpp"><span class="n"><span class="pre">config_ocpp</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ocpp</span></span></span><a class="headerlink" href="#_CPPv4N6config4ocppE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6config3crcE">
+<span id="_CPPv3N6config3crcE"></span><span id="_CPPv2N6config3crcE"></span><span id="config::crc__uint32_t"></span><span class="target" id="structconfig_1a4de224161a74dd27637c52df3cbb32f2"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">crc</span></span></span><a class="headerlink" href="#_CPPv4N6config3crcE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CONFIG_VERSION">
+<span class="target" id="config_8h_1a33fbd7e91d033fa1e09b4ed4de899c02"></span><span class="sig-name descname"><span class="n"><span class="pre">CONFIG_VERSION</span></span></span> <span class="pre">MAKE_VERSION</span><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">1)</span><a class="headerlink" href="#c.CONFIG_VERSION" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CONFIG_DEVICE_ID_MAXLEN">
+<span class="target" id="config_8h_1a9bd5dfdad4d6a4d54f8c308670288b59"></span><span class="sig-name descname"><span class="n"><span class="pre">CONFIG_DEVICE_ID_MAXLEN</span></span></span> <span class="pre">24</span><a class="headerlink" href="#c.CONFIG_DEVICE_ID_MAXLEN" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CONFIG_DEVICE_NAME_MAXLEN">
+<span class="target" id="config_8h_1a888d632ad073dd58a4dce0f8bda6c737"></span><span class="sig-name descname"><span class="n"><span class="pre">CONFIG_DEVICE_NAME_MAXLEN</span></span></span> <span class="pre">32</span><a class="headerlink" href="#c.CONFIG_DEVICE_NAME_MAXLEN" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CONFIG_CHARGER_MODE_MAXLEN">
+<span class="target" id="config_8h_1a88bb700b06b06c4c19669eb261380080"></span><span class="sig-name descname"><span class="n"><span class="pre">CONFIG_CHARGER_MODE_MAXLEN</span></span></span> <span class="pre">8</span><a class="headerlink" href="#c.CONFIG_CHARGER_MODE_MAXLEN" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CONFIG_CHARGER_CONNECTOR_MAX">
+<span class="target" id="config_8h_1af0f8b77aefc0846a90004370d0b18014"></span><span class="sig-name descname"><span class="n"><span class="pre">CONFIG_CHARGER_CONNECTOR_MAX</span></span></span> <span class="pre">1</span><a class="headerlink" href="#c.CONFIG_CHARGER_CONNECTOR_MAX" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CONFIG_X509_MAXLEN">
+<span class="target" id="config_8h_1ae090c7d2fa40dd9a6ba03fbb8697c54f"></span><span class="sig-name descname"><span class="n"><span class="pre">CONFIG_X509_MAXLEN</span></span></span> <span class="pre">2048</span><a class="headerlink" href="#c.CONFIG_X509_MAXLEN" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">&lt;no title&gt;</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="downloader.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Downloader</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv411config_initP7kvstore16config_save_cb_tPv"><code class="docutils literal notranslate"><span class="pre">config_init()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410config_getPKcPv6size_t"><code class="docutils literal notranslate"><span class="pre">config_get()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410config_setPKcPKv6size_t"><code class="docutils literal notranslate"><span class="pre">config_set()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415config_read_allP6config"><code class="docutils literal notranslate"><span class="pre">config_read_all()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416config_write_allPK6config"><code class="docutils literal notranslate"><span class="pre">config_write_all()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv411config_savev"><code class="docutils literal notranslate"><span class="pre">config_save()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv419config_set_and_savePKcPKv6size_t"><code class="docutils literal notranslate"><span class="pre">config_set_and_save()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412config_resetPKc"><code class="docutils literal notranslate"><span class="pre">config_reset()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv418config_update_jsonPKc6size_t"><code class="docutils literal notranslate"><span class="pre">config_update_json()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416config_is_zeroedPKc"><code class="docutils literal notranslate"><span class="pre">config_is_zeroed()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416config_save_cb_t"><code class="docutils literal notranslate"><span class="pre">config_save_cb_t</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414config_charger"><code class="docutils literal notranslate"><span class="pre">config_charger</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger4modeE"><code class="docutils literal notranslate"><span class="pre">mode</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger5paramE"><code class="docutils literal notranslate"><span class="pre">param</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger15connector_countE"><code class="docutils literal notranslate"><span class="pre">connector_count</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger8meteringE"><code class="docutils literal notranslate"><span class="pre">metering</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger5pilotE"><code class="docutils literal notranslate"><span class="pre">pilot</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger7plc_macE"><code class="docutils literal notranslate"><span class="pre">plc_mac</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger9connectorE"><code class="docutils literal notranslate"><span class="pre">connector</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410config_net"><code class="docutils literal notranslate"><span class="pre">config_net</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net3macE"><code class="docutils literal notranslate"><span class="pre">mac</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net21health_check_intervalE"><code class="docutils literal notranslate"><span class="pre">health_check_interval</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net13ping_intervalE"><code class="docutils literal notranslate"><span class="pre">ping_interval</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net10server_urlE"><code class="docutils literal notranslate"><span class="pre">server_url</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net9server_idE"><code class="docutils literal notranslate"><span class="pre">server_id</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net11server_passE"><code class="docutils literal notranslate"><span class="pre">server_pass</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv411config_ocpp"><code class="docutils literal notranslate"><span class="pre">config_ocpp</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N11config_ocpp7versionE"><code class="docutils literal notranslate"><span class="pre">version</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N11config_ocpp6configE"><code class="docutils literal notranslate"><span class="pre">config</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N11config_ocpp10checkpointE"><code class="docutils literal notranslate"><span class="pre">checkpoint</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N11config_ocpp6vendorE"><code class="docutils literal notranslate"><span class="pre">vendor</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N11config_ocpp5modelE"><code class="docutils literal notranslate"><span class="pre">model</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv46config"><code class="docutils literal notranslate"><span class="pre">config</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config7versionE"><code class="docutils literal notranslate"><span class="pre">version</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config9device_idE"><code class="docutils literal notranslate"><span class="pre">device_id</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config11device_nameE"><code class="docutils literal notranslate"><span class="pre">device_name</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config11device_modeE"><code class="docutils literal notranslate"><span class="pre">device_mode</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config8log_modeE"><code class="docutils literal notranslate"><span class="pre">log_mode</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config9log_levelE"><code class="docutils literal notranslate"><span class="pre">log_level</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config19dfu_reboot_manuallyE"><code class="docutils literal notranslate"><span class="pre">dfu_reboot_manually</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config7chargerE"><code class="docutils literal notranslate"><span class="pre">charger</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config3netE"><code class="docutils literal notranslate"><span class="pre">net</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config4ocppE"><code class="docutils literal notranslate"><span class="pre">ocpp</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config3crcE"><code class="docutils literal notranslate"><span class="pre">crc</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_VERSION"><code class="docutils literal notranslate"><span class="pre">CONFIG_VERSION</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_DEVICE_ID_MAXLEN"><code class="docutils literal notranslate"><span class="pre">CONFIG_DEVICE_ID_MAXLEN</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_DEVICE_NAME_MAXLEN"><code class="docutils literal notranslate"><span class="pre">CONFIG_DEVICE_NAME_MAXLEN</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_CHARGER_MODE_MAXLEN"><code class="docutils literal notranslate"><span class="pre">CONFIG_CHARGER_MODE_MAXLEN</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_CHARGER_CONNECTOR_MAX"><code class="docutils literal notranslate"><span class="pre">CONFIG_CHARGER_CONNECTOR_MAX</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_X509_MAXLEN"><code class="docutils literal notranslate"><span class="pre">CONFIG_X509_MAXLEN</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pazzk.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

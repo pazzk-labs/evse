@@ -1,0 +1,580 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Relay &#8212; Pazzk  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api-reference/relay';</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../_static/mermaid-init.js?v=b11fa8ae"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Safety" href="safety.html" />
+    <link rel="prev" title="Pinmap" href="pinmap.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pazzk-logo.png" class="logo__image only-light" alt="Pazzk  documentation - Home"/>
+    <script>document.write(`<img src="../_static/pazzk-logo.png" class="logo__image only-dark" alt="Pazzk  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/charger.html">Charger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/network.html">Network</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli/cli_commands.html">CLI</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Communication / OCPP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_auth.html">OCPP Auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_boot.html">OCPP Boot</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electrical Interfaces</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../electrical/control_pilot.html">Control Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/flash.html">Flash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/input.html">Input Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/power.html">Power Management</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Firmware Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/device_serial_number.html">Device Serial Number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/uid_storage.html">UID Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="config.html">Confing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exio.html">EXIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fs.html">File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="iec61851.html">IEC 61851</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logfs.html">Log File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metering.html">Metering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="periph.html">Peripheral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pilot.html">Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pinmap.html">Pinmap</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Relay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="safety.html">Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secret.html">Secret</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uid.html">UID</a></li>
+<li class="toctree-l1"><a class="reference internal" href="updater.html">Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uptime.html">Uptime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usrinp.html">User Input</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api-reference/relay.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Relay</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412relay_createP14lm_pwm_channel"><code class="docutils literal notranslate"><span class="pre">relay_create()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv413relay_destroyP5relay"><code class="docutils literal notranslate"><span class="pre">relay_destroy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412relay_enableP5relay"><code class="docutils literal notranslate"><span class="pre">relay_enable()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv413relay_disableP5relay"><code class="docutils literal notranslate"><span class="pre">relay_disable()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv413relay_turn_onP5relay"><code class="docutils literal notranslate"><span class="pre">relay_turn_on()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414relay_turn_offP5relay"><code class="docutils literal notranslate"><span class="pre">relay_turn_off()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv417relay_turn_on_extP5relay7uint8_t8uint16_t7uint8_t"><code class="docutils literal notranslate"><span class="pre">relay_turn_on_ext()</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="relay">
+<h1>Relay<a class="headerlink" href="#relay" title="Link to this heading">#</a></h1>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412relay_createP14lm_pwm_channel">
+<span id="_CPPv312relay_createP14lm_pwm_channel"></span><span id="_CPPv212relay_createP14lm_pwm_channel"></span><span id="relay_create__lm_pwm_channelP"></span><span class="target" id="relay_8h_1a462ab7f87c6b332b34fa2783d488dfed"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">relay</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">relay_create</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">lm_pwm_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pwm_handle</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412relay_createP14lm_pwm_channel" title="Link to this definition">#</a><br /></dt>
+<dd><p>Creates a relay instance. </p>
+<p>This function initializes and allocates memory for a relay structure with the specified PWM channel handle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pwm_handle</strong> – <strong>[in]</strong> Pointer to the PWM channel structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>struct relay* Pointer to the created relay structure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413relay_destroyP5relay">
+<span id="_CPPv313relay_destroyP5relay"></span><span id="_CPPv213relay_destroyP5relay"></span><span id="relay_destroy__relayP"></span><span class="target" id="relay_8h_1a0fc6409a148c1d3c7bb34d6b6a498bee"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">relay_destroy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">relay</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413relay_destroyP5relay" title="Link to this definition">#</a><br /></dt>
+<dd><p>Destroys a relay instance. </p>
+<p>This function deallocates the memory and cleans up resources associated with the specified relay structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[inout]</strong> Pointer to the relay structure to be destroyed. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412relay_enableP5relay">
+<span id="_CPPv312relay_enableP5relay"></span><span id="_CPPv212relay_enableP5relay"></span><span id="relay_enable__relayP"></span><span class="target" id="relay_8h_1a2c6adaa5112628e87c197e07d8ee0239"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">relay_enable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">relay</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412relay_enableP5relay" title="Link to this definition">#</a><br /></dt>
+<dd><p>Enables the relay. </p>
+<p>This function enables the relay, allowing it to start its operations. It typically involves starting the PWM signal or setting the appropriate control signals to activate the relay.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the relay structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>int Status code (0 for success, non-zero for error). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413relay_disableP5relay">
+<span id="_CPPv313relay_disableP5relay"></span><span id="_CPPv213relay_disableP5relay"></span><span id="relay_disable__relayP"></span><span class="target" id="relay_8h_1a03f5112a49fe35074fbb1496c337a20d"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">relay_disable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">relay</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413relay_disableP5relay" title="Link to this definition">#</a><br /></dt>
+<dd><p>Disables the relay. </p>
+<p>This function disables the relay, stopping its operations. It typically involves stopping the PWM signal or resetting the control signals to deactivate the relay.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the relay structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>int Status code (0 for success, non-zero for error). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413relay_turn_onP5relay">
+<span id="_CPPv313relay_turn_onP5relay"></span><span id="_CPPv213relay_turn_onP5relay"></span><span id="relay_turn_on__relayP"></span><span class="target" id="relay_8h_1abcc4ae75636fd2a2041a676b3f83ca85"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">relay_turn_on</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">relay</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413relay_turn_onP5relay" title="Link to this definition">#</a><br /></dt>
+<dd><p>Turns on the relay. </p>
+<p>This function activates the relay by setting the appropriate PWM signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[inout]</strong> Pointer to the relay structure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414relay_turn_offP5relay">
+<span id="_CPPv314relay_turn_offP5relay"></span><span id="_CPPv214relay_turn_offP5relay"></span><span id="relay_turn_off__relayP"></span><span class="target" id="relay_8h_1a2a5268ba2b5d6d788b41abc7a4e82871"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">relay_turn_off</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">relay</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414relay_turn_offP5relay" title="Link to this definition">#</a><br /></dt>
+<dd><p>Turns off the relay. </p>
+<p>This function deactivates the relay by stopping the PWM signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[inout]</strong> Pointer to the relay structure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417relay_turn_on_extP5relay7uint8_t8uint16_t7uint8_t">
+<span id="_CPPv317relay_turn_on_extP5relay7uint8_t8uint16_t7uint8_t"></span><span id="_CPPv217relay_turn_on_extP5relay7uint8_t8uint16_t7uint8_t"></span><span id="relay_turn_on_ext__relayP.uint8_t.uint16_t.uint8_t"></span><span class="target" id="relay_8h_1a1c6a566dde2b9c1383d2eba32359fc14"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">relay_turn_on_ext</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">relay</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">pickup_pct</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">pickup_delay_ms</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">hold_pct</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417relay_turn_on_extP5relay7uint8_t8uint16_t7uint8_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Turns on the relay with extended parameters. </p>
+<p>This function activates the relay with specified pickup and hold percentages and a delay for the pickup phase.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – <strong>[inout]</strong> Pointer to the relay structure. </p></li>
+<li><p><strong>pickup_pct</strong> – <strong>[in]</strong> Percentage of PWM duty cycle for the pickup phase. </p></li>
+<li><p><strong>pickup_delay_ms</strong> – <strong>[in]</strong> Delay in milliseconds for the pickup phase. </p></li>
+<li><p><strong>hold_pct</strong> – <strong>[in]</strong> Percentage of PWM duty cycle for the hold phase. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pinmap.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Pinmap</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="safety.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Safety</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412relay_createP14lm_pwm_channel"><code class="docutils literal notranslate"><span class="pre">relay_create()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv413relay_destroyP5relay"><code class="docutils literal notranslate"><span class="pre">relay_destroy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412relay_enableP5relay"><code class="docutils literal notranslate"><span class="pre">relay_enable()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv413relay_disableP5relay"><code class="docutils literal notranslate"><span class="pre">relay_disable()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv413relay_turn_onP5relay"><code class="docutils literal notranslate"><span class="pre">relay_turn_on()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414relay_turn_offP5relay"><code class="docutils literal notranslate"><span class="pre">relay_turn_off()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv417relay_turn_on_extP5relay7uint8_t8uint16_t7uint8_t"><code class="docutils literal notranslate"><span class="pre">relay_turn_on_ext()</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pazzk.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

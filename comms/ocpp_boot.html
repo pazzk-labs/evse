@@ -1,0 +1,688 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>OCPP Boot &#8212; Pazzk  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'comms/ocpp_boot';</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../_static/mermaid-init.js?v=b11fa8ae"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Control Pilot" href="../electrical/control_pilot.html" />
+    <link rel="prev" title="OCPP Auth" href="ocpp_auth.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pazzk-logo.png" class="logo__image only-light" alt="Pazzk  documentation - Home"/>
+    <script>document.write(`<img src="../_static/pazzk-logo.png" class="logo__image only-dark" alt="Pazzk  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/charger.html">Charger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/network.html">Network</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli/cli_commands.html">CLI</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Communication / OCPP</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="ocpp_auth.html">OCPP Auth</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">OCPP Boot</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electrical Interfaces</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../electrical/control_pilot.html">Control Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/flash.html">Flash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/input.html">Input Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/power.html">Power Management</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Firmware Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/device_serial_number.html">Device Serial Number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/uid_storage.html">UID Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/config.html">Confing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/exio.html">EXIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/fs.html">File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/iec61851.html">IEC 61851</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/logfs.html">Log File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/metering.html">Metering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/periph.html">Peripheral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/pilot.html">Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/pinmap.html">Pinmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/relay.html">Relay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/safety.html">Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/secret.html">Secret</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/uid.html">UID</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/updater.html">Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/uptime.html">Uptime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/usrinp.html">User Input</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/comms/ocpp_boot.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>OCPP Boot</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#offline-boot-handling-strategy-for-charge-points-ocpp">Offline Boot Handling Strategy for Charge Points (OCPP)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#problem">Problem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis">Analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recommendations-fallback-strategy">Recommendations &amp; Fallback Strategy</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#1-enter-offline-degraded-mode-if-bootnotification-fails">1. Enter “Offline Degraded Mode” if BootNotification fails</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#2-on-network-recovery-resend-bootnotification">2. On network recovery, resend BootNotification</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#3-if-rejected-during-an-ongoing-transaction">3. If Rejected during an ongoing transaction</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#boot-sequence-flowchart-onlineoffline">Boot Sequence Flowchart (Online/Offline)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#오프라인-상태에서의-시스템-부팅-처리-전략-ocpp">오프라인 상태에서의 시스템 부팅 처리 전략 (OCPP)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#문제">문제</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#분석">분석</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#대안-및-권장-동작">대안 및 권장 동작</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#1-bootnotificationconf-실패-시-offline-degraded-mode로-전환">1. BootNotification.conf 실패 시 “Offline Degraded Mode”로 전환</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#2-온라인-복귀-시-bootnotification-재전송">2. 온라인 복귀 시 BootNotification 재전송</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#3-충전-중-boot-응답이-rejected일-경우">3. 충전 중 Boot 응답이 <code class="docutils literal notranslate"><span class="pre">Rejected</span></code>일 경우</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="ocpp-boot">
+<h1>OCPP Boot<a class="headerlink" href="#ocpp-boot" title="Link to this heading">#</a></h1>
+<p><a class="reference internal" href="#-%EC%98%A4%ED%94%84%EB%9D%BC%EC%9D%B8-%EC%83%81%ED%83%9C%EC%97%90%EC%84%9C%EC%9D%98-%EC%8B%9C%EC%8A%A4%ED%85%9C-%EB%B6%80%ED%8C%85-%EC%B2%98%EB%A6%AC-%EC%A0%84%EB%9E%B5-ocpp"><span class="xref myst">한국어</span></a></p>
+<section id="offline-boot-handling-strategy-for-charge-points-ocpp">
+<h2>Offline Boot Handling Strategy for Charge Points (OCPP)<a class="headerlink" href="#offline-boot-handling-strategy-for-charge-points-ocpp" title="Link to this heading">#</a></h2>
+<p>This document describes how an OCPP-based Charge Point should behave when it reboots while disconnected from the network, specifically before receiving <code class="docutils literal notranslate"><span class="pre">BootNotification.conf</span></code>.</p>
+<p>Although the OCPP specification does not explicitly require <code class="docutils literal notranslate"><span class="pre">BootNotification.conf</span></code> before normal operation, many implementations assume it implicitly. This assumption can severely impact Charge Point <strong>availability</strong> in offline conditions.</p>
+<section id="problem">
+<h3>Problem<a class="headerlink" href="#problem" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>When a Charge Point reboots in offline mode, it sends a <code class="docutils literal notranslate"><span class="pre">BootNotification.req</span></code> but cannot receive a response.</p></li>
+<li><p>Typical implementations behave as follows until <code class="docutils literal notranslate"><span class="pre">BootNotification.conf</span></code> is received:</p>
+<ul>
+<li><p>The Charge Point remains in the <code class="docutils literal notranslate"><span class="pre">Unavailable</span></code> or <code class="docutils literal notranslate"><span class="pre">Initializing</span></code> state.</p></li>
+<li><p>Messages like <code class="docutils literal notranslate"><span class="pre">Authorize</span></code>, <code class="docutils literal notranslate"><span class="pre">StartTransaction</span></code>, and <code class="docutils literal notranslate"><span class="pre">MeterValues</span></code> are ignored or dropped.</p></li>
+</ul>
+</li>
+<li><p>As a result, offline authentication functionality becomes ineffective after a reboot.</p></li>
+<li><p>Treating <code class="docutils literal notranslate"><span class="pre">BootNotification.conf</span></code> as a strict requirement creates a fragile design.</p></li>
+<li><p>The system must support fallback logic to maintain partial functionality and preserve availability after offline reboot.</p></li>
+</ul>
+</section>
+<section id="analysis">
+<h3>Analysis<a class="headerlink" href="#analysis" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>The OCPP spec defines:</p>
+<ul>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">BootNotification.conf.status</span> <span class="pre">=</span> <span class="pre">Rejected</span></code>, the CP must close the connection and retry.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">Pending</span></code>, the connection remains open for configuration and may later be upgraded to <code class="docutils literal notranslate"><span class="pre">Accepted</span></code>.</p></li>
+</ul>
+</li>
+<li><p>In this interim, transaction messages may queue up or be lost.</p></li>
+<li><p>Ultimately, even with offline authentication enabled, the system becomes inoperable without network access post-boot.</p></li>
+</ul>
+</section>
+<section id="recommendations-fallback-strategy">
+<h3>Recommendations &amp; Fallback Strategy<a class="headerlink" href="#recommendations-fallback-strategy" title="Link to this heading">#</a></h3>
+<section id="1-enter-offline-degraded-mode-if-bootnotification-fails">
+<h4>1. Enter “Offline Degraded Mode” if BootNotification fails<a class="headerlink" href="#1-enter-offline-degraded-mode-if-bootnotification-fails" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Conditions:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">true</span></code></p></li>
+<li><p>At least one local source available (LocalAuthList or AuthorizationCache)</p></li>
+</ul>
+</li>
+<li><p>Behavior:</p>
+<ul>
+<li><p>Maintain <code class="docutils literal notranslate"><span class="pre">csms_is_up()</span> <span class="pre">==</span> <span class="pre">false</span></code></p></li>
+<li><p>Allow a limited set of operations (Authorize, StartTransaction)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="2-on-network-recovery-resend-bootnotification">
+<h4>2. On network recovery, resend BootNotification<a class="headerlink" href="#2-on-network-recovery-resend-bootnotification" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Upon reconnection, always resend <code class="docutils literal notranslate"><span class="pre">BootNotification.req</span></code></p></li>
+<li><p>Based on response:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Accepted</span></code>: resume full normal mode and flush message queue</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Rejected</span></code>: disconnect and retry</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Pending</span></code>: allow partial operation (e.g., configuration updates), optionally send buffered messages</p>
+<ul>
+<li><p>If transaction messages are not accepted or fail, treat like <code class="docutils literal notranslate"><span class="pre">Rejected</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="3-if-rejected-during-an-ongoing-transaction">
+<h4>3. If Rejected during an ongoing transaction<a class="headerlink" href="#3-if-rejected-during-an-ongoing-transaction" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Immediately stop transaction (Hard stop)</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span></code>, <code class="docutils literal notranslate"><span class="pre">MaxEnergyOnInvalidId</span></code> as fallback policies</p></li>
+</ul>
+</section>
+</section>
+<section id="boot-sequence-flowchart-onlineoffline">
+<h3>Boot Sequence Flowchart (Online/Offline)<a class="headerlink" href="#boot-sequence-flowchart-onlineoffline" title="Link to this heading">#</a></h3>
+<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>flowchart TD
+    A[System Boot] --&gt; B{Is Network Available?}
+
+    B --&gt;|Yes| C[Send BootNotification.req]
+    C --&gt; D{BootNotification.conf Received?}
+
+    D --&gt;|Yes, Accepted| E[Enter Online Mode]
+    D --&gt;|Yes, Pending| F[Pending and Resend Later]
+    D --&gt;|Yes, Rejected| G[Disconnect and Reconnect Later]
+    D --&gt;|No| H[Retry BootNotification Periodically]
+
+    B --&gt;|No| I{LocalAuthorizeOffline = true?}
+    I --&gt;|No| J[Unavailable - offline mode]
+    I --&gt;|Yes| K{LocalAuthList or Cache available?}
+    K --&gt;|No| J
+    K --&gt;|Yes| L[Enter Offline Degraded Mode]
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="오프라인-상태에서의-시스템-부팅-처리-전략-ocpp">
+<h2>오프라인 상태에서의 시스템 부팅 처리 전략 (OCPP)<a class="headerlink" href="#오프라인-상태에서의-시스템-부팅-처리-전략-ocpp" title="Link to this heading">#</a></h2>
+<p>이 문서는 OCPP 기반 충전기가 <strong>네트워크 연결이 불가능한 상태에서 재부팅되는 경우</strong>, <code class="docutils literal notranslate"><span class="pre">BootNotification.conf</span></code> 수신 전까지 어떤 방식으로 동작해야 하는지를 다룹니다.</p>
+<p>OCPP 명세는 명시적으로 부팅 직후 동작을 강제하진 않지만, 대부분의 구현이 암묵적으로 <code class="docutils literal notranslate"><span class="pre">BootNotification</span></code> 성공 이후 정상 동작을 개시합니다. 오프라인 동작을 고려할 때 이러한 가정은 실무에서 충전기 가용성에 치명적일 수 있습니다.</p>
+<section id="문제">
+<h3>문제<a class="headerlink" href="#문제" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>충전기가 오프라인 상태에서 재시작된 경우, <code class="docutils literal notranslate"><span class="pre">BootNotification.req</span></code>를 서버로 전송하지만 응답을 수신하지 못함</p></li>
+<li><p>OCPP의 전형적 구현에서는 <code class="docutils literal notranslate"><span class="pre">BootNotification.conf</span></code> 수신 전까지:</p>
+<ul>
+<li><p>Charge Point 상태가 <code class="docutils literal notranslate"><span class="pre">Unavailable</span></code> 또는 <code class="docutils literal notranslate"><span class="pre">Initializing</span></code> 상태로 유지됨</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Authorize</span></code>, <code class="docutils literal notranslate"><span class="pre">StartTransaction</span></code>, <code class="docutils literal notranslate"><span class="pre">MeterValues</span></code> 등의 메시지를 전송하지 않거나 무시함</p></li>
+</ul>
+</li>
+<li><p>따라서 오프라인 인증 기능이 있더라도, 재부팅 이후에는 충전을 <strong>전혀 시작할 수 없는 상황</strong>이 됨</p></li>
+<li><p>BootNotification 성공 여부를 절대적인 조건으로 두는 것은 실무에서는 취약한 설계가 될 수 있음</p></li>
+<li><p>오프라인 재부팅 이후에도 충전기 기능이 일정 수준 동작할 수 있도록 fallback 설계를 반드시 포함해야 함</p></li>
+</ul>
+</section>
+<section id="분석">
+<h3>분석<a class="headerlink" href="#분석" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>OCPP 명세는 다음과 같이 지시함:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">BootNotification.conf.status</span> <span class="pre">=</span> <span class="pre">Rejected</span></code>인 경우, CP는 소켓을 종료하고 재시도</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Pending</span></code>은 설정 수신을 위한 연결 유지가 가능하며, 이후 <code class="docutils literal notranslate"><span class="pre">Accepted</span></code>로 전환될 수 있음</p></li>
+</ul>
+</li>
+<li><p>이 상황에서 충전 요청 메시지들이 쌓이거나 손실될 수 있음</p></li>
+<li><p>결과적으로 오프라인 인증 기능이 활성화되어 있더라도, 부팅 이후 네트워크가 없으면 “작동하지 않는 기능”이 됨</p></li>
+</ul>
+</section>
+<section id="대안-및-권장-동작">
+<h3>대안 및 권장 동작<a class="headerlink" href="#대안-및-권장-동작" title="Link to this heading">#</a></h3>
+<section id="1-bootnotificationconf-실패-시-offline-degraded-mode로-전환">
+<h4>1. BootNotification.conf 실패 시 “Offline Degraded Mode”로 전환<a class="headerlink" href="#1-bootnotificationconf-실패-시-offline-degraded-mode로-전환" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>조건:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">LocalAuthorizeOffline</span> <span class="pre">=</span> <span class="pre">true</span></code></p></li>
+<li><p>로컬 인증 수단이 존재 (LocalAuthList or AuthorizationCache)</p></li>
+</ul>
+</li>
+<li><p>동작:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">csms_is_up()</span> <span class="pre">==</span> <span class="pre">false</span></code> 상태로 유지하면서도,</p></li>
+<li><p>제한된 범위에서 Authorize 및 Transaction 허용</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="2-온라인-복귀-시-bootnotification-재전송">
+<h4>2. 온라인 복귀 시 BootNotification 재전송<a class="headerlink" href="#2-온라인-복귀-시-bootnotification-재전송" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>네트워크가 복구되면 <strong>반드시</strong> <code class="docutils literal notranslate"><span class="pre">BootNotification.req</span></code>를 재전송</p></li>
+<li><p>이후 흐름:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Accepted</span></code> 수신 → 정상 모드 진입, 모든 메시지 큐 전달</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Rejected</span></code> 수신 → 소켓 종료 후 재시도</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Pending</span></code> 수신 → 설정 변경 등 일부 메시지 수신 가능, 필요 시 메시지 전송 허용</p>
+<ul>
+<li><p>트랜잭션 관련 메시지 응답이 없거나 오류를 반환할 경우 <code class="docutils literal notranslate"><span class="pre">Rejected</span></code>와 동일하게 처리</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="3-충전-중-boot-응답이-rejected일-경우">
+<h4>3. 충전 중 Boot 응답이 <code class="docutils literal notranslate"><span class="pre">Rejected</span></code>일 경우<a class="headerlink" href="#3-충전-중-boot-응답이-rejected일-경우" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>즉시 충전 중단 (Hard stop)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">StopTransactionOnInvalidId</span></code>, <code class="docutils literal notranslate"><span class="pre">MaxEnergyOnInvalidId</span></code> 정책 활용</p></li>
+</ul>
+</section>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ocpp_auth.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">OCPP Auth</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../electrical/control_pilot.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Control Pilot</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#offline-boot-handling-strategy-for-charge-points-ocpp">Offline Boot Handling Strategy for Charge Points (OCPP)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#problem">Problem</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analysis">Analysis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#recommendations-fallback-strategy">Recommendations &amp; Fallback Strategy</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#1-enter-offline-degraded-mode-if-bootnotification-fails">1. Enter “Offline Degraded Mode” if BootNotification fails</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#2-on-network-recovery-resend-bootnotification">2. On network recovery, resend BootNotification</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#3-if-rejected-during-an-ongoing-transaction">3. If Rejected during an ongoing transaction</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#boot-sequence-flowchart-onlineoffline">Boot Sequence Flowchart (Online/Offline)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#오프라인-상태에서의-시스템-부팅-처리-전략-ocpp">오프라인 상태에서의 시스템 부팅 처리 전략 (OCPP)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#문제">문제</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#분석">분석</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#대안-및-권장-동작">대안 및 권장 동작</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#1-bootnotificationconf-실패-시-offline-degraded-mode로-전환">1. BootNotification.conf 실패 시 “Offline Degraded Mode”로 전환</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#2-온라인-복귀-시-bootnotification-재전송">2. 온라인 복귀 시 BootNotification 재전송</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#3-충전-중-boot-응답이-rejected일-경우">3. 충전 중 Boot 응답이 <code class="docutils literal notranslate"><span class="pre">Rejected</span></code>일 경우</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pazzk.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

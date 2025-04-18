@@ -1,0 +1,585 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>User Input &#8212; Pazzk  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api-reference/usrinp';</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../_static/mermaid-init.js?v=b11fa8ae"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Uptime" href="uptime.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pazzk-logo.png" class="logo__image only-light" alt="Pazzk  documentation - Home"/>
+    <script>document.write(`<img src="../_static/pazzk-logo.png" class="logo__image only-dark" alt="Pazzk  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/charger.html">Charger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/network.html">Network</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli/cli_commands.html">CLI</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Communication / OCPP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_auth.html">OCPP Auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_boot.html">OCPP Boot</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electrical Interfaces</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../electrical/control_pilot.html">Control Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/flash.html">Flash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/input.html">Input Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/power.html">Power Management</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Firmware Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/device_serial_number.html">Device Serial Number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/uid_storage.html">UID Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="config.html">Confing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exio.html">EXIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fs.html">File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="iec61851.html">IEC 61851</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logfs.html">Log File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metering.html">Metering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="periph.html">Peripheral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pilot.html">Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pinmap.html">Pinmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relay.html">Relay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="safety.html">Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secret.html">Secret</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uid.html">UID</a></li>
+<li class="toctree-l1"><a class="reference internal" href="updater.html">Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uptime.html">Uptime</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">User Input</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api-reference/usrinp.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>User Input</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv411usrinp_initP7lm_gpio18usrinp_get_state_t"><code class="docutils literal notranslate"><span class="pre">usrinp_init()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412usrinp_raise8usrinp_t"><code class="docutils literal notranslate"><span class="pre">usrinp_raise()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv424usrinp_register_event_cb8usrinp_t17usrinp_event_cb_tPv"><code class="docutils literal notranslate"><span class="pre">usrinp_register_event_cb()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv48usrinp_t"><code class="docutils literal notranslate"><span class="pre">usrinp_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N8usrinp_t19USRINP_DEBUG_BUTTONE"><code class="docutils literal notranslate"><span class="pre">USRINP_DEBUG_BUTTON</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N8usrinp_t21USRINP_EMERGENCY_STOPE"><code class="docutils literal notranslate"><span class="pre">USRINP_EMERGENCY_STOP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N8usrinp_t18USRINP_USB_CONNECTE"><code class="docutils literal notranslate"><span class="pre">USRINP_USB_CONNECT</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414usrinp_event_t"><code class="docutils literal notranslate"><span class="pre">usrinp_event_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14usrinp_event_t20USRINP_EVENT_UNKNOWNE"><code class="docutils literal notranslate"><span class="pre">USRINP_EVENT_UNKNOWN</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14usrinp_event_t22USRINP_EVENT_CONNECTEDE"><code class="docutils literal notranslate"><span class="pre">USRINP_EVENT_CONNECTED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14usrinp_event_t25USRINP_EVENT_DISCONNECTEDE"><code class="docutils literal notranslate"><span class="pre">USRINP_EVENT_DISCONNECTED</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="user-input">
+<h1>User Input<a class="headerlink" href="#user-input" title="Link to this heading">#</a></h1>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411usrinp_initP7lm_gpio18usrinp_get_state_t">
+<span id="_CPPv311usrinp_initP7lm_gpio18usrinp_get_state_t"></span><span id="_CPPv211usrinp_initP7lm_gpio18usrinp_get_state_t"></span><span id="usrinp_init__lm_gpioP.usrinp_get_state_t"></span><span class="target" id="usrinp_8h_1a3ce1801a227b0370ec8dad23b678476a"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usrinp_init</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">lm_gpio</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">debug_button</span></span>, <span class="n"><span class="pre">usrinp_get_state_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">f_get_state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411usrinp_initP7lm_gpio18usrinp_get_state_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initialize user input handling. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>debug_button</strong> – <strong>[in]</strong> Pointer to the GPIO structure for the debug button. </p></li>
+<li><p><strong>f_get_state</strong> – <strong>[in]</strong> Function pointer to get the state of a user input.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412usrinp_raise8usrinp_t">
+<span id="_CPPv312usrinp_raise8usrinp_t"></span><span id="_CPPv212usrinp_raise8usrinp_t"></span><span id="usrinp_raise__usrinp_t"></span><span class="target" id="usrinp_8h_1aa52945b2bcea1317d6255169b398cfd5"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usrinp_raise</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv48usrinp_t" title="usrinp_t"><span class="n"><span class="pre">usrinp_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412usrinp_raise8usrinp_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Raise a user input event. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>type</strong> – <strong>[in]</strong> The type of user input.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>0 on success, negative error code on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424usrinp_register_event_cb8usrinp_t17usrinp_event_cb_tPv">
+<span id="_CPPv324usrinp_register_event_cb8usrinp_t17usrinp_event_cb_tPv"></span><span id="_CPPv224usrinp_register_event_cb8usrinp_t17usrinp_event_cb_tPv"></span><span id="usrinp_register_event_cb__usrinp_t.usrinp_event_cb_t.voidP"></span><span class="target" id="usrinp_8h_1a02d1a815e8dd4daefc59d82ce9a6d56e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usrinp_register_event_cb</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv48usrinp_t" title="usrinp_t"><span class="n"><span class="pre">usrinp_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span>, <span class="n"><span class="pre">usrinp_event_cb_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">cb</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">cb_ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424usrinp_register_event_cb8usrinp_t17usrinp_event_cb_tPv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Register a callback for a user input event. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – <strong>[in]</strong> The type of user input. </p></li>
+<li><p><strong>cb</strong> – <strong>[in]</strong> The callback function to register. </p></li>
+<li><p><strong>cb_ctx</strong> – <strong>[in]</strong> The context for the callback. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv48usrinp_t">
+<span id="_CPPv38usrinp_t"></span><span id="_CPPv28usrinp_t"></span><span class="target" id="usrinp_8h_1adfa4e46d59e7f4213468e9c431df1573"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usrinp_t</span></span></span><a class="headerlink" href="#_CPPv48usrinp_t" title="Link to this definition">#</a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N8usrinp_t19USRINP_DEBUG_BUTTONE">
+<span id="_CPPv3N8usrinp_t19USRINP_DEBUG_BUTTONE"></span><span id="_CPPv2N8usrinp_t19USRINP_DEBUG_BUTTONE"></span><span class="target" id="usrinp_8h_1adfa4e46d59e7f4213468e9c431df1573a2beac0194d3fddb6825e94bad5061d00"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">USRINP_DEBUG_BUTTON</span></span></span><a class="headerlink" href="#_CPPv4N8usrinp_t19USRINP_DEBUG_BUTTONE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Debug button input </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N8usrinp_t21USRINP_EMERGENCY_STOPE">
+<span id="_CPPv3N8usrinp_t21USRINP_EMERGENCY_STOPE"></span><span id="_CPPv2N8usrinp_t21USRINP_EMERGENCY_STOPE"></span><span class="target" id="usrinp_8h_1adfa4e46d59e7f4213468e9c431df1573aaf622651bf968dce6d886bfa7a43b9b9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">USRINP_EMERGENCY_STOP</span></span></span><a class="headerlink" href="#_CPPv4N8usrinp_t21USRINP_EMERGENCY_STOPE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Emergency stop input </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N8usrinp_t18USRINP_USB_CONNECTE">
+<span id="_CPPv3N8usrinp_t18USRINP_USB_CONNECTE"></span><span id="_CPPv2N8usrinp_t18USRINP_USB_CONNECTE"></span><span class="target" id="usrinp_8h_1adfa4e46d59e7f4213468e9c431df1573a15d23079d2e9a269586b9083ed50f281"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">USRINP_USB_CONNECT</span></span></span><a class="headerlink" href="#_CPPv4N8usrinp_t18USRINP_USB_CONNECTE" title="Link to this definition">#</a><br /></dt>
+<dd><p>USB connection input </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv414usrinp_event_t">
+<span id="_CPPv314usrinp_event_t"></span><span id="_CPPv214usrinp_event_t"></span><span class="target" id="usrinp_8h_1a684619692efdeeafff15e44eaa6a09aa"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">usrinp_event_t</span></span></span><a class="headerlink" href="#_CPPv414usrinp_event_t" title="Link to this definition">#</a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14usrinp_event_t20USRINP_EVENT_UNKNOWNE">
+<span id="_CPPv3N14usrinp_event_t20USRINP_EVENT_UNKNOWNE"></span><span id="_CPPv2N14usrinp_event_t20USRINP_EVENT_UNKNOWNE"></span><span class="target" id="usrinp_8h_1a684619692efdeeafff15e44eaa6a09aaa9681ace5bb72d5c8cf34d772acd65f23"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">USRINP_EVENT_UNKNOWN</span></span></span><a class="headerlink" href="#_CPPv4N14usrinp_event_t20USRINP_EVENT_UNKNOWNE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Unknown event </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14usrinp_event_t22USRINP_EVENT_CONNECTEDE">
+<span id="_CPPv3N14usrinp_event_t22USRINP_EVENT_CONNECTEDE"></span><span id="_CPPv2N14usrinp_event_t22USRINP_EVENT_CONNECTEDE"></span><span class="target" id="usrinp_8h_1a684619692efdeeafff15e44eaa6a09aaa2bb986926473ebbdec26724a643238cb"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">USRINP_EVENT_CONNECTED</span></span></span><a class="headerlink" href="#_CPPv4N14usrinp_event_t22USRINP_EVENT_CONNECTEDE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Input connected (pressed) </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14usrinp_event_t25USRINP_EVENT_DISCONNECTEDE">
+<span id="_CPPv3N14usrinp_event_t25USRINP_EVENT_DISCONNECTEDE"></span><span id="_CPPv2N14usrinp_event_t25USRINP_EVENT_DISCONNECTEDE"></span><span class="target" id="usrinp_8h_1a684619692efdeeafff15e44eaa6a09aaab26dfdc4a52cd79ef56bd6a3b759ec5f"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">USRINP_EVENT_DISCONNECTED</span></span></span><a class="headerlink" href="#_CPPv4N14usrinp_event_t25USRINP_EVENT_DISCONNECTEDE" title="Link to this definition">#</a><br /></dt>
+<dd><p>Input disconnected (released) </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="uptime.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Uptime</p>
+      </div>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv411usrinp_initP7lm_gpio18usrinp_get_state_t"><code class="docutils literal notranslate"><span class="pre">usrinp_init()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412usrinp_raise8usrinp_t"><code class="docutils literal notranslate"><span class="pre">usrinp_raise()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv424usrinp_register_event_cb8usrinp_t17usrinp_event_cb_tPv"><code class="docutils literal notranslate"><span class="pre">usrinp_register_event_cb()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv48usrinp_t"><code class="docutils literal notranslate"><span class="pre">usrinp_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N8usrinp_t19USRINP_DEBUG_BUTTONE"><code class="docutils literal notranslate"><span class="pre">USRINP_DEBUG_BUTTON</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N8usrinp_t21USRINP_EMERGENCY_STOPE"><code class="docutils literal notranslate"><span class="pre">USRINP_EMERGENCY_STOP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N8usrinp_t18USRINP_USB_CONNECTE"><code class="docutils literal notranslate"><span class="pre">USRINP_USB_CONNECT</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414usrinp_event_t"><code class="docutils literal notranslate"><span class="pre">usrinp_event_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14usrinp_event_t20USRINP_EVENT_UNKNOWNE"><code class="docutils literal notranslate"><span class="pre">USRINP_EVENT_UNKNOWN</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14usrinp_event_t22USRINP_EVENT_CONNECTEDE"><code class="docutils literal notranslate"><span class="pre">USRINP_EVENT_CONNECTED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14usrinp_event_t25USRINP_EVENT_DISCONNECTEDE"><code class="docutils literal notranslate"><span class="pre">USRINP_EVENT_DISCONNECTED</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pazzk.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

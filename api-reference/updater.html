@@ -1,0 +1,786 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Updater &#8212; Pazzk  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api-reference/updater';</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../_static/mermaid-init.js?v=b11fa8ae"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Uptime" href="uptime.html" />
+    <link rel="prev" title="UID" href="uid.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pazzk-logo.png" class="logo__image only-light" alt="Pazzk  documentation - Home"/>
+    <script>document.write(`<img src="../_static/pazzk-logo.png" class="logo__image only-dark" alt="Pazzk  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/charger.html">Charger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/network.html">Network</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli/cli_commands.html">CLI</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Communication / OCPP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_auth.html">OCPP Auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_boot.html">OCPP Boot</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electrical Interfaces</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../electrical/control_pilot.html">Control Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/flash.html">Flash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/input.html">Input Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/power.html">Power Management</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Firmware Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/device_serial_number.html">Device Serial Number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/uid_storage.html">UID Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="config.html">Confing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exio.html">EXIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fs.html">File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="iec61851.html">IEC 61851</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logfs.html">Log File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metering.html">Metering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="periph.html">Peripheral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pilot.html">Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pinmap.html">Pinmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relay.html">Relay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="safety.html">Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secret.html">Secret</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uid.html">UID</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uptime.html">Uptime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usrinp.html">User Input</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api-reference/updater.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Updater</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412updater_initv"><code class="docutils literal notranslate"><span class="pre">updater_init()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414updater_deinitv"><code class="docutils literal notranslate"><span class="pre">updater_deinit()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv431updater_register_event_callback24updater_event_callback_tPv"><code class="docutils literal notranslate"><span class="pre">updater_register_event_callback()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv418updater_set_runner16updater_runner_tPv"><code class="docutils literal notranslate"><span class="pre">updater_set_runner()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415updater_requestPK13updater_paramP10downloader"><code class="docutils literal notranslate"><span class="pre">updater_request()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415updater_processv"><code class="docutils literal notranslate"><span class="pre">updater_process()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412updater_busyv"><code class="docutils literal notranslate"><span class="pre">updater_busy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv424updater_event_callback_t"><code class="docutils literal notranslate"><span class="pre">updater_event_callback_t</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416updater_runner_t"><code class="docutils literal notranslate"><span class="pre">updater_runner_t</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv413updater_param"><code class="docutils literal notranslate"><span class="pre">updater_param</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13updater_param3urlE"><code class="docutils literal notranslate"><span class="pre">url</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13updater_param13retrieve_dateE"><code class="docutils literal notranslate"><span class="pre">retrieve_date</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13updater_param11max_retriesE"><code class="docutils literal notranslate"><span class="pre">max_retries</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13updater_param14retry_intervalE"><code class="docutils literal notranslate"><span class="pre">retry_interval</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415updater_event_t"><code class="docutils literal notranslate"><span class="pre">updater_event_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t16UPDATER_EVT_NONEE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_NONE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t27UPDATER_EVT_ERROR_PREPARINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_ERROR_PREPARING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t29UPDATER_EVT_START_DOWNLOADINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_START_DOWNLOADING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t23UPDATER_EVT_DOWNLOADINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_DOWNLOADING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t29UPDATER_EVT_ERROR_DOWNLOADINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_ERROR_DOWNLOADING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t25UPDATER_EVT_ERROR_WRITINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_ERROR_WRITING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t25UPDATER_EVT_ERROR_TIMEOUTE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_ERROR_TIMEOUT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t22UPDATER_EVT_DOWNLOADEDE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_DOWNLOADED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t28UPDATER_EVT_START_INSTALLINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_START_INSTALLING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t28UPDATER_EVT_ERROR_INSTALLINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_ERROR_INSTALLING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t27UPDATER_EVT_REBOOT_REQUIREDE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_REBOOT_REQUIRED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t21UPDATER_EVT_INSTALLEDE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_INSTALLED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t17UPDATER_EVT_ERRORE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_ERROR</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.UPDATER_BUFFER_SIZE"><code class="docutils literal notranslate"><span class="pre">UPDATER_BUFFER_SIZE</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.UPDATER_TIMEOUT_SEC"><code class="docutils literal notranslate"><span class="pre">UPDATER_TIMEOUT_SEC</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.UPDATER_TRANSFER_TIMEOUT_MS"><code class="docutils literal notranslate"><span class="pre">UPDATER_TRANSFER_TIMEOUT_MS</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.URL_MAXLEN"><code class="docutils literal notranslate"><span class="pre">URL_MAXLEN</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="updater">
+<h1>Updater<a class="headerlink" href="#updater" title="Link to this heading">#</a></h1>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412updater_initv">
+<span id="_CPPv312updater_initv"></span><span id="_CPPv212updater_initv"></span><span id="updater_init__void"></span><span class="target" id="updater_8h_1a0ca221f07799335660014e5b90739315"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">updater_init</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412updater_initv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Initializes the updater module. </p>
+<p>This function initializes the updater module and prepares it for use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An integer indicating the status of the operation. A return value of 0 indicates success, while any other value indicates an error. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414updater_deinitv">
+<span id="_CPPv314updater_deinitv"></span><span id="_CPPv214updater_deinitv"></span><span id="updater_deinit__void"></span><span class="target" id="updater_8h_1ab13befd52d2e3b4f7372d313c0fef927"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">updater_deinit</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414updater_deinitv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Deinitializes the updater module. </p>
+<p>This function deinitializes the updater module and releases any resources that were allocated during initialization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An integer indicating the status of the operation. A return value of 0 indicates success, while any other value indicates an error. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv431updater_register_event_callback24updater_event_callback_tPv">
+<span id="_CPPv331updater_register_event_callback24updater_event_callback_tPv"></span><span id="_CPPv231updater_register_event_callback24updater_event_callback_tPv"></span><span id="updater_register_event_callback__updater_event_callback_t.voidP"></span><span class="target" id="updater_8h_1a1f75a62de38514bc9f550089d7499bc6"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">updater_register_event_callback</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv424updater_event_callback_t" title="updater_event_callback_t"><span class="n"><span class="pre">updater_event_callback_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">cb</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">cb_ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv431updater_register_event_callback24updater_event_callback_tPv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Registers an event callback for the updater module. </p>
+<p>This function registers a callback function that will be called when an event occurs in the updater module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cb</strong> – <strong>[in]</strong> The callback function to register. </p></li>
+<li><p><strong>cb_ctx</strong> – <strong>[in]</strong> A pointer to the context that will be passed to the callback function when it is called.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An integer indicating the status of the operation. A return value of 0 indicates success, while any other value indicates an error. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418updater_set_runner16updater_runner_tPv">
+<span id="_CPPv318updater_set_runner16updater_runner_tPv"></span><span id="_CPPv218updater_set_runner16updater_runner_tPv"></span><span id="updater_set_runner__updater_runner_t.voidP"></span><span class="target" id="updater_8h_1a113a3492dc1d91f0e30048feb00426ff"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">updater_set_runner</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv416updater_runner_t" title="updater_runner_t"><span class="n"><span class="pre">updater_runner_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">runner</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418updater_set_runner16updater_runner_tPv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Sets the runner for the updater module. </p>
+<p>This function sets a runner for the updater module. The runner is a function that will be called when an update request occurs. The context pointer will be passed to the runner function when it is called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>runner</strong> – <strong>[in]</strong> The runner function to set. </p></li>
+<li><p><strong>ctx</strong> – <strong>[in]</strong> A pointer to the context that will be passed to the runner function when it is called.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An integer indicating the status of the operation. A return value of 0 indicates success, while any other value indicates an error. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415updater_requestPK13updater_paramP10downloader">
+<span id="_CPPv315updater_requestPK13updater_paramP10downloader"></span><span id="_CPPv215updater_requestPK13updater_paramP10downloader"></span><span id="updater_request__updater_paramCP.downloaderP"></span><span class="target" id="updater_8h_1aa2c2aaf1a80942004bfed6e41286a68e"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">updater_request</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413updater_param" title="updater_param"><span class="n"><span class="pre">updater_param</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">param</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv415updater_requestPK13updater_paramP10downloader" title="updater_request::downloader"><span class="n"><span class="pre">downloader</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">downloader</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415updater_requestPK13updater_paramP10downloader" title="Link to this definition">#</a><br /></dt>
+<dd><p>Requests an update using the specified parameters. </p>
+<p>This function requests an update using the parameters provided in the <a class="reference internal" href="#structupdater__param"><span class="std std-ref">updater_param</span></a> structure and the specified downloader.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If there is an existing update request, it will drop the new request if the update has already started. However, if the existing request is in a pending state (i.e., the retrieve date has not yet been arrived), it will replace the pending request with the new one.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>param</strong> – <strong>[in]</strong> A pointer to the <a class="reference internal" href="#structupdater__param"><span class="std std-ref">updater_param</span></a> structure containing the parameters for the update request. </p></li>
+<li><p><strong>downloader</strong> – <strong>[in]</strong> A pointer to the downloader to use for the update.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>An integer indicating the status of the operation. A return value of 0 indicates success, while any other value indicates an error. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415updater_processv">
+<span id="_CPPv315updater_processv"></span><span id="_CPPv215updater_processv"></span><span id="updater_process__void"></span><span class="target" id="updater_8h_1ac3bd2e2b649d7345be848e8c1de1c416"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">updater_process</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415updater_processv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Processes the updater module. </p>
+<p>This function processes any pending operations in the updater module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An integer indicating the status of the operation. A return value of 0 indicates success, while any other value indicates an error. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412updater_busyv">
+<span id="_CPPv312updater_busyv"></span><span id="_CPPv212updater_busyv"></span><span id="updater_busy__void"></span><span class="target" id="updater_8h_1a14238c0f89aa6d613021f8c9fe5dfd0c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">updater_busy</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412updater_busyv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Checks if the updater module is busy. </p>
+<p>This function checks if the updater module is currently busy with an operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A boolean value indicating whether the updater module is busy. A return value of true indicates that the module is busy, while false indicates that it is not. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv424updater_event_callback_t">
+<span id="_CPPv324updater_event_callback_t"></span><span id="_CPPv224updater_event_callback_t"></span><span id="updater_event_callback_t"></span><span class="target" id="updater_8h_1ad2d36eb7ddf42466ea11ace55f762f8f"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">updater_event_callback_t</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><a class="reference internal" href="#_CPPv415updater_event_t" title="updater_event_t"><span class="n"><span class="pre">updater_event_t</span></span></a><span class="w"> </span><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv424updater_event_callback_t" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv416updater_runner_t">
+<span id="_CPPv316updater_runner_t"></span><span id="_CPPv216updater_runner_t"></span><span id="updater_runner_t"></span><span class="target" id="updater_8h_1a28b7ce7c85b2b16fc9c94a9dde93ba9e"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">updater_runner_t</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv416updater_runner_t" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv413updater_param">
+<span id="_CPPv313updater_param"></span><span id="_CPPv213updater_param"></span><span id="updater_param"></span><span class="target" id="structupdater__param"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">updater_param</span></span></span><a class="headerlink" href="#_CPPv413updater_param" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;updater.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13updater_param3urlE">
+<span id="_CPPv3N13updater_param3urlE"></span><span id="_CPPv2N13updater_param3urlE"></span><span id="updater_param::url__cA"></span><span class="target" id="structupdater__param_1a90e70f00b4bed7dab1a5456e0880d2d4"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">url</span></span></span><span class="p"><span class="pre">[</span></span><span class="n"><span class="pre">URL_MAXLEN</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N13updater_param3urlE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13updater_param13retrieve_dateE">
+<span id="_CPPv3N13updater_param13retrieve_dateE"></span><span id="_CPPv2N13updater_param13retrieve_dateE"></span><span id="updater_param::retrieve_date__time_t"></span><span class="target" id="structupdater__param_1aeed47f37ed39fd5d742789a9773dc317"></span><span class="n"><span class="pre">time_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">retrieve_date</span></span></span><a class="headerlink" href="#_CPPv4N13updater_param13retrieve_dateE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13updater_param11max_retriesE">
+<span id="_CPPv3N13updater_param11max_retriesE"></span><span id="_CPPv2N13updater_param11max_retriesE"></span><span id="updater_param::max_retries__i"></span><span class="target" id="structupdater__param_1aeb21c9c3331bfdd1862b9666d9bbeead"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">max_retries</span></span></span><a class="headerlink" href="#_CPPv4N13updater_param11max_retriesE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N13updater_param14retry_intervalE">
+<span id="_CPPv3N13updater_param14retry_intervalE"></span><span id="_CPPv2N13updater_param14retry_intervalE"></span><span id="updater_param::retry_interval__i"></span><span class="target" id="structupdater__param_1a5ebaca7d4ba728cc8375e93dd9067e58"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">retry_interval</span></span></span><a class="headerlink" href="#_CPPv4N13updater_param14retry_intervalE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv415updater_event_t">
+<span id="_CPPv315updater_event_t"></span><span id="_CPPv215updater_event_t"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">updater_event_t</span></span></span><a class="headerlink" href="#_CPPv415updater_event_t" title="Link to this definition">#</a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t16UPDATER_EVT_NONEE">
+<span id="_CPPv3N15updater_event_t16UPDATER_EVT_NONEE"></span><span id="_CPPv2N15updater_event_t16UPDATER_EVT_NONEE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27aa295f901e4e1dd27b384c1d56048b5d6"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_NONE</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t16UPDATER_EVT_NONEE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t27UPDATER_EVT_ERROR_PREPARINGE">
+<span id="_CPPv3N15updater_event_t27UPDATER_EVT_ERROR_PREPARINGE"></span><span id="_CPPv2N15updater_event_t27UPDATER_EVT_ERROR_PREPARINGE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27ad4f05bd7dbcdb0bdf5313cfe89622d32"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_ERROR_PREPARING</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t27UPDATER_EVT_ERROR_PREPARINGE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t29UPDATER_EVT_START_DOWNLOADINGE">
+<span id="_CPPv3N15updater_event_t29UPDATER_EVT_START_DOWNLOADINGE"></span><span id="_CPPv2N15updater_event_t29UPDATER_EVT_START_DOWNLOADINGE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27a6fb1573eaa329d9c6f49ac791080bff7"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_START_DOWNLOADING</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t29UPDATER_EVT_START_DOWNLOADINGE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t23UPDATER_EVT_DOWNLOADINGE">
+<span id="_CPPv3N15updater_event_t23UPDATER_EVT_DOWNLOADINGE"></span><span id="_CPPv2N15updater_event_t23UPDATER_EVT_DOWNLOADINGE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27a0c41e4d36078d503201360a627461b76"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_DOWNLOADING</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t23UPDATER_EVT_DOWNLOADINGE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t29UPDATER_EVT_ERROR_DOWNLOADINGE">
+<span id="_CPPv3N15updater_event_t29UPDATER_EVT_ERROR_DOWNLOADINGE"></span><span id="_CPPv2N15updater_event_t29UPDATER_EVT_ERROR_DOWNLOADINGE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27a1ed4a3a59327487eb6b118a051f97643"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_ERROR_DOWNLOADING</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t29UPDATER_EVT_ERROR_DOWNLOADINGE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t25UPDATER_EVT_ERROR_WRITINGE">
+<span id="_CPPv3N15updater_event_t25UPDATER_EVT_ERROR_WRITINGE"></span><span id="_CPPv2N15updater_event_t25UPDATER_EVT_ERROR_WRITINGE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27a7fd3338b8a7a4e39283923021ce149f3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_ERROR_WRITING</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t25UPDATER_EVT_ERROR_WRITINGE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t25UPDATER_EVT_ERROR_TIMEOUTE">
+<span id="_CPPv3N15updater_event_t25UPDATER_EVT_ERROR_TIMEOUTE"></span><span id="_CPPv2N15updater_event_t25UPDATER_EVT_ERROR_TIMEOUTE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27a94fe2cf752a91e06287f498aec69dea2"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_ERROR_TIMEOUT</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t25UPDATER_EVT_ERROR_TIMEOUTE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t22UPDATER_EVT_DOWNLOADEDE">
+<span id="_CPPv3N15updater_event_t22UPDATER_EVT_DOWNLOADEDE"></span><span id="_CPPv2N15updater_event_t22UPDATER_EVT_DOWNLOADEDE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27a8754af047e9e752ecc3fc4781f5aa88e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_DOWNLOADED</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t22UPDATER_EVT_DOWNLOADEDE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t28UPDATER_EVT_START_INSTALLINGE">
+<span id="_CPPv3N15updater_event_t28UPDATER_EVT_START_INSTALLINGE"></span><span id="_CPPv2N15updater_event_t28UPDATER_EVT_START_INSTALLINGE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27a6fa53df0577f455565139769587b1300"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_START_INSTALLING</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t28UPDATER_EVT_START_INSTALLINGE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t28UPDATER_EVT_ERROR_INSTALLINGE">
+<span id="_CPPv3N15updater_event_t28UPDATER_EVT_ERROR_INSTALLINGE"></span><span id="_CPPv2N15updater_event_t28UPDATER_EVT_ERROR_INSTALLINGE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27a080cff9c3b31c509ccfb911529f6d3fe"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_ERROR_INSTALLING</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t28UPDATER_EVT_ERROR_INSTALLINGE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t27UPDATER_EVT_REBOOT_REQUIREDE">
+<span id="_CPPv3N15updater_event_t27UPDATER_EVT_REBOOT_REQUIREDE"></span><span id="_CPPv2N15updater_event_t27UPDATER_EVT_REBOOT_REQUIREDE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27a7158155329fa4da2c2cbafc06eb7fced"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_REBOOT_REQUIRED</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t27UPDATER_EVT_REBOOT_REQUIREDE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t21UPDATER_EVT_INSTALLEDE">
+<span id="_CPPv3N15updater_event_t21UPDATER_EVT_INSTALLEDE"></span><span id="_CPPv2N15updater_event_t21UPDATER_EVT_INSTALLEDE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27a8ef94e34322c56c5e57fd6820a5d7c96"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_INSTALLED</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t21UPDATER_EVT_INSTALLEDE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N15updater_event_t17UPDATER_EVT_ERRORE">
+<span id="_CPPv3N15updater_event_t17UPDATER_EVT_ERRORE"></span><span id="_CPPv2N15updater_event_t17UPDATER_EVT_ERRORE"></span><span class="target" id="updater_8h_1a8e1c2a60fb96763e104fab6b2ce65a27ab5261afddc21fcb99a40a9adfdb57d9a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_EVT_ERROR</span></span></span><a class="headerlink" href="#_CPPv4N15updater_event_t17UPDATER_EVT_ERRORE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.UPDATER_BUFFER_SIZE">
+<span class="target" id="updater_8h_1ac0f269e64b5b6333c92e6ac1a2455882"></span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_BUFFER_SIZE</span></span></span> <span class="pre">1024</span><a class="headerlink" href="#c.UPDATER_BUFFER_SIZE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.UPDATER_TIMEOUT_SEC">
+<span class="target" id="updater_8h_1aff0ce6309a94e0634d4f6300cf757beb"></span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_TIMEOUT_SEC</span></span></span> <span class="pre">(5/*min*/</span> <span class="pre">*</span> <span class="pre">60)</span><a class="headerlink" href="#c.UPDATER_TIMEOUT_SEC" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.UPDATER_TRANSFER_TIMEOUT_MS">
+<span class="target" id="updater_8h_1a662978ca4179bb184273b18eb125700b"></span><span class="sig-name descname"><span class="n"><span class="pre">UPDATER_TRANSFER_TIMEOUT_MS</span></span></span> <span class="pre">10000</span><a class="headerlink" href="#c.UPDATER_TRANSFER_TIMEOUT_MS" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.URL_MAXLEN">
+<span class="target" id="updater_8h_1a6d20aed9bc245c2be80b5419aeb29b9b"></span><span class="sig-name descname"><span class="n"><span class="pre">URL_MAXLEN</span></span></span> <span class="pre">256</span><a class="headerlink" href="#c.URL_MAXLEN" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="uid.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">UID</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="uptime.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Uptime</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412updater_initv"><code class="docutils literal notranslate"><span class="pre">updater_init()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414updater_deinitv"><code class="docutils literal notranslate"><span class="pre">updater_deinit()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv431updater_register_event_callback24updater_event_callback_tPv"><code class="docutils literal notranslate"><span class="pre">updater_register_event_callback()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv418updater_set_runner16updater_runner_tPv"><code class="docutils literal notranslate"><span class="pre">updater_set_runner()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415updater_requestPK13updater_paramP10downloader"><code class="docutils literal notranslate"><span class="pre">updater_request()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415updater_processv"><code class="docutils literal notranslate"><span class="pre">updater_process()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412updater_busyv"><code class="docutils literal notranslate"><span class="pre">updater_busy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv424updater_event_callback_t"><code class="docutils literal notranslate"><span class="pre">updater_event_callback_t</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416updater_runner_t"><code class="docutils literal notranslate"><span class="pre">updater_runner_t</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv413updater_param"><code class="docutils literal notranslate"><span class="pre">updater_param</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13updater_param3urlE"><code class="docutils literal notranslate"><span class="pre">url</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13updater_param13retrieve_dateE"><code class="docutils literal notranslate"><span class="pre">retrieve_date</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13updater_param11max_retriesE"><code class="docutils literal notranslate"><span class="pre">max_retries</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13updater_param14retry_intervalE"><code class="docutils literal notranslate"><span class="pre">retry_interval</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415updater_event_t"><code class="docutils literal notranslate"><span class="pre">updater_event_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t16UPDATER_EVT_NONEE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_NONE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t27UPDATER_EVT_ERROR_PREPARINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_ERROR_PREPARING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t29UPDATER_EVT_START_DOWNLOADINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_START_DOWNLOADING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t23UPDATER_EVT_DOWNLOADINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_DOWNLOADING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t29UPDATER_EVT_ERROR_DOWNLOADINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_ERROR_DOWNLOADING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t25UPDATER_EVT_ERROR_WRITINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_ERROR_WRITING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t25UPDATER_EVT_ERROR_TIMEOUTE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_ERROR_TIMEOUT</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t22UPDATER_EVT_DOWNLOADEDE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_DOWNLOADED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t28UPDATER_EVT_START_INSTALLINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_START_INSTALLING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t28UPDATER_EVT_ERROR_INSTALLINGE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_ERROR_INSTALLING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t27UPDATER_EVT_REBOOT_REQUIREDE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_REBOOT_REQUIRED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t21UPDATER_EVT_INSTALLEDE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_INSTALLED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N15updater_event_t17UPDATER_EVT_ERRORE"><code class="docutils literal notranslate"><span class="pre">UPDATER_EVT_ERROR</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.UPDATER_BUFFER_SIZE"><code class="docutils literal notranslate"><span class="pre">UPDATER_BUFFER_SIZE</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.UPDATER_TIMEOUT_SEC"><code class="docutils literal notranslate"><span class="pre">UPDATER_TIMEOUT_SEC</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.UPDATER_TRANSFER_TIMEOUT_MS"><code class="docutils literal notranslate"><span class="pre">UPDATER_TRANSFER_TIMEOUT_MS</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.URL_MAXLEN"><code class="docutils literal notranslate"><span class="pre">URL_MAXLEN</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pazzk.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

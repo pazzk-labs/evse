@@ -1,0 +1,996 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Pilot &#8212; Pazzk  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api-reference/pilot';</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../_static/mermaid-init.js?v=b11fa8ae"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pinmap" href="pinmap.html" />
+    <link rel="prev" title="Peripheral" href="periph.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pazzk-logo.png" class="logo__image only-light" alt="Pazzk  documentation - Home"/>
+    <script>document.write(`<img src="../_static/pazzk-logo.png" class="logo__image only-dark" alt="Pazzk  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/charger.html">Charger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/network.html">Network</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli/cli_commands.html">CLI</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Communication / OCPP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_auth.html">OCPP Auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_boot.html">OCPP Boot</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electrical Interfaces</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../electrical/control_pilot.html">Control Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/flash.html">Flash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/input.html">Input Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/power.html">Power Management</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Firmware Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/device_serial_number.html">Device Serial Number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/uid_storage.html">UID Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="config.html">Confing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exio.html">EXIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fs.html">File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="iec61851.html">IEC 61851</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logfs.html">Log File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metering.html">Metering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="periph.html">Peripheral</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pinmap.html">Pinmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relay.html">Relay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="safety.html">Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secret.html">Secret</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uid.html">UID</a></li>
+<li class="toctree-l1"><a class="reference internal" href="updater.html">Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uptime.html">Uptime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usrinp.html">User Input</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api-reference/pilot.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Pilot</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412pilot_createPK12pilot_paramsP10adc122s051P14lm_pwm_channelP8uint16_t"><code class="docutils literal notranslate"><span class="pre">pilot_create()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412pilot_deleteP5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_delete()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv419pilot_set_status_cbP5pilot17pilot_status_cb_tPv"><code class="docutils literal notranslate"><span class="pre">pilot_set_status_cb()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412pilot_enableP5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_enable()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv413pilot_disableP5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_disable()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414pilot_set_dutyP5pilotK7uint8_t"><code class="docutils literal notranslate"><span class="pre">pilot_set_duty()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv418pilot_get_duty_setPK5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_get_duty_set()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410pilot_dutyPK5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_duty()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412pilot_statusPK5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_status()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415pilot_millivoltPK5pilotKb"><code class="docutils literal notranslate"><span class="pre">pilot_millivolt()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv48pilot_okPK5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_ok()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv411pilot_errorPK5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_error()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv422pilot_stringify_statusK14pilot_status_t"><code class="docutils literal notranslate"><span class="pre">pilot_stringify_status()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv420pilot_default_paramsP12pilot_params"><code class="docutils literal notranslate"><span class="pre">pilot_default_params()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv417pilot_status_cb_t"><code class="docutils literal notranslate"><span class="pre">pilot_status_cb_t</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414pilot_boundary"><code class="docutils literal notranslate"><span class="pre">pilot_boundary</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_boundary1aE"><code class="docutils literal notranslate"><span class="pre">a</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_boundary1bE"><code class="docutils literal notranslate"><span class="pre">b</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_boundary1cE"><code class="docutils literal notranslate"><span class="pre">c</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_boundary1dE"><code class="docutils literal notranslate"><span class="pre">d</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_boundary1eE"><code class="docutils literal notranslate"><span class="pre">e</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416pilot_boundaries"><code class="docutils literal notranslate"><span class="pre">pilot_boundaries</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16pilot_boundaries6upwardE"><code class="docutils literal notranslate"><span class="pre">upward</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16pilot_boundaries8downwardE"><code class="docutils literal notranslate"><span class="pre">downward</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412pilot_params"><code class="docutils literal notranslate"><span class="pre">pilot_params</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12pilot_params16scan_interval_msE"><code class="docutils literal notranslate"><span class="pre">scan_interval_ms</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12pilot_params17cutoff_voltage_mvE"><code class="docutils literal notranslate"><span class="pre">cutoff_voltage_mv</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12pilot_params18noise_tolerance_mvE"><code class="docutils literal notranslate"><span class="pre">noise_tolerance_mv</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12pilot_params21max_transition_clocksE"><code class="docutils literal notranslate"><span class="pre">max_transition_clocks</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12pilot_params8boundaryE"><code class="docutils literal notranslate"><span class="pre">boundary</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12pilot_params12sample_countE"><code class="docutils literal notranslate"><span class="pre">sample_count</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414pilot_status_t"><code class="docutils literal notranslate"><span class="pre">pilot_status_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_AE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_A</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_BE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_B</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_CE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_C</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_DE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_D</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_EE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_E</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_FE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_F</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t20PILOT_STATUS_UNKNOWNE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_UNKNOWN</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv413pilot_error_t"><code class="docutils literal notranslate"><span class="pre">pilot_error_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t16PILOT_ERROR_NONEE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_NONE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t25PILOT_ERROR_DUTY_MISMATCHE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_DUTY_MISMATCH</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t23PILOT_ERROR_FLUCTUATINGE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_FLUCTUATING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t29PILOT_ERROR_TOO_LONG_INTERVALE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_TOO_LONG_INTERVAL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t26PILOT_ERROR_INVALID_PARAMSE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_INVALID_PARAMS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t27PILOT_ERROR_NOT_INITIALIZEDE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_NOT_INITIALIZED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t19PILOT_ERROR_UNKNOWNE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_UNKNOWN</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.PILOT_NUMBER_OF_SAMPLES"><code class="docutils literal notranslate"><span class="pre">PILOT_NUMBER_OF_SAMPLES</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="pilot">
+<h1>Pilot<a class="headerlink" href="#pilot" title="Link to this heading">#</a></h1>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412pilot_createPK12pilot_paramsP10adc122s051P14lm_pwm_channelP8uint16_t">
+<span id="_CPPv312pilot_createPK12pilot_paramsP10adc122s051P14lm_pwm_channelP8uint16_t"></span><span id="_CPPv212pilot_createPK12pilot_paramsP10adc122s051P14lm_pwm_channelP8uint16_t"></span><span id="pilot_create__pilot_paramsCP.adc122s051P.lm_pwm_channelP.uint16_tP"></span><span class="target" id="pilot_8h_1a6b097b77627a6789a9ead22d82b328c9"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">pilot</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pilot_create</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412pilot_params" title="pilot_params"><span class="n"><span class="pre">pilot_params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">params</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">adc122s051</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">adc</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">lm_pwm_channel</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pwm</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">buf</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412pilot_createPK12pilot_paramsP10adc122s051P14lm_pwm_channelP8uint16_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Creates a pilot instance with the specified parameters. </p>
+<p>This function initializes and allocates memory for a pilot structure with the specified parameters, ADC and PWM channel handles, and buffer for ADC samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>params</strong> – <strong>[in]</strong> Pointer to the <a class="reference internal" href="#structpilot__params"><span class="std std-ref">pilot_params</span></a> structure containing the configuration parameters for the pilot instance. </p></li>
+<li><p><strong>adc</strong> – <strong>[in]</strong> Pointer to the adc122s051 structure. </p></li>
+<li><p><strong>pwm</strong> – <strong>[in]</strong> Pointer to the PWM channel structure. </p></li>
+<li><p><strong>buf</strong> – <strong>[in]</strong> Pointer to the buffer to be used for ADC samples.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>struct pilot* Pointer to the created pilot structure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412pilot_deleteP5pilot">
+<span id="_CPPv312pilot_deleteP5pilot"></span><span id="_CPPv212pilot_deleteP5pilot"></span><span id="pilot_delete__pilotP"></span><span class="target" id="pilot_8h_1a84c4ce3492b665b0ca079a1633a99088"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_delete</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412pilot_deleteP5pilot" title="pilot_delete::pilot"><span class="n"><span class="pre">pilot</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pilot</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412pilot_deleteP5pilot" title="Link to this definition">#</a><br /></dt>
+<dd><p>Deletes a pilot instance. </p>
+<p>This function deallocates the memory and cleans up resources associated with the specified pilot structure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pilot</strong> – <strong>[in]</strong> Pointer to the pilot structure to be deleted. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419pilot_set_status_cbP5pilot17pilot_status_cb_tPv">
+<span id="_CPPv319pilot_set_status_cbP5pilot17pilot_status_cb_tPv"></span><span id="_CPPv219pilot_set_status_cbP5pilot17pilot_status_cb_tPv"></span><span id="pilot_set_status_cb__pilotP.pilot_status_cb_t.voidP"></span><span class="target" id="pilot_8h_1ad1350d314f6cafba207663529376110b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_set_status_cb</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv419pilot_set_status_cbP5pilot17pilot_status_cb_tPv" title="pilot_set_status_cb::pilot"><span class="n"><span class="pre">pilot</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pilot</span></span>, <a class="reference internal" href="#_CPPv417pilot_status_cb_t" title="pilot_status_cb_t"><span class="n"><span class="pre">pilot_status_cb_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">cb</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">cb_ctx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419pilot_set_status_cbP5pilot17pilot_status_cb_tPv" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the callback for pilot status changes. </p>
+<p>This function sets a callback function that will be called whenever the status of the pilot changes. The callback function will be provided with the current status and the user-defined context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pilot</strong> – <strong>[in]</strong> Pointer to the pilot structure. </p></li>
+<li><p><strong>cb</strong> – <strong>[in]</strong> The callback function to be called on status changes. </p></li>
+<li><p><strong>cb_ctx</strong> – <strong>[in]</strong> User-defined context to be passed to the callback function. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412pilot_enableP5pilot">
+<span id="_CPPv312pilot_enableP5pilot"></span><span id="_CPPv212pilot_enableP5pilot"></span><span id="pilot_enable__pilotP"></span><span class="target" id="pilot_8h_1a9dc64cd329efe5428f15c54d3c86a816"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_enable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412pilot_enableP5pilot" title="pilot_enable::pilot"><span class="n"><span class="pre">pilot</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pilot</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412pilot_enableP5pilot" title="Link to this definition">#</a><br /></dt>
+<dd><p>Enables the pilot instance. </p>
+<p>This function enables the pilot instance, allowing it to start its operations. It typically involves starting the PWM signal and any necessary ADC measurements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pilot</strong> – <strong>[inout]</strong> Pointer to the pilot structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>int Status code (0 for success, non-zero for error). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv413pilot_disableP5pilot">
+<span id="_CPPv313pilot_disableP5pilot"></span><span id="_CPPv213pilot_disableP5pilot"></span><span id="pilot_disable__pilotP"></span><span class="target" id="pilot_8h_1ac2345072203db1b0a91432dd2dc27806"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_disable</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv413pilot_disableP5pilot" title="pilot_disable::pilot"><span class="n"><span class="pre">pilot</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pilot</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413pilot_disableP5pilot" title="Link to this definition">#</a><br /></dt>
+<dd><p>Disables the pilot instance. </p>
+<p>This function disables the pilot instance, stopping its operations. It typically involves stopping the PWM signal and any ongoing ADC measurements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pilot</strong> – <strong>[inout]</strong> Pointer to the pilot structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>int Status code (0 for success, non-zero for error). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414pilot_set_dutyP5pilotK7uint8_t">
+<span id="_CPPv314pilot_set_dutyP5pilotK7uint8_t"></span><span id="_CPPv214pilot_set_dutyP5pilotK7uint8_t"></span><span id="pilot_set_duty__pilotP.uint8_tC"></span><span class="target" id="pilot_8h_1a916a55c4a6d80862e540c2f94a939833"></span><span class="kt"><span class="pre">int</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_set_duty</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv414pilot_set_dutyP5pilotK7uint8_t" title="pilot_set_duty::pilot"><span class="n"><span class="pre">pilot</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pilot</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">pct</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414pilot_set_dutyP5pilotK7uint8_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Sets the duty cycle for the pilot PWM signal. </p>
+<p>This function sets the PWM duty cycle for the pilot signal to the specified percentage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pilot</strong> – <strong>[inout]</strong> Pointer to the pilot structure. </p></li>
+<li><p><strong>pct</strong> – <strong>[in]</strong> Percentage of the PWM duty cycle to be set.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>int Status code (0 for success, non-zero for error). </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418pilot_get_duty_setPK5pilot">
+<span id="_CPPv318pilot_get_duty_setPK5pilot"></span><span id="_CPPv218pilot_get_duty_setPK5pilot"></span><span id="pilot_get_duty_set__pilotCP"></span><span class="target" id="pilot_8h_1ab3394d5c60b22be0e57e2341f664d079"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_get_duty_set</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv418pilot_get_duty_setPK5pilot" title="pilot_get_duty_set::pilot"><span class="n"><span class="pre">pilot</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pilot</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418pilot_get_duty_setPK5pilot" title="Link to this definition">#</a><br /></dt>
+<dd><p>Get the duty cycle set by the user. </p>
+<p>This function retrieves the duty cycle percentage that has been set by the user, not the value read from the PWM signal.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pilot</strong> – <strong>[in]</strong> Pointer to the pilot structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The duty cycle percentage set by the user. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv410pilot_dutyPK5pilot">
+<span id="_CPPv310pilot_dutyPK5pilot"></span><span id="_CPPv210pilot_dutyPK5pilot"></span><span id="pilot_duty__pilotCP"></span><span class="target" id="pilot_8h_1aad770589d6f5b356c74c855d852780d5"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_duty</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv410pilot_dutyPK5pilot" title="pilot_duty::pilot"><span class="n"><span class="pre">pilot</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pilot</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv410pilot_dutyPK5pilot" title="Link to this definition">#</a><br /></dt>
+<dd><p>Retrieves the current duty cycle of the pilot PWM signal. </p>
+<p>This function retrieves the current duty cycle percentage of the pilot PWM signal. The duty cycle represents the proportion of time the signal is active within a given period.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pilot</strong> – <strong>[in]</strong> Pointer to the pilot structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>uint8_t The current duty cycle percentage of the pilot PWM signal. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv412pilot_statusPK5pilot">
+<span id="_CPPv312pilot_statusPK5pilot"></span><span id="_CPPv212pilot_statusPK5pilot"></span><span id="pilot_status__pilotCP"></span><span class="target" id="pilot_8h_1a9ff818fe4d9c6b800af6b09db4f5e073"></span><a class="reference internal" href="#_CPPv414pilot_status_t" title="pilot_status_t"><span class="n"><span class="pre">pilot_status_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_status</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412pilot_statusPK5pilot" title="pilot_status::pilot"><span class="n"><span class="pre">pilot</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pilot</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412pilot_statusPK5pilot" title="Link to this definition">#</a><br /></dt>
+<dd><p>Retrieves the current status of the pilot instance. </p>
+<p>This function retrieves the current status of the pilot instance and returns it as a pilot_status_t structure. The status includes various operational parameters and states of the pilot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pilot</strong> – <strong>[in]</strong> Pointer to the pilot structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pilot_status_t The current status of the pilot instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415pilot_millivoltPK5pilotKb">
+<span id="_CPPv315pilot_millivoltPK5pilotKb"></span><span id="_CPPv215pilot_millivoltPK5pilotKb"></span><span id="pilot_millivolt__pilotCP.bC"></span><span class="target" id="pilot_8h_1ac46cffe96aa3cb72aa190cc8e3adf8f1"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_millivolt</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv415pilot_millivoltPK5pilotKb" title="pilot_millivolt::pilot"><span class="n"><span class="pre">pilot</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pilot</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">low_voltage</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415pilot_millivoltPK5pilotKb" title="Link to this definition">#</a><br /></dt>
+<dd><p>Retrieves the current millivolt value from the pilot instance. </p>
+<p>This function retrieves the current millivolt value measured by the pilot instance. It typically involves reading the latest ADC measurement and converting it to millivolts. The low_voltage parameter indicates whether to retrieve the low voltage measurement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pilot</strong> – <strong>[in]</strong> Pointer to the pilot structure. </p></li>
+<li><p><strong>low_voltage</strong> – <strong>[in]</strong> Boolean indicating whether to retrieve the low voltage measurement.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>uint16_t The current millivolt value measured by the pilot. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv48pilot_okPK5pilot">
+<span id="_CPPv38pilot_okPK5pilot"></span><span id="_CPPv28pilot_okPK5pilot"></span><span id="pilot_ok__pilotCP"></span><span class="target" id="pilot_8h_1aefeb8e51397538fbcb833871a492f9bb"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_ok</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv48pilot_okPK5pilot" title="pilot_ok::pilot"><span class="n"><span class="pre">pilot</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pilot</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv48pilot_okPK5pilot" title="Link to this definition">#</a><br /></dt>
+<dd><p>Checks if the pilot instance is operating correctly. </p>
+<p>This function checks the status of the pilot instance and returns true if it is operating correctly, otherwise returns false.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pilot</strong> – <strong>[inout]</strong> Pointer to the pilot structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool True if the pilot is operating correctly, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv411pilot_errorPK5pilot">
+<span id="_CPPv311pilot_errorPK5pilot"></span><span id="_CPPv211pilot_errorPK5pilot"></span><span id="pilot_error__pilotCP"></span><span class="target" id="pilot_8h_1aef78b416a64f7a3138e28c79c8a77f87"></span><a class="reference internal" href="#_CPPv413pilot_error_t" title="pilot_error_t"><span class="n"><span class="pre">pilot_error_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_error</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv411pilot_errorPK5pilot" title="pilot_error::pilot"><span class="n"><span class="pre">pilot</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pilot</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411pilot_errorPK5pilot" title="Link to this definition">#</a><br /></dt>
+<dd><p>Retrieves the current error status of the pilot instance. </p>
+<p>This function retrieves the current error status of the pilot instance and returns it as a pilot_error_t enumeration value. The error status indicates any issues or faults detected in the pilot instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>pilot</strong> – <strong>[in]</strong> Pointer to the pilot structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pilot_error_t The current error status of the pilot instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422pilot_stringify_statusK14pilot_status_t">
+<span id="_CPPv322pilot_stringify_statusK14pilot_status_t"></span><span id="_CPPv222pilot_stringify_statusK14pilot_status_t"></span><span id="pilot_stringify_status__pilot_status_tC"></span><span class="target" id="pilot_8h_1a320517eccc6639d1710551e1ed17170b"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pilot_stringify_status</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv414pilot_status_t" title="pilot_status_t"><span class="n"><span class="pre">pilot_status_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">status</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422pilot_stringify_statusK14pilot_status_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Converts a pilot status to its string representation. </p>
+<p>This function converts the specified pilot status to its corresponding string representation. This can be useful for logging or displaying pilot status in a human-readable format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>status</strong> – <strong>[in]</strong> The pilot status to be converted to a string.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>const char* The string representation of the specified pilot status. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420pilot_default_paramsP12pilot_params">
+<span id="_CPPv320pilot_default_paramsP12pilot_params"></span><span id="_CPPv220pilot_default_paramsP12pilot_params"></span><span id="pilot_default_params__pilot_paramsP"></span><span class="target" id="pilot_8h_1a6526eec1ba21d8b8f9d93fa44e579da6"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_default_params</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv412pilot_params" title="pilot_params"><span class="n"><span class="pre">pilot_params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">params</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420pilot_default_paramsP12pilot_params" title="Link to this definition">#</a><br /></dt>
+<dd><p>Retrieves the default parameters for the pilot instance. </p>
+<p>This function initializes the provided <a class="reference internal" href="#structpilot__params"><span class="std std-ref">pilot_params</span></a> structure with the default parameters for the pilot instance. These default parameters can be used to configure the pilot instance with standard settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>params</strong> – <strong>[out]</strong> Pointer to the <a class="reference internal" href="#structpilot__params"><span class="std std-ref">pilot_params</span></a> structure to be initialized with default values. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-typedefs">Typedefs</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv417pilot_status_cb_t">
+<span id="_CPPv317pilot_status_cb_t"></span><span id="_CPPv217pilot_status_cb_t"></span><span id="pilot_status_cb_t"></span><span class="target" id="pilot_8h_1a9c080c54ebb843912b5085106abd2884"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">pilot_status_cb_t</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">ctx</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv414pilot_status_t" title="pilot_status_t"><span class="n"><span class="pre">pilot_status_t</span></span></a><span class="w"> </span><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv417pilot_status_cb_t" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv414pilot_boundary">
+<span id="_CPPv314pilot_boundary"></span><span id="_CPPv214pilot_boundary"></span><span id="pilot_boundary"></span><span class="target" id="structpilot__boundary"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_boundary</span></span></span><a class="headerlink" href="#_CPPv414pilot_boundary" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;pilot.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14pilot_boundary1aE">
+<span id="_CPPv3N14pilot_boundary1aE"></span><span id="_CPPv2N14pilot_boundary1aE"></span><span id="pilot_boundary::a__uint16_t"></span><span class="target" id="structpilot__boundary_1ae0e2f51a383a6950fa5329a32fba914d"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">a</span></span></span><a class="headerlink" href="#_CPPv4N14pilot_boundary1aE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14pilot_boundary1bE">
+<span id="_CPPv3N14pilot_boundary1bE"></span><span id="_CPPv2N14pilot_boundary1bE"></span><span id="pilot_boundary::b__uint16_t"></span><span class="target" id="structpilot__boundary_1a400927b0d9d22289e4aabf9528b8e15c"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">b</span></span></span><a class="headerlink" href="#_CPPv4N14pilot_boundary1bE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14pilot_boundary1cE">
+<span id="_CPPv3N14pilot_boundary1cE"></span><span id="_CPPv2N14pilot_boundary1cE"></span><span id="pilot_boundary::c__uint16_t"></span><span class="target" id="structpilot__boundary_1a78cc0be23f48116eb4c2f3e38fe4d474"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">c</span></span></span><a class="headerlink" href="#_CPPv4N14pilot_boundary1cE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14pilot_boundary1dE">
+<span id="_CPPv3N14pilot_boundary1dE"></span><span id="_CPPv2N14pilot_boundary1dE"></span><span id="pilot_boundary::d__uint16_t"></span><span class="target" id="structpilot__boundary_1a1b948c028d95b9dc390e40af9cb356b7"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">d</span></span></span><a class="headerlink" href="#_CPPv4N14pilot_boundary1dE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14pilot_boundary1eE">
+<span id="_CPPv3N14pilot_boundary1eE"></span><span id="_CPPv2N14pilot_boundary1eE"></span><span id="pilot_boundary::e__uint16_t"></span><span class="target" id="structpilot__boundary_1a3131e0439366110ab1651119d8b14bd2"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">e</span></span></span><a class="headerlink" href="#_CPPv4N14pilot_boundary1eE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv416pilot_boundaries">
+<span id="_CPPv316pilot_boundaries"></span><span id="_CPPv216pilot_boundaries"></span><span id="pilot_boundaries"></span><span class="target" id="structpilot__boundaries"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_boundaries</span></span></span><a class="headerlink" href="#_CPPv416pilot_boundaries" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;pilot.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N16pilot_boundaries6upwardE">
+<span id="_CPPv3N16pilot_boundaries6upwardE"></span><span id="_CPPv2N16pilot_boundaries6upwardE"></span><span id="pilot_boundaries::upward__pilot_boundary"></span><span class="target" id="structpilot__boundaries_1a81d2d32c5038785db2b66220b74d183f"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv414pilot_boundary" title="pilot_boundary"><span class="n"><span class="pre">pilot_boundary</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">upward</span></span></span><a class="headerlink" href="#_CPPv4N16pilot_boundaries6upwardE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N16pilot_boundaries8downwardE">
+<span id="_CPPv3N16pilot_boundaries8downwardE"></span><span id="_CPPv2N16pilot_boundaries8downwardE"></span><span id="pilot_boundaries::downward__pilot_boundary"></span><span class="target" id="structpilot__boundaries_1a91453290a6f0719ba626a557b35291ea"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv414pilot_boundary" title="pilot_boundary"><span class="n"><span class="pre">pilot_boundary</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">downward</span></span></span><a class="headerlink" href="#_CPPv4N16pilot_boundaries8downwardE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv412pilot_params">
+<span id="_CPPv312pilot_params"></span><span id="_CPPv212pilot_params"></span><span id="pilot_params"></span><span class="target" id="structpilot__params"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_params</span></span></span><a class="headerlink" href="#_CPPv412pilot_params" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;pilot.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12pilot_params16scan_interval_msE">
+<span id="_CPPv3N12pilot_params16scan_interval_msE"></span><span id="_CPPv2N12pilot_params16scan_interval_msE"></span><span id="pilot_params::scan_interval_ms__uint16_t"></span><span class="target" id="structpilot__params_1a59f4ff9dc29644dac86f112ef2c4e473"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">scan_interval_ms</span></span></span><a class="headerlink" href="#_CPPv4N12pilot_params16scan_interval_msE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12pilot_params17cutoff_voltage_mvE">
+<span id="_CPPv3N12pilot_params17cutoff_voltage_mvE"></span><span id="_CPPv2N12pilot_params17cutoff_voltage_mvE"></span><span id="pilot_params::cutoff_voltage_mv__uint16_t"></span><span class="target" id="structpilot__params_1ad5a4489b2c94c43cec754370bef0fd40"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cutoff_voltage_mv</span></span></span><a class="headerlink" href="#_CPPv4N12pilot_params17cutoff_voltage_mvE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12pilot_params18noise_tolerance_mvE">
+<span id="_CPPv3N12pilot_params18noise_tolerance_mvE"></span><span id="_CPPv2N12pilot_params18noise_tolerance_mvE"></span><span id="pilot_params::noise_tolerance_mv__uint16_t"></span><span class="target" id="structpilot__params_1a85b4894471956a625944e9c3b455c9db"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">noise_tolerance_mv</span></span></span><a class="headerlink" href="#_CPPv4N12pilot_params18noise_tolerance_mvE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12pilot_params21max_transition_clocksE">
+<span id="_CPPv3N12pilot_params21max_transition_clocksE"></span><span id="_CPPv2N12pilot_params21max_transition_clocksE"></span><span id="pilot_params::max_transition_clocks__uint16_t"></span><span class="target" id="structpilot__params_1a15abbad0d644d1e76c875a36b5e2a81d"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">max_transition_clocks</span></span></span><a class="headerlink" href="#_CPPv4N12pilot_params21max_transition_clocksE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12pilot_params8boundaryE">
+<span id="_CPPv3N12pilot_params8boundaryE"></span><span id="_CPPv2N12pilot_params8boundaryE"></span><span id="pilot_params::boundary__pilot_boundaries"></span><span class="target" id="structpilot__params_1a7c9be27b950a6442ff0e5d85755700b3"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv416pilot_boundaries" title="pilot_boundaries"><span class="n"><span class="pre">pilot_boundaries</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">boundary</span></span></span><a class="headerlink" href="#_CPPv4N12pilot_params8boundaryE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N12pilot_params12sample_countE">
+<span id="_CPPv3N12pilot_params12sample_countE"></span><span id="_CPPv2N12pilot_params12sample_countE"></span><span id="pilot_params::sample_count__uint16_t"></span><span class="target" id="structpilot__params_1a96d19d2b44ce04e7a3e1533f938dc651"></span><span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sample_count</span></span></span><a class="headerlink" href="#_CPPv4N12pilot_params12sample_countE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv414pilot_status_t">
+<span id="_CPPv314pilot_status_t"></span><span id="_CPPv214pilot_status_t"></span><span class="target" id="pilot_8h_1a3596cb8579cb168fc1ee70e88b8bc8c4"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_status_t</span></span></span><a class="headerlink" href="#_CPPv414pilot_status_t" title="Link to this definition">#</a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14pilot_status_t14PILOT_STATUS_AE">
+<span id="_CPPv3N14pilot_status_t14PILOT_STATUS_AE"></span><span id="_CPPv2N14pilot_status_t14PILOT_STATUS_AE"></span><span class="target" id="pilot_8h_1a3596cb8579cb168fc1ee70e88b8bc8c4a3cf79b2dd5f9e0b6deffbec3a43aceed"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_STATUS_A</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">12</span></span><a class="headerlink" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_AE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14pilot_status_t14PILOT_STATUS_BE">
+<span id="_CPPv3N14pilot_status_t14PILOT_STATUS_BE"></span><span id="_CPPv2N14pilot_status_t14PILOT_STATUS_BE"></span><span class="target" id="pilot_8h_1a3596cb8579cb168fc1ee70e88b8bc8c4acec5f1004570b3ee814bc57f64a97b06"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_STATUS_B</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">9</span></span><a class="headerlink" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_BE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14pilot_status_t14PILOT_STATUS_CE">
+<span id="_CPPv3N14pilot_status_t14PILOT_STATUS_CE"></span><span id="_CPPv2N14pilot_status_t14PILOT_STATUS_CE"></span><span class="target" id="pilot_8h_1a3596cb8579cb168fc1ee70e88b8bc8c4aaecccf0f31d7102291cd45e68b49ade1"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_STATUS_C</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">6</span></span><a class="headerlink" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_CE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14pilot_status_t14PILOT_STATUS_DE">
+<span id="_CPPv3N14pilot_status_t14PILOT_STATUS_DE"></span><span id="_CPPv2N14pilot_status_t14PILOT_STATUS_DE"></span><span class="target" id="pilot_8h_1a3596cb8579cb168fc1ee70e88b8bc8c4afa1c6007a2344de9b2d6ca7af105d235"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_STATUS_D</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">3</span></span><a class="headerlink" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_DE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14pilot_status_t14PILOT_STATUS_EE">
+<span id="_CPPv3N14pilot_status_t14PILOT_STATUS_EE"></span><span id="_CPPv2N14pilot_status_t14PILOT_STATUS_EE"></span><span class="target" id="pilot_8h_1a3596cb8579cb168fc1ee70e88b8bc8c4aa53ec0b67ea3bf9f09c4909bacb6484d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_STATUS_E</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0</span></span><a class="headerlink" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_EE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14pilot_status_t14PILOT_STATUS_FE">
+<span id="_CPPv3N14pilot_status_t14PILOT_STATUS_FE"></span><span id="_CPPv2N14pilot_status_t14PILOT_STATUS_FE"></span><span class="target" id="pilot_8h_1a3596cb8579cb168fc1ee70e88b8bc8c4afc4e6773ed95bb5013ef4545b9d689d1"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_STATUS_F</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="o"><span class="pre">-</span></span><span class="m"><span class="pre">12</span></span><a class="headerlink" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_FE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N14pilot_status_t20PILOT_STATUS_UNKNOWNE">
+<span id="_CPPv3N14pilot_status_t20PILOT_STATUS_UNKNOWNE"></span><span id="_CPPv2N14pilot_status_t20PILOT_STATUS_UNKNOWNE"></span><span class="target" id="pilot_8h_1a3596cb8579cb168fc1ee70e88b8bc8c4a0686932aafc222559874a98f5c66c67e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_STATUS_UNKNOWN</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0xff</span></span><a class="headerlink" href="#_CPPv4N14pilot_status_t20PILOT_STATUS_UNKNOWNE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv413pilot_error_t">
+<span id="_CPPv313pilot_error_t"></span><span id="_CPPv213pilot_error_t"></span><span class="target" id="pilot_8h_1af91f82eb473fe4b810e573691cf45cc2"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pilot_error_t</span></span></span><a class="headerlink" href="#_CPPv413pilot_error_t" title="Link to this definition">#</a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13pilot_error_t16PILOT_ERROR_NONEE">
+<span id="_CPPv3N13pilot_error_t16PILOT_ERROR_NONEE"></span><span id="_CPPv2N13pilot_error_t16PILOT_ERROR_NONEE"></span><span class="target" id="pilot_8h_1af91f82eb473fe4b810e573691cf45cc2a53272da13ea186a76a4d595985558f0b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_ERROR_NONE</span></span></span><a class="headerlink" href="#_CPPv4N13pilot_error_t16PILOT_ERROR_NONEE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13pilot_error_t25PILOT_ERROR_DUTY_MISMATCHE">
+<span id="_CPPv3N13pilot_error_t25PILOT_ERROR_DUTY_MISMATCHE"></span><span id="_CPPv2N13pilot_error_t25PILOT_ERROR_DUTY_MISMATCHE"></span><span class="target" id="pilot_8h_1af91f82eb473fe4b810e573691cf45cc2aed900a1e0eecfcee6d404a9b865c0c46"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_ERROR_DUTY_MISMATCH</span></span></span><a class="headerlink" href="#_CPPv4N13pilot_error_t25PILOT_ERROR_DUTY_MISMATCHE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13pilot_error_t23PILOT_ERROR_FLUCTUATINGE">
+<span id="_CPPv3N13pilot_error_t23PILOT_ERROR_FLUCTUATINGE"></span><span id="_CPPv2N13pilot_error_t23PILOT_ERROR_FLUCTUATINGE"></span><span class="target" id="pilot_8h_1af91f82eb473fe4b810e573691cf45cc2a8e638fc4425db1d1f0f2f96098eea5e0"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_ERROR_FLUCTUATING</span></span></span><a class="headerlink" href="#_CPPv4N13pilot_error_t23PILOT_ERROR_FLUCTUATINGE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13pilot_error_t29PILOT_ERROR_TOO_LONG_INTERVALE">
+<span id="_CPPv3N13pilot_error_t29PILOT_ERROR_TOO_LONG_INTERVALE"></span><span id="_CPPv2N13pilot_error_t29PILOT_ERROR_TOO_LONG_INTERVALE"></span><span class="target" id="pilot_8h_1af91f82eb473fe4b810e573691cf45cc2ad0a3ff0cfe766941ebf70b511a670b9e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_ERROR_TOO_LONG_INTERVAL</span></span></span><a class="headerlink" href="#_CPPv4N13pilot_error_t29PILOT_ERROR_TOO_LONG_INTERVALE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13pilot_error_t26PILOT_ERROR_INVALID_PARAMSE">
+<span id="_CPPv3N13pilot_error_t26PILOT_ERROR_INVALID_PARAMSE"></span><span id="_CPPv2N13pilot_error_t26PILOT_ERROR_INVALID_PARAMSE"></span><span class="target" id="pilot_8h_1af91f82eb473fe4b810e573691cf45cc2a652a2c4dab5aaff70ce19003e5f199d9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_ERROR_INVALID_PARAMS</span></span></span><a class="headerlink" href="#_CPPv4N13pilot_error_t26PILOT_ERROR_INVALID_PARAMSE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13pilot_error_t27PILOT_ERROR_NOT_INITIALIZEDE">
+<span id="_CPPv3N13pilot_error_t27PILOT_ERROR_NOT_INITIALIZEDE"></span><span id="_CPPv2N13pilot_error_t27PILOT_ERROR_NOT_INITIALIZEDE"></span><span class="target" id="pilot_8h_1af91f82eb473fe4b810e573691cf45cc2a96ba1e5d7629edb8367894b41ae1c8ae"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_ERROR_NOT_INITIALIZED</span></span></span><a class="headerlink" href="#_CPPv4N13pilot_error_t27PILOT_ERROR_NOT_INITIALIZEDE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N13pilot_error_t19PILOT_ERROR_UNKNOWNE">
+<span id="_CPPv3N13pilot_error_t19PILOT_ERROR_UNKNOWNE"></span><span id="_CPPv2N13pilot_error_t19PILOT_ERROR_UNKNOWNE"></span><span class="target" id="pilot_8h_1af91f82eb473fe4b810e573691cf45cc2a535be76a1b53d425f0b8c0622270c266"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_ERROR_UNKNOWN</span></span></span><a class="headerlink" href="#_CPPv4N13pilot_error_t19PILOT_ERROR_UNKNOWNE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.PILOT_NUMBER_OF_SAMPLES">
+<span class="target" id="pilot_8h_1aff8e573e1d0216be5c1b5347909d5fb6"></span><span class="sig-name descname"><span class="n"><span class="pre">PILOT_NUMBER_OF_SAMPLES</span></span></span> <span class="pre">500</span><a class="headerlink" href="#c.PILOT_NUMBER_OF_SAMPLES" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="periph.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Peripheral</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="pinmap.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Pinmap</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412pilot_createPK12pilot_paramsP10adc122s051P14lm_pwm_channelP8uint16_t"><code class="docutils literal notranslate"><span class="pre">pilot_create()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412pilot_deleteP5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_delete()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv419pilot_set_status_cbP5pilot17pilot_status_cb_tPv"><code class="docutils literal notranslate"><span class="pre">pilot_set_status_cb()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412pilot_enableP5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_enable()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv413pilot_disableP5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_disable()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414pilot_set_dutyP5pilotK7uint8_t"><code class="docutils literal notranslate"><span class="pre">pilot_set_duty()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv418pilot_get_duty_setPK5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_get_duty_set()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410pilot_dutyPK5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_duty()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412pilot_statusPK5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_status()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415pilot_millivoltPK5pilotKb"><code class="docutils literal notranslate"><span class="pre">pilot_millivolt()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv48pilot_okPK5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_ok()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv411pilot_errorPK5pilot"><code class="docutils literal notranslate"><span class="pre">pilot_error()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv422pilot_stringify_statusK14pilot_status_t"><code class="docutils literal notranslate"><span class="pre">pilot_stringify_status()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv420pilot_default_paramsP12pilot_params"><code class="docutils literal notranslate"><span class="pre">pilot_default_params()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv417pilot_status_cb_t"><code class="docutils literal notranslate"><span class="pre">pilot_status_cb_t</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414pilot_boundary"><code class="docutils literal notranslate"><span class="pre">pilot_boundary</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_boundary1aE"><code class="docutils literal notranslate"><span class="pre">a</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_boundary1bE"><code class="docutils literal notranslate"><span class="pre">b</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_boundary1cE"><code class="docutils literal notranslate"><span class="pre">c</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_boundary1dE"><code class="docutils literal notranslate"><span class="pre">d</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_boundary1eE"><code class="docutils literal notranslate"><span class="pre">e</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416pilot_boundaries"><code class="docutils literal notranslate"><span class="pre">pilot_boundaries</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16pilot_boundaries6upwardE"><code class="docutils literal notranslate"><span class="pre">upward</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16pilot_boundaries8downwardE"><code class="docutils literal notranslate"><span class="pre">downward</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv412pilot_params"><code class="docutils literal notranslate"><span class="pre">pilot_params</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12pilot_params16scan_interval_msE"><code class="docutils literal notranslate"><span class="pre">scan_interval_ms</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12pilot_params17cutoff_voltage_mvE"><code class="docutils literal notranslate"><span class="pre">cutoff_voltage_mv</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12pilot_params18noise_tolerance_mvE"><code class="docutils literal notranslate"><span class="pre">noise_tolerance_mv</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12pilot_params21max_transition_clocksE"><code class="docutils literal notranslate"><span class="pre">max_transition_clocks</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12pilot_params8boundaryE"><code class="docutils literal notranslate"><span class="pre">boundary</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N12pilot_params12sample_countE"><code class="docutils literal notranslate"><span class="pre">sample_count</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414pilot_status_t"><code class="docutils literal notranslate"><span class="pre">pilot_status_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_AE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_A</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_BE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_B</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_CE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_C</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_DE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_D</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_EE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_E</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t14PILOT_STATUS_FE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_F</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14pilot_status_t20PILOT_STATUS_UNKNOWNE"><code class="docutils literal notranslate"><span class="pre">PILOT_STATUS_UNKNOWN</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv413pilot_error_t"><code class="docutils literal notranslate"><span class="pre">pilot_error_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t16PILOT_ERROR_NONEE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_NONE</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t25PILOT_ERROR_DUTY_MISMATCHE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_DUTY_MISMATCH</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t23PILOT_ERROR_FLUCTUATINGE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_FLUCTUATING</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t29PILOT_ERROR_TOO_LONG_INTERVALE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_TOO_LONG_INTERVAL</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t26PILOT_ERROR_INVALID_PARAMSE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_INVALID_PARAMS</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t27PILOT_ERROR_NOT_INITIALIZEDE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_NOT_INITIALIZED</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N13pilot_error_t19PILOT_ERROR_UNKNOWNE"><code class="docutils literal notranslate"><span class="pre">PILOT_ERROR_UNKNOWN</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.PILOT_NUMBER_OF_SAMPLES"><code class="docutils literal notranslate"><span class="pre">PILOT_NUMBER_OF_SAMPLES</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pazzk.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

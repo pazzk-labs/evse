@@ -1,0 +1,677 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Control Pilot &#8212; Pazzk  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'electrical/control_pilot';</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../_static/mermaid-init.js?v=b11fa8ae"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Flash" href="flash.html" />
+    <link rel="prev" title="OCPP Boot" href="../comms/ocpp_boot.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pazzk-logo.png" class="logo__image only-light" alt="Pazzk  documentation - Home"/>
+    <script>document.write(`<img src="../_static/pazzk-logo.png" class="logo__image only-dark" alt="Pazzk  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/charger.html">Charger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/network.html">Network</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli/cli_commands.html">CLI</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Communication / OCPP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_auth.html">OCPP Auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_boot.html">OCPP Boot</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electrical Interfaces</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Control Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="flash.html">Flash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="input.html">Input Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="power.html">Power Management</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Firmware Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/device_serial_number.html">Device Serial Number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/uid_storage.html">UID Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/config.html">Confing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/exio.html">EXIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/fs.html">File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/iec61851.html">IEC 61851</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/logfs.html">Log File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/metering.html">Metering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/periph.html">Peripheral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/pilot.html">Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/pinmap.html">Pinmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/relay.html">Relay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/safety.html">Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/secret.html">Secret</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/uid.html">UID</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/updater.html">Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/uptime.html">Uptime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api-reference/usrinp.html">User Input</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/electrical/control_pilot.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Control Pilot</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compliance-with-standards">Compliance with Standards</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#measurement-process">Measurement Process</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-notes">Implementation Notes</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-testing-guidelines">Production Testing Guidelines</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="control-pilot">
+<h1>Control Pilot<a class="headerlink" href="#control-pilot" title="Link to this heading">#</a></h1>
+<p>This document outlines the technical specifications, measurement process, and
+testing guidelines for the control pilot system. Key takeaways include:</p>
+<ol class="arabic simple">
+<li><p>ADC sampling achieves a resolution of 2 μs with error &lt;0.5%.</p></li>
+<li><p>Voltage fluctuation thresholds and hysteresis values are configurable to ensure reliable operation.</p></li>
+<li><p>Testing guidelines provide clear criteria for verifying state-specific voltages.</p></li>
+</ol>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Frequency: 1 kHz (1 ms per cycle)</p></li>
+<li><p>ADC: 500 kSPS &#64; 8 MHz; 500 samples per ms</p>
+<ul>
+<li><p>Resolution: 2 μs, measurement error &lt; 0.5%</p></li>
+</ul>
+</li>
+<li><p>Sampling Period: 10 ms</p></li>
+<li><p>Duty Cycle:</p>
+<ul>
+<li><p>Adjustable range: 2–100%</p>
+<ul>
+<li><p>Measurements below 1% are constrained by hardware limitations.</p></li>
+</ul>
+</li>
+<li><p>Measurable range: 1–100%</p></li>
+<li><p>Resolution: 1%, error &lt; 0.5%</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="compliance-with-standards">
+<h2>Compliance with Standards<a class="headerlink" href="#compliance-with-standards" title="Link to this heading">#</a></h2>
+<p>This design aligns with the following international standards:</p>
+<ul class="simple">
+<li><p>IEC 61851: Electric vehicle conductive charging system requirements.</p></li>
+<li><p>SAE J1772: Standards for EV charging connectors and protocols.</p></li>
+</ul>
+</section>
+<section id="measurement-process">
+<h2>Measurement Process<a class="headerlink" href="#measurement-process" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>ADC Sampling</p></li>
+<li><p>Conversion to millivolts</p></li>
+<li><p>High/Low signal distinction</p></li>
+<li><p>Outlier Removal</p></li>
+<li><p>Duty Cycle Calculation</p></li>
+<li><p>Boundary Check (for anomaly detection)</p></li>
+<li><p>State Update</p></li>
+</ol>
+<section id="implementation-notes">
+<h3>Implementation Notes<a class="headerlink" href="#implementation-notes" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Sampling Details:</p>
+<ul>
+<li><p>ADC sampling capacitor: 30 pF; resistance: 500 Ω; sufficient sampling time.</p></li>
+<li><p>500 samples per 1 ms (2 μs/sample).</p></li>
+</ul>
+</li>
+<li><p>Boundary Definition:</p>
+<ul>
+<li><p>Boundary values are derived from theoretical calculations and can be referenced in this <a class="reference external" href="https://docs.google.com/spreadsheets/d/1GBLa0a5506phaczR-4YLWwTQRjZHd1QTdfgkcr8PGlE">spreadsheet</a>.</p></li>
+<li><p>Anomaly detection functionality captures real-world measurement variances, and configurable voltage hysteresis can compensate for these variances.</p></li>
+</ul>
+</li>
+<li><p>Voltage Segmentation:</p>
+<ul>
+<li><p>High/low distinction is set at 1V and is configurable.</p></li>
+<li><p>Unused voltages in IEC 61851/J1772 standards minimize false filtering.</p></li>
+</ul>
+</li>
+<li><p>Hysteresis:</p>
+<ul>
+<li><p>500 mV gap for each state (configurable):</p></li>
+<li><p>Example: In state B (9V), transition to:</p>
+<ul>
+<li><p>State A (12V): ≥ 10.75V</p></li>
+<li><p>State C (6V): ≤ 4.25V</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Anomaly Handling:</p>
+<ul>
+<li><p>Voltage fluctuation is typically below 30 mV; an additional 20 mV margin has been included.</p>
+<ul>
+<li><p>≥ 50 mV considered abnormal (configurable).</p></li>
+</ul>
+</li>
+<li><p>Rising/falling transitions are typically done within 20 μs (10 samples); a 10 μs margin has been added.</p>
+<ul>
+<li><p>30 μs considered abnormal (configurable).</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Adjustable Parameters:</p>
+<ul>
+<li><p>Sampling interval</p></li>
+<li><p>Voltage for high/low distinction</p></li>
+<li><p>Noise margin</p></li>
+<li><p>Transition time</p></li>
+<li><p>State voltage hysteresis</p></li>
+<li><p>Number of ADC samples</p></li>
+</ul>
+</li>
+<li><p>When adjusting the sampling interval, the number of buffers introduced for lock-free programming should also be reviewed.</p></li>
+</ul>
+<p>The following table summarizes the measured voltage ranges for different duty cycles under various states (12V, 9V, 6V). Values represent millivolts measured at the corresponding duty cycle.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Duty</p></th>
+<th class="head"><p>12V_H</p></th>
+<th class="head"><p>12V_L</p></th>
+<th class="head"><p>9V_H</p></th>
+<th class="head"><p>9V_L</p></th>
+<th class="head"><p>6V_H</p></th>
+<th class="head"><p>6V_L</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>100%</p></td>
+<td><p>3.141</p></td>
+<td><p>0</p></td>
+<td><p>2.871</p></td>
+<td><p>0</p></td>
+<td><p>2.541</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>75%</p></td>
+<td><p>3.141</p></td>
+<td><p>554</p></td>
+<td><p>2.871</p></td>
+<td><p>554</p></td>
+<td><p>2.541</p></td>
+<td><p>554</p></td>
+</tr>
+<tr class="row-even"><td><p>50%</p></td>
+<td><p>3.141</p></td>
+<td><p>554</p></td>
+<td><p>2.871</p></td>
+<td><p>554</p></td>
+<td><p>2.541</p></td>
+<td><p>554</p></td>
+</tr>
+<tr class="row-odd"><td><p>25%</p></td>
+<td><p>3.138</p></td>
+<td><p>554</p></td>
+<td><p>2.871</p></td>
+<td><p>554</p></td>
+<td><p>2.541</p></td>
+<td><p>554</p></td>
+</tr>
+<tr class="row-even"><td><p>5%</p></td>
+<td><p>3.135</p></td>
+<td><p>554</p></td>
+<td><p>2.871</p></td>
+<td><p>554</p></td>
+<td><p>2.541</p></td>
+<td><p>554</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="production-testing-guidelines">
+<h2>Production Testing Guidelines<a class="headerlink" href="#production-testing-guidelines" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Verify status-specific voltages fall within the expected range:</p>
+<ul>
+<li><p>Command: test cp (via CLI).</p></li>
+</ul>
+</li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Status</p></th>
+<th class="head"><p>High Voltage</p></th>
+<th class="head"><p>Low Voltage</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>A(12V)</p></td>
+<td><p>3.279V</p></td>
+<td><p>3.065V</p></td>
+</tr>
+<tr class="row-odd"><td><p>B(9V)</p></td>
+<td><p>2.958V</p></td>
+<td><p>2.744V</p></td>
+</tr>
+<tr class="row-even"><td><p>C(6V)</p></td>
+<td><p>2.637V</p></td>
+<td><p>2.424V</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="../comms/ocpp_boot.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">OCPP Boot</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="flash.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Flash</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compliance-with-standards">Compliance with Standards</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#measurement-process">Measurement Process</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implementation-notes">Implementation Notes</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-testing-guidelines">Production Testing Guidelines</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pazzk.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

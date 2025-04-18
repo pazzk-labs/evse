@@ -1,0 +1,863 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>IEC 61851 &#8212; Pazzk  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api-reference/iec61851';</script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script src="../_static/mermaid-init.js?v=b11fa8ae"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Log File System" href="logfs.html" />
+    <link rel="prev" title="File System" href="fs.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/pazzk-logo.png" class="logo__image only-light" alt="Pazzk  documentation - Home"/>
+    <script>document.write(`<img src="../_static/pazzk-logo.png" class="logo__image only-dark" alt="Pazzk  documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../architecture/charger.html">Charger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/network.html">Network</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Command Line Interface</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../cli/cli_commands.html">CLI</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Communication / OCPP</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_auth.html">OCPP Auth</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../comms/ocpp_boot.html">OCPP Boot</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Electrical Interfaces</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../electrical/control_pilot.html">Control Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/flash.html">Flash</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/input.html">Input Section</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../electrical/power.html">Power Management</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Firmware Reference</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../firmware/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/device_serial_number.html">Device Serial Number</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/metrics.html">metrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../firmware/uid_storage.html">UID Storage</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="config.html">Confing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="downloader.html">Downloader</a></li>
+<li class="toctree-l1"><a class="reference internal" href="exio.html">EXIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fs.html">File System</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">IEC 61851</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logfs.html">Log File System</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metering.html">Metering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="periph.html">Peripheral</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pilot.html">Pilot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pinmap.html">Pinmap</a></li>
+<li class="toctree-l1"><a class="reference internal" href="relay.html">Relay</a></li>
+<li class="toctree-l1"><a class="reference internal" href="safety.html">Safety</a></li>
+<li class="toctree-l1"><a class="reference internal" href="secret.html">Secret</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uid.html">UID</a></li>
+<li class="toctree-l1"><a class="reference internal" href="updater.html">Updater</a></li>
+<li class="toctree-l1"><a class="reference internal" href="uptime.html">Uptime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usrinp.html">User Input</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api-reference/iec61851.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>IEC 61851</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415iec61851_createP5pilotP5relay"><code class="docutils literal notranslate"><span class="pre">iec61851_create()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416iec61851_destroyP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_destroy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414iec61851_stateP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_state()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv418iec61851_start_pwmP8iec61851K7uint8_t"><code class="docutils literal notranslate"><span class="pre">iec61851_start_pwm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv420iec61851_set_currentP8iec61851K8uint32_t"><code class="docutils literal notranslate"><span class="pre">iec61851_set_current()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv417iec61851_stop_pwmP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_stop_pwm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv420iec61851_set_state_fP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_set_state_f()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv421iec61851_get_pwm_dutyP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_get_pwm_duty()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv428iec61851_get_pwm_duty_targetP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_get_pwm_duty_target()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv427iec61851_start_power_supplyP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_start_power_supply()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv426iec61851_stop_power_supplyP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_stop_power_supply()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv427iec61851_is_supplying_powerP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_is_supplying_power()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv420iec61851_is_chargingP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_is_charging()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv426iec61851_is_charging_stateK16iec61851_state_t"><code class="docutils literal notranslate"><span class="pre">iec61851_is_charging_state()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv420iec61851_is_occupiedP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_is_occupied()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv426iec61851_is_occupied_stateK16iec61851_state_t"><code class="docutils literal notranslate"><span class="pre">iec61851_is_occupied_state()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv417iec61851_is_errorP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_is_error()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv423iec61851_is_error_stateK16iec61851_state_t"><code class="docutils literal notranslate"><span class="pre">iec61851_is_error_state()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv424iec61851_stringify_stateK16iec61851_state_t"><code class="docutils literal notranslate"><span class="pre">iec61851_stringify_state()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv428iec61851_duty_to_milliampereK7uint8_t"><code class="docutils literal notranslate"><span class="pre">iec61851_duty_to_milliampere()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv428iec61851_milliampere_to_dutyK8uint32_t"><code class="docutils literal notranslate"><span class="pre">iec61851_milliampere_to_duty()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416iec61851_state_t"><code class="docutils literal notranslate"><span class="pre">iec61851_state_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_AE"><code class="docutils literal notranslate"><span class="pre">IEC61851_STATE_A</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_BE"><code class="docutils literal notranslate"><span class="pre">IEC61851_STATE_B</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_CE"><code class="docutils literal notranslate"><span class="pre">IEC61851_STATE_C</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_DE"><code class="docutils literal notranslate"><span class="pre">IEC61851_STATE_D</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_EE"><code class="docutils literal notranslate"><span class="pre">IEC61851_STATE_E</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_FE"><code class="docutils literal notranslate"><span class="pre">IEC61851_STATE_F</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.IEC61851_EV_RESPONSE_TIMEOUT_SEC"><code class="docutils literal notranslate"><span class="pre">IEC61851_EV_RESPONSE_TIMEOUT_SEC</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="iec-61851">
+<h1>IEC 61851<a class="headerlink" href="#iec-61851" title="Link to this heading">#</a></h1>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-functions">Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv415iec61851_createP5pilotP5relay">
+<span id="_CPPv315iec61851_createP5pilotP5relay"></span><span id="_CPPv215iec61851_createP5pilotP5relay"></span><span id="iec61851_create__pilotP.relayP"></span><span class="target" id="iec61851_8h_1afa64687a7f6660a6a3706366f08dba96"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_create</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv415iec61851_createP5pilotP5relay" title="iec61851_create::pilot"><span class="n"><span class="pre">pilot</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pilot</span></span>, <span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv415iec61851_createP5pilotP5relay" title="iec61851_create::relay"><span class="n"><span class="pre">relay</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">relay</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv415iec61851_createP5pilotP5relay" title="Link to this definition">#</a><br /></dt>
+<dd><p>Create a new IEC 61851 instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pilot</strong> – <strong>[in]</strong> Pointer to the pilot structure. </p></li>
+<li><p><strong>relay</strong> – <strong>[in]</strong> Pointer to the relay structure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pointer to the created IEC 61851 instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416iec61851_destroyP8iec61851">
+<span id="_CPPv316iec61851_destroyP8iec61851"></span><span id="_CPPv216iec61851_destroyP8iec61851"></span><span id="iec61851_destroy__iec61851P"></span><span class="target" id="iec61851_8h_1ad3d7533d207bdd6b5065c3b4202e07dd"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_destroy</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416iec61851_destroyP8iec61851" title="Link to this definition">#</a><br /></dt>
+<dd><p>Destroy an IEC 61851 instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance to be destroyed. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv414iec61851_stateP8iec61851">
+<span id="_CPPv314iec61851_stateP8iec61851"></span><span id="_CPPv214iec61851_stateP8iec61851"></span><span id="iec61851_state__iec61851P"></span><span class="target" id="iec61851_8h_1a584c37ac2ce1f282738da3afc540b173"></span><a class="reference internal" href="#_CPPv416iec61851_state_t" title="iec61851_state_t"><span class="n"><span class="pre">iec61851_state_t</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_state</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv414iec61851_stateP8iec61851" title="Link to this definition">#</a><br /></dt>
+<dd><p>Get the current state of the IEC 61851 instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Current state of the IEC 61851 instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv418iec61851_start_pwmP8iec61851K7uint8_t">
+<span id="_CPPv318iec61851_start_pwmP8iec61851K7uint8_t"></span><span id="_CPPv218iec61851_start_pwmP8iec61851K7uint8_t"></span><span id="iec61851_start_pwm__iec61851P.uint8_tC"></span><span class="target" id="iec61851_8h_1a3c8fca124db3327363373bb1aeb80681"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_start_pwm</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">pct</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418iec61851_start_pwmP8iec61851K7uint8_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Start the PWM signal with a specified duty cycle. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance. </p></li>
+<li><p><strong>pct</strong> – <strong>[in]</strong> Duty cycle percentage for the PWM signal. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420iec61851_set_currentP8iec61851K8uint32_t">
+<span id="_CPPv320iec61851_set_currentP8iec61851K8uint32_t"></span><span id="_CPPv220iec61851_set_currentP8iec61851K8uint32_t"></span><span id="iec61851_set_current__iec61851P.uint32_tC"></span><span class="target" id="iec61851_8h_1a8d430d6f9cc858253f266d634d94f09a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_set_current</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">milliampere</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420iec61851_set_currentP8iec61851K8uint32_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the current limit for the IEC 61851 instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance. </p></li>
+<li><p><strong>milliampere</strong> – <strong>[in]</strong> Current limit in milliamperes. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417iec61851_stop_pwmP8iec61851">
+<span id="_CPPv317iec61851_stop_pwmP8iec61851"></span><span id="_CPPv217iec61851_stop_pwmP8iec61851"></span><span id="iec61851_stop_pwm__iec61851P"></span><span class="target" id="iec61851_8h_1a4825438a9dbfecac1fd2c839ed84cbe5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_stop_pwm</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417iec61851_stop_pwmP8iec61851" title="Link to this definition">#</a><br /></dt>
+<dd><p>Stop the PWM signal. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420iec61851_set_state_fP8iec61851">
+<span id="_CPPv320iec61851_set_state_fP8iec61851"></span><span id="_CPPv220iec61851_set_state_fP8iec61851"></span><span id="iec61851_set_state_f__iec61851P"></span><span class="target" id="iec61851_8h_1ac0b14bdf71ae1d18f9daf87c0f624072"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_set_state_f</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420iec61851_set_state_fP8iec61851" title="Link to this definition">#</a><br /></dt>
+<dd><p>Set the state to ‘F’ for the IEC 61851 instance. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421iec61851_get_pwm_dutyP8iec61851">
+<span id="_CPPv321iec61851_get_pwm_dutyP8iec61851"></span><span id="_CPPv221iec61851_get_pwm_dutyP8iec61851"></span><span id="iec61851_get_pwm_duty__iec61851P"></span><span class="target" id="iec61851_8h_1a240392add2ed150e125ecf230fad3181"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_get_pwm_duty</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421iec61851_get_pwm_dutyP8iec61851" title="Link to this definition">#</a><br /></dt>
+<dd><p>Get the current PWM duty cycle. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Current PWM duty cycle percentage. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv428iec61851_get_pwm_duty_targetP8iec61851">
+<span id="_CPPv328iec61851_get_pwm_duty_targetP8iec61851"></span><span id="_CPPv228iec61851_get_pwm_duty_targetP8iec61851"></span><span id="iec61851_get_pwm_duty_target__iec61851P"></span><span class="target" id="iec61851_8h_1ac88bfeb29c4a4f59f736cd79814d842f"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_get_pwm_duty_target</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv428iec61851_get_pwm_duty_targetP8iec61851" title="Link to this definition">#</a><br /></dt>
+<dd><p>Get the PWM duty cycle target for the IEC 61851 protocol. </p>
+<p>This function retrieves the target duty cycle for the Pulse Width Modulation (PWM) signal used in the IEC 61851 protocol.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the iec61851 structure.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>uint8_t The target PWM duty cycle. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv427iec61851_start_power_supplyP8iec61851">
+<span id="_CPPv327iec61851_start_power_supplyP8iec61851"></span><span id="_CPPv227iec61851_start_power_supplyP8iec61851"></span><span id="iec61851_start_power_supply__iec61851P"></span><span class="target" id="iec61851_8h_1a4564405dbab0b3c0a4df1aa6ec26d0ed"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_start_power_supply</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv427iec61851_start_power_supplyP8iec61851" title="Link to this definition">#</a><br /></dt>
+<dd><p>Start the power supply. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv426iec61851_stop_power_supplyP8iec61851">
+<span id="_CPPv326iec61851_stop_power_supplyP8iec61851"></span><span id="_CPPv226iec61851_stop_power_supplyP8iec61851"></span><span id="iec61851_stop_power_supply__iec61851P"></span><span class="target" id="iec61851_8h_1a63c4f12e58c0fa6f261a3f8bffa83209"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_stop_power_supply</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv426iec61851_stop_power_supplyP8iec61851" title="Link to this definition">#</a><br /></dt>
+<dd><p>Stop the power supply. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv427iec61851_is_supplying_powerP8iec61851">
+<span id="_CPPv327iec61851_is_supplying_powerP8iec61851"></span><span id="_CPPv227iec61851_is_supplying_powerP8iec61851"></span><span id="iec61851_is_supplying_power__iec61851P"></span><span class="target" id="iec61851_8h_1abd4d619e0f1f57d95bcd40e38474680a"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_is_supplying_power</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv427iec61851_is_supplying_powerP8iec61851" title="Link to this definition">#</a><br /></dt>
+<dd><p>Check if the power supply is active. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>true if the power supply is active, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420iec61851_is_chargingP8iec61851">
+<span id="_CPPv320iec61851_is_chargingP8iec61851"></span><span id="_CPPv220iec61851_is_chargingP8iec61851"></span><span id="iec61851_is_charging__iec61851P"></span><span class="target" id="iec61851_8h_1a58d1e154f5be6c73dbefefe9e82aeaee"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_is_charging</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420iec61851_is_chargingP8iec61851" title="Link to this definition">#</a><br /></dt>
+<dd><p>Check if the instance is in charging state. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>true if the instance is charging, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv426iec61851_is_charging_stateK16iec61851_state_t">
+<span id="_CPPv326iec61851_is_charging_stateK16iec61851_state_t"></span><span id="_CPPv226iec61851_is_charging_stateK16iec61851_state_t"></span><span id="iec61851_is_charging_state__iec61851_state_tC"></span><span class="target" id="iec61851_8h_1af2fb6dd1e295f5d168418a3727a629ca"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_is_charging_state</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv416iec61851_state_t" title="iec61851_state_t"><span class="n"><span class="pre">iec61851_state_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv426iec61851_is_charging_stateK16iec61851_state_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Check if a given state is a charging state. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> – <strong>[in]</strong> State to be checked.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>true if the state is a charging state, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420iec61851_is_occupiedP8iec61851">
+<span id="_CPPv320iec61851_is_occupiedP8iec61851"></span><span id="_CPPv220iec61851_is_occupiedP8iec61851"></span><span id="iec61851_is_occupied__iec61851P"></span><span class="target" id="iec61851_8h_1aafa896bf31f1a0fc6763de3323cbebf4"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_is_occupied</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420iec61851_is_occupiedP8iec61851" title="Link to this definition">#</a><br /></dt>
+<dd><p>Check if the instance is occupied. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>true if the instance is occupied, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv426iec61851_is_occupied_stateK16iec61851_state_t">
+<span id="_CPPv326iec61851_is_occupied_stateK16iec61851_state_t"></span><span id="_CPPv226iec61851_is_occupied_stateK16iec61851_state_t"></span><span id="iec61851_is_occupied_state__iec61851_state_tC"></span><span class="target" id="iec61851_8h_1a3d151ed344fe50e430e9a9bec97113a6"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_is_occupied_state</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv416iec61851_state_t" title="iec61851_state_t"><span class="n"><span class="pre">iec61851_state_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv426iec61851_is_occupied_stateK16iec61851_state_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Check if a given state is an occupied state. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> – <strong>[in]</strong> State to be checked.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>true if the state is an occupied state, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv417iec61851_is_errorP8iec61851">
+<span id="_CPPv317iec61851_is_errorP8iec61851"></span><span id="_CPPv217iec61851_is_errorP8iec61851"></span><span id="iec61851_is_error__iec61851P"></span><span class="target" id="iec61851_8h_1a9a807789de0288d4c0a208c690bb9a48"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_is_error</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="n"><span class="pre">iec61851</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">self</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417iec61851_is_errorP8iec61851" title="Link to this definition">#</a><br /></dt>
+<dd><p>Check if the instance is in an error state. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>self</strong> – <strong>[in]</strong> Pointer to the IEC 61851 instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>true if the instance is in an error state, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv423iec61851_is_error_stateK16iec61851_state_t">
+<span id="_CPPv323iec61851_is_error_stateK16iec61851_state_t"></span><span id="_CPPv223iec61851_is_error_stateK16iec61851_state_t"></span><span id="iec61851_is_error_state__iec61851_state_tC"></span><span class="target" id="iec61851_8h_1aa2f2b94f61693278dc35718d01bfeff0"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_is_error_state</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv416iec61851_state_t" title="iec61851_state_t"><span class="n"><span class="pre">iec61851_state_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423iec61851_is_error_stateK16iec61851_state_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Check if a given state is an error state. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> – <strong>[in]</strong> State to be checked.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>true if the state is an error state, false otherwise. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424iec61851_stringify_stateK16iec61851_state_t">
+<span id="_CPPv324iec61851_stringify_stateK16iec61851_state_t"></span><span id="_CPPv224iec61851_stringify_stateK16iec61851_state_t"></span><span id="iec61851_stringify_state__iec61851_state_tC"></span><span class="target" id="iec61851_8h_1a713ff35bf388cd2355087a04d99efd81"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_stringify_state</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv416iec61851_state_t" title="iec61851_state_t"><span class="n"><span class="pre">iec61851_state_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424iec61851_stringify_stateK16iec61851_state_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Convert the state to a string representation. </p>
+<p>This function converts the given state to its string representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> – <strong>[in]</strong> The state to convert.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The string representation of the state. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv428iec61851_duty_to_milliampereK7uint8_t">
+<span id="_CPPv328iec61851_duty_to_milliampereK7uint8_t"></span><span id="_CPPv228iec61851_duty_to_milliampereK7uint8_t"></span><span id="iec61851_duty_to_milliampere__uint8_tC"></span><span class="target" id="iec61851_8h_1a8e9a47bcc00a3e67a7891b420166c92e"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_duty_to_milliampere</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">duty</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv428iec61851_duty_to_milliampereK7uint8_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Converts duty cycle percentage to current in milliamperes. </p>
+<p>This function takes a duty cycle percentage value and converts it to the equivalent current in milliamperes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>duty</strong> – <strong>[in]</strong> The duty cycle percentage value.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The equivalent current in milliamperes. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv428iec61851_milliampere_to_dutyK8uint32_t">
+<span id="_CPPv328iec61851_milliampere_to_dutyK8uint32_t"></span><span id="_CPPv228iec61851_milliampere_to_dutyK8uint32_t"></span><span id="iec61851_milliampere_to_duty__uint32_tC"></span><span class="target" id="iec61851_8h_1a329fa4121b55d7a9e78e84e38d6776e6"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_milliampere_to_duty</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">milliampere</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv428iec61851_milliampere_to_dutyK8uint32_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Converts current in milliamperes to duty cycle percentage. </p>
+<p>This function takes a current value in milliamperes and converts it to the equivalent duty cycle percentage.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>milliampere</strong> – <strong>[in]</strong> The current value in milliamperes.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The equivalent duty cycle percentage. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv416iec61851_state_t">
+<span id="_CPPv316iec61851_state_t"></span><span id="_CPPv216iec61851_state_t"></span><span class="target" id="iec61851_8h_1a24da550d8598930ce8f470e6ecd713f9"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">iec61851_state_t</span></span></span><a class="headerlink" href="#_CPPv416iec61851_state_t" title="Link to this definition">#</a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N16iec61851_state_t16IEC61851_STATE_AE">
+<span id="_CPPv3N16iec61851_state_t16IEC61851_STATE_AE"></span><span id="_CPPv2N16iec61851_state_t16IEC61851_STATE_AE"></span><span class="target" id="iec61851_8h_1a24da550d8598930ce8f470e6ecd713f9ac6370a10e6c12bd85b81fc80f1c6f8b2"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IEC61851_STATE_A</span></span></span><a class="headerlink" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_AE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N16iec61851_state_t16IEC61851_STATE_BE">
+<span id="_CPPv3N16iec61851_state_t16IEC61851_STATE_BE"></span><span id="_CPPv2N16iec61851_state_t16IEC61851_STATE_BE"></span><span class="target" id="iec61851_8h_1a24da550d8598930ce8f470e6ecd713f9a828f095893acdba9075126213b630347"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IEC61851_STATE_B</span></span></span><a class="headerlink" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_BE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N16iec61851_state_t16IEC61851_STATE_CE">
+<span id="_CPPv3N16iec61851_state_t16IEC61851_STATE_CE"></span><span id="_CPPv2N16iec61851_state_t16IEC61851_STATE_CE"></span><span class="target" id="iec61851_8h_1a24da550d8598930ce8f470e6ecd713f9a273c1f60e5c120a4c62f2f7bdbaf2768"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IEC61851_STATE_C</span></span></span><a class="headerlink" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_CE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N16iec61851_state_t16IEC61851_STATE_DE">
+<span id="_CPPv3N16iec61851_state_t16IEC61851_STATE_DE"></span><span id="_CPPv2N16iec61851_state_t16IEC61851_STATE_DE"></span><span class="target" id="iec61851_8h_1a24da550d8598930ce8f470e6ecd713f9a5dc72fa6354be0c7cd59edd86123117e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IEC61851_STATE_D</span></span></span><a class="headerlink" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_DE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N16iec61851_state_t16IEC61851_STATE_EE">
+<span id="_CPPv3N16iec61851_state_t16IEC61851_STATE_EE"></span><span id="_CPPv2N16iec61851_state_t16IEC61851_STATE_EE"></span><span class="target" id="iec61851_8h_1a24da550d8598930ce8f470e6ecd713f9af09dbaf678e8663c9e9ea72a7de2c111"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IEC61851_STATE_E</span></span></span><a class="headerlink" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_EE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N16iec61851_state_t16IEC61851_STATE_FE">
+<span id="_CPPv3N16iec61851_state_t16IEC61851_STATE_FE"></span><span id="_CPPv2N16iec61851_state_t16IEC61851_STATE_FE"></span><span class="target" id="iec61851_8h_1a24da550d8598930ce8f470e6ecd713f9acfc5db3774afea5950e8d4759a53db03"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">IEC61851_STATE_F</span></span></span><a class="headerlink" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_FE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.IEC61851_EV_RESPONSE_TIMEOUT_SEC">
+<span class="target" id="iec61851_8h_1ac88e958553d2908f537f114aa5df47ad"></span><span class="sig-name descname"><span class="n"><span class="pre">IEC61851_EV_RESPONSE_TIMEOUT_SEC</span></span></span> <span class="pre">6</span> <span class="pre">/*</span> <span class="pre">IEC</span> <span class="pre">61851-1,</span> <span class="pre">seq.</span> <span class="pre">10.2</span> <span class="pre">*/</span><a class="headerlink" href="#c.IEC61851_EV_RESPONSE_TIMEOUT_SEC" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="fs.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">File System</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="logfs.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Log File System</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415iec61851_createP5pilotP5relay"><code class="docutils literal notranslate"><span class="pre">iec61851_create()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416iec61851_destroyP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_destroy()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414iec61851_stateP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_state()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv418iec61851_start_pwmP8iec61851K7uint8_t"><code class="docutils literal notranslate"><span class="pre">iec61851_start_pwm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv420iec61851_set_currentP8iec61851K8uint32_t"><code class="docutils literal notranslate"><span class="pre">iec61851_set_current()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv417iec61851_stop_pwmP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_stop_pwm()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv420iec61851_set_state_fP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_set_state_f()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv421iec61851_get_pwm_dutyP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_get_pwm_duty()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv428iec61851_get_pwm_duty_targetP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_get_pwm_duty_target()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv427iec61851_start_power_supplyP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_start_power_supply()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv426iec61851_stop_power_supplyP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_stop_power_supply()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv427iec61851_is_supplying_powerP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_is_supplying_power()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv420iec61851_is_chargingP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_is_charging()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv426iec61851_is_charging_stateK16iec61851_state_t"><code class="docutils literal notranslate"><span class="pre">iec61851_is_charging_state()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv420iec61851_is_occupiedP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_is_occupied()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv426iec61851_is_occupied_stateK16iec61851_state_t"><code class="docutils literal notranslate"><span class="pre">iec61851_is_occupied_state()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv417iec61851_is_errorP8iec61851"><code class="docutils literal notranslate"><span class="pre">iec61851_is_error()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv423iec61851_is_error_stateK16iec61851_state_t"><code class="docutils literal notranslate"><span class="pre">iec61851_is_error_state()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv424iec61851_stringify_stateK16iec61851_state_t"><code class="docutils literal notranslate"><span class="pre">iec61851_stringify_state()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv428iec61851_duty_to_milliampereK7uint8_t"><code class="docutils literal notranslate"><span class="pre">iec61851_duty_to_milliampere()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv428iec61851_milliampere_to_dutyK8uint32_t"><code class="docutils literal notranslate"><span class="pre">iec61851_milliampere_to_duty()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416iec61851_state_t"><code class="docutils literal notranslate"><span class="pre">iec61851_state_t</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_AE"><code class="docutils literal notranslate"><span class="pre">IEC61851_STATE_A</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_BE"><code class="docutils literal notranslate"><span class="pre">IEC61851_STATE_B</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_CE"><code class="docutils literal notranslate"><span class="pre">IEC61851_STATE_C</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_DE"><code class="docutils literal notranslate"><span class="pre">IEC61851_STATE_D</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_EE"><code class="docutils literal notranslate"><span class="pre">IEC61851_STATE_E</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N16iec61851_state_t16IEC61851_STATE_FE"><code class="docutils literal notranslate"><span class="pre">IEC61851_STATE_F</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.IEC61851_EV_RESPONSE_TIMEOUT_SEC"><code class="docutils literal notranslate"><span class="pre">IEC61851_EV_RESPONSE_TIMEOUT_SEC</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2025, Pazzk.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
