@@ -1,4 +1,4 @@
-# Pazzk 설정 관리 모듈 (config module)
+# Configuration
 
 ## 설정 키 목록 및 사용법
 

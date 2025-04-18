@@ -1,4 +1,6 @@
-# 생산 고유 번호(Production Serial Number) 또는 디바이스 시리얼 번호(Device Serial Number)
+# Device Serial Number
+
+생산 고유 번호(Production Serial Number) 또는 디바이스 시리얼 번호(Device Serial Number)
 
 [디바이스 리스트](https://docs.google.com/spreadsheets/d/13ubAndYqas2xgpq8aJKXZfMFF4OqCst7IUKbqI_G4Yo/)
 

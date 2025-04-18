@@ -1,4 +1,4 @@
-# Pazzk Firmware Operating Modes
+# Operating Modes
 
 Pazzk firmware supports four different operating modes, each optimized for a specific use case. The features and limitations vary depending on the selected mode.
 
