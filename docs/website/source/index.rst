@@ -11,6 +11,7 @@ Pazzk documentation
    :caption: Getting Started
 
    quickstart
+   cli/cli_commands
 
 .. toctree::
    :maxdepth: 1
@@ -20,12 +21,6 @@ Pazzk documentation
    architecture/network
    architecture/system_quality
    architecture/adr
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Command Line Interface
-
-   cli/cli_commands
 
 .. toctree::
    :maxdepth: 1
