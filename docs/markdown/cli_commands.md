@@ -1,4 +1,4 @@
-# CLI
+# Command Line Interface
 
 ## 커맨드 목록
 - command 혹은 subcommand 뒤에 값이 없으면 현재 설정값을 보여줍니다.
