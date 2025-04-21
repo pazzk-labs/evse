@@ -21,6 +21,7 @@ Pazzk는 인증서 기반 통신, 실시간성 제어, 유지보수 가능한 �
 
    quickstart
    cli/cli_commands
+   development_board
 
 .. toctree::
    :maxdepth: 1
