@@ -6,7 +6,9 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Search - Pazzk  documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Pazzk EVSE Development Board &#8212; Pazzk  documentation</title>
   
   
   
@@ -38,14 +40,13 @@
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'search';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'development_board';</script>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
     <script src="_static/mermaid-init.js?v=b11fa8ae"></script>
-  <script src="_static/searchtools.js"></script>
-  <script src="_static/language_data.js"></script>
-  <script src="searchindex.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Charger" href="architecture/charger.html" />
+    <link rel="prev" title="Command Line Interface" href="cli/cli_commands.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -77,7 +78,7 @@
     <div class="search-button__overlay"></div>
     <div class="search-button__search-container">
 <form class="bd-search d-flex align-items-center"
-      action="#"
+      action="search.html"
       method="get">
   <i class="fa-solid fa-magnifying-glass"></i>
   <input type="search"
@@ -107,8 +108,6 @@
     <div class="bd-container__inner bd-page-width">
       
       
-      
-        
       
       <div class="bd-sidebar-primary bd-sidebar">
         
@@ -158,11 +157,11 @@
         <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 
 <li class="toctree-l1"><a class="reference internal" href="cli/cli_commands.html">Command Line Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="development_board.html">Pazzk EVSE Development Board</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Pazzk EVSE Development Board</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
 <ul class="nav bd-sidenav">
@@ -254,6 +253,54 @@
 
 
 
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/development_board.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
 <button onclick="toggleFullScreen()"
   class="btn btn-sm btn-fullscreen-button"
   title="Fullscreen mode"
@@ -287,7 +334,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
 </div></div>
       
     </div>
@@ -296,42 +345,278 @@ document.write(`
 </div>
               
               
-  <div class="bd-search-container">
-    <h1>Search</h1>
-    <noscript>
-      <div class="admonition error">
-        <p class="admonition-title">Error</p>
-        <p>Please activate JavaScript to enable the search functionality.</p>
-      </div>
-    </noscript>
-    
-<form class="bd-search d-flex align-items-center"
-      action="#"
-      method="get">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="search"
-         class="form-control"
-         name="q"
-         id="search-input"
-         placeholder="Search..."
-         aria-label="Search..."
-         autocomplete="off"
-         autocorrect="off"
-         autocapitalize="off"
-         spellcheck="false"/>
-  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
-</form>
-    <div id="search-results"></div>
-  </div>
-  <script>
-    // Activate the search field on page load
-    let searchInput = document.querySelector("form.bd-search input");
-    if (searchInput) {
-        searchInput.focus();
-        searchInput.select();
-        console.log("[PST]: Set focus on search field.");
-    }
-  </script>
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Pazzk EVSE Development Board</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#system-sensing">System &amp; Sensing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#user-interface">User Interface</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#communication-capabilities">Communication Capabilities</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specification">Specification</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#temperature-characteristics-by-component">Temperature Characteristics by Component</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="pazzk-evse-development-board">
+<h1>Pazzk EVSE Development Board<a class="headerlink" href="#pazzk-evse-development-board" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://pazzk.net/ko/products#hardware">Get the hardware →</a></p>
+<img src="images/dev-board-testing.jpg" alt="Development Board Under Test" style="width:100%; max-width:700px; margin-top:1em;" />
+<p align="center"><em>Photo: Development boards undergoing functional testing</em></p>
+<section id="features">
+<h2>Features<a class="headerlink" href="#features" title="Link to this heading">#</a></h2>
+<section id="system-sensing">
+<h3>System &amp; Sensing<a class="headerlink" href="#system-sensing" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Integrated posture and impact detection sensor</p></li>
+<li><p>GFCI and relay weld detection</p></li>
+<li><p>Input and output power monitoring</p></li>
+<li><p>Internal temperature sensor for charger housing</p></li>
+<li><p>Emergency stop button (EMO)</p></li>
+</ul>
+</section>
+<section id="user-interface">
+<h3>User Interface<a class="headerlink" href="#user-interface" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>GUI-based LCD display (optional)</p></li>
+<li><p>Status LEDs and audible feedback (buzzer, speaker)</p></li>
+</ul>
+</section>
+<section id="communication-capabilities">
+<h3>Communication Capabilities<a class="headerlink" href="#communication-capabilities" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Built-in PLC modem (ISO 15118 compliant)</p></li>
+<li><p>Multiple communication interfaces supported:</p>
+<ul>
+<li><p>Ethernet (10/100 Mbps, RJ45)</p></li>
+<li><p>Wi-Fi (802.11 b/g/n)</p></li>
+<li><p>BLE (Bluetooth 5.0)</p></li>
+<li><p>USB Type-C (USB 2.0)</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="specification">
+<h2>Specification<a class="headerlink" href="#specification" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Type</p></th>
+<th class="head"><p>Value</p></th>
+<th class="head"><p>Unit</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Charging Mode</p></td>
+<td><p>AC Level 2 (Single-phase)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Rated AC Power Output</p></td>
+<td><p>11</p></td>
+<td><p>kW</p></td>
+</tr>
+<tr class="row-even"><td><p>Nominal AC Frequency</p></td>
+<td><p>50 / 60 (Auto-switching)</p></td>
+<td><p>Hz</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ground Fault Detection</p></td>
+<td><p>13</p></td>
+<td><p>mA</p></td>
+</tr>
+<tr class="row-even"><td><p>Input Voltage Range</p></td>
+<td><p>100 – 300</p></td>
+<td><p>VAC</p></td>
+</tr>
+<tr class="row-odd"><td><p>Power Measurement Accuracy</p></td>
+<td><p>±0.5</p></td>
+<td><p>%</p></td>
+</tr>
+<tr class="row-even"><td><p>Operating Temperature</p></td>
+<td><p>-30 to +70</p></td>
+<td><p>°C</p></td>
+</tr>
+<tr class="row-odd"><td><p>Storage Temperature</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>°C</p></td>
+</tr>
+<tr class="row-even"><td><p>Dimensions (L × W × H)</p></td>
+<td><p>110 x 125.58 x 54.53</p></td>
+<td><p>mm</p></td>
+</tr>
+<tr class="row-odd"><td><p>Weight</p></td>
+<td><p></p></td>
+<td><p>kg</p></td>
+</tr>
+<tr class="row-even"><td><p>Communication Interfaces</p></td>
+<td><p>Ethernet, Wi-Fi, BLE, PLC, USB</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p>Display &amp; Indicators</p></td>
+<td><p>LCD, LED, Buzzer, Speaker</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="temperature-characteristics-by-component">
+<h2>Temperature Characteristics by Component<a class="headerlink" href="#temperature-characteristics-by-component" title="Link to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Component</p></th>
+<th class="head"><p>Operating Temp (°C)</p></th>
+<th class="head"><p>Storage Temp (°C)</p></th>
+<th class="head"><p>Note</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>QCA7005</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>-40 to +150</p></td>
+<td><p>PLC modem (ISO 15118 core module)</p></td>
+</tr>
+<tr class="row-odd"><td><p>AZSR250</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>-</p></td>
+<td><p>Relay</p></td>
+</tr>
+<tr class="row-even"><td><p>HLW8112</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>Power measurement AFE</p></td>
+</tr>
+<tr class="row-odd"><td><p>ESP32-S3</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>-40 to +150</p></td>
+<td><p>Wi-Fi/BLE MCU</p></td>
+</tr>
+<tr class="row-even"><td><p>IRM-20</p></td>
+<td><p>-30 to +70</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>AC/DC power supply (SMPS module)</p></td>
+</tr>
+<tr class="row-odd"><td><p>LIS2DW12</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>-40 to +125</p></td>
+<td><p>Motion and vibration sensor</p></td>
+</tr>
+<tr class="row-even"><td><p>TMP102</p></td>
+<td><p>-55 to +150</p></td>
+<td><p>-60 to +150</p></td>
+<td><p>Temperature sensor</p></td>
+</tr>
+<tr class="row-odd"><td><p>MLT-8530</p></td>
+<td><p>-20 to +70</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>Buzzer</p></td>
+</tr>
+<tr class="row-even"><td><p>TCA9539</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>IO Expander</p></td>
+</tr>
+<tr class="row-odd"><td><p>ADC122S051</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>ADC</p></td>
+</tr>
+<tr class="row-even"><td><p>CA-IS3722</p></td>
+<td><p>-40 to +125</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>Digital isolator</p></td>
+</tr>
+<tr class="row-odd"><td><p>TCLT1007</p></td>
+<td><p>-55 to +100</p></td>
+<td><p>-55 to +125</p></td>
+<td><p>Optocoupler</p></td>
+</tr>
+<tr class="row-even"><td><p>74LVC1G34</p></td>
+<td><p>-40 to +125</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>Buffer</p></td>
+</tr>
+<tr class="row-odd"><td><p>74AHCT1G08</p></td>
+<td><p>-40 to +125</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>Logic AND gate</p></td>
+</tr>
+<tr class="row-even"><td><p>ES8311</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>Audio codec</p></td>
+</tr>
+<tr class="row-odd"><td><p>NS4150</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>Audio amplifier</p></td>
+</tr>
+<tr class="row-even"><td><p>CA-IS3741</p></td>
+<td><p>-40 to +125</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>Digital isolator</p></td>
+</tr>
+<tr class="row-odd"><td><p>EL357N</p></td>
+<td><p>-55 to +110</p></td>
+<td><p>-55 to +125</p></td>
+<td><p>Photocoupler</p></td>
+</tr>
+<tr class="row-even"><td><p>SIC438AED</p></td>
+<td><p>-40 to +105</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>DC-DC converter</p></td>
+</tr>
+<tr class="row-odd"><td><p>DPU01M</p></td>
+<td><p>-40 to +90</p></td>
+<td><p>-55 to +125</p></td>
+<td><p>DC-DC converter</p></td>
+</tr>
+<tr class="row-even"><td><p>SPX1117M3</p></td>
+<td><p>-40 to +125</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>Voltage regulator</p></td>
+</tr>
+<tr class="row-odd"><td><p>TLV1117</p></td>
+<td><p>-40 to +125</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>Voltage regulator</p></td>
+</tr>
+<tr class="row-even"><td><p>RT9193</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>-65 to +150</p></td>
+<td><p>Voltage regulator</p></td>
+</tr>
+<tr class="row-odd"><td><p>RFMM-0505S</p></td>
+<td><p>-40 to +85</p></td>
+<td><p>-</p></td>
+<td><p>Isolated DC-DC converter</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
 
               
               
@@ -340,12 +625,52 @@ document.write(`
                 <footer class="prev-next-footer d-print-none">
                   
 <div class="prev-next-area">
+    <a class="left-prev"
+       href="cli/cli_commands.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Command Line Interface</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="architecture/charger.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Charger</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
 </div>
                 </footer>
               
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#features">Features</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#system-sensing">System &amp; Sensing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#user-interface">User Interface</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#communication-capabilities">Communication Capabilities</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#specification">Specification</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#temperature-characteristics-by-component">Temperature Characteristics by Component</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>
