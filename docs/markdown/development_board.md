@@ -1,7 +1,6 @@
-[한국어](#evse-development-board-korean-version)
+[한국어](#evse-development-board---korean-version)
 
-# EVSE Development Board
-
+# EVSE Development Board - Korean Version
 [Get the hardware →](https://pazzk.net/ko/products#hardware)
 
 <img src="images/dev-board-testing.jpg" alt="Development Board Under Test" style="width:100%; max-width:700px; margin-top:1em;" />
