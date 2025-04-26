@@ -188,25 +188,25 @@ OCPP 인증과 화재예방형 충전기 인증은 직접 대행도 가능합니
 개인 전기차 오너도 구매하여 직접 설치 및 사용이 가능합니다.
 자작 충전기 제작 및 커스터마이징에도 적합합니다.
 
-## Features
+## 주요 기능
 
-### System & Sensing
-- Integrated posture and impact detection sensor
-- GFCI and relay weld detection
-- Input and output power monitoring
-- Internal temperature sensor for charger housing
-- Emergency stop button (EMO)
+### 시스템 및 센싱
+- 자세 및 충격 감지 센서 통합
+- GFCI 및 릴레이 용접 감지
+- 입력 및 출력 전력 모니터링
+- 충전기 하우징 내부 온도 센서
+- 비상 정지 버튼 (EMO)
 
-### User Interface
-- GUI-based LCD display (optional)
-- Status LEDs and audible feedback (buzzer, speaker)
+### 사용자 인터페이스
+- GUI 기반 LCD 디스플레이 (옵션)
+- 상태 LED 및 음성 피드백 (부저, 스피커)
 
-### Communication Capabilities
-- Built-in PLC modem (ISO 15118 compliant)
-- Multiple communication interfaces supported:
-  - Ethernet (10/100 Mbps, RJ45)
+### 통신 기능
+- 내장형 PLC 모뎀 (ISO 15118 준수)
+- 지원되는 다양한 통신 인터페이스:
+  - 이더넷 (10/100 Mbps, RJ45)
   - Wi-Fi (802.11 b/g/n)
-  - BLE (Bluetooth 5.0)
+  - BLE (블루투스 5.0)
   - USB Type-C (USB 2.0)
 
 ## Specification
