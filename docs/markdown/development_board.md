@@ -63,10 +63,10 @@ personal use. It is also well-suited for custom charger builds and DIY projects.
 
 ### System & Sensing
 - Integrated posture and impact detection sensor
-- GFCI and relay weld detection
+- GFCI and relay stuck detection
 - Input and output power monitoring
 - Internal temperature sensor for charger housing
-- Emergency stop button (EMO)
+- Emergency stop button
 
 ### User Interface
 - GUI-based LCD display (optional)
@@ -192,10 +192,10 @@ OCPP 인증과 화재예방형 충전기 인증은 직접 대행도 가능합니
 
 ### 시스템 및 센싱
 - 자세 및 충격 감지 센서 통합
-- GFCI 및 릴레이 용접 감지
+- GFCI 및 릴레이 stuck 감지
 - 입력 및 출력 전력 모니터링
 - 충전기 하우징 내부 온도 센서
-- 비상 정지 버튼 (EMO)
+- 비상 정지 버튼
 
 ### 사용자 인터페이스
 - GUI 기반 LCD 디스플레이 (옵션)
