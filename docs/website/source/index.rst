@@ -27,6 +27,8 @@ Pazzk는 인증서 기반 통신, 실시간성 제어, 유지보수 가능한 �
    :maxdepth: 1
    :caption: Architecture
 
+   firmware/operating_mode
+   architecture/power_control
    architecture/charger
    architecture/network
    architecture/system_quality
@@ -55,7 +57,6 @@ Pazzk는 인증서 기반 통신, 실시간성 제어, 유지보수 가능한 �
    firmware/configuration
    firmware/device_serial_number
    firmware/metrics
-   firmware/operating_mode
    firmware/uid_storage
 
 .. toctree::
