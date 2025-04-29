@@ -166,6 +166,9 @@
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">Architecture</span></p>
 <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="operating_mode.html">Operating Modes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../architecture/power_control.html">Power Control System</a></li>
+
 <li class="toctree-l1"><a class="reference internal" href="../architecture/charger.html">Charger</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../architecture/network.html">Network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../architecture/system_quality.html">System Quality</a></li>
@@ -188,7 +191,6 @@
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Device Serial Number</a></li>
 <li class="toctree-l1"><a class="reference internal" href="metrics.html">metrics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="operating_mode.html">Operating Modes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="uid_storage.html">UID Storage</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference</span></p>
@@ -376,18 +378,26 @@ document.write(`
 <h1>Device Serial Number<a class="headerlink" href="#device-serial-number" title="Link to this heading">#</a></h1>
 <p>생산 고유 번호(Production Serial Number) 또는 디바이스 시리얼 번호(Device Serial Number)</p>
 <p><a class="reference external" href="https://docs.google.com/spreadsheets/d/13ubAndYqas2xgpq8aJKXZfMFF4OqCst7IUKbqI_G4Yo/">디바이스 리스트</a></p>
+<div class="note admonition">
+<p class="admonition-title">Note</p>
+<p>
+국가코드를 앞에 붙이면 IEC 63119-2 형식으로 사용 가능
+예: <code class="docutils literal notranslate"><span class="pre">KR*PZK*EC12412240001</span></code>.
+국가코드(<code class="docutils literal notranslate"><span class="pre">KR</span></code>) + 운영자코드(<code class="docutils literal notranslate"><span class="pre">PZK</span></code>) + 충전소 포트 식별번호(<code class="docutils literal notranslate"><span class="pre">EC1241224001</span></code>)</p>
+</div>
 <section id="디바이스-시리얼-번호-형식">
 <h2>디바이스 시리얼 번호 형식<a class="headerlink" href="#디바이스-시리얼-번호-형식" title="Link to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">PZK-C1-241119-0001</span></code>(18자리) 또는 <code class="docutils literal notranslate"><span class="pre">PZKC12411190001</span></code>(15자리)</p>
+<p><code class="docutils literal notranslate"><span class="pre">PZK-EC1-241119-0001</span></code>(19자리) 또는 <code class="docutils literal notranslate"><span class="pre">PZKEC12411190001</span></code>(16자리)</p>
 <ul class="simple">
 <li><p>첫번째 항목: <code class="docutils literal notranslate"><span class="pre">PZK</span></code></p>
 <ul>
 <li><p>PAZZK의 약자로 고정 접두어</p></li>
 </ul>
 </li>
-<li><p>두번째 항목: <code class="docutils literal notranslate"><span class="pre">1</span></code></p>
+<li><p>두번째 항목: <code class="docutils literal notranslate"><span class="pre">C1</span></code></p>
 <ul>
-<li><p>제품 종류</p></li>
+<li><p>제품 라인과 제품 종류</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">E</span></code>는 EVSE</p></li>
 </ul>
 </li>
 <li><p>세번째 항목: <code class="docutils literal notranslate"><span class="pre">241119</span></code></p>
