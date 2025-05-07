@@ -86,7 +86,9 @@ static void add_basic_auth_header(struct ws_server *ws,
 	const int len = snprintf(ws->header, sizeof(ws->header), "Basic ");
 	const size_t needed = (((size_t)b_len + 2) / 3) * 4;
 	if (len > 0 && b_len > 0 && (size_t)len + needed < sizeof(ws->header)) {
-		size_t n = base64_encode(&ws->header[len], b, (size_t)b_len);
+		const size_t cap = sizeof(ws->header) - (size_t)len;
+		const size_t n = lm_base64_encode(&ws->header[len], cap,
+				b, (size_t)b_len);
 		ws->header[(size_t)len + n] = '\0';
 
 		uint8_t **p = (uint8_t **)in;
