@@ -370,6 +370,7 @@ document.write(`
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exit"><code class="docutils literal notranslate"><span class="pre">exit</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#help"><code class="docutils literal notranslate"><span class="pre">help</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#idtag"><code class="docutils literal notranslate"><span class="pre">idtag</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#info"><code class="docutils literal notranslate"><span class="pre">info</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#log"><code class="docutils literal notranslate"><span class="pre">log</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#md"><code class="docutils literal notranslate"><span class="pre">md</span></code></a></li>
@@ -422,40 +423,43 @@ document.write(`
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">help</span></code></p></td>
 <td><p>도움말</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">info</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">idtag</span></code></p></td>
+<td><p>사용자 ID 태그</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">info</span></code></p></td>
 <td><p>시스템 정보</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">log</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">log</span></code></p></td>
 <td><p>시스템 로그</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">md</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">md</span></code></p></td>
 <td><p>메모리 덤프</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">metrics</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">metrics</span></code></p></td>
 <td><p>메트릭 정보</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">net</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">net</span></code></p></td>
 <td><p>네트워크 정보</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ocpp</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">ocpp</span></code></p></td>
 <td><p>OCPP 설정 정보</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pilot</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">pilot</span></code></p></td>
 <td><p>Control Pilot</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">plc</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">plc</span></code></p></td>
 <td><p>PLC 모뎀 설정 확인 및 변경</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">reboot</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reboot</span></code></p></td>
 <td><p>시스템 재부팅</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">sec</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">sec</span></code></p></td>
 <td><p>보안 설정</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">test</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">test</span></code></p></td>
 <td><p>기능 테스트</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">xmodem</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xmodem</span></code></p></td>
 <td><p>시리얼 터미널 XMODEM 통신</p></td>
 </tr>
 </tbody>
@@ -629,6 +633,10 @@ document.write(`
 </section>
 <section id="help">
 <h3><code class="docutils literal notranslate"><span class="pre">help</span></code><a class="headerlink" href="#help" title="Link to this heading">#</a></h3>
+</section>
+<section id="idtag">
+<h3><code class="docutils literal notranslate"><span class="pre">idtag</span></code><a class="headerlink" href="#idtag" title="Link to this heading">#</a></h3>
+<p>사용자 ID 태그를 설정합니다. <code class="docutils literal notranslate"><span class="pre">idtag</span> <span class="pre">[ID]</span></code> 형식으로 사용합니다. ID는 문자열로 입력합니다.</p>
 </section>
 <section id="info">
 <h3><code class="docutils literal notranslate"><span class="pre">info</span></code><a class="headerlink" href="#info" title="Link to this heading">#</a></h3>
@@ -1088,6 +1096,7 @@ CSR 생성시 CLI를 통해 입력한 정보는 유효성 검사를 거치지 �
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exit"><code class="docutils literal notranslate"><span class="pre">exit</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#help"><code class="docutils literal notranslate"><span class="pre">help</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#idtag"><code class="docutils literal notranslate"><span class="pre">idtag</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#info"><code class="docutils literal notranslate"><span class="pre">info</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#log"><code class="docutils literal notranslate"><span class="pre">log</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#md"><code class="docutils literal notranslate"><span class="pre">md</span></code></a></li>
