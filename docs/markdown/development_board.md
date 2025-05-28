@@ -4,9 +4,10 @@
 
 [Get the hardware →](https://pazzk.net/ko/products#hardware)
 
-<img src="images/dev-board-testing.jpg" alt="Development Board Under Test" style="width:100%; max-width:700px; margin-top:1em;" />
+## Pinout
 
-<p align="center"><em>Photo: Development boards undergoing functional testing</em></p>
+<img src="images/evse_j6.svg" alt="Pinout Diagram for J6" style="width:100%; max-width:800px; margin-top:1em;" />
+<img src="images/evse_j7.svg" alt="Pinout Diagram for J7" style="width:100%; max-width:800px; margin-top:1em;" />
 
 ## Support and Pricing
 ### Basic Package
@@ -126,6 +127,10 @@ personal use. It is also well-suited for custom charger builds and DIY projects.
 | TLV1117       | -40 to +125         | -65 to +150       | Voltage regulator                  |
 | RT9193        | -40 to +85          | -65 to +150       | Voltage regulator                  |
 | RFMM-0505S    | -40 to +85          | -                 | Isolated DC-DC converter           |
+
+<img src="images/dev-board-testing.jpg" alt="Development Board Under Test" style="width:100%; max-width:700px; margin-top:1em;" />
+
+<p align="center"><em>Photo: Development boards undergoing functional testing</em></p>
 
 # EVSE Development Board - Korean Version
 
