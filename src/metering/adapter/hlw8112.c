@@ -39,8 +39,10 @@
 #include "libmcu/uart.h"
 #include "libmcu/board.h"
 #include "libmcu/timext.h"
+#include "libmcu/compiler.h"
 #include "hlw811x.h"
 #include "exio.h"
+#include "config.h"
 #include "logger.h"
 
 #define MIN_INTERVAL_MS			1000
@@ -70,6 +72,12 @@ struct metering {
 	uint32_t ts_saved; /* timestamp of last saved */
 };
 
+struct cal_param {
+	struct hlw811x_calibration cal;
+} LIBMCU_PACKED;
+static_assert(sizeof(struct cal_param) == METERING_CALIBRATION_TOTAL_SIZE,
+		"calibration parameter size mismatch");
+
 int hlw811x_ll_write(const uint8_t *data, size_t datalen, void *ctx)
 {
 	struct lm_uart *uart = (struct lm_uart *)ctx;
@@ -82,6 +90,49 @@ int hlw811x_ll_read(uint8_t *buf, size_t bufsize, void *ctx)
 	return lm_uart_read(uart, buf, bufsize);
 }
 
+static hlw811x_error_t apply_calibration(struct hlw811x *hlw811x)
+{
+	struct cal_param def = {
+		.cal = {
+			.hfconst = 0x9100, /* EC: 1000/kWh */
+			.pa_gain = 0xfe9e,
+			.pb_gain = 0,
+			.phase_a = 0,
+			.phase_b = 0,
+			.paos = 0x0a08,
+			.pbos = 0,
+			.rms_iaos = 0xfe3d,
+			.rms_ibos = 0,
+			.ib_gain = 0,
+			.ps_gain = 0,
+			.psos = 0x00d7,
+		},
+	};
+	int err = config_get("mtr.cal.ch1", &def, sizeof(def));
+
+	if (err != 0 && err != -ENOENT) {
+		error("Failed to get calibration parameters");
+		return HLW811X_IO_ERROR;
+	}
+
+	const struct hlw811x_calibration cal = {
+		.hfconst = def.cal.hfconst,
+		.pa_gain = def.cal.pa_gain,
+		.pb_gain = def.cal.pb_gain,
+		.phase_a = def.cal.phase_a,
+		.phase_b = def.cal.phase_b,
+		.paos = def.cal.paos,
+		.pbos = def.cal.pbos,
+		.rms_iaos = def.cal.rms_iaos,
+		.rms_ibos = def.cal.rms_ibos,
+		.ib_gain = def.cal.ib_gain,
+		.ps_gain = def.cal.ps_gain,
+		.psos = def.cal.psos,
+	};
+
+	return hlw811x_apply_calibration(hlw811x, &cal);
+}
+
 static int enable(struct metering *self)
 {
 	if (exio_set_metering_power(true)) {
@@ -89,23 +140,21 @@ static int enable(struct metering *self)
 	}
 
 	struct hlw811x_coeff coeff;
-	const uint8_t hfconst[] = { 0x38, 0xa4 }; /* EC: 3200/kWh */
 	uint16_t reg = 0;
 	uint32_t err = hlw811x_reset(self->hlw811x);
 	sleep_ms(60); /* at least 60ms delay is required after reset. */
 
-	err |= hlw811x_write_reg(self->hlw811x, HLW811X_REG_PULSE_FREQ,
-			hfconst, sizeof(hfconst));
+	err |= apply_calibration(self->hlw811x);
 	hlw811x_set_resistor_ratio(self->hlw811x,
 			&(const struct hlw811x_resistor_ratio) {
-		.K1_A = 5,
+		.K1_A = 1,
 		.K1_B = 1,
 		.K2 = 1,
 	});
 	err |= hlw811x_set_pga(self->hlw811x, &(const struct hlw811x_pga) {
-		.A = HLW811X_PGA_GAIN_2,
+		.A = HLW811X_PGA_GAIN_16,
 		.B = HLW811X_PGA_GAIN_2,
-		.U = HLW811X_PGA_GAIN_2,
+		.U = HLW811X_PGA_GAIN_1,
 	});
 
 	err |= hlw811x_set_channel_b_mode(self->hlw811x, HLW811X_B_MODE_NORMAL);
