@@ -55,6 +55,10 @@ extern "C" {
 #define METERING_ENERGY_SAVE_INTERVAL_MIN	5 /* 5 minutes */
 #endif
 
+#if !defined(METERING_CALIBRATION_TOTAL_SIZE)
+#define METERING_CALIBRATION_TOTAL_SIZE		22
+#endif
+
 typedef enum {
 	METERING_HLW811X,
 } metering_t;

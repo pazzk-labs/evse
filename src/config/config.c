@@ -40,6 +40,7 @@
 #include "libmcu/metrics.h"
 #include "libmcu/crc32.h"
 
+#include "metering.h" /* for METERING_CALIBRATION_TOTAL_SIZE */
 #include "logger.h"
 
 #define NAMESPACE			"config"
@@ -119,6 +120,7 @@ static const struct config_custom_entry custom_config_map[] = {
 	  "123456789012345" */
 	{ "x509.ca",         CONFIG_X509_MAXLEN }, /* CA certificates */
 	{ "x509.cert",       CONFIG_X509_MAXLEN }, /* Device certificate */
+	{ "mtr.cal.ch1",     METERING_CALIBRATION_TOTAL_SIZE },
 };
 
 static struct config_mgr mgr;
