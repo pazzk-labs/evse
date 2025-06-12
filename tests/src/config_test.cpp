@@ -204,6 +204,9 @@ TEST(Config, ShouldResetAllConfigsToDefault_WhenNullKeyGiven) {
 	mock().expectOneCall("clear")
 		.withStringParameter("key", "x509.cert")
 		.andReturnValue(0);
+	mock().expectOneCall("clear")
+		.withStringParameter("key", "mtr.cal.ch1")
+		.andReturnValue(0);
 	config_reset(NULL);
 }
 TEST(Config, ShouldResetSpecificConfigToDefault_WhenKeyGiven) {

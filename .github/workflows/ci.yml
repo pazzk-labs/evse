@@ -76,7 +76,7 @@ jobs:
         run: |
           $IDF_PATH/tools/idf_tools.py install xtensa-clang
           . $IDF_PATH/export.sh
-          pip3 install codechecker
+          pip3 install codechecker==6.25.1
           sed -i 's/-fno-tree-switch-conversion//g' build/compile_commands.json
           sed -i 's/-fstrict-volatile-bitfields//g' build/compile_commands.json
           sed -i 's/-std=gnu17//g' build/compile_commands.json
