@@ -92,7 +92,7 @@ personal use. It is also well-suited for custom charger builds and DIY projects.
 | Ground Fault Detection        | 13                                      | mA          |
 | Input Voltage Range           | 100 – 300                               | VAC         |
 | Power Measurement Accuracy    | ±0.5                                    | %           |
-| Operating Temperature         | -30 to +70                              | °C          |
+| Operating Temperature         | -30 to +55                              | °C          |
 | Storage Temperature           | -40 to +85                              | °C          |
 | Dimensions (L × W × H)        | 110 x 125.58 x 54.53                    | mm          |
 | Weight                        | 302                                     | g           |
@@ -225,7 +225,7 @@ OCPP 인증과 화재예방형 충전기 인증은 직접 대행도 가능합니
 | Ground Fault Detection        | 13                                      | mA          |
 | Input Voltage Range           | 100 – 300                               | VAC         |
 | Power Measurement Accuracy    | ±0.5                                    | %           |
-| Operating Temperature         | -30 to +70                              | °C          |
+| Operating Temperature         | -30 to +55                              | °C          |
 | Storage Temperature           | -40 to +85                              | °C          |
 | Dimensions (L × W × H)        | 110 x 125.58 x 54.53                    | mm          |
 | Weight                        | 302                                     | g           |
