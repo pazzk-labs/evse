@@ -58,6 +58,32 @@ static bool is_hex(char c)
 		(c >= 'a' && c <= 'f');
 }
 
+uint16_t net_get_default_port(net_protocol_t proto)
+{
+	switch (proto) {
+	case NET_PROTO_HTTP:
+		return 80;
+	case NET_PROTO_HTTPS:
+		return 443;
+	case NET_PROTO_WS:
+		return 80;
+	case NET_PROTO_WSS:
+		return 443;
+	case NET_PROTO_MQTT:
+		return 1883;
+	case NET_PROTO_MQTTS:
+		return 8883;
+	case NET_PROTO_FTP:
+		return 21;
+	case NET_PROTO_FTPS:
+		return 990;
+	case NET_PROTO_SFTP:
+		return 22;
+	default:
+		return 0; /* Unknown protocol */
+	}
+}
+
 net_protocol_t net_get_protocol_from_url(const char *url)
 {
 	const struct proto_tbl tbl[] = {
@@ -104,7 +130,7 @@ uint16_t net_get_port_from_url(const char *url)
 	p += 3;
 	const char *end = strchr(p, ':');
 	if (!end) {
-		return 0;
+		return net_get_default_port(net_get_protocol_from_url(url));
 	}
 
 	return (uint16_t)strtol(end + 1, NULL, 10);
