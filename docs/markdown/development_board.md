@@ -13,8 +13,7 @@
 ### Basic Package
 When you purchase the Pazzk EVSE Development Board, the following items are included:
 
-- 11kW Single-phase AC EVSE reference hardware
-- Complete hardware design source
+- Single-phase AC EVSE reference hardware
 - Open-source EVSE firmware (Community Edition)
 - Technical support is limited to unofficial assistance via community forums and GitHub Issues.
 
@@ -87,7 +86,7 @@ personal use. It is also well-suited for custom charger builds and DIY projects.
 | Type                          | Value                                   | Unit        |
 |-------------------------------|-----------------------------------------|-------------|
 | Charging Mode                 | AC Level 2 (Single-phase)               |             |
-| Rated AC Power Output         | 11                                      | kW          |
+| Rated AC Power Output         | 7                                       | kW          |
 | Nominal AC Frequency          | 50 / 60 (Auto-switching)                | Hz          |
 | Ground Fault Detection        | 13                                      | mA          |
 | Input Voltage Range           | 100 – 300                               | VAC         |
@@ -138,8 +137,7 @@ personal use. It is also well-suited for custom charger builds and DIY projects.
 ### 기본 제공
 Pazzk EVSE Development Board를 구매하시면 다음 항목이 기본 제공됩니다:
 
-- 11kW급 단상 AC 완속 충전기 레퍼런스 하드웨어
-- 하드웨어 설계 자료
+- 단상 AC 완속 충전기 레퍼런스 하드웨어
 - 오픈소스 EVSE 펌웨어 (커뮤니티 버전)
 - 기술 지원은 커뮤니티 포럼 및 GitHub Issue를 통한 비공식 지원 범위에 한정됩니다.
 
@@ -220,7 +218,7 @@ OCPP 인증과 화재예방형 충전기 인증은 직접 대행도 가능합니
 | Type                          | Value                                   | Unit        |
 |-------------------------------|-----------------------------------------|-------------|
 | Charging Mode                 | AC Level 2 (Single-phase)               |             |
-| Rated AC Power Output         | 11                                      | kW          |
+| Rated AC Power Output         | 7                                       | kW          |
 | Nominal AC Frequency          | 50 / 60 (Auto-switching)                | Hz          |
 | Ground Fault Detection        | 13                                      | mA          |
 | Input Voltage Range           | 100 – 300                               | VAC         |

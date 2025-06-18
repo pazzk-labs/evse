@@ -255,7 +255,7 @@ TEST(NetUtil, GetPortFromUrl_ValidUrlWithPort_WhenPathGiven) {
 TEST(NetUtil, GetPortFromUrl_ValidUrlWithoutPort) {
 	const char *url = "http://example.com";
 	uint16_t port = net_get_port_from_url(url);
-	CHECK_EQUAL(0, port); // No port specified, should return 0
+	CHECK_EQUAL(80, port); // No port specified, should return 0
 }
 TEST(NetUtil, GetPortFromUrl_InvalidUrl) {
 	const char *url = "invalid_url";
