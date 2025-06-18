@@ -363,6 +363,14 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#디바이스-시리얼-번호-형식">디바이스 시리얼 번호 형식</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#제품-종류모델명">제품 종류(모델명)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#노트">노트</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#san-vs-cn">SAN vs CN</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#실제-적용-예">실제 적용 예</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spiffe-기반-san-uri-권장">SPIFFE 기반 SAN URI (권장)</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cn-fallback-용도">CN (Fallback 용도)</a></li>
+</ul>
+</li>
 </ul>
             </nav>
         </div>
@@ -497,6 +505,92 @@ document.write(`
 </li>
 </ul>
 </section>
+<section id="san-vs-cn">
+<h2>SAN vs CN<a class="headerlink" href="#san-vs-cn" title="Link to this heading">#</a></h2>
+<p>디바이스가 TLS 인증서를 통해 자신을 식별할 때,
+X.509 인증서의 다음 필드 중 어디에 ID를 넣어야 할지 명확한 기준 필요.</p>
+<ul class="simple">
+<li><p>CN (Common Name)</p>
+<ul>
+<li><p>Subject 필드에 포함된 대표 문자열 (예: <code class="docutils literal notranslate"><span class="pre">CN=PZK-EC1-241119-0001</span></code>)</p></li>
+</ul>
+</li>
+<li><p>SAN (Subject Alternative Name)</p>
+<ul>
+<li><p>확장 필드로, 여러 식별자를 구조화된 방식으로 표현 가능</p></li>
+</ul>
+</li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>항목</p></th>
+<th class="head"><p>CN</p></th>
+<th class="head"><p>SAN</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>표준 권장 위치</p></td>
+<td><p>fallback 용도</p></td>
+<td><p>우선 사용 (<code class="docutils literal notranslate"><span class="pre">RFC</span> <span class="pre">5280</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p>다중 식별자 지원</p></td>
+<td><p>불가</p></td>
+<td><p>가능 (복수 DNS, IP, URI 등)</p></td>
+</tr>
+<tr class="row-even"><td><p>의미론적 구조 표현</p></td>
+<td><p>없음</p></td>
+<td><p>URI, otherName 등 가능</p></td>
+</tr>
+<tr class="row-odd"><td><p>지원 범위</p></td>
+<td><p>널리 호환됨 (레거시 포함)</p></td>
+<td><p>현대 TLS 스택 대부분 지원</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="실제-적용-예">
+<h3>실제 적용 예<a class="headerlink" href="#실제-적용-예" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>예시 디바이스 ID</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">PZK-EC1-241119-0001</span></code></p></li>
+</ul>
+</li>
+<li><p>인증서 예시 구성</p></li>
+</ul>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">subject</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">commonName</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PZK-EC1-241119-0001</span>
+<span class="nt">subjectAlternativeName</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">uris</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">spiffe://pazzk.net/ec1/241119/0001</span>
+</pre></div>
+</div>
+<section id="spiffe-기반-san-uri-권장">
+<h4>SPIFFE 기반 SAN URI (권장)<a class="headerlink" href="#spiffe-기반-san-uri-권장" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">spiffe://pazzk.net/ec1/241119/0001</span></code></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">pazzk.net</span></code>는 조직 도메인</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ec1</span></code>은 제품 라인</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">241119</span></code>는 제조 날짜</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">0001</span></code>은 일련번호</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="cn-fallback-용도">
+<h3>CN (Fallback 용도)<a class="headerlink" href="#cn-fallback-용도" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">CN=PZK-EC1-241119-0001</span></code></p>
+<ul>
+<li><p>레거시 시스템 호환을 위해 사용</p></li>
+<li><p>SAN이 지원되지 않는 경우에만 사용</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
 </section>
 
 
@@ -547,6 +641,14 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#디바이스-시리얼-번호-형식">디바이스 시리얼 번호 형식</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#제품-종류모델명">제품 종류(모델명)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#노트">노트</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#san-vs-cn">SAN vs CN</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#실제-적용-예">실제 적용 예</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#spiffe-기반-san-uri-권장">SPIFFE 기반 SAN URI (권장)</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cn-fallback-용도">CN (Fallback 용도)</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
