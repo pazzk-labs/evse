@@ -60,6 +60,16 @@ typedef enum {
 } net_protocol_t;
 
 /**
+ * @brief Retrieves the default port number for a given network protocol.
+ *
+ * @param[in] proto The network protocol for which the default port is
+ *            requested. This should be of type net_protocol_t.
+ *
+ * @return The default port number as a 16-bit unsigned integer.
+ */
+uint16_t net_get_default_port(net_protocol_t proto);
+
+/**
  * @brief Get the network protocol from a URL.
  *
  * This function parses the given URL and returns the corresponding network
