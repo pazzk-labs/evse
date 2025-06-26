@@ -54,7 +54,7 @@
 
 #define DEFAULT_WS_PING_INTERVAL_SEC	300
 #define DEFAULT_TX_TIMEOUT_MS		8000
-#define DEFAULT_SERVER_URL		"wss://csms.pazzk.net"
+#define DEFAULT_SERVER_URL		"wss://ocpp.pazzk.net:9000"
 
 static_assert(sizeof(((struct config *)0)->net.server_url) == WS_URI_MAXLEN,
 		"WS_URI_MAXLEN is not equal to the size of ws_param.url");
