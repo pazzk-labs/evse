@@ -378,12 +378,13 @@ static void do_reset(struct ocpp_charger *charger,
 {
 	const struct ocpp_Reset *p = (const struct ocpp_Reset *)
 		message->payload.fmt.request;
+	const ocpp_charger_reboot_t type = (p->type == OCPP_RESET_HARD)?
+		OCPP_CHARGER_REBOOT_FORCED :
+		OCPP_CHARGER_REBOOT_REQUIRED_REMOTELY;
 
+	ocpp_charger_request_reboot((struct charger *)charger, type);
 	ocpp_charger_mq_send((struct charger *)charger,
-			OCPP_CHARGER_MSG_REMOTE_RESET,
-			(p->type == OCPP_RESET_HARD)?
-				(void *)OCPP_CHARGER_REBOOT_FORCED :
-				(void *)OCPP_CHARGER_REBOOT_REQUIRED_REMOTELY);
+			OCPP_CHARGER_MSG_REMOTE_RESET, (void *)type);
 
 	csms_response(OCPP_MSG_RESET, message, NULL, charger);
 }
