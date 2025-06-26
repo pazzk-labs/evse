@@ -152,7 +152,6 @@ static void proc_remote_reset(struct charger *charger,
 {
 	ocpp_charger_reboot_t type = (ocpp_charger_reboot_t)
 		(uintptr_t)msg->value;
-	ocpp_charger_request_reboot(charger, type);
 	charger_iterate_connectors(charger, on_each_connector_reboot, &type);
 }
 
