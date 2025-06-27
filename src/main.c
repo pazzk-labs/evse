@@ -236,6 +236,7 @@ static bool update(void *ctx)
 	if (updater_process() == -EAGAIN) {
 		return true;
 	}
+	debug("Updater finished");
 	return false;
 }
 

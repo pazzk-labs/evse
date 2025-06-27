@@ -306,7 +306,10 @@ int updater_process(void)
 	updater_event_t event = UPDATER_EVT_NONE;
 
 	if (!is_updating(&updater)) {
-		if (is_pending(&updater) && has_date_arrived(&updater, &now)) {
+		if (is_pending(&updater)) {
+			if (!has_date_arrived(&updater, &now)) {
+				return -EAGAIN; /* not yet arrived */
+			}
 			pthread_mutex_lock(&updater.lock);
 			event = start_download(&updater, &now);
 			pthread_mutex_unlock(&updater.lock);
