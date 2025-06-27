@@ -144,13 +144,13 @@ TEST(updater, ShouldCallRunnerWithContext_WhenContextGiven) {
 TEST(updater, ShouldReturnZero_WhenNoRequest) {
 	LONGS_EQUAL(0, updater_process());
 }
-TEST(updater, ShouldReturnZero_WhenPending) {
+TEST(updater, ShouldReturnEAGAIN_WhenPending) {
 	struct downloader *downloader = (struct downloader *)0x1234;
         struct updater_param param = {
 		.retrieve_date = time(NULL) + 1,
 	};
 	updater_request(&param, downloader);
-	LONGS_EQUAL(0, updater_process());
+	LONGS_EQUAL(-EAGAIN, updater_process());
 }
 TEST(updater, ShouldReturnZero_WhenDfuNewFailed) {
 	struct downloader *downloader = (struct downloader *)0x1234;
