@@ -100,6 +100,20 @@ static void on_each_connector_reboot(struct connector *c, void *ctx)
 			*type == OCPP_CHARGER_REBOOT_FORCED);
 }
 
+static void on_connector_state_check(struct connector *c, void *ctx)
+{
+	const ocpp_connector_state_t state =
+		ocpp_connector_state((struct ocpp_connector *)c);
+
+	if (state == Charging || state == SuspendedEV || state == SuspendedEVSE) {
+		bool *charging = (bool *)ctx;
+
+		if (charging) {
+			*charging = true;
+		}
+	}
+}
+
 static void dispatch_event(struct charger *charger, struct connector *c,
 		const charger_event_t event)
 {
@@ -238,7 +252,23 @@ static int ext_pre_process(struct charger *self)
 
 static int ext_post_process(struct charger *self)
 {
-	unused(self);
+	const ocpp_charger_reboot_t req =
+		ocpp_charger_get_pending_reboot_type(self);
+
+	if (req != OCPP_CHARGER_REBOOT_NONE &&
+			ocpp_count_pending_requests() == 0) {
+		if (req == OCPP_CHARGER_REBOOT_REQUIRED) { /* triggered by DFU.
+						Do not reboot during charging */
+			bool charging = false;
+			charger_iterate_connectors(self,
+					on_connector_state_check, &charging);
+			if (charging) {
+				return 0;
+			}
+		}
+		dispatch_event(self, NULL, OCPP_CHARGER_EVENT_REBOOT_REQUIRED);
+	}
+
 	return 0;
 }
 
