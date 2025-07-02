@@ -238,7 +238,14 @@ static int ext_pre_process(struct charger *self)
 
 static int ext_post_process(struct charger *self)
 {
-	unused(self);
+	const ocpp_charger_reboot_t req =
+		ocpp_charger_get_pending_reboot_type(self);
+
+	if (req != OCPP_CHARGER_REBOOT_NONE &&
+			ocpp_count_pending_requests() == 0) {
+		dispatch_event(self, NULL, OCPP_CHARGER_EVENT_REBOOT_REQUIRED);
+	}
+
 	return 0;
 }
 
