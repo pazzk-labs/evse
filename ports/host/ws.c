@@ -214,8 +214,7 @@ static int connect_to_server(struct server *srv)
 
 	if (net_is_secure_protocol(net_get_protocol_from_url(ws->param.url))) {
 		ws->conn_info.ssl_connection =
-			LCCSCF_USE_SSL | LCCSCF_ALLOW_SELFSIGNED |
-			LCCSCF_SKIP_SERVER_CERT_HOSTNAME_CHECK;
+			LCCSCF_USE_SSL | LCCSCF_ALLOW_SELFSIGNED;
 	}
 
 	info("connecting to %s:%d%s", ws->host, ws->conn_info.port, ws->path);
