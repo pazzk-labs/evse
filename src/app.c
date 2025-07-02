@@ -113,8 +113,14 @@ static void on_charger_event(struct charger *charger, struct connector *c,
 
 	if (event & OCPP_CHARGER_EVENT_REBOOT_REQUIRED) {
 		bool reboot_manually = false;
-		config_get("dfu.reboot_manually",
-				&reboot_manually, sizeof(reboot_manually));
+		const ocpp_charger_reboot_t req =
+			ocpp_charger_get_pending_reboot_type(charger);
+
+		if (req == OCPP_CHARGER_REBOOT_REQUIRED) {
+			config_get("dfu.reboot_manually", &reboot_manually,
+					sizeof(reboot_manually));
+		}
+
 		if (!reboot_manually) {
 			app_reboot();
 		}
