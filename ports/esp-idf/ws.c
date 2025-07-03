@@ -281,9 +281,7 @@ static int init(struct ws_server *ws)
 		.client_key_len = ws->param.tls.key_len,
 		.cert_pem = (const char *)ws->param.tls.ca,
 		.headers = ws->param.header,
-		.username = ws->param.auth.id,
-		.password = ws->param.auth.pass,
-		.network_timeout_ms = ws->param.write_timeout_ms,
+		.network_timeout_ms = (int)ws->param.write_timeout_ms,
 		.reconnect_timeout_ms = DEFAULT_RECONNECT_TIMEOUT_MS,
 		.ping_interval_sec = ws->param.ping_interval_sec?
 			ws->param.ping_interval_sec : SIZE_MAX, /* the maximum
@@ -291,6 +289,11 @@ static int init(struct ws_server *ws)
 			because no way to disable ping in the library */
 		.user_agent = "Pazzk Websocket Client",
 	};
+
+	if (strlen(ws->param.auth.id) > 0 && strlen(ws->param.auth.pass) > 0) {
+		conf.username = ws->param.auth.id;
+		conf.password = ws->param.auth.pass;
+	}
 
 	if ((ws->handle = esp_websocket_client_init(&conf)) == NULL) {
 		return -ENOMEM;

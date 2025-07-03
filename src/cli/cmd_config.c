@@ -465,9 +465,34 @@ out_help:
 	print_usage(p->io, cmd, "01:23:45:67:89:ab");
 }
 
+static void do_set_id(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
+{
+	struct ctx *p = (struct ctx *)ctx;
+
+	if (argc != cmd->argc_max) {
+		goto out_help;
+	}
+
+	char evse_id[CONFIG_DEVICE_NAME_MAXLEN] = { 0, };
+
+	strncpy(evse_id, argv[3], sizeof(evse_id) - 1);
+
+	config_set("device.name", evse_id, strlen(evse_id)+1/*null*/);
+	return;
+
+out_help:
+	print_usage(p->io, cmd, "<evse_id>");
+}
+
+static void do_reset_id(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
+{
+	config_reset("device.name");
+}
+
 static const struct cmd cmds[] = {
 	{ "show",  NULL,               "config show",  2, 2, do_show },
-	{ "reset", NULL,               "config reset", 2, 2, do_reset },
 	{ "save",  NULL,               "config save",  2, 2, do_save },
 	{ "set",   "x509.ca",          "config set",   3, 3, do_read_set },
 	{ "set",   "x509.cert",        "config set",   3, 3, do_read_set },
@@ -479,6 +504,9 @@ static const struct cmd cmds[] = {
 	{ "set",   "chg.max_out_curr", "config set",   3, 4, do_set_output_max_current },
 	{ "set",   "chg.min_out_curr", "config set",   3, 4, do_set_output_min_current },
 	{ "set",   "chg.param",        "config set",   3, 8, do_set_multi_chg_param },
+	{ "set",   "chg.id",           "config set",   3, 4, do_set_id },
+	{ "reset", "all",              "config reset", 3, 3, do_reset },
+	{ "reset", "chg.id",           "config reset", 3, 3, do_reset_id },
 };
 
 DEFINE_CLI_CMD(config, "View or modify system configuration") {
