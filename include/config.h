@@ -84,8 +84,8 @@ struct config_ocpp {
 struct config {
 	uint32_t version;
 
-	char device_id[CONFIG_DEVICE_ID_MAXLEN];
-	char device_name[CONFIG_DEVICE_NAME_MAXLEN];
+	char device_id[CONFIG_DEVICE_ID_MAXLEN]; /* serial number */
+	char device_name[CONFIG_DEVICE_NAME_MAXLEN]; /* evse ID */
 	uint8_t device_mode;
 
 	uint8_t log_mode;

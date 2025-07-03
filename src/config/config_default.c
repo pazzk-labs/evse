@@ -90,7 +90,7 @@ static void set_default_ping_interval(struct config *cfg)
 
 static void set_default_server_url(struct config *cfg)
 {
-	strcpy(cfg->net.server_url, "wss://csms.pazzk.net");
+	strcpy(cfg->net.server_url, "wss://ocpp.pazzk.net:9000");
 }
 
 static void set_default_vendor(struct config *cfg)

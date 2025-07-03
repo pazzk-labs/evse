@@ -341,6 +341,8 @@ static void load_config(struct config *cfg)
                 warn("Failed to load. Applying defaults.");
 	}
 
+	migrate_config(cfg);
+
 	if (cfg->crc != compute_crc(cfg)) {
 		apply_defaults(cfg);
 		if (!err) { /* flash corruption */
@@ -348,8 +350,6 @@ static void load_config(struct config *cfg)
 		}
 		warn("CRC mismatch detected. Applying defaults.");
 	}
-
-	migrate_config(cfg);
 }
 
 static int set_config(const char *key, const void *data, size_t datasize)
