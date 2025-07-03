@@ -55,9 +55,9 @@ static bool is_booting(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	unused(state);
 	unused(next_state);
-	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
-	return !ocpp_connector_is_csms_up(oc) &&
-		ocpp_count_pending_requests() == 0;
+	struct connector *c = (struct connector *)ctx;
+	return connector_get_actual_duty(c) != 100 ||
+		connector_get_target_duty(c) != 100;
 }
 
 static bool is_available(fsm_state_t state, fsm_state_t next_state, void *ctx)
@@ -245,7 +245,6 @@ static void do_boot(fsm_state_t state, fsm_state_t next_state, void *ctx)
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 	connector_stop_duty(c);
-	csms_request(OCPP_MSG_BOOTNOTIFICATION, oc, 0);
 }
 
 static void do_missing_transaction(fsm_state_t state, fsm_state_t next_state,

@@ -59,7 +59,8 @@ struct ocpp_checkpoint {
 	struct ocpp_connector_checkpoint connector[OCPP_CONNECTOR_MAX];
 
 	bool unavailable; /* charger availability */
-	uint8_t padding[7];
+	bool fw_updated; /* firmware updated */
+	uint8_t padding[6];
 };
 static_assert(sizeof(struct ocpp_checkpoint) == OCPP_CONNECTOR_MAX * 8 + 8,
 		"Incorrect size of struct ocpp_checkpoint");
