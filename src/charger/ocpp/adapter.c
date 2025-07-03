@@ -165,9 +165,14 @@ static int do_bootnotification(struct ocpp_connector *c,
 		return -ENOMEM;
 	}
 
+	const char *evse_id = board_name();
 	*p = (struct ocpp_BootNotification) { 0, };
 
-	strcpy(p->chargePointSerialNumber, board_get_serial_number_string());
+	if (strlen(evse_id) <= 0) {
+		evse_id = board_get_serial_number_string();
+	}
+
+	strcpy(p->chargePointSerialNumber, evse_id);
 	strcpy(p->firmwareVersion, board_get_version_string());
 	config_get("ocpp.vendor", p->chargePointVendor,
 			sizeof(p->chargePointVendor));

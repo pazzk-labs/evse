@@ -47,11 +47,13 @@ typedef enum {
 	CMD_OPT_VERSION			= 0x01,
 	CMD_OPT_BUILD_DATE		= 0x02,
 	CMD_OPT_SERIAL_NUMBER		= 0x04,
-	CMD_OPT_CPULOAD			= 0x08,
+	CMD_OPT_EVSE_ID			= 0x08,
+	CMD_OPT_CPULOAD			= 0x10,
 	CMD_OPT_ALL			= (
 			CMD_OPT_VERSION |
 			CMD_OPT_BUILD_DATE |
 			CMD_OPT_CPULOAD |
+			CMD_OPT_EVSE_ID |
 			CMD_OPT_SERIAL_NUMBER),
 } cmd_opt_t;
 
@@ -89,6 +91,11 @@ static void print_version(struct cli_io const *io)
 static void print_sn(struct cli_io const *io)
 {
 	printini(io, "SN", board_get_serial_number_string());
+}
+
+static void print_evse_id(struct cli_io const *io)
+{
+	printini(io, "evse-id", board_name());
 }
 
 static void print_build_date(struct cli_io const *io)
@@ -175,6 +182,9 @@ DEFINE_CLI_CMD(info, "Display device hardware and firmware information") {
 	}
 	if (options & CMD_OPT_SERIAL_NUMBER) {
 		print_sn(cli->io);
+	}
+	if (options & CMD_OPT_EVSE_ID) {
+		print_evse_id(cli->io);
 	}
 	if (options & CMD_OPT_BUILD_DATE) {
 		print_build_date(cli->io);

@@ -41,6 +41,7 @@
 #include "ocpp/version.h"
 #include "libmcu/metrics.h"
 #include "libmcu/compiler.h"
+#include "libmcu/board.h"
 
 #include "net/server_ws.h"
 #include "net/util.h"
@@ -77,12 +78,19 @@ static int initialize_server(void)
 		.rxq_maxsize = RXQUEUE_SIZE,
 		.ping_interval_sec = DEFAULT_WS_PING_INTERVAL_SEC,
 	};
+	const char *evse_id = board_name();
 
 	config_get("net.server.url", param.url, sizeof(param.url));
 	config_get("net.server.ping", &param.ping_interval_sec,
 			sizeof(param.ping_interval_sec));
 	config_get("net.server.id", param.auth.id, sizeof(param.auth.id));
 	config_get("net.server.pass", param.auth.pass, sizeof(param.auth.pass));
+
+	if (strlen(evse_id) > 0) {
+		snprintf(param.url + strlen(param.url),
+				sizeof(param.url) - strlen(param.url),
+				"/%s", evse_id);
+	}
 
 	if (net_is_secure_protocol(net_get_protocol_from_url(param.url))) {
 		/* NOTE: The allocated dynamic memory is not freed because the
