@@ -78,6 +78,10 @@ TEST_GROUP(OcppConnector) {
 
 	void go_available(void) {
 		ocpp_connector_set_csms_up(oc, true);
+		mock().expectOneCall("iec61851_get_pwm_duty")
+			.andReturnValue(100);
+		mock().expectOneCall("iec61851_get_pwm_duty_target")
+			.andReturnValue(100);
 		mock().expectNCalls(2, "iec61851_state")
 			.andReturnValue(IEC61851_STATE_A);
 		mock().expectOneCall("csms_request")
@@ -180,25 +184,10 @@ TEST_GROUP(OcppConnector) {
 	}
 };
 
-TEST(OcppConnector, ShouldSendBootNotification_WhenNoPendingRequests) {
-	mock().expectOneCall("ocpp_count_pending_requests").andReturnValue(0);
-	mock().expectOneCall("iec61851_set_current").withParameter("milliampere", 0);
-	mock().expectOneCall("csms_request")
-		.withParameter("msgtype", OCPP_MSG_BOOTNOTIFICATION);
-	connector_process(c);
-}
-TEST(OcppConnector, ShouldNotSendBootNotification_WhenKeepBooting) {
-	mock().expectOneCall("ocpp_count_pending_requests").andReturnValue(0);
-	mock().expectOneCall("iec61851_set_current").withParameter("milliampere", 0);
-	mock().expectOneCall("csms_request")
-		.withParameter("msgtype", OCPP_MSG_BOOTNOTIFICATION);
-	connector_process(c);
-
-	mock().expectOneCall("ocpp_count_pending_requests").andReturnValue(1);
-	connector_process(c);
-}
 TEST(OcppConnector, ShouldGoAvailable_WhenBooted) {
 	ocpp_connector_set_csms_up(oc, true);
+	mock().expectOneCall("iec61851_get_pwm_duty").andReturnValue(100);
+	mock().expectOneCall("iec61851_get_pwm_duty_target").andReturnValue(100);
 	mock().expectNCalls(2, "iec61851_state").andReturnValue(IEC61851_STATE_A);
 	mock().expectOneCall("csms_request")
 		.withParameter("msgtype", OCPP_MSG_STATUS_NOTIFICATION);
@@ -211,6 +200,8 @@ TEST(OcppConnector, ShouldGoAvailable_WhenBooted) {
 }
 TEST(OcppConnector, ShouldGoPreparing_WhenBootedWithPlugged) {
 	ocpp_connector_set_csms_up(oc, true);
+	mock().expectOneCall("iec61851_get_pwm_duty").andReturnValue(100);
+	mock().expectOneCall("iec61851_get_pwm_duty_target").andReturnValue(100);
 	mock().expectNCalls(3, "iec61851_state").andReturnValue(IEC61851_STATE_B);
 	mock().expectOneCall("csms_request")
 		.withParameter("msgtype", OCPP_MSG_STATUS_NOTIFICATION);
@@ -223,6 +214,8 @@ TEST(OcppConnector, ShouldGoPreparing_WhenBootedWithPlugged) {
 }
 TEST(OcppConnector, ShouldGoUnavailable_WhenBooted) {
 	ocpp_connector_set_csms_up(oc, true);
+	mock().expectOneCall("iec61851_get_pwm_duty").andReturnValue(100);
+	mock().expectOneCall("iec61851_get_pwm_duty_target").andReturnValue(100);
 	mock().expectOneCall("iec61851_state").andReturnValue(IEC61851_STATE_A);
 	mock().expectOneCall("csms_request")
 		.withParameter("msgtype", OCPP_MSG_STATUS_NOTIFICATION);

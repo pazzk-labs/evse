@@ -137,7 +137,7 @@ static void proc_availability(struct charger *charger,
 	};
 	csms_request(OCPP_MSG_STATUS_NOTIFICATION, &c0, CONNECTOR_0);
 
-	dispatch_event(charger, NULL, OCPP_CHARGER_EVENT_AVAILABILITY_CHANGED);
+	dispatch_event(charger, NULL, OCPP_CHARGER_EVENT_CHECKPOINT_CHANGED);
 }
 
 static void proc_configuration(struct charger *charger,
@@ -216,6 +216,8 @@ static int ext_init(struct charger *self)
 		support->name = "ocpp";
 		list_add(&support->link, &self->supported);
 	}
+
+	csms_request(OCPP_MSG_BOOTNOTIFICATION, NULL, NULL);
 
 	return err;
 }
