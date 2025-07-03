@@ -43,7 +43,9 @@ extern "C" {
 #include "libmcu/compiler.h"
 #include "version.h"
 
+#if !defined(CONFIG_VERSION)
 #define CONFIG_VERSION				MAKE_VERSION(0, 0, 1)
+#endif
 
 #define CONFIG_DEVICE_ID_MAXLEN			24
 #define CONFIG_DEVICE_NAME_MAXLEN		32

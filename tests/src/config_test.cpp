@@ -58,6 +58,7 @@ TEST_GROUP(Config) {
 
 	void setup(void) {
 		config = (struct config) {
+			.version = 1,
 			.device_id = "my device",
 		};
 
@@ -116,7 +117,7 @@ TEST(Config, ShouldReturnDefaultConfig) {
 	config_get("net.server.ping", &actual.net.ping_interval, sizeof(actual.net.ping_interval));
 	LONGS_EQUAL(120, actual.net.ping_interval);
 	config_get("net.server.url", &actual.net.server_url, sizeof(actual.net.server_url));
-	STRCMP_EQUAL("wss://csms.pazzk.net", actual.net.server_url);
+	STRCMP_EQUAL("wss://ocpp.pazzk.net:9000", actual.net.server_url);
 }
 TEST(Config, ShouldReturnNoEntry_WhenKeyNotFoundReading) {
 	struct config actual = { 0, };
