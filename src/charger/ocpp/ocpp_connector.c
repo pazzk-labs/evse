@@ -46,6 +46,7 @@ static_assert(UID_ID_MAXLEN == OCPP_ID_TOKEN_MAXLEN,
 		"UID_ID_MAXLEN and OCPP_ID_TOKEN_MAXLEN must be equal");
 
 #define MAX_EVENTS			4
+#define IDLE_DUTY			100U /* percent */
 
 #if !defined(ARRAY_COUNT)
 #define ARRAY_COUNT(x)			(sizeof(x) / sizeof((x)[0]))
@@ -55,9 +56,12 @@ static bool is_booting(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	unused(state);
 	unused(next_state);
+
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
-	return !ocpp_connector_is_csms_up(oc) &&
-		ocpp_count_pending_requests() == 0;
+	struct connector *c = &oc->base;
+
+	return connector_get_actual_duty(c) != IDLE_DUTY ||
+		connector_get_target_duty(c) != IDLE_DUTY;
 }
 
 static bool is_available(fsm_state_t state, fsm_state_t next_state, void *ctx)
@@ -245,7 +249,6 @@ static void do_boot(fsm_state_t state, fsm_state_t next_state, void *ctx)
 	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
 	struct connector *c = &oc->base;
 	connector_stop_duty(c);
-	csms_request(OCPP_MSG_BOOTNOTIFICATION, oc, 0);
 }
 
 static void do_missing_transaction(fsm_state_t state, fsm_state_t next_state,
