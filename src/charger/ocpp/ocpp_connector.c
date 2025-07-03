@@ -46,6 +46,7 @@ static_assert(UID_ID_MAXLEN == OCPP_ID_TOKEN_MAXLEN,
 		"UID_ID_MAXLEN and OCPP_ID_TOKEN_MAXLEN must be equal");
 
 #define MAX_EVENTS			4
+#define IDLE_DUTY			100U /* percent */
 
 #if !defined(ARRAY_COUNT)
 #define ARRAY_COUNT(x)			(sizeof(x) / sizeof((x)[0]))
@@ -55,9 +56,12 @@ static bool is_booting(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	unused(state);
 	unused(next_state);
-	struct connector *c = (struct connector *)ctx;
-	return connector_get_actual_duty(c) != 100 ||
-		connector_get_target_duty(c) != 100;
+
+	struct ocpp_connector *oc = (struct ocpp_connector *)ctx;
+	struct connector *c = &oc->base;
+
+	return connector_get_actual_duty(c) != IDLE_DUTY ||
+		connector_get_target_duty(c) != IDLE_DUTY;
 }
 
 static bool is_available(fsm_state_t state, fsm_state_t next_state, void *ctx)

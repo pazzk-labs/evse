@@ -217,7 +217,7 @@ static int ext_init(struct charger *self)
 		list_add(&support->link, &self->supported);
 	}
 
-	csms_request(OCPP_MSG_BOOTNOTIFICATION, 0, 0);
+	csms_request(OCPP_MSG_BOOTNOTIFICATION, NULL, NULL);
 
 	return err;
 }
