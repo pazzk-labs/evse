@@ -1,0 +1,59 @@
+name: sonarCloud
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  sonarCloud:
+    name: SonarCloud Scan
+    runs-on: ubuntu-latest
+    container: espressif/idf:v5.4
+    env:
+      BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: 'recursive'
+      - name: Install sonar-scanner and build-wrapper
+        uses: SonarSource/sonarcloud-github-c-cpp@v2
+      - name: Run build-wrapper
+        run: |
+          git config --system --add safe.directory "$(pwd)"
+          . $IDF_PATH/export.sh
+          idf.py set-target esp32s3
+          build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} \
+              idf.py build -DTARGET_PLATFORM=esp32s3
+        env:
+          TARGET_PLATFORM: esp32s3
+      - name: Install build dependencies
+        run: |
+          apt-get update
+          apt-get install -y autoconf automake libtool
+      - name: Build coverage results
+        run: |
+          make -C tests install
+          make -C tests
+          make -C tests gcov
+          mkdir -p coverage_report
+          cp -R tests/gcov/*.gcov coverage_report/
+      - name: Run sonar-scanner
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          sonar-scanner \
+              --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}" \
+              --define sonar.organization=pazzk-labs \
+              --define sonar.projectKey=pazzk-labs_evse \
+              --define sonar.sources=src,ports \
+              --define sonar.tests=tests \
+              --define sonar.test.inclusions=**/*_test.cpp \
+              --define sonar.cfamily.gcov.reportsPath=coverage_report
