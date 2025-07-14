@@ -82,7 +82,7 @@ jobs:
 
     - name: Install ESP-IDF
       run: |
-        git clone --recursive https://github.com/espressif/esp-idf.git ~/esp-idf
+        git clone --branch v5.4 --recursive https://github.com/espressif/esp-idf.git ~/esp-idf
         ~/esp-idf/install.sh
     
     # If the analyze step fails for one of the languages you are analyzing with
