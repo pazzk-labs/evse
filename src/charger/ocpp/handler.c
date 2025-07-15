@@ -195,25 +195,27 @@ static void do_change_availability(struct ocpp_charger *charger,
 		.unavailable = (p->type == OCPP_INOPERATIVE),
 		.status = OCPP_AVAILABILITY_STATUS_ACCEPTED,
 	};
-	const struct ocpp_checkpoint *checkpoint =
+	const struct ocpp_checkpoint *charger_checkpoint =
 		ocpp_charger_get_checkpoint(base);
 
 	if (p->connectorId == 0) { /* all connectors */
 		charger_iterate_connectors(base,
 				on_each_connector_availability, &ctx);
-
 		ocpp_charger_set_availability(base, !ctx.unavailable);
+		ocpp_charger_mq_send(base,
+				OCPP_CHARGER_MSG_AVAILABILITY_CHANGED,
+				CONNECTOR_0);
+	} else if (charger_checkpoint->unavailable) {
+		ctx.status = OCPP_AVAILABILITY_STATUS_REJECTED;
 	} else {
 		struct ocpp_connector *c = (struct ocpp_connector *)
 			charger_get_connector_by_id(base, p->connectorId);
-		if (c) {
+		if (c && ocpp_connector_is_unavailable(c) != ctx.unavailable) {
 			ocpp_connector_set_availability(c, !ctx.unavailable);
+			ocpp_charger_mq_send(base,
+					OCPP_CHARGER_MSG_AVAILABILITY_CHANGED,
+					NULL);
 		}
-	}
-
-	if (!ocpp_charger_is_checkpoint_equal(base, checkpoint)) {
-		ocpp_charger_mq_send(base,
-				OCPP_CHARGER_MSG_AVAILABILITY_CHANGED, NULL);
 	}
 
 	csms_response(OCPP_MSG_CHANGE_AVAILABILITY, message, NULL,

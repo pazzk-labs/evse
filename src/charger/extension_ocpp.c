@@ -127,15 +127,18 @@ static void dispatch_event(struct charger *charger, struct connector *c,
 static void proc_availability(struct charger *charger,
 		const struct ocpp_charger_msg *msg)
 {
-	unused(msg);
-	struct ocpp_connector_checkpoint checkpoint = {
-		.unavailable = !ocpp_charger_get_availability(charger),
-	};
-	struct ocpp_connector c0 = {
-		.checkpoint = &checkpoint,
-		.now = time(NULL),
-	};
-	csms_request(OCPP_MSG_STATUS_NOTIFICATION, &c0, CONNECTOR_0);
+	const bool conn0 = (msg->value == CONNECTOR_0);
+
+	if (conn0) {
+		struct ocpp_connector_checkpoint checkpoint = {
+			.unavailable = !ocpp_charger_get_availability(charger),
+		};
+		struct ocpp_connector c0 = {
+			.checkpoint = &checkpoint,
+			.now = time(NULL),
+		};
+		csms_request(OCPP_MSG_STATUS_NOTIFICATION, &c0, CONNECTOR_0);
+	}
 
 	dispatch_event(charger, NULL, OCPP_CHARGER_EVENT_CHECKPOINT_CHANGED);
 }
@@ -150,8 +153,10 @@ static void proc_configuration(struct charger *charger,
 static void proc_csms_up(struct charger *charger,
 		const struct ocpp_charger_msg *msg)
 {
+	unused(msg);
+
 	struct ocpp_connector_checkpoint checkpoint = {
-		.unavailable = (bool)(uintptr_t)msg->value,
+		.unavailable = !ocpp_charger_get_availability(charger),
 	};
 	struct ocpp_connector c0 = {
 		.checkpoint = &checkpoint,
