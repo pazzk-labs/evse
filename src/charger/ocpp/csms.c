@@ -209,6 +209,9 @@ int csms_init(void *ctx)
 	int err = initialize_server();
 
 	if (!err) {
+		adapter_init(csms, RXQUEUE_SIZE);
+		err = ocpp_init(on_ocpp_event, ctx);
+
 		const size_t len = ocpp_compute_configuration_size();
 		void *p = calloc(1, len);
 		if (p == NULL) {
@@ -222,9 +225,6 @@ int csms_init(void *ctx)
 		}
 
 		free(p);
-
-		adapter_init(csms, RXQUEUE_SIZE);
-		err = ocpp_init(on_ocpp_event, ctx);
 	}
 
 	return err;
