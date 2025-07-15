@@ -49,6 +49,8 @@ static const esp_partition_t *get_partition(void)
 
 static int do_erase(struct flash *self, uintptr_t offset, size_t size)
 {
+	unused(self);
+
 	const esp_partition_t *partition = get_partition();
 
 	if (partition == NULL) {
@@ -63,6 +65,8 @@ static int do_erase(struct flash *self, uintptr_t offset, size_t size)
 static int do_write(struct flash *self,
 		uintptr_t offset, const void *data, size_t len)
 {
+	unused(self);
+
 	const esp_partition_t *partition = get_partition();
 
 	if (partition == NULL) {
@@ -76,6 +80,8 @@ static int do_write(struct flash *self,
 
 static int do_read(struct flash *self, uintptr_t offset, void *buf, size_t len)
 {
+	unused(self);
+
 	const esp_partition_t *partition = get_partition();
 
 	if (partition == NULL) {

@@ -53,6 +53,8 @@ static void on_ping_success(esp_ping_handle_t hdl, void *args)
 
 static void on_ping_timeout(esp_ping_handle_t hdl, void *args)
 {
+	unused(hdl);
+
 	struct cb_ctx *ctx = (struct cb_ctx *)args;
 	ctx->err = -ETIMEDOUT;
 }

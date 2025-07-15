@@ -184,6 +184,9 @@ static void set_static_ip_if_required(struct netif *netif)
 static void on_eth_event(void *arg, esp_event_base_t event_base,
 		int32_t event_id, void *event_data)
 {
+	unused(event_base);
+	unused(event_data);
+
 	struct netif *netif = (struct netif *)arg;
 	netif_event_t netif_event = NETIF_EVENT_UNKNOWN;
 
@@ -212,6 +215,9 @@ static void on_eth_event(void *arg, esp_event_base_t event_base,
 static void on_ip_event(void *arg, esp_event_base_t event_base,
 		int32_t event_id, void *event_data)
 {
+	unused(event_base);
+	unused(event_id);
+
 	struct netif *netif = (struct netif *)arg;
 	ip_event_got_ip_t *event = (ip_event_got_ip_t *)event_data;
 	const esp_netif_ip_info_t *ip_info = &event->ip_info;
@@ -423,6 +429,8 @@ static int deinit(struct netif *netif)
 
 struct netif *eth_w5500_create(struct lm_spi_device *spi)
 {
+	unused(spi);
+
 	static struct netif netif = {
 		.api = {
 			.init = init,

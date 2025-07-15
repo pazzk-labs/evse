@@ -84,7 +84,8 @@ static bool on_websocket_error(void *ctx)
 	uint32_t backoff_ms;
 
 	if (retry_first(&ws->retry)) {
-		retry_backoff(&ws->retry, &backoff_ms, board_random());
+		retry_backoff(&ws->retry, &backoff_ms,
+				(uint16_t)board_random());
 	} else {
 		backoff_ms = retry_get_backoff(&ws->retry);
 	}
@@ -102,8 +103,8 @@ static bool on_websocket_error(void *ctx)
 	server_enable((struct server *)ws);
 	info("websocket restarted.");
 
-	if (retry_backoff(&ws->retry, &backoff_ms, board_random())
-			== RETRY_ERROR_EXHAUSTED) {
+	if (retry_backoff(&ws->retry, &backoff_ms,
+			(uint16_t)board_random()) == RETRY_ERROR_EXHAUSTED) {
 		/* TODO: notify the user that the max retry is reached
 		 * and reboot the system after cleanup. */
 		error("ws retry exhausted.");
@@ -148,6 +149,8 @@ static void on_net_event(const netmgr_state_t event, void *ctx)
 static void on_ws_event(void *ctx,
 		esp_event_base_t base, int32_t event_id, void *event_data)
 {
+	unused(base);
+
 	const esp_websocket_event_data_t *data =
 		(esp_websocket_event_data_t *)event_data;
 	struct ws_server *ws = (struct ws_server *)ctx;
