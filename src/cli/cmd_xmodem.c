@@ -132,10 +132,12 @@ static void test_download(const struct cli_io *io)
 
 	xmodem_error_t err = download(on_recv_dummy, &ctx);
 
+	const uint32_t elapsed = ctx.t1 - ctx.t0;
 	char str[STRBUF_MAXLEN];
 	snprintf(str, sizeof(str), "Downloaded %zu bytes in %"PRIu32"ms(%"
-			PRIu32"B/s): %d", ctx.filesize, ctx.t1 - ctx.t0,
-			(uint32_t)(ctx.filesize*1000) / (ctx.t1 - ctx.t0), err);
+			PRIu32"B/s): %d", ctx.filesize, elapsed,
+			elapsed? (uint32_t)(ctx.filesize*1000) / elapsed : 0,
+			err);
 	println(io, str);
 }
 
@@ -182,10 +184,12 @@ static void update_firmware(const struct cli_io *io)
 
 	xmodem_error_t err = download(on_recv_firmware, &ctx);
 
+	const uint32_t elapsed = ctx.t1 - ctx.t0;
 	char str[STRBUF_MAXLEN];
 	snprintf(str, sizeof(str), "Downloaded %zu bytes in %"PRIu32"ms(%"
-			PRIu32"B/s): %d", ctx.filesize, ctx.t1 - ctx.t0,
-			(uint32_t)(ctx.filesize*1000) / (ctx.t1 - ctx.t0), err);
+			PRIu32"B/s): %d", ctx.filesize, elapsed,
+			elapsed? (uint32_t)(ctx.filesize*1000) / elapsed : 0,
+			err);
 	println(io, str);
 
 	if (dfu_finish(dfu) == DFU_ERROR_NONE &&
