@@ -53,6 +53,8 @@ bool dfu_is_valid_header(const struct dfu_image_header *header)
 dfu_error_t dfu_write(struct dfu *dfu, uint32_t offset,
 		const void *data, size_t datasize)
 {
+	unused(offset);
+
 	if (esp_ota_write(dfu->ota_handle, data, datasize) != ESP_OK) {
 		metrics_increase(DFUIOErrorCount);
 		return DFU_ERROR_IO;
@@ -103,6 +105,8 @@ dfu_error_t dfu_commit(struct dfu *dfu)
 
 struct dfu *dfu_new(size_t data_block_size)
 {
+	unused(data_block_size);
+
 	metrics_increase(DFURequestCount);
 	struct dfu *p = (struct dfu *)calloc(1, sizeof(struct dfu));
 

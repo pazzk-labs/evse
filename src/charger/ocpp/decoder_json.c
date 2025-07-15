@@ -443,7 +443,7 @@ static decoder_handler_t decoder(ocpp_message_t msgtype)
 	}
 
 	error("No decoder found for %s", ocpp_stringify_type(msgtype));
-	return do_error;
+	return &do_error;
 }
 
 static int decode(struct ocpp_message *msg, cJSON *json)
