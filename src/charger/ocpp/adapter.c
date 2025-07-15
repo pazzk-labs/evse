@@ -311,7 +311,8 @@ static int do_get_configuration(struct ocpp_connector *c,
 	size_t req_keylen = 0;
 
 	if (req->payload.fmt.request) {
-		req_keylen = strlen((const char *)req->payload.fmt.request);
+		req_keylen = strlen(((const struct ocpp_GetConfiguration *)
+			req->payload.fmt.request)->keys);
 	}
 
 	const size_t total_size = req_keylen + 1;
@@ -324,7 +325,9 @@ static int do_get_configuration(struct ocpp_connector *c,
 	/* NOTE: An ad-hoc method of passing the request message to
 	 * be processed by the encoder. */
 	if (req_keylen) {
-		strcpy(p, (char *)req->payload.fmt.data);
+		strncpy(p, ((const struct ocpp_GetConfiguration *)
+			req->payload.fmt.request)->keys, req_keylen);
+		p[req_keylen] = '\0';
 	}
 
 	return request_free_if_fail(msg_type, req, p, total_size,
