@@ -118,7 +118,7 @@ static void print_ocpp(const struct cli_io *io)
 	printini(io, "ocpp.model", buf);
 
 	uint32_t version;
-	config_get(buf, &version, sizeof(version));
+	config_get("ocpp.version", &version, sizeof(version));
 	snprintf(buf, sizeof(buf), "v%"PRIu32".%"PRIu32".%"PRIu32,
 			GET_VERSION_MAJOR(version), GET_VERSION_MINOR(version),
 			GET_VERSION_PATCH(version));
