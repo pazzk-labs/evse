@@ -164,6 +164,16 @@ int uid_clear(struct uid_store *store);
 int uid_register_update_cb(struct uid_store *store,
 		uid_update_cb_t cb, void *ctx);
 
+/**
+ * @brief Converts a uid_status_t value to its string representation.
+ *
+ * @param[in] status The uid_status_t value to stringify.
+ *
+ * @return A constant character pointer to the string representation
+ *         of the status.
+ */
+const char *uid_stringify_status(uid_status_t status);
+
 #if defined(__cplusplus)
 }
 #endif
