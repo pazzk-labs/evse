@@ -381,6 +381,24 @@ int uid_register_update_cb(struct uid_store *store,
 	return 0;
 }
 
+const char *uid_stringify_status(uid_status_t status)
+{
+	switch (status) {
+	case UID_STATUS_ACCEPTED:
+		return "Accepted";
+	case UID_STATUS_BLOCKED:
+		return "Blocked";
+	case UID_STATUS_EXPIRED:
+		return "Expired";
+	case UID_STATUS_INVALID:
+		return "Invalid";
+	case UID_STATUS_NO_ENTRY:
+		return "No Entry";
+	default:
+		return "Unknown";
+	}
+}
+
 struct uid_store *uid_store_create(const struct uid_store_config *config)
 {
 	if (!config || !config->fs || !config->ns) {
