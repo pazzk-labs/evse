@@ -367,6 +367,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410uid_statusP9uid_storeK8uid_id_t8uid_id_tP6time_t"><code class="docutils literal notranslate"><span class="pre">uid_status()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv49uid_clearP9uid_store"><code class="docutils literal notranslate"><span class="pre">uid_clear()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv422uid_register_update_cbP9uid_store15uid_update_cb_tPv"><code class="docutils literal notranslate"><span class="pre">uid_register_update_cb()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv420uid_stringify_status12uid_status_t"><code class="docutils literal notranslate"><span class="pre">uid_stringify_status()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv48uid_id_t"><code class="docutils literal notranslate"><span class="pre">uid_id_t</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415uid_update_cb_t"><code class="docutils literal notranslate"><span class="pre">uid_update_cb_t</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416uid_store_config"><code class="docutils literal notranslate"><span class="pre">uid_store_config</span></code></a><ul class="nav section-nav flex-column">
@@ -515,6 +516,20 @@ document.write(`
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>0 on success, negative value on failure. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420uid_stringify_status12uid_status_t">
+<span id="_CPPv320uid_stringify_status12uid_status_t"></span><span id="_CPPv220uid_stringify_status12uid_status_t"></span><span id="uid_stringify_status__uid_status_t"></span><span class="target" id="uid_8h_1abf31dc4604ba6e8ee34b854e262b3e23"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">uid_stringify_status</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv412uid_status_t" title="uid_status_t"><span class="n"><span class="pre">uid_status_t</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">status</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420uid_stringify_status12uid_status_t" title="Link to this definition">#</a><br /></dt>
+<dd><p>Converts a uid_status_t value to its string representation. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>status</strong> – <strong>[in]</strong> The uid_status_t value to stringify.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A constant character pointer to the string representation of the status. </p>
 </dd>
 </dl>
 </dd></dl>
@@ -668,6 +683,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410uid_statusP9uid_storeK8uid_id_t8uid_id_tP6time_t"><code class="docutils literal notranslate"><span class="pre">uid_status()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv49uid_clearP9uid_store"><code class="docutils literal notranslate"><span class="pre">uid_clear()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv422uid_register_update_cbP9uid_store15uid_update_cb_tPv"><code class="docutils literal notranslate"><span class="pre">uid_register_update_cb()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv420uid_stringify_status12uid_status_t"><code class="docutils literal notranslate"><span class="pre">uid_stringify_status()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv48uid_id_t"><code class="docutils literal notranslate"><span class="pre">uid_id_t</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv415uid_update_cb_t"><code class="docutils literal notranslate"><span class="pre">uid_update_cb_t</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv416uid_store_config"><code class="docutils literal notranslate"><span class="pre">uid_store_config</span></code></a><ul class="nav section-nav flex-column">
