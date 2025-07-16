@@ -30,31 +30,21 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "libmcu/cli.h"
+#include "helper.h"
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "libmcu/compiler.h"
-#include "ocpp/ocpp.h"
+#include "charger/charger.h"
+#include "../charger/ocpp/ocpp_connector_internal.h"
+#include "app.h"
 
-static void println(const struct cli_io *io, const char *str)
-{
-	io->write(str, strlen(str));
-	io->write("\n", 1);
-}
-
-static void printini(const struct cli_io *io,
-		const char *key, const char *value)
-{
-	io->write(key, strlen(key));
-	io->write("=", 1);
-	if (value && value[0] != '\0') {
-		println(io, value);
-	} else {
-		println(io, "null");
-	}
-}
+struct ctx {
+	const struct cli_io *io;
+	struct app *app;
+};
 
 static void print_ocpp_configurations(const struct cli_io *io)
 {
@@ -80,12 +70,66 @@ static void print_ocpp_configurations(const struct cli_io *io)
 	}
 }
 
-DEFINE_CLI_CMD(ocpp, "Interact with OCPP client module") {
-	unused(argv);
-	struct cli const *cli = (struct cli const *)env;
+static void on_each_connector(struct connector *c, void *ctx)
+{
+	struct ctx *p = (struct ctx *)ctx;
+	struct ocpp_connector *oc = (struct ocpp_connector *)c;
+	printini(p->io, "state", ocpp_connector_stringify_state(ocpp_connector_state(oc)));
+}
 
-	if (argc == 1) {
-		print_ocpp_configurations(cli->io);
+static void do_info(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
+{
+	unused(argc);
+	unused(argv);
+	unused(cmd);
+
+	struct ctx *p = (struct ctx *)ctx;
+
+	charger_iterate_connectors(p->app->charger, on_each_connector, ctx);
+}
+
+static void do_config(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
+{
+	unused(argc);
+	unused(argv);
+	unused(cmd);
+
+	struct ctx *p = (struct ctx *)ctx;
+	print_ocpp_configurations(p->io);
+}
+
+static void do_pending(const struct cmd *cmd,
+		int argc, const char *argv[], void *ctx)
+{
+	unused(argc);
+	unused(argv);
+	unused(cmd);
+
+	struct ctx *p = (struct ctx *)ctx;
+	char buf[32];
+	snprintf(buf, sizeof(buf), "%zu", ocpp_count_pending_requests());
+	printini(p->io, "pending", buf);
+}
+
+static const struct cmd cmds[] = {
+	{ "info",    NULL, "ocpp info",    2, 2, do_info },
+	{ "config",  NULL, "ocpp config",  2, 2, do_config },
+	{ "pending", NULL, "ocpp pending", 2, 2, do_pending },
+};
+
+DEFINE_CLI_CMD(ocpp, "Interact with OCPP client module") {
+	struct cli const *cli = (struct cli const *)env;
+	struct app *app = (struct app *)cli->env;
+	struct ctx ctx = { .io = cli->io, .app = app };
+
+	if (process_cmd(cmds, ARRAY_COUNT(cmds), argc, argv, &ctx)
+			!= CLI_CMD_SUCCESS) {
+		println(cli->io, "usage:");
+		for (size_t i = 0; i < ARRAY_COUNT(cmds); i++) {
+			print_help(cli->io, &cmds[i], NULL);
+		}
 	}
 
 	return CLI_CMD_SUCCESS;
