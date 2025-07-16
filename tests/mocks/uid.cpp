@@ -53,3 +53,21 @@ int uid_register_update_cb(struct uid_store *store,
 		.withPointerParameter("ctx", ctx)
 		.returnIntValue();
 }
+
+const char *uid_stringify_status(uid_status_t status)
+{
+	switch (status) {
+	case UID_STATUS_ACCEPTED:
+		return "Accepted";
+	case UID_STATUS_BLOCKED:
+		return "Blocked";
+	case UID_STATUS_EXPIRED:
+		return "Expired";
+	case UID_STATUS_INVALID:
+		return "Invalid";
+	case UID_STATUS_NO_ENTRY:
+		return "No Entry";
+	default:
+		return "Unknown";
+	}
+}
