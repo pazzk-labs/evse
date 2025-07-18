@@ -40,12 +40,15 @@
 #include "libmcu/board.h"
 #include "libmcu/timext.h"
 #include "libmcu/compiler.h"
+#include "libmcu/metrics.h"
 #include "hlw811x.h"
 #include "exio.h"
 #include "config.h"
 #include "logger.h"
 
 #define MIN_INTERVAL_MS			1000
+#define ENERGY_MAX			0xffffff /* 24-bit max value */
+#define MAX_ENERGY_DELTA		22000 /* 22 kWh */
 
 struct metering {
 	struct metering_api api;
@@ -61,6 +64,13 @@ struct metering {
 	 * param.energy represents the last saved value in non-volatile storage
 	 **/
 	struct metering_energy energy;
+        /* Most recent value read from the metering chip's energy register. This
+         * register resets on power cycles or software-triggered clears, whereas
+         * the system-level energy accumulator retains its value over the
+         * product’s entire lifetime. This value serves as a reference for
+         * calculating energy deltas, which are periodically added to the total
+         * accumulated energy. */
+	int32_t energy_base;
 
 	struct hlw811x *hlw811x;
 	struct lm_uart *uart;
@@ -81,13 +91,21 @@ static_assert(sizeof(struct cal_param) == METERING_CALIBRATION_TOTAL_SIZE,
 int hlw811x_ll_write(const uint8_t *data, size_t datalen, void *ctx)
 {
 	struct lm_uart *uart = (struct lm_uart *)ctx;
-	return lm_uart_write(uart, data, datalen);
+	int err = lm_uart_write(uart, data, datalen);
+	if (err < 0) {
+		metrics_increase(MeterIOErrorCount);
+	}
+	return err;
 }
 
 int hlw811x_ll_read(uint8_t *buf, size_t bufsize, void *ctx)
 {
 	struct lm_uart *uart = (struct lm_uart *)ctx;
-	return lm_uart_read(uart, buf, bufsize);
+	int err = lm_uart_read(uart, buf, bufsize);
+	if (err < 0) {
+		metrics_increase(MeterIOErrorCount);
+	}
+	return err;
 }
 
 static hlw811x_error_t apply_calibration(struct hlw811x *hlw811x)
@@ -111,8 +129,8 @@ static hlw811x_error_t apply_calibration(struct hlw811x *hlw811x)
 	int err = config_get("mtr.cal.ch1", &def, sizeof(def));
 
 	if (err != 0 && err != -ENOENT) {
-		error("Failed to get calibration parameters");
-		return HLW811X_IO_ERROR;
+		error("Failed to get calibration parameters: %s(%d)",
+				strerror(err), err);
 	}
 
 	const struct hlw811x_calibration cal = {
@@ -330,7 +348,7 @@ static int get_power(struct metering *self, int32_t *watt, int32_t *var)
 	}
 
 	hlw811x_error_t err =
-		hlw811x_get_power(self->hlw811x, HLW811X_CHANNEL_U, watt);
+		hlw811x_get_power(self->hlw811x, HLW811X_CHANNEL_A, watt);
 
 	if (err != HLW811X_ERROR_NONE) {
 		error("can't get power: %d", err);
@@ -351,22 +369,43 @@ static int step(struct metering *self)
 		return -EAGAIN;
 	}
 
+	metrics_set_max_min(MeterSampleIntervalMax, MeterSampleIntervalMin,
+			METRICS_VALUE(elapsed));
+
 	if ((err = hlw811x_get_energy(self->hlw811x, HLW811X_CHANNEL_A, &Wh))
 			!= HLW811X_ERROR_NONE) {
 		error("can't get energy: %d", err);
 		return -EIO;
 	}
 
-	self->energy.wh += (uint64_t)Wh;
+	int32_t delta;
+
+	if (Wh < self->energy_base) {
+		delta = (ENERGY_MAX - self->energy_base + 1) + Wh;
+		metrics_increase(MeterEnergyOverflowCount);
+	} else {
+		delta = Wh - self->energy_base;
+	}
+
+	if (delta < 0 || delta > MAX_ENERGY_DELTA) {
+		error("Invalid energy delta: %d (base: %d, current: %d)",
+				delta, self->energy_base, Wh);
+	}
+
+	self->energy_base = Wh;
+	self->energy.wh += (uint64_t)delta;
 	self->ts_read = now;
 
 	const uint32_t ms = now - self->ts_saved;
-	const uint32_t wh = (uint32_t)(self->energy.wh - self->param.energy.wh);
+	const uint32_t pending = (uint32_t)
+		(self->energy.wh - self->param.energy.wh);
 
-	if (wh >= METERING_ENERGY_SAVE_THRESHOLD_WH ||
+	if (pending >= METERING_ENERGY_SAVE_THRESHOLD_WH ||
 			ms >= METERING_ENERGY_SAVE_INTERVAL_MIN * 60 * 1000) {
 		save_energy(self);
 	}
+
+	metrics_set_max_min(MeterEnergyDeltaMax, MeterEnergyDeltaMin, delta);
 
 	return 0;
 }
@@ -413,6 +452,7 @@ struct metering *metering_create_hlw8112(const struct metering_param *param,
 	metering.uart = param->io->uart;
 	metering.save_cb = save_cb;
 	metering.save_cb_ctx = save_cb_ctx;
+	metering.energy_base = 0;
 
 	return &metering;
 }

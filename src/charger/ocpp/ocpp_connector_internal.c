@@ -32,6 +32,8 @@
 
 #include "ocpp_connector_internal.h"
 #include <string.h>
+#include <errno.h>
+#include "libmcu/metrics.h"
 #include "metering.h"
 #include "logger.h"
 
@@ -49,12 +51,11 @@ static bool update_metering_core(struct ocpp_connector *oc, time_t *timestamp,
 	struct metering *meter = connector_meter(c);
 	const time_t next = *timestamp + interval;
 
-	if (oc->now == v->timestamp || interval == 0 || oc->now < next) {
+	if (interval == 0 || oc->now < next) {
 		return false;
 	}
 
 	*timestamp = oc->now;
-	v->timestamp = oc->now;
 	v->context = context;
 
 	metering_get_energy(meter, &v->wh, 0);
@@ -63,6 +64,11 @@ static bool update_metering_core(struct ocpp_connector *oc, time_t *timestamp,
 	metering_get_voltage(meter, &v->millivolt);
 	metering_get_power_factor(meter, &v->pf_centi);
 	metering_get_frequency(meter, &v->centi_hertz);
+
+	metrics_set_if_max(MeterVoltageMax, v->millivolt);
+	metrics_set_if_max(MeterCurrentMax, v->milliamp);
+	metrics_set_max_min(MeterPowerFactorMax, MeterPowerFactorMin, v->pf_centi);
+	metrics_set_max_min(MeterFrequencyMax, MeterFrequencyMin, v->centi_hertz);
 
 	return true;
 }

@@ -121,7 +121,8 @@ static int request_free_if_fail(const ocpp_message_t type,
 	if (err) {
 		free(data);
 		metrics_increase(OCPPPushFailedCount);
-		error("Failed to push message: %d", err);
+		error("Failed to push message(%d): %s",
+				err, ocpp_stringify_type(type));
 	}
 
 	return err;
@@ -389,16 +390,28 @@ static void set_measurand_value(struct ocpp_SampledValue *p,
 		snprintf(p->value, sizeof(p->value), "%"PRId32, v->watt);
 		break;
 	case OCPP_MEASURAND_CURRENT_IMPORT:
-		snprintf(p->value, sizeof(p->value), "%"PRId32, v->milliamp);
+		snprintf(p->value, sizeof(p->value), "%"PRId32".%03"PRId32,
+				v->milliamp / 1000, v->milliamp % 1000);
 		break;
 	case OCPP_MEASURAND_VOLTAGE:
-		snprintf(p->value, sizeof(p->value), "%"PRId32, v->millivolt);
+		snprintf(p->value, sizeof(p->value), "%"PRId32".%03"PRId32,
+				v->millivolt / 1000, v->millivolt % 1000);
 		break;
 	case OCPP_MEASURAND_POWER_FACTOR:
-		snprintf(p->value, sizeof(p->value), "%"PRId32, v->pf_centi);
+		snprintf(p->value, sizeof(p->value), "%"PRId32".%02"PRId32,
+				v->pf_centi / 100, v->pf_centi % 100);
 		break;
 	case OCPP_MEASURAND_FREQUENCY:
-		snprintf(p->value, sizeof(p->value), "%"PRId32, v->centi_hertz);
+		snprintf(p->value, sizeof(p->value), "%"PRId32".%02"PRId32,
+				v->centi_hertz / 100, v->centi_hertz % 100);
+		break;
+	case OCPP_MEASURAND_TEMPERATURE:
+		snprintf(p->value, sizeof(p->value), "%"PRId16".%02"PRId16,
+				v->temperature_centi / 100,
+				v->temperature_centi % 100);
+		break;
+	case OCPP_MEASURAND_SOC:
+		snprintf(p->value, sizeof(p->value), "%"PRIu8, v->soc_pct);
 		break;
 	default:
 		memset(p->value, 0, sizeof(p->value));

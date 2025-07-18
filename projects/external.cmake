@@ -19,6 +19,7 @@ target_compile_definitions(libmcu
 		METRICS_USER_DEFINES=\"${PROJECT_SOURCE_DIR}/include/metrics.def\"
 		WDT_STACK_SIZE_BYTES=4096
 		LOGGING_MAX_BACKENDS=2
+		LOGGING_TAGS_MAXNUM=16
 
 		${APP_DEFS}
 

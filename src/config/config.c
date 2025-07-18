@@ -181,7 +181,13 @@ static int read_custom_config(const char *key, void *buf, size_t bufsize)
 		return -ENOMEM;
 	}
 
-	if (kvstore_read(mgr.nvs, key, buf, entry->size) < 0) {
+	int err = kvstore_read(mgr.nvs, key, buf, entry->size);
+
+	if (err < 0) {
+		if (err == -ENOENT) {
+			return err;
+		}
+
 		metrics_increase(ConfigReadErrorCount);
 		return -EIO;
 	}
