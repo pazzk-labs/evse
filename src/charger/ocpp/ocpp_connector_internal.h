@@ -50,19 +50,21 @@ struct auth {
 };
 
 struct session_metering {
-	time_t timestamp;
 	time_t time_sample_periodic;
 	time_t time_clock_periodic;
 
 	uint64_t start_wh;
 	uint64_t stop_wh;
-	uint64_t wh;
-	int32_t millivolt;
-	int32_t milliamp;
-	int32_t pf_centi;
-	int32_t centi_hertz;
-	int32_t centi_degree;
-	int32_t watt;
+	uint64_t wh; /* energy in watt-hour */
+	int32_t millivolt; /* voltage in millivolt */
+	int32_t milliamp; /* current in milliampere */
+	int32_t pf_centi; /* power factor in centi */
+	int32_t centi_hertz; /* frequency in centi-Hertz */
+	int32_t centi_degree; /* phase angle in centi-degree */
+	int32_t watt; /* power in watt */
+
+	uint8_t soc_pct; /* state of charge, percent */
+	int16_t temperature_centi; /* centi-degree Celsius */
 
 	ocpp_reading_context_t context;
 };
