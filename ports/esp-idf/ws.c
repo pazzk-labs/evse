@@ -53,6 +53,8 @@
 
 #define RESTART_ERROR_COUNT		10
 
+#define KEEP_ENABLED
+
 struct ws_server {
 	struct server_api api;
 
@@ -68,6 +70,15 @@ struct ws_server {
 	uint32_t timestamp;
 	int error_count;
 	bool enabled;
+
+#if defined(KEEP_ENABLED)
+	/* FIXME: During the process of repeatedly closing and restarting
+	 * the WebSocket client, the WebSocket module becomes unresponsive.
+	 * This is suspected to be a library bug, but it has not been
+	 * thoroughly analyzed yet. As a workaround, the WebSocket is
+	 * configured to start only once and not be closed thereafter. */
+	bool started;
+#endif
 };
 
 static bool on_websocket_error(void *ctx)
@@ -116,6 +127,7 @@ out:
 
 static void on_timeout(struct apptmr *timer, void *arg)
 {
+	unused(timer);
 	struct ws_server *ws = (struct ws_server *)arg;
 	netmgr_register_task(on_websocket_error, ws);
 }
@@ -132,12 +144,21 @@ static void on_net_event(const netmgr_state_t event, void *ctx)
 	case NETMGR_STATE_CONNECTED:
 		apptmr_stop(ws->timer);
 		retry_reset(&ws->retry);
-		server_enable((struct server *)ws);
+#if defined(KEEP_ENABLED)
+		if (!ws->started) {
+#endif
+			server_enable((struct server *)ws);
+#if defined(KEEP_ENABLED)
+			ws->started = true;
+		}
+#endif
 		info("network connected");
 		break;
 	case NETMGR_STATE_DISCONNECTED:
 		apptmr_stop(ws->timer);
+#if !defined(KEEP_ENABLED)
 		server_disable((struct server *)ws);
+#endif
 		info("network disconnected");
 		break;
 	default:
@@ -183,13 +204,14 @@ static void on_ws_event(void *ctx,
 				256 * data->data_ptr[0] + data->data_ptr[1]);
 		} else {
 			if (ringbuf_write(ws->rxq, data->data_ptr,
-					data->data_len) != data->data_len) {
+					(size_t)data->data_len)
+					!= (size_t)data->data_len) {
 				error("rxq overflow");
 			}
 
 			if (ws->cb) {
-				(*ws->cb)(ws, data->data_ptr, data->data_len,
-						ws->cb_ctx);
+				(*ws->cb)(ws, data->data_ptr, (size_t)
+						data->data_len, ws->cb_ctx);
 			}
 			retry_reset(&ws->retry);
 		}
@@ -211,7 +233,7 @@ static int send_data(struct server *srv,
 		return -ENOTCONN;
 	}
 
-	return esp_websocket_client_send_text(ws->handle, data, datasize,
+	return esp_websocket_client_send_text(ws->handle, data, (int)datasize,
 			pdMS_TO_TICKS(ws->param.write_timeout_ms));
 }
 
@@ -237,6 +259,7 @@ static bool connected(const struct server *srv)
 
 static int connect_to_server(struct server *srv)
 {
+	unused(srv);
 	/* The connection is established automatically when the network is
 	 * connected. */
 	return -ENOTSUP;
@@ -244,6 +267,7 @@ static int connect_to_server(struct server *srv)
 
 static int disconnect_from_server(struct server *srv)
 {
+	unused(srv);
 	/* The disconnection is done automatically when the network is
 	 * disconnected. */
 	return -ENOTSUP;
