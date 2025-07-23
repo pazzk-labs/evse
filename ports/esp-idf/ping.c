@@ -34,6 +34,7 @@
 
 #include <semaphore.h>
 
+#include "libmcu/metrics.h"
 #include "ping/ping_sock.h"
 #include "lwip/ip_addr.h"
 
@@ -75,7 +76,7 @@ int ping_measure(const char *ipstr, const int timeout_ms)
 
 	ipaddr_aton(ipstr, &conf.target_addr);
 	conf.count = 1;
-	conf.timeout_ms = timeout_ms;
+	conf.timeout_ms = (uint32_t)timeout_ms;
 
 	esp_ping_callbacks_t cbs = {
 		.cb_args = &ctx,
@@ -92,8 +93,12 @@ int ping_measure(const char *ipstr, const int timeout_ms)
 	sem_destroy(&ctx.sem);
 
 	if (ctx.err) {
+		metrics_increase(PingFailureCount);
 		return ctx.err;
 	}
 
-	return ctx.elapsed_time;
+	metrics_set_max_min(PingTimeMax, PingTimeMin,
+			METRICS_VALUE(ctx.elapsed_time));
+
+	return (int)ctx.elapsed_time;
 }

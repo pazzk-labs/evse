@@ -45,9 +45,9 @@ extern "C" {
 struct kvstore;
 struct logfs;
 struct metricfs;
-
 struct charger;
 struct relay;
+struct wifi;
 
 #define SYSTEM_TIME_MAX_DRIFT_SEC		(5)
 
@@ -63,6 +63,7 @@ struct app {
 	struct kvstore *kvstore;
 	struct metricfs *mfs;
 	struct logfs *logfs;
+	struct wifi *wifi;
 
 	struct {
 		/* NOTE: do not use heap memory allocation for these buffers

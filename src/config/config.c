@@ -105,6 +105,7 @@ static const struct config_entry config_map[] = {
 	CONFIG_ENTRY("net.server.id",   net.server_id,                 RW),
 	CONFIG_ENTRY("net.server.pass", net.server_pass,               RW),
 	CONFIG_ENTRY("net.server.ping", net.ping_interval,             RW),
+	CONFIG_ENTRY("net.opt",         net.opt,                       RW),
 
 	CONFIG_ENTRY("ocpp.version",    ocpp.version,                  RW),
 	CONFIG_ENTRY("ocpp.config",     ocpp.config,                   RW),

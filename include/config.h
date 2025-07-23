@@ -53,27 +53,34 @@ extern "C" {
 #define CONFIG_CHARGER_CONNECTOR_MAX		1
 #define CONFIG_X509_MAXLEN			2048
 
+enum {
+	CONFIG_ETHERNET_ENABLED	= 0x01,
+	CONFIG_WIFI_ENABLED	= 0x02,
+};
+
 typedef void (*config_save_cb_t)(void *ctx);
 
 struct config_charger {
 	char mode[CONFIG_CHARGER_MODE_MAXLEN];
 	uint8_t param[16];
-	uint8_t connector_count;
 	struct {
 		uint8_t metering[16];
 		uint8_t pilot[30];
 		uint8_t plc_mac[6];
 	} connector[CONFIG_CHARGER_CONNECTOR_MAX];
+	uint8_t connector_count;
 } LIBMCU_PACKED;
 
 struct config_net {
-	uint8_t mac[6];
 	uint32_t health_check_interval;
 	uint32_t ping_interval;
 	char server_url[256];
 	char server_id[32];
 	char server_pass[40];
+	uint8_t mac[6];
+	uint8_t opt; /* bit 0: ethernet enabled, bit 1: wifi enabled */
 } LIBMCU_PACKED;
+static_assert(sizeof(struct config_net) == 343, "config_net size mismatch");
 
 struct config_ocpp {
 	uint32_t version;
@@ -101,7 +108,7 @@ struct config {
 
 	uint32_t crc; /* keep this field at the end */
 } LIBMCU_PACKED;
-static_assert(sizeof(struct config) == 1095, "config size mismatch");
+static_assert(sizeof(struct config) == 1096, "config size mismatch");
 
 struct kvstore;
 

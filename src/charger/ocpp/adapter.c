@@ -56,6 +56,9 @@ static_assert(sizeof(((struct config *)0)->ocpp.vendor) == OCPP_CiString20,
 		"config.ocpp.vendor size mismatch");
 static_assert(sizeof(((struct config *)0)->ocpp.model) == OCPP_CiString20,
 		"config.ocpp.model size mismatch");
+static_assert((sizeof((struct config_ocpp *)0)->checkpoint
+		== sizeof(struct ocpp_checkpoint)),
+		"config_ocpp.checkpoint size mismatch");
 
 #if !defined(ARRAY_COUNT)
 #define ARRAY_COUNT(x)		(sizeof(x) / sizeof((x)[0]))
@@ -784,4 +787,7 @@ void adapter_init(struct server *server, size_t rxqueue_size)
 	csms = server;
 	rxq = ringbuf_create(rxqueue_size);
 	assert(csms && rxq);
+
+	assert(sizeof(((struct config_ocpp *)0)->config) ==
+			ocpp_compute_configuration_size());
 }
