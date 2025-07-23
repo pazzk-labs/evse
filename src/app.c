@@ -54,6 +54,8 @@
 #include "usrinp.h"
 #include "net/netmgr.h"
 #include "net/eth_w5500.h"
+#include "net/wifi.h"
+#include "net/wifi_ap_info.h"
 #include "safety.h"
 #include "safety/input_power_safety.h"
 #include "safety/output_power_safety.h"
@@ -72,6 +74,9 @@ static_assert(sizeof(struct metering_energy)
 static_assert(sizeof(struct pilot_params)
 		== sizeof(((struct config *)0)->charger.connector[0].pilot),
 		"pilot_params size mismatch");
+static_assert((sizeof((struct config_charger *)0)->param) ==
+		sizeof(struct charger_param),
+		"config_charger.param size mismatch with charger_param");
 
 #if !defined(MAX_AUTH_CACHE_SIZE)
 #define MAX_AUTH_CACHE_SIZE		1024
@@ -187,6 +192,24 @@ static bool on_metering_save(const struct metering *metering,
 	}
 
 	return false;
+}
+
+static int get_wifi_ap_info(struct netif *netif,
+		struct wifi_ap_info *ap_info, void *ctx)
+{
+	unused(netif);
+
+	struct app *app = (struct app *)ctx;
+	int cnt = wifi_ap_info_get_all(app->fs, ap_info, 1);
+
+	if (cnt > 0) {
+		return 0;
+	}
+
+	/* TODO: Select the AP with the highest RSSI after scanning */
+	/* TODO: Handle cases where the list is empty or no matching AP is
+	 * found during the scan */
+	return -ENOENT;
 }
 
 static void setup_charger_components(struct app *app)
@@ -340,15 +363,25 @@ void app_init(struct app *app)
 	static char buf[CLI_CMD_MAXLEN * CLI_MAX_HISTORY];
 
 	DEFINE_CLI_CMD_LIST(commands, chg, config, help, idtag, info, log, net,
-			ocpp, reboot, metric, sec, xmodem);
+			wifi, ocpp, reboot, metric, sec, xmodem);
 
 	cli_init(&m.cli, cli_io_create(), buf, sizeof(buf), app);
 	cli_register_cmdlist(&m.cli, commands);
 	cli_start(&m.cli);
 
 	uint8_t mac[NETIF_MAC_ADDR_LEN];
+	uint8_t opt = 0;
 	config_get("net.mac", mac, sizeof(mac));
-	netmgr_register_iface(eth_w5500_create(periph->w5500), 0, mac, NULL);
+	config_get("net.opt", &opt, sizeof(opt));
+	if (opt & CONFIG_ETHERNET_ENABLED) {
+		netmgr_register_iface(eth_w5500_create(periph->w5500),
+				0, mac, NULL);
+	} else {
+		m.app->wifi = wifi_create(0);
+		netmgr_register_iface(wifi_netif_create(m.app->wifi,
+						get_wifi_ap_info, m.app),
+				0, mac, NULL);
+	}
 	netmgr_enable();
 
 	setup_charger_components(app);
