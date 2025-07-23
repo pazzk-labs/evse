@@ -93,6 +93,11 @@ static void set_default_server_url(struct config *cfg)
 	strcpy(cfg->net.server_url, "wss://ocpp.pazzk.net:9000");
 }
 
+static void set_default_net_opt(struct config *cfg)
+{
+	cfg->net.opt = CONFIG_ETHERNET_ENABLED;
+}
+
 static void set_default_vendor(struct config *cfg)
 {
 	strcpy(cfg->ocpp.vendor, "net.pazzk");
@@ -125,6 +130,7 @@ static const struct {
 	{ "net.health",      set_default_net_healthcheck },
 	{ "net.server.ping", set_default_ping_interval },
 	{ "net.server.url",  set_default_server_url },
+	{ "net.opt",         set_default_net_opt },
 	{ "ocpp.vendor",     set_default_vendor },
 	{ "ocpp.model",      set_default_model },
 	{ "log.mode",        set_default_log_mode },

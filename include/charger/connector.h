@@ -46,7 +46,7 @@ extern "C" {
 #include "libmcu/ratelim.h"
 
 #define CONNECTOR_LOG_RATE_CAP		10
-#define CONNECTOR_LOG_RATE_SEC		2
+#define CONNECTOR_LOG_RATE_SEC		1
 
 #define CONNECTOR_EVENT_STRING_MAXLEN	128
 

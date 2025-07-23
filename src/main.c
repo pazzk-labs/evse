@@ -279,11 +279,12 @@ int main(int argc, char *argv[])
 			LOGGER_FS_CACHE_SIZE);
 	logger_init(app.logfs);
 
-	info("%s(%s) v%s: Booting from %s.",
+	info("%s(%s) v%s: Booting from %s at %lld.",
 			board_name(),
 			board_get_serial_number_string(),
 			board_get_version_string(),
-			board_get_reboot_reason_string(reboot_reason));
+			board_get_reboot_reason_string(reboot_reason),
+			time(NULL));
 
 	actor_init(actor_mem, sizeof(actor_mem), ACTOR_STACKSIZE_BYTES);
 	actor_timer_init(actor_timer_mem, sizeof(actor_timer_mem));
