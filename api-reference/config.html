@@ -374,20 +374,21 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414config_charger"><code class="docutils literal notranslate"><span class="pre">config_charger</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger4modeE"><code class="docutils literal notranslate"><span class="pre">mode</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger5paramE"><code class="docutils literal notranslate"><span class="pre">param</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger15connector_countE"><code class="docutils literal notranslate"><span class="pre">connector_count</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger8meteringE"><code class="docutils literal notranslate"><span class="pre">metering</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger5pilotE"><code class="docutils literal notranslate"><span class="pre">pilot</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger7plc_macE"><code class="docutils literal notranslate"><span class="pre">plc_mac</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger9connectorE"><code class="docutils literal notranslate"><span class="pre">connector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger15connector_countE"><code class="docutils literal notranslate"><span class="pre">connector_count</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410config_net"><code class="docutils literal notranslate"><span class="pre">config_net</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net3macE"><code class="docutils literal notranslate"><span class="pre">mac</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net21health_check_intervalE"><code class="docutils literal notranslate"><span class="pre">health_check_interval</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net13ping_intervalE"><code class="docutils literal notranslate"><span class="pre">ping_interval</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net10server_urlE"><code class="docutils literal notranslate"><span class="pre">server_url</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net9server_idE"><code class="docutils literal notranslate"><span class="pre">server_id</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net11server_passE"><code class="docutils literal notranslate"><span class="pre">server_pass</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net3macE"><code class="docutils literal notranslate"><span class="pre">mac</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net3optE"><code class="docutils literal notranslate"><span class="pre">opt</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv411config_ocpp"><code class="docutils literal notranslate"><span class="pre">config_ocpp</span></code></a><ul class="nav section-nav flex-column">
@@ -412,6 +413,8 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config3crcE"><code class="docutils literal notranslate"><span class="pre">crc</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N19PhonyNameDueToError23CONFIG_ETHERNET_ENABLEDE"><code class="docutils literal notranslate"><span class="pre">CONFIG_ETHERNET_ENABLED</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N19PhonyNameDueToError19CONFIG_WIFI_ENABLEDE"><code class="docutils literal notranslate"><span class="pre">CONFIG_WIFI_ENABLED</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_VERSION"><code class="docutils literal notranslate"><span class="pre">CONFIG_VERSION</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_DEVICE_ID_MAXLEN"><code class="docutils literal notranslate"><span class="pre">CONFIG_DEVICE_ID_MAXLEN</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_DEVICE_NAME_MAXLEN"><code class="docutils literal notranslate"><span class="pre">CONFIG_DEVICE_NAME_MAXLEN</span></code></a></li>
@@ -622,11 +625,6 @@ document.write(`
 <dd></dd></dl>
 
 <dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N14config_charger15connector_countE">
-<span id="_CPPv3N14config_charger15connector_countE"></span><span id="_CPPv2N14config_charger15connector_countE"></span><span id="config_charger::connector_count__uint8_t"></span><span class="target" id="structconfig__charger_1a9bf5855a1c99b5bc478e4a4d98228e73"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">connector_count</span></span></span><a class="headerlink" href="#_CPPv4N14config_charger15connector_countE" title="Link to this definition">#</a><br /></dt>
-<dd></dd></dl>
-
-<dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N14config_charger8meteringE">
 <span id="_CPPv3N14config_charger8meteringE"></span><span id="_CPPv2N14config_charger8meteringE"></span><span id="config_charger::metering__uint8_tA"></span><span class="target" id="structconfig__charger_1a4e655719932455796eef9b4811c4380a"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">metering</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">16</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N14config_charger8meteringE" title="Link to this definition">#</a><br /></dt>
 <dd></dd></dl>
@@ -643,7 +641,12 @@ document.write(`
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N14config_charger9connectorE">
-<span id="_CPPv3N14config_charger9connectorE"></span><span id="_CPPv2N14config_charger9connectorE"></span><span id="config_charger::connector__config_chargerA"></span><span class="target" id="structconfig__charger_1a9c81c4af6160ff4ff2fcca6d6ae24218"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv414config_charger" title="config_charger"><span class="n"><span class="pre">config_charger</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">connector</span></span></span><span class="p"><span class="pre">[</span></span><span class="n"><span class="pre">CONFIG_CHARGER_CONNECTOR_MAX</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N14config_charger9connectorE" title="Link to this definition">#</a><br /></dt>
+<span id="_CPPv3N14config_charger9connectorE"></span><span id="_CPPv2N14config_charger9connectorE"></span><span id="config_charger::connector__config_chargerA"></span><span class="target" id="structconfig__charger_1a6d6eed59b88d5bdeff433556ae3af8b3"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv414config_charger" title="config_charger"><span class="n"><span class="pre">config_charger</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">connector</span></span></span><span class="p"><span class="pre">[</span></span><span class="n"><span class="pre">CONFIG_CHARGER_CONNECTOR_MAX</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N14config_charger9connectorE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N14config_charger15connector_countE">
+<span id="_CPPv3N14config_charger15connector_countE"></span><span id="_CPPv2N14config_charger15connector_countE"></span><span id="config_charger::connector_count__uint8_t"></span><span class="target" id="structconfig__charger_1a9bf5855a1c99b5bc478e4a4d98228e73"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">connector_count</span></span></span><a class="headerlink" href="#_CPPv4N14config_charger15connector_countE" title="Link to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -656,11 +659,6 @@ document.write(`
 <em>#include &lt;config.h&gt;</em></div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N10config_net3macE">
-<span id="_CPPv3N10config_net3macE"></span><span id="_CPPv2N10config_net3macE"></span><span id="config_net::mac__uint8_tA"></span><span class="target" id="structconfig__net_1a6e0dfa43fa7de830ccb5e182d148f3cc"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mac</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">6</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N10config_net3macE" title="Link to this definition">#</a><br /></dt>
-<dd></dd></dl>
-
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N10config_net21health_check_intervalE">
 <span id="_CPPv3N10config_net21health_check_intervalE"></span><span id="_CPPv2N10config_net21health_check_intervalE"></span><span id="config_net::health_check_interval__uint32_t"></span><span class="target" id="structconfig__net_1a4a5d095764b50743c85594d36a0e2ed7"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">health_check_interval</span></span></span><a class="headerlink" href="#_CPPv4N10config_net21health_check_intervalE" title="Link to this definition">#</a><br /></dt>
@@ -684,6 +682,16 @@ document.write(`
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N10config_net11server_passE">
 <span id="_CPPv3N10config_net11server_passE"></span><span id="_CPPv2N10config_net11server_passE"></span><span id="config_net::server_pass__cA"></span><span class="target" id="structconfig__net_1aab688201255fd510a6fd7ed211284ce2"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">server_pass</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">40</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N10config_net11server_passE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10config_net3macE">
+<span id="_CPPv3N10config_net3macE"></span><span id="_CPPv2N10config_net3macE"></span><span id="config_net::mac__uint8_tA"></span><span class="target" id="structconfig__net_1a6e0dfa43fa7de830ccb5e182d148f3cc"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mac</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">6</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N10config_net3macE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10config_net3optE">
+<span id="_CPPv3N10config_net3optE"></span><span id="_CPPv2N10config_net3optE"></span><span id="config_net::opt__uint8_t"></span><span class="target" id="structconfig__net_1a5a583768cac52c9b1088d54376615aa7"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">opt</span></span></span><a class="headerlink" href="#_CPPv4N10config_net3optE" title="Link to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -790,6 +798,25 @@ document.write(`
 </dd></dl>
 
 <div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-enums">Enums</p>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp">
+<span class="target" id="config_8h_1a99fb83031ce9923c84392b4e92f956b5"></span><span class="sig-name descname"></span></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N19PhonyNameDueToError23CONFIG_ETHERNET_ENABLEDE">
+<span id="_CPPv3N19PhonyNameDueToError23CONFIG_ETHERNET_ENABLEDE"></span><span id="_CPPv2N19PhonyNameDueToError23CONFIG_ETHERNET_ENABLEDE"></span><span class="target" id="config_8h_1a99fb83031ce9923c84392b4e92f956b5a71fbfc76e2232dc87da3cc638f8facab"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CONFIG_ETHERNET_ENABLED</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0x01</span></span><a class="headerlink" href="#_CPPv4N19PhonyNameDueToError23CONFIG_ETHERNET_ENABLEDE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N19PhonyNameDueToError19CONFIG_WIFI_ENABLEDE">
+<span id="_CPPv3N19PhonyNameDueToError19CONFIG_WIFI_ENABLEDE"></span><span id="_CPPv2N19PhonyNameDueToError19CONFIG_WIFI_ENABLEDE"></span><span class="target" id="config_8h_1a99fb83031ce9923c84392b4e92f956b5af732920f612d4f1721f765bb356dce38"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CONFIG_WIFI_ENABLED</span></span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="m"><span class="pre">0x02</span></span><a class="headerlink" href="#_CPPv4N19PhonyNameDueToError19CONFIG_WIFI_ENABLEDE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-defines">Defines</p>
 <dl class="cpp macro">
 <dt class="sig sig-object cpp" id="c.CONFIG_VERSION">
@@ -883,20 +910,21 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv414config_charger"><code class="docutils literal notranslate"><span class="pre">config_charger</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger4modeE"><code class="docutils literal notranslate"><span class="pre">mode</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger5paramE"><code class="docutils literal notranslate"><span class="pre">param</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger15connector_countE"><code class="docutils literal notranslate"><span class="pre">connector_count</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger8meteringE"><code class="docutils literal notranslate"><span class="pre">metering</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger5pilotE"><code class="docutils literal notranslate"><span class="pre">pilot</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger7plc_macE"><code class="docutils literal notranslate"><span class="pre">plc_mac</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger9connectorE"><code class="docutils literal notranslate"><span class="pre">connector</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N14config_charger15connector_countE"><code class="docutils literal notranslate"><span class="pre">connector_count</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410config_net"><code class="docutils literal notranslate"><span class="pre">config_net</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net3macE"><code class="docutils literal notranslate"><span class="pre">mac</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net21health_check_intervalE"><code class="docutils literal notranslate"><span class="pre">health_check_interval</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net13ping_intervalE"><code class="docutils literal notranslate"><span class="pre">ping_interval</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net10server_urlE"><code class="docutils literal notranslate"><span class="pre">server_url</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net9server_idE"><code class="docutils literal notranslate"><span class="pre">server_id</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net11server_passE"><code class="docutils literal notranslate"><span class="pre">server_pass</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net3macE"><code class="docutils literal notranslate"><span class="pre">mac</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_net3optE"><code class="docutils literal notranslate"><span class="pre">opt</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv411config_ocpp"><code class="docutils literal notranslate"><span class="pre">config_ocpp</span></code></a><ul class="nav section-nav flex-column">
@@ -921,6 +949,8 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config3crcE"><code class="docutils literal notranslate"><span class="pre">crc</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N19PhonyNameDueToError23CONFIG_ETHERNET_ENABLEDE"><code class="docutils literal notranslate"><span class="pre">CONFIG_ETHERNET_ENABLED</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N19PhonyNameDueToError19CONFIG_WIFI_ENABLEDE"><code class="docutils literal notranslate"><span class="pre">CONFIG_WIFI_ENABLED</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_VERSION"><code class="docutils literal notranslate"><span class="pre">CONFIG_VERSION</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_DEVICE_ID_MAXLEN"><code class="docutils literal notranslate"><span class="pre">CONFIG_DEVICE_ID_MAXLEN</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#c.CONFIG_DEVICE_NAME_MAXLEN"><code class="docutils literal notranslate"><span class="pre">CONFIG_DEVICE_NAME_MAXLEN</span></code></a></li>
