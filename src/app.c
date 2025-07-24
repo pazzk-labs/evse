@@ -363,8 +363,8 @@ void app_init(struct app *app)
 	static char buf[CLI_CMD_MAXLEN * CLI_MAX_HISTORY];
 
 	DEFINE_CLI_CMD_LIST(commands,
-		     help, exit, reboot, md, info, log, metric, dbg, config,
-		     net, wifi, sec, xmodem, chg, idtag, ocpp);
+			help, exit, reboot, info, log, metric, dbg, config, net,
+			wifi, sec, xmodem, chg, idtag, ocpp);
 
 	cli_init(&m.cli, cli_io_create(), buf, sizeof(buf), app);
 	cli_register_cmdlist(&m.cli, commands);

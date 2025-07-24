@@ -130,6 +130,11 @@ int wdt_feed(struct wdt *self)
 	return 0;
 }
 
+bool wdt_is_enabled(const struct wdt *self)
+{
+	return self->enabled;
+}
+
 int wdt_enable(struct wdt *self)
 {
 	self->enabled = true;
@@ -174,9 +179,29 @@ int wdt_register_timeout_cb(wdt_timeout_cb_t cb, void *cb_ctx)
 	return 0;
 }
 
+uint32_t wdt_get_period(const struct wdt *self)
+{
+	return self->period_ms;
+}
+
+uint32_t wdt_get_time_since_last_feed(const struct wdt *self)
+{
+	return board_get_time_since_boot_ms() - self->last_feed_ms;
+}
+
 const char *wdt_name(const struct wdt *self)
 {
 	return self->name;
+}
+
+void wdt_foreach(wdt_foreach_cb_t cb, void *cb_ctx)
+{
+	struct list *p;
+
+	list_for_each(p, &m.list) {
+		struct wdt *wdt = list_entry(p, struct wdt, link);
+		(*cb)(wdt, cb_ctx);
+	}
 }
 
 int wdt_init(wdt_periodic_cb_t cb, void *cb_ctx)

@@ -33,6 +33,7 @@
 #include "net/wifi_ap_info.h"
 #include <errno.h>
 #include "fs/fs.h"
+#include "libmcu/compiler.h"
 
 static const char *info_path = "wifi/ap_list";
 

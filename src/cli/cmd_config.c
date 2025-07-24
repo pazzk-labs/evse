@@ -488,6 +488,11 @@ out_help:
 static void do_reset_id(const struct cmd *cmd,
 		int argc, const char *argv[], void *ctx)
 {
+	unused(cmd);
+	unused(argc);
+	unused(argv);
+	unused(ctx);
+
 	config_reset("device.name");
 }
 

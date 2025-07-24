@@ -40,8 +40,10 @@
 #include "libmcu/wdt.h"
 #include "app.h"
 
+#if !defined(HOST_BUILD)
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#endif
 
 struct ctx {
 	const struct cli_io *io;
@@ -88,10 +90,12 @@ static void do_task(const struct cmd *cmd,
 		return;
 	}
 
+#if !defined(HOST_BUILD)
 	vTaskList(str);
 	println(p->io, str);
 	vTaskGetRunTimeStats(str);
 	println(p->io, str);
+#endif
 
 	free(str);
 }
