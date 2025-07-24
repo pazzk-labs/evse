@@ -130,7 +130,7 @@ int lis2dw12_set_mode(lis2dw12_mode_t mode, lis2dw12_odr_t odr)
 		break;
 	}
 
-	reg |= odr << 4;
+	reg |= (uint8_t)(odr << 4);
 
 	return write_reg(CTRL1, reg);
 }

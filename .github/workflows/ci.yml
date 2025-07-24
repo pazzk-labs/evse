@@ -8,6 +8,21 @@ on:
     types: [opened, synchronize, reopened]
 
 jobs:
+  build-on-host:
+    name: Build on Host
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      - name: Install Build Tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential cmake bc vim-common
+      - name: Host Build
+        run: make PLATFORM=host
+
   build-on-esp-idf-v5_4:
     permissions:
       contents: write

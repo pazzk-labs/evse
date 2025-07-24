@@ -35,6 +35,7 @@
 #include <stdlib.h>
 #include <termios.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "libmcu/compiler.h"
 #include "libmcu/cli.h"
@@ -65,7 +66,7 @@ static void on_charger_event(struct charger *charger, struct connector *c,
 {
 	unused(c);
 	unused(ctx);
-	if (event & OCPP_CHARGER_EVENT_AVAILABILITY_CHANGED) {
+	if (event & OCPP_CHARGER_EVENT_CHECKPOINT_CHANGED) {
 		/* Availability changes are saved in non-volatile memory to keep
 		 * them persistent. */
 		const struct ocpp_checkpoint *checkpoint =
@@ -230,8 +231,9 @@ void app_init(struct app *app)
 #define CLI_MAX_HISTORY		10U
 	static char buf[CLI_CMD_MAXLEN * CLI_MAX_HISTORY];
 
-	DEFINE_CLI_CMD_LIST(commands, chg, config, exit, help, idtag, info,
-			log, net, ocpp, reboot, metric, sec, test, xmodem);
+	DEFINE_CLI_CMD_LIST(commands,
+			help, exit, reboot, info, log, metric, dbg, config, net,
+			sec, xmodem, chg, idtag, ocpp);
 
 	cli_init(&m.cli, cli_io_create(), buf, sizeof(buf), app);
 	cli_register_cmdlist(&m.cli, commands);

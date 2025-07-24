@@ -80,7 +80,8 @@ static int add_entry(struct safety *self, struct safety_entry *entry)
 		return -EALREADY;
 	}
 
-	if (!(container = malloc(sizeof(struct entry_container)))) {
+	if (!(container = (struct entry_container *)
+			malloc(sizeof(struct entry_container)))) {
 		return -ENOMEM;
 	}
 
@@ -191,7 +192,7 @@ struct safety *safety_create(void)
 {
 	struct safety *self;
 
-	if (!(self = malloc(sizeof(struct safety)))) {
+	if (!(self = (struct safety *)malloc(sizeof(struct safety)))) {
 		return NULL;
 	}
 
