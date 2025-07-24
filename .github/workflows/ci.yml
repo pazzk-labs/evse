@@ -30,9 +30,9 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
-    name: Build on ESP-IDF v5.4
+    name: Build on ESP-IDF v5.5
     runs-on: ubuntu-latest
-    container: espressif/idf:v5.4
+    container: espressif/idf:v5.5
     steps:
       - name: Clone
         uses: actions/checkout@v3
