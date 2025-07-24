@@ -9,6 +9,8 @@ on:
 
 jobs:
   build-on-host:
+    permissions:
+      contents: read
     name: Build on Host
     runs-on: ubuntu-latest
     steps:
