@@ -161,7 +161,7 @@ static void do_list(const struct cmd *cmd,
 	unused(argv);
 
 	struct ctx *p = (struct ctx *)ctx;
-	struct wifi_ap_info *ap_list =
+	struct wifi_ap_info *ap_list = (struct wifi_ap_info *)
 		malloc(sizeof(*ap_list) * WIFI_AP_INFO_MAX_COUNT);
 	if (!ap_list) {
 		println(p->io, "Failed to allocate memory for AP list");

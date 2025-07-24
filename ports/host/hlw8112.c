@@ -31,12 +31,30 @@
  */
 
 #include "../../src/metering/adapter/hlw8112.h"
+#include "hlw811x_overrides.h"
 #include <errno.h>
+#include <stddef.h>
 #include "libmcu/compiler.h"
 
 struct metering {
 	struct metering_api api;
 };
+
+int hlw811x_ll_write(const uint8_t *data, size_t datalen, void *ctx)
+{
+	unused(data);
+	unused(datalen);
+	unused(ctx);
+	return -ENOTSUP;
+}
+
+int hlw811x_ll_read(uint8_t *buf, size_t bufsize, void *ctx)
+{
+	unused(buf);
+	unused(bufsize);
+	unused(ctx);
+	return -ENOTSUP;
+}
 
 static int get_voltage(struct metering *self, int32_t *millivolt)
 {

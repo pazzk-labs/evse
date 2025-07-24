@@ -98,11 +98,11 @@ static int start_apptmr(struct apptmr *self, const uint32_t timeout_ms)
 	const uint64_t usec = timeout_ms * 1000;
 
 	struct itimerspec its = {
-		.it_value.tv_nsec = usec * 1000,
+		.it_value.tv_nsec = (long)(usec * 1000),
 	};
 
 	if (self->periodic) {
-		its.it_interval.tv_nsec = usec * 1000;
+		its.it_interval.tv_nsec = (long)(usec * 1000);
 	}
 
 	return timer_settime(self->handle, 0, &its, NULL);

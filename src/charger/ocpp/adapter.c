@@ -410,8 +410,8 @@ static void set_measurand_value(struct ocpp_SampledValue *p,
 		break;
 	case OCPP_MEASURAND_TEMPERATURE:
 		snprintf(p->value, sizeof(p->value), "%"PRId16".%02"PRId16,
-				v->temperature_centi / 100,
-				v->temperature_centi % 100);
+				(int16_t)(v->temperature_centi / 100),
+				(int16_t)(v->temperature_centi % 100));
 		break;
 	case OCPP_MEASURAND_SOC:
 		snprintf(p->value, sizeof(p->value), "%"PRIu8, v->soc_pct);

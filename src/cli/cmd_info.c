@@ -30,7 +30,7 @@
  * incidental, special, or consequential, arising from the use of this software.
  */
 
-#include "libmcu/cli.h"
+#include "helper.h"
 
 #include <string.h>
 #include <stdio.h>
@@ -56,15 +56,6 @@ typedef enum {
 			CMD_OPT_EVSE_ID |
 			CMD_OPT_SERIAL_NUMBER),
 } cmd_opt_t;
-
-static void printini(const struct cli_io *io,
-		const char *key, const char *value)
-{
-	io->write(key, strlen(key));
-	io->write("=", 1);
-	io->write(value, strlen(value));
-	io->write("\n", 1);
-}
 
 static cmd_opt_t get_command_option(int argc, const char *opt)
 {
