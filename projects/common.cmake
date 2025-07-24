@@ -58,13 +58,22 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "GNU")
 		-Wvector-operation-performance
 		-Wsuggest-attribute=pure
 		-Wsuggest-attribute=const
-		-Wsuggest-attribute=noreturn
 		-Wsuggest-attribute=format
-		-Wstack-usage=1024
-		-Wuseless-cast
-		-Wsuggest-final-types
-		-Wsuggest-final-methods
 	)
+	if (TARGET_PLATFORM STREQUAL "host")
+		list(APPEND COMMON_COMPILE_OPTIONS
+			-Wno-error=stack-protector
+			-Wno-error=missing-format-attribute
+		)
+	else()
+		list(APPEND COMMON_COMPILE_OPTIONS
+			-Wstack-usage=1024
+			-Wsuggest-attribute=noreturn
+			-Wuseless-cast
+			-Wsuggest-final-types
+			-Wsuggest-final-methods
+		)
+	endif()
 endif()
 elseif (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 	# MSVC specific warning options (different from GCC/Clang)

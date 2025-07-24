@@ -1,3 +1,10 @@
+list(REMOVE_ITEM COMMON_COMPILE_OPTIONS
+	-Wuseless-cast
+	-Wsuggest-final-types
+	-Wsuggest-final-methods
+)
+list(APPEND COMMON_COMPILE_OPTIONS -Wno-error=stack-protector)
+
 list(REMOVE_ITEM APP_SRCS
 	src/app.c
 	src/pilot.c
@@ -39,8 +46,26 @@ target_compile_definitions(${PROJECT_EXECUTABLE} PRIVATE _DARWIN_C_SOURCE)
 endif()
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(LWS REQUIRED libwebsockets)
 pkg_check_modules(OPENSSL REQUIRED openssl)
+if (CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+	pkg_check_modules(LWS REQUIRED libwebsockets)
+	target_include_directories(${PROJECT_EXECUTABLE} PRIVATE ${LWS_INCLUDE_DIRS})
+	target_link_directories(${PROJECT_EXECUTABLE} PRIVATE ${LWS_LIBRARY_DIRS})
+	target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE ${LWS_LIBRARIES})
+else()
+	set(LWS_WITH_CLIENT ON CACHE BOOL "Enable client support")
+	set(LWS_WITH_SSL ON CACHE BOOL "Enable SSL support")
+	set(LWS_WITHOUT_TESTAPPS ON CACHE BOOL "Disable test apps")
+	include(FetchContent)
+	FetchContent_Declare(
+		libwebsockets
+		GIT_REPOSITORY https://github.com/warmcat/libwebsockets.git
+		GIT_TAG        v4.4.1
+	)
+	FetchContent_MakeAvailable(libwebsockets)
+	target_link_libraries(${PROJECT_EXECUTABLE} PRIVATE websockets_shared)
+endif()
+
 
 target_include_directories(${PROJECT_EXECUTABLE}
 	PRIVATE
@@ -49,13 +74,11 @@ target_include_directories(${PROJECT_EXECUTABLE}
 		${CMAKE_SOURCE_DIR}/external/libmcu/modules/buzzer/include
 		${CMAKE_SOURCE_DIR}/external/libmcu/examples
 
-		${LWS_INCLUDE_DIRS}
 		${OPENSSL_INCLUDE_DIRS}
 )
 
 target_link_directories(${PROJECT_EXECUTABLE}
 	PRIVATE
-		${LWS_LIBRARY_DIRS}
 		${OPENSSL_LIBRARY_DIRS}
 )
 
@@ -70,7 +93,6 @@ target_link_libraries(${PROJECT_EXECUTABLE}
 		cbor
 		cjson
 
-		${LWS_LIBRARIES}
 		${OPENSSL_LIBRARIES}
 )
 

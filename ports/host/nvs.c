@@ -47,7 +47,7 @@
 
 struct kvstore {
 	struct kvstore_api api;
-	const char *namespace;
+	const char *ns;
 	pthread_mutex_t lock;
 };
 
@@ -78,7 +78,7 @@ static int file_kvstore_write(struct kvstore *kvstore,
 {
 	pthread_mutex_lock(&kvstore->lock);
 
-	char *filepath = kvstore_make_path(kvstore->namespace, key);
+	char *filepath = kvstore_make_path(kvstore->ns, key);
 	FILE *fp = fopen(filepath, "wb");
 	if (!fp) {
 		pthread_mutex_unlock(&kvstore->lock);
@@ -97,7 +97,7 @@ static int file_kvstore_read(struct kvstore *kvstore,
 {
 	pthread_mutex_lock(&kvstore->lock);
 
-	char *filepath = kvstore_make_path(kvstore->namespace, key);
+	char *filepath = kvstore_make_path(kvstore->ns, key);
 	FILE *fp = fopen(filepath, "rb");
 	if (!fp) {
 		pthread_mutex_unlock(&kvstore->lock);
@@ -139,18 +139,18 @@ static int file_kvstore_open(struct kvstore *kvstore, const char *ns)
 
 struct kvstore *nvs_kvstore_new(void)
 {
-	struct kvstore *kv = malloc(sizeof(*kv));
+	struct kvstore *kv = (struct kvstore *)malloc(sizeof(*kv));
 	if (!kv) {
 		return NULL;
 	}
 
-	kv->namespace = "build/config";
-	if (!kv->namespace) {
+	kv->ns = "build/config";
+	if (!kv->ns) {
 		free(kv);
 		return NULL;
 	}
 
-	if (file_kvstore_open(kv, kv->namespace) < 0) {
+	if (file_kvstore_open(kv, kv->ns) < 0) {
 		free(kv);
 		return NULL;
 	}

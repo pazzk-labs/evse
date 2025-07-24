@@ -35,6 +35,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 #include "libmcu/compiler.h"
 #include "libmcu/wdt.h"
@@ -59,9 +60,9 @@ static void on_each_wdt(struct wdt *wdt, void *ctx)
 	snprintf(buf, sizeof(buf), "%s", wdt_is_enabled(wdt)?
 			"enabled" : "disabled");
 	printini(p->io, "wdt.status", buf);
-	snprintf(buf, sizeof(buf), "%d", wdt_get_period(wdt));
+	snprintf(buf, sizeof(buf), "%"PRIu32, wdt_get_period(wdt));
 	printini(p->io, "wdt.period", buf);
-	snprintf(buf, sizeof(buf), "%d", wdt_get_time_since_last_feed(wdt));
+	snprintf(buf, sizeof(buf), "%"PRIu32, wdt_get_time_since_last_feed(wdt));
 	printini(p->io, "wdt.time_since_last_feed", buf);
 }
 
@@ -83,7 +84,7 @@ static void do_task(const struct cmd *cmd,
 	unused(argv);
 
 	struct ctx *p = (struct ctx *)ctx;
-	char *str = malloc(4096);
+	char *str = (char *)malloc(4096);
 
 	if (!str) {
 		println(p->io, "Failed to allocate memory for task list.");

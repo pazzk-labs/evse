@@ -35,6 +35,7 @@
 #include <stdlib.h>
 #include <termios.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "libmcu/compiler.h"
 #include "libmcu/cli.h"
@@ -232,7 +233,7 @@ void app_init(struct app *app)
 
 	DEFINE_CLI_CMD_LIST(commands,
 			help, exit, reboot, info, log, metric, dbg, config, net,
-			wifi, sec, xmodem, chg, idtag, ocpp);
+			sec, xmodem, chg, idtag, ocpp);
 
 	cli_init(&m.cli, cli_io_create(), buf, sizeof(buf), app);
 	cli_register_cmdlist(&m.cli, commands);

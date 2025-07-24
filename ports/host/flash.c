@@ -51,7 +51,7 @@ static int do_erase(struct flash *self, uintptr_t offset, size_t size)
 static int do_write(struct flash *self,
 		uintptr_t offset, const void *data, size_t len)
 {
-	const uint8_t *src = data;
+	const uint8_t *src = (const uint8_t *)data;
 	uint8_t *dst = &self->storage[offset];
 	memcpy(dst, src, len);
 	return 0;
