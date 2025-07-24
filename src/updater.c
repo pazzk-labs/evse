@@ -34,6 +34,7 @@
 
 #include <string.h>
 #include <errno.h>
+#include <inttypes.h>
 #include <pthread.h>
 
 #include "libmcu/dfu.h"
@@ -206,9 +207,12 @@ static void on_data_reception(const void *data, size_t datasize, void *ctx)
 	struct updater *self = (struct updater *)ctx;
 
 	const size_t written = ringbuf_write(self->ringbuf, data, datasize);
-
-	debug("Received %u, %u/%u: +%u bytes", datasize,
-			self->bytes_written, self->bytes_total, written);
+	const size_t processed = self->bytes_written + written;
+	const int32_t elapsed = (int32_t)(time(NULL) - self->timestamp.started);
+	const uint8_t pct = (uint8_t)((self->bytes_total > 0)?
+		(processed * 100 / self->bytes_total) : 0);
+	debug("Received %zu/%zu bytes in %"PRId32" seconds, %"PRIu8"%%",
+			processed, self->bytes_total, elapsed, pct);
 
 	self->error = write_to_flash(self);
 }

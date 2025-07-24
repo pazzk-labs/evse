@@ -38,13 +38,13 @@ extern "C" {
 #endif
 
 #if !defined(UPDATER_BUFFER_SIZE)
-#define UPDATER_BUFFER_SIZE			1024
+#define UPDATER_BUFFER_SIZE			4096
 #endif
 #if !defined(UPDATER_TIMEOUT_SEC)
 #define UPDATER_TIMEOUT_SEC			(5/*min*/ * 60)
 #endif
 #if !defined(UPDATER_TRANSFER_TIMEOUT_MS)
-#define UPDATER_TRANSFER_TIMEOUT_MS		10000
+#define UPDATER_TRANSFER_TIMEOUT_MS		60000
 #endif
 
 #if !defined(URL_MAXLEN)
