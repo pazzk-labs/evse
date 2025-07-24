@@ -20,6 +20,13 @@
 #include "esp_http_client.h"
 #include "logger.h"
 
+static_assert(HTTP_GET == (http_method_t)HTTP_METHOD_GET &&
+		HTTP_POST == (http_method_t)HTTP_METHOD_POST &&
+		HTTP_PUT == (http_method_t)HTTP_METHOD_PUT &&
+		HTTP_PATCH == (http_method_t)HTTP_METHOD_PATCH &&
+		HTTP_DELETE == (http_method_t)HTTP_METHOD_DELETE,
+		"HTTP method mismatch");
+
 #if !defined(MIN)
 #define MIN(a, b)		(((a) > (b))? (b) : (a))
 #endif
