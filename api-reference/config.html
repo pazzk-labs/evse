@@ -399,6 +399,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N11config_ocpp5modelE"><code class="docutils literal notranslate"><span class="pre">model</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410config_hlc"><code class="docutils literal notranslate"><span class="pre">config_hlc</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_hlc3nidE"><code class="docutils literal notranslate"><span class="pre">nid</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_hlc3macE"><code class="docutils literal notranslate"><span class="pre">mac</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv46config"><code class="docutils literal notranslate"><span class="pre">config</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config7versionE"><code class="docutils literal notranslate"><span class="pre">version</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config9device_idE"><code class="docutils literal notranslate"><span class="pre">device_id</span></code></a></li>
@@ -410,6 +415,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config7chargerE"><code class="docutils literal notranslate"><span class="pre">charger</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config3netE"><code class="docutils literal notranslate"><span class="pre">net</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config4ocppE"><code class="docutils literal notranslate"><span class="pre">ocpp</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config3hlcE"><code class="docutils literal notranslate"><span class="pre">hlc</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config3crcE"><code class="docutils literal notranslate"><span class="pre">crc</span></code></a></li>
 </ul>
 </li>
@@ -716,7 +722,7 @@ document.write(`
 
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N11config_ocpp10checkpointE">
-<span id="_CPPv3N11config_ocpp10checkpointE"></span><span id="_CPPv2N11config_ocpp10checkpointE"></span><span id="config_ocpp::checkpoint__uint8_tA"></span><span class="target" id="structconfig__ocpp_1a2ceacbd0005755651f41c97ce26dcd33"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">checkpoint</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">16</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11config_ocpp10checkpointE" title="Link to this definition">#</a><br /></dt>
+<span id="_CPPv3N11config_ocpp10checkpointE"></span><span id="_CPPv2N11config_ocpp10checkpointE"></span><span id="config_ocpp::checkpoint__uint8_tA"></span><span class="target" id="structconfig__ocpp_1a286c2a49690c2df8f6c9fdb7bf1a5617"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">checkpoint</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">32</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11config_ocpp10checkpointE" title="Link to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp var">
@@ -727,6 +733,26 @@ document.write(`
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N11config_ocpp5modelE">
 <span id="_CPPv3N11config_ocpp5modelE"></span><span id="_CPPv2N11config_ocpp5modelE"></span><span id="config_ocpp::model__cA"></span><span class="target" id="structconfig__ocpp_1af80e09fa6ddbf3ed5d5473a68263d933"></span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">model</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">20</span></span><span class="w"> </span><span class="o"><span class="pre">+</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N11config_ocpp5modelE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv410config_hlc">
+<span id="_CPPv310config_hlc"></span><span id="_CPPv210config_hlc"></span><span id="config_hlc"></span><span class="target" id="structconfig__hlc"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">config_hlc</span></span></span><a class="headerlink" href="#_CPPv410config_hlc" title="Link to this definition">#</a><br /></dt>
+<dd><div class="docutils container">
+<em>#include &lt;config.h&gt;</em></div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10config_hlc3nidE">
+<span id="_CPPv3N10config_hlc3nidE"></span><span id="_CPPv2N10config_hlc3nidE"></span><span id="config_hlc::nid__uint8_tA"></span><span class="target" id="structconfig__hlc_1ad4a9ce6b158760329f4a78f7b071c279"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">nid</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">7</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N10config_hlc3nidE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N10config_hlc3macE">
+<span id="_CPPv3N10config_hlc3macE"></span><span id="_CPPv2N10config_hlc3macE"></span><span id="config_hlc::mac__uint8_tA"></span><span class="target" id="structconfig__hlc_1a3a40da94510f1ece5496b4defb107442"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">mac</span></span></span><span class="p"><span class="pre">[</span></span><span class="m"><span class="pre">6</span></span><span class="p"><span class="pre">]</span></span><a class="headerlink" href="#_CPPv4N10config_hlc3macE" title="Link to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 </div>
@@ -787,6 +813,11 @@ document.write(`
 <dl class="cpp var">
 <dt class="sig sig-object cpp" id="_CPPv4N6config4ocppE">
 <span id="_CPPv3N6config4ocppE"></span><span id="_CPPv2N6config4ocppE"></span><span id="config::ocpp__config_ocpp"></span><span class="target" id="structconfig_1a776aa0121e34551867cc1e7726f453b6"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv411config_ocpp" title="config_ocpp"><span class="n"><span class="pre">config_ocpp</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ocpp</span></span></span><a class="headerlink" href="#_CPPv4N6config4ocppE" title="Link to this definition">#</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N6config3hlcE">
+<span id="_CPPv3N6config3hlcE"></span><span id="_CPPv2N6config3hlcE"></span><span id="config::hlc__config_hlc"></span><span class="target" id="structconfig_1ab1e6c415996aa29876b1672ccac081c5"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv410config_hlc" title="config_hlc"><span class="n"><span class="pre">config_hlc</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">hlc</span></span></span><a class="headerlink" href="#_CPPv4N6config3hlcE" title="Link to this definition">#</a><br /></dt>
 <dd></dd></dl>
 
 <dl class="cpp var">
@@ -935,6 +966,11 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N11config_ocpp5modelE"><code class="docutils literal notranslate"><span class="pre">model</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv410config_hlc"><code class="docutils literal notranslate"><span class="pre">config_hlc</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_hlc3nidE"><code class="docutils literal notranslate"><span class="pre">nid</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N10config_hlc3macE"><code class="docutils literal notranslate"><span class="pre">mac</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv46config"><code class="docutils literal notranslate"><span class="pre">config</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config7versionE"><code class="docutils literal notranslate"><span class="pre">version</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config9device_idE"><code class="docutils literal notranslate"><span class="pre">device_id</span></code></a></li>
@@ -946,6 +982,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config7chargerE"><code class="docutils literal notranslate"><span class="pre">charger</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config3netE"><code class="docutils literal notranslate"><span class="pre">net</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config4ocppE"><code class="docutils literal notranslate"><span class="pre">ocpp</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config3hlcE"><code class="docutils literal notranslate"><span class="pre">hlc</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#_CPPv4N6config3crcE"><code class="docutils literal notranslate"><span class="pre">crc</span></code></a></li>
 </ul>
 </li>
