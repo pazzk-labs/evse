@@ -103,8 +103,10 @@ static void print_log(struct logfs *fs, const char *filename, struct cli *cli)
 
 	for (size_t i = 0; i < filesize; i += (size_t)len) {
 		len = logfs_read(fs, ts, i, buf, blocksize);
-		if (len < 0) {
-			println(cli->io, "Failed to read file");
+		if (len <= 0) {
+			snprintf(buf, blocksize, "Failed to read at %zu/%zu",
+					i, filesize);
+			println(cli->io, buf);
 			break;
 		}
 		cli->io->write(buf, (size_t)len);
