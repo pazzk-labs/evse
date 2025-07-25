@@ -44,10 +44,10 @@ extern "C" {
 #define NETMGR_CONNECT_TIMEOUT_MS		(10U * 1000)
 #endif
 #if !defined(NETMGR_MAX_RETRY)
-#define NETMGR_MAX_RETRY			200U /* about 16 hours */
+#define NETMGR_MAX_RETRY			200U /* about 10 hours */
 #endif
 #if !defined(NETMGR_MAX_BACKOFF_MS)
-#define NETMGR_MAX_BACKOFF_MS			(300U * 1000) /* 5min */
+#define NETMGR_MAX_BACKOFF_MS			(180U * 1000) /* 3min */
 #endif
 
 /**
@@ -79,6 +79,18 @@ typedef uint8_t netmgr_state_mask_t;
  * @param[in] ctx A user-defined context pointer that is passed to the callback.
  */
 typedef void (*netmgr_event_cb_t)(const netmgr_state_t event, void *ctx);
+
+/**
+ * @typedef netmgr_unrecoverable_cb_t
+ * @brief Callback type for handling unrecoverable network errors.
+ *
+ * This callback is invoked when the network manager encounters an
+ * unrecoverable error. It allows the application to perform custom
+ * error handling or recovery actions.
+ *
+ * @param[in] ctx User-defined context passed to the callback.
+ */
+typedef void (*netmgr_unrecoverable_cb_t)(void *ctx);
 
 /**
  * @brief Typedef for a network manager task function.
@@ -138,6 +150,20 @@ int netmgr_enable(void);
  * @return 0 on success, or a negative error code on failure.
  */
 int netmgr_disable(void);
+
+/**
+ * @brief Registers a callback for unrecoverable network errors.
+ *
+ * This function allows the application to register a callback that will
+ * be invoked when the network manager encounters an unrecoverable error.
+ * The callback can be used to handle the error or perform recovery actions.
+ *
+ * @param[in] cb The callback function to handle unrecoverable errors.
+ * @param[in] ctx User-defined context to pass to the callback.
+ *
+ * @return 0 on success, or a negative error code on failure.
+ */
+int netmgr_register_unrecoverable_cb(netmgr_unrecoverable_cb_t cb, void *ctx);
 
 /**
  * @brief Register a network interface with the network manager.
