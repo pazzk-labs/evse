@@ -52,7 +52,6 @@
 
 #include "net/ntp.h"
 #include "net/ping.h"
-#include "app.h"
 #include "logger.h"
 
 #define STACK_SIZE_BYTES		5120U
@@ -131,6 +130,9 @@ struct netmgr {
 
 	time_t time_ntp_synced;
 	uint32_t healthchk_interval_ms;
+
+	netmgr_unrecoverable_cb_t unrecoverable_cb;
+	void *unrecoverable_ctx;
 
 	bool enabled;
 	bool selftest_ping_requested;
@@ -686,8 +688,10 @@ static void do_reset(fsm_state_t state, fsm_state_t next_state, void *ctx)
 	unused(state);
 	unused(next_state);
 	unused(ctx);
-	error("unrecoverable error state. rebooting...");
-	app_reboot();
+
+	if (m.unrecoverable_cb) {
+		(*m.unrecoverable_cb)(m.unrecoverable_ctx);
+	}
 }
 
 static const struct fsm_item transitions[] = {
@@ -933,6 +937,14 @@ int netmgr_register_iface(struct netif *netif, const int priority,
 	});
 
 	add_netif(entry);
+
+	return 0;
+}
+
+int netmgr_register_unrecoverable_cb(netmgr_unrecoverable_cb_t cb, void *ctx)
+{
+	m.unrecoverable_cb = cb;
+	m.unrecoverable_ctx = ctx;
 
 	return 0;
 }
