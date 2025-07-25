@@ -294,6 +294,7 @@ TEST(FreeConnector, ShouldGoStateFWithEvent_WhenEVSEErrorInStateC) {
 	// connector_is_evse_error
 	mock().expectOneCall("iec61851_get_pwm_duty_target").andReturnValue(53);
 	mock().expectOneCall("safety_check").ignoreOtherParameters().andReturnValue(1);
+	mock().expectOneCall("uptime_get").ignoreOtherParameters().andReturnValue(10);
 	// do_evse_error
 	mock().expectOneCall("iec61851_is_supplying_power").andReturnValue(true);
 	mock().expectOneCall("iec61851_stop_power_supply");
