@@ -50,6 +50,7 @@ TEST_SRC_FILES = \
 	mocks/csms.cpp \
 	mocks/ocpp.cpp \
 	mocks/uid.cpp \
+	mocks/uptime.cpp \
 	../external/libmcu/tests/mocks/assert.cpp \
 	../external/libmcu/tests/stubs/metrics.cpp \
 	../external/libmcu/tests/stubs/bitops.cpp \
