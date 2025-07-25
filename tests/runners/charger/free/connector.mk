@@ -43,6 +43,7 @@ TEST_SRC_FILES = \
 	stubs/logger.c \
 	mocks/metering.cpp \
 	mocks/iec61851.cpp \
+	mocks/uptime.cpp \
 	../external/libmcu/tests/stubs/metrics.cpp \
 
 INCLUDE_DIRS = \

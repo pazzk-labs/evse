@@ -38,6 +38,7 @@
 #include "iec61851.h"
 #include "safety.h"
 #include "metering.h"
+#include "uptime.h"
 #include "libmcu/metrics.h"
 #include "libmcu/compiler.h"
 #include "logger.h"
@@ -93,7 +94,7 @@ static bool is_input_power_ok(struct connector *c)
 
 static bool is_output_power_ok(struct connector *c)
 {
-	struct safety_ctx ctx = { .name = "ip", .status = SAFETY_STATUS_OK, };
+	struct safety_ctx ctx = { .name = "op", .status = SAFETY_STATUS_OK, };
 	const int errcnt = safety_check(c->param.safety, on_safety_check, &ctx);
 
 	if (errcnt && ctx.status != SAFETY_STATUS_OK) {
@@ -216,7 +217,8 @@ bool connector_is_occupied_state(const connector_state_t state)
 bool connector_is_evse_error(struct connector *self, connector_state_t state)
 {
 	if (get_target_duty(self) == 0 ||
-			!is_input_power_ok(self) ||
+			(!is_input_power_ok(self) &&
+				uptime_get() > INITIAL_STABILIZATION_SEC) ||
 			is_emergency_stop(self)) {
 		return true;
 	}
