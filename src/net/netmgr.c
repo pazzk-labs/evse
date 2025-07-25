@@ -687,10 +687,14 @@ static void do_reset(fsm_state_t state, fsm_state_t next_state, void *ctx)
 {
 	unused(state);
 	unused(next_state);
-	unused(ctx);
+
+	struct netmgr_entry *entry = (struct netmgr_entry *)ctx;
 
 	if (m.unrecoverable_cb) {
 		(*m.unrecoverable_cb)(m.unrecoverable_ctx);
+	} else {
+		error("unrecoverable error occurred, "
+				"but no callback registered");
 	}
 }
 
