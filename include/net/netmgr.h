@@ -44,10 +44,10 @@ extern "C" {
 #define NETMGR_CONNECT_TIMEOUT_MS		(10U * 1000)
 #endif
 #if !defined(NETMGR_MAX_RETRY)
-#define NETMGR_MAX_RETRY			200U /* about 10 hours */
+#define NETMGR_MAX_RETRY			200U /* about 16 hours */
 #endif
 #if !defined(NETMGR_MAX_BACKOFF_MS)
-#define NETMGR_MAX_BACKOFF_MS			(180U * 1000) /* 3min */
+#define NETMGR_MAX_BACKOFF_MS			(300U * 1000) /* 5min */
 #endif
 
 /**
