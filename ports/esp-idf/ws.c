@@ -204,7 +204,6 @@ static void on_ws_event(void *ctx,
 		error("websocket event: %d", event_id);
 		break;
 	case WEBSOCKET_EVENT_DATA:
-		info("ws opcode=%d, len=%u", data->op_code, data->data_len);
 		if (data->op_code == 0x08 && data->data_len == 2) {
 			info("Received closed message with code=%d",
 				256 * data->data_ptr[0] + data->data_ptr[1]);
@@ -384,14 +383,7 @@ struct server *ws_create_server(const struct ws_param *param,
 	}
 
 	if (init(&ws) != 0) {
-		return NULL;
-	}
-
-	const netmgr_state_mask_t event_mask =
-		NETMGR_STATE_CONNECTED | NETMGR_STATE_DISCONNECTED;
-	if (netmgr_register_event_cb(event_mask, on_net_event, &ws) != 0) {
-		esp_websocket_client_destroy(ws.handle);
-		error("Failed to register network event callback.");
+		error("Failed to initialize WebSocket client.");
 		return NULL;
 	}
 
@@ -405,6 +397,20 @@ struct server *ws_create_server(const struct ws_param *param,
 
 	ws.timer = apptmr_create(false, on_timeout, &ws);
 	apptmr_enable(ws.timer);
+
+	const netmgr_state_mask_t event_mask =
+		NETMGR_STATE_CONNECTED | NETMGR_STATE_DISCONNECTED;
+	if (netmgr_register_event_cb(event_mask, on_net_event, &ws) != 0) {
+		esp_websocket_client_destroy(ws.handle);
+		error("Failed to register network event callback.");
+		return NULL;
+	}
+
+	if (netmgr_connected()) { /* Called when already connected */
+		on_net_event(NETMGR_STATE_CONNECTED, &ws);
+	}
+
+	info("WebSocket client initialized with URL: %s", ws.param.url);
 
 	return (struct server *)&ws;
 }

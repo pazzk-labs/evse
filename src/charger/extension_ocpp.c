@@ -263,8 +263,14 @@ static int ext_post_process(struct charger *self)
 	const ocpp_charger_reboot_t req =
 		ocpp_charger_get_pending_reboot_type(self);
 
-	if (req != OCPP_CHARGER_REBOOT_NONE &&
-			ocpp_count_pending_requests() == 0) {
+	if (req == OCPP_CHARGER_REBOOT_NONE) {
+		if (csms_downtime() > CSMS_REBOOT_TRIGGER_DOWNTIME_SEC) {
+			error("CSMS is down for too long: %"PRIu32" seconds",
+					csms_downtime());
+			ocpp_charger_request_reboot(self,
+					OCPP_CHARGER_REBOOT_REQUIRED);
+		}
+	} else if (ocpp_count_pending_requests() == 0) {
 		if (req == OCPP_CHARGER_REBOOT_REQUIRED) { /* triggered by DFU.
 						Do not reboot during charging */
 			bool charging = false;
@@ -275,12 +281,6 @@ static int ext_post_process(struct charger *self)
 			}
 		}
 		dispatch_event(self, NULL, OCPP_CHARGER_EVENT_REBOOT_REQUIRED);
-	}
-
-	if (csms_downtime() > CSMS_REBOOT_TRIGGER_DOWNTIME_SEC) {
-		error("CSMS is down for too long: %"PRIu32" seconds",
-				csms_downtime());
-		ocpp_charger_request_reboot(self, OCPP_CHARGER_REBOOT_REQUIRED);
 	}
 
 	return 0;
