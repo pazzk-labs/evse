@@ -374,6 +374,12 @@ document.write(`
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-flow">Data Flow</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-components">Key Components</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#offline-recovery-policy">Offline Recovery Policy</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#network-connection-retry">Network Connection Retry</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#websocket-connection">WebSocket Connection</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#offline-detection-basis">Offline Detection Basis</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-transition-diagram">State Transition Diagram</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-transition-table">State Transition Table</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apis">APIs</a><ul class="nav section-nav flex-column">
@@ -544,6 +550,46 @@ document.write(`
 </ul>
 </li>
 </ul>
+</section>
+<section id="offline-recovery-policy">
+<h3>Offline Recovery Policy<a class="headerlink" href="#offline-recovery-policy" title="Link to this heading">#</a></h3>
+<section id="network-connection-retry">
+<h4>Network Connection Retry<a class="headerlink" href="#network-connection-retry" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Initial connection timeout: <code class="docutils literal notranslate"><span class="pre">NETMGR_CONNECT_TIMEOUT_MS</span></code> = 10 seconds</p></li>
+<li><p>Retry backoff:</p>
+<ul>
+<li><p>Maximum delay: 3 minutes + jitter (up to 10 seconds)</p></li>
+<li><p>Maximum retry count: 200 times (≈10 hours total)</p></li>
+</ul>
+</li>
+<li><p>Auto-reboot condition:</p>
+<ul>
+<li><p>If network connection fails continuously for ~10 hours, the system will reboot.</p></li>
+<li><p>If charging is in progress, reboot is deferred until the session ends.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="websocket-connection">
+<h4>WebSocket Connection<a class="headerlink" href="#websocket-connection" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Attempted every 10 seconds after network connection is established.</p></li>
+<li><p>If WebSocket remains offline for 24 hours continuously:</p>
+<ul>
+<li><p>Reboot the system.</p></li>
+<li><p>Reboot is deferred if a charging session is active, and performed after it ends.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="offline-detection-basis">
+<h4>Offline Detection Basis<a class="headerlink" href="#offline-detection-basis" title="Link to this heading">#</a></h4>
+<ul class="simple">
+<li><p>Determined based on failed WebSocket attempts and accumulated network connection failure duration.</p></li>
+<li><p>The system should persist timestamps or retry states to evaluate post-reboot logic continuation.</p></li>
+</ul>
+</section>
 </section>
 <section id="state-transition-diagram">
 <h3>State Transition Diagram<a class="headerlink" href="#state-transition-diagram" title="Link to this heading">#</a></h3>
@@ -809,6 +855,12 @@ document.write(`
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-flow">Data Flow</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-components">Key Components</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#offline-recovery-policy">Offline Recovery Policy</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#network-connection-retry">Network Connection Retry</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#websocket-connection">WebSocket Connection</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#offline-detection-basis">Offline Detection Basis</a></li>
+</ul>
+</li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-transition-diagram">State Transition Diagram</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#state-transition-table">State Transition Table</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#apis">APIs</a><ul class="nav section-nav flex-column">
