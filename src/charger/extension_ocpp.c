@@ -42,6 +42,7 @@
 #include "updater.h"
 #include "config.h"
 #include "libmcu/compiler.h"
+#include "libmcu/metrics.h"
 #include "logger.h"
 
 #if !defined(ARRAY_COUNT)
@@ -262,9 +263,10 @@ static int ext_post_process(struct charger *self)
 {
 	const ocpp_charger_reboot_t req =
 		ocpp_charger_get_pending_reboot_type(self);
+	const uint32_t downtime = csms_downtime();
 
 	if (req == OCPP_CHARGER_REBOOT_NONE) {
-		if (csms_downtime() > CSMS_REBOOT_TRIGGER_DOWNTIME_SEC) {
+		if (downtime > CSMS_REBOOT_TRIGGER_DOWNTIME_SEC) {
 			error("CSMS is down for too long: %"PRIu32" seconds",
 					csms_downtime());
 			ocpp_charger_request_reboot(self,
@@ -281,6 +283,10 @@ static int ext_post_process(struct charger *self)
 			}
 		}
 		dispatch_event(self, NULL, OCPP_CHARGER_EVENT_REBOOT_REQUIRED);
+	}
+
+	if (downtime) {
+		metrics_set_if_max(CSMSDowntime, METRICS_VALUE(downtime));
 	}
 
 	return 0;
