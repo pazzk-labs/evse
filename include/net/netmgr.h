@@ -38,7 +38,6 @@ extern "C" {
 #endif
 
 #include "net/netif.h"
-#include "net/ip.h"
 
 #if !defined(NETMGR_CONNECT_TIMEOUT_MS)
 #define NETMGR_CONNECT_TIMEOUT_MS		(10U * 1000)
@@ -184,7 +183,7 @@ int netmgr_register_unrecoverable_cb(netmgr_unrecoverable_cb_t cb, void *ctx);
  */
 int netmgr_register_iface(struct netif *netif, const int priority,
 		const uint8_t mac[NETIF_MAC_ADDR_LEN],
-		const ip_info_t *static_ip);
+		const lm_ip_info_t *static_ip);
 
 /**
  * @brief Register a callback for network manager events.
