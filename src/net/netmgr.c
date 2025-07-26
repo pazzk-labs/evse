@@ -123,6 +123,7 @@ struct netmgr {
 	struct netmgr_entry *current;
 
 	pthread_t thread;
+	pthread_mutex_t mutex;
 	sem_t event;
 	struct wdt *wdt;
 	struct apptmr *timer;
@@ -828,7 +829,9 @@ static void *thread(void *e)
 		wdt_feed(netmgr->wdt);
 
 		process_event(netmgr);
+		pthread_mutex_lock(&netmgr->mutex);
 		process(netmgr);
+		pthread_mutex_unlock(&netmgr->mutex);
 
 		metrics_set(NetMgrStackHighWatermark,
 			METRICS_VALUE(board_get_current_stack_watermark()));
@@ -841,27 +844,44 @@ static void *thread(void *e)
 
 bool netmgr_connected(void)
 {
-	return m.current && m.current->event == NETIF_EVENT_IP_ACQUIRED;
+	pthread_mutex_lock(&m.mutex);
+	bool res = m.current && m.current->event == NETIF_EVENT_IP_ACQUIRED;
+	pthread_mutex_unlock(&m.mutex);
+	return res;
 }
 
 netmgr_state_t netmgr_state(void)
 {
-	if (!m.current) {
-		return NETMGR_STATE_OFF;
+	netmgr_state_t state = NETMGR_STATE_OFF;
+
+	pthread_mutex_lock(&m.mutex);
+	if (m.current) {
+		state = m.current->external_state;
 	}
-	return m.current->external_state;
+	pthread_mutex_unlock(&m.mutex);
+
+	return state;
 }
 
 int netmgr_ping(const char *ipstr, const uint32_t timeout_ms)
 {
 	unused(timeout_ms);
+
+	int err = -ENODEV;
+
+	pthread_mutex_lock(&m.mutex);
+
 	if (!m.current) {
-		return -ENODEV;
+		goto out;
 	} else if (m.current->external_state != NETMGR_STATE_CONNECTED) {
-		return -ENOTCONN;
+		err = -ENOTCONN;
+		goto out;
 	}
 
-	return ping_measure(ipstr, DEFAULT_PING_TIMEOUT_MS);
+	err = ping_measure(ipstr, DEFAULT_PING_TIMEOUT_MS);
+out:
+	pthread_mutex_unlock(&m.mutex);
+	return err;
 }
 
 int netmgr_register_task(netmgr_task_t task_func, void *task_ctx)
@@ -878,7 +898,9 @@ int netmgr_register_task(netmgr_task_t task_func, void *task_ctx)
 		.ctx = task_ctx,
 	};
 
+	pthread_mutex_lock(&m.mutex);
 	list_add_tail(&entry->link, &m.task_list);
+	pthread_mutex_unlock(&m.mutex);
 
 	sem_post(&m.event);
 
@@ -901,7 +923,9 @@ int netmgr_register_event_cb(const netmgr_state_mask_t mask,
 		.mask = !mask? MASK_ALL_EVENTS : mask,
 	};
 
+	pthread_mutex_lock(&m.mutex);
 	list_add(&entry->link, &m.conn_event_cb_list);
+	pthread_mutex_unlock(&m.mutex);
 
 	return 0;
 }
@@ -939,39 +963,48 @@ int netmgr_register_iface(struct netif *netif, const int priority,
 		.max_jitter_ms = DEFAULT_MAX_JITTER_MS,
 	});
 
+	pthread_mutex_lock(&m.mutex);
 	add_netif(entry);
+	pthread_mutex_unlock(&m.mutex);
 
 	return 0;
 }
 
 int netmgr_register_unrecoverable_cb(netmgr_unrecoverable_cb_t cb, void *ctx)
 {
+	pthread_mutex_lock(&m.mutex);
 	m.unrecoverable_cb = cb;
 	m.unrecoverable_ctx = ctx;
+	pthread_mutex_unlock(&m.mutex);
 
 	return 0;
 }
 
 int netmgr_enable(void)
 {
+	pthread_mutex_lock(&m.mutex);
+
 	if (m.current) {
 		retry_reset(&m.current->retry);
 		m.current->error_count = 0;
 	}
 
 	m.enabled = true;
+	apptmr_enable(m.timer);
 	sem_post(&m.event);
 
-	apptmr_enable(m.timer);
+	pthread_mutex_unlock(&m.mutex);
 
 	return 0;
 }
 
 int netmgr_disable(void)
 {
+	pthread_mutex_lock(&m.mutex);
 	apptmr_disable(m.timer);
 	m.enabled = false;
 	sem_post(&m.event);
+	pthread_mutex_unlock(&m.mutex);
 
 	return 0;
 }
@@ -984,6 +1017,7 @@ int netmgr_init(uint32_t healthchk_interval_ms)
 	list_init(&m.conn_event_cb_list);
 	list_init(&m.task_list);
 	sem_init(&m.event, 0, 0);
+	pthread_mutex_init(&m.mutex, NULL);
 
 	m.healthchk_interval_ms = healthchk_interval_ms;
 
@@ -1016,11 +1050,15 @@ int netmgr_init(uint32_t healthchk_interval_ms)
 
 void netmgr_deinit(void)
 {
+	pthread_mutex_lock(&m.mutex);
 	m.terminated = true;
 	sem_post(&m.event);
 #if defined(UNIT_TEST)
 	shutdown_netmgr();
 #endif
+	pthread_mutex_unlock(&m.mutex);
+
+	pthread_mutex_destroy(&m.mutex);
 }
 
 #if defined(UNIT_TEST)
