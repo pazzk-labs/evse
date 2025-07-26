@@ -372,6 +372,7 @@ struct server *ws_create_server(const struct ws_param *param,
 		NETMGR_STATE_CONNECTED | NETMGR_STATE_DISCONNECTED;
 	if (netmgr_register_event_cb(event_mask, on_net_event, &ws) != 0) {
 		esp_websocket_client_destroy(ws.handle);
+		error("Failed to register network event callback.");
 		return NULL;
 	}
 
