@@ -1,5 +1,9 @@
 # Configuration
 
+> [!Warning]
+> 설정을 추가하거나 삭제하는 경우(전체 구조에 변경이 발생하는 경우) 반드시
+> 설정 버전을 증가해 기존 설정이 올바르게 마이그레이션되도록 해야 합니다.
+
 ## 설정 키 목록 및 사용법
 
 ### 설정 키 종류
@@ -26,6 +30,7 @@
 | `net.server.id`       | 서버 ID                 | `char[32]`    | -           |
 | `net.server.pass`     | 서버 비밀번호           | `char[40]`    | -           |
 | `net.server.ping`     | 서버 Ping 주기          | `uint32_t`    | 120초       |
+| `net.opt`             | 네트워크 옵션           | `uint8_t`     | 0: Ethernet enabled |
 | `x509.ca`             | 서버 인증서             | `char[2048]`  | -           |
 | `x509.cert`           | 디바이스 인증서         | `char[2048]`  | -           |
 | `ocpp.config`         | OCPP 설정               | `char[546]`   | -           |

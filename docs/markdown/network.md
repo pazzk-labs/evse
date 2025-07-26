@@ -64,6 +64,26 @@ The network module provides a unified framework for managing and utilizing multi
   - Periodically checks interface connectivity.
   - Initiates reconnection attempts if necessary.
 
+### Offline Recovery Policy
+#### Network Connection Retry
+- Initial connection timeout: `NETMGR_CONNECT_TIMEOUT_MS` = 10 seconds
+- Retry backoff:
+    - Maximum delay: 3 minutes + jitter (up to 10 seconds)
+    - Maximum retry count: 200 times (≈10 hours total)
+- Auto-reboot condition:
+    - If network connection fails continuously for ~10 hours, the system will reboot.
+    - If charging is in progress, reboot is deferred until the session ends.
+
+#### WebSocket Connection
+- Attempted every 10 seconds after network connection is established.
+- If WebSocket remains offline for 24 hours continuously:
+    - Reboot the system.
+    - Reboot is deferred if a charging session is active, and performed after it ends.
+
+#### Offline Detection Basis
+- Determined based on failed WebSocket attempts and accumulated network connection failure duration.
+- The system should persist timestamps or retry states to evaluate post-reboot logic continuation.
+
 ### State Transition Diagram
 <img src="../images/network_module_state_diagram.png" alt="Network Module State Diagram" />
 
@@ -96,8 +116,8 @@ The network module provides a unified framework for managing and utilizing multi
 | S4      | Connect                | S5   |                                     |
 | S5      | Turn off               | S0   |                                     |
 | S5      | Disabled               | S2   |                                     |
-| S5      | Connecting error        | S4   |                                     |
-| S5      | Connecting timeout      | S4   |                                     |
+| S5      | Connecting error       | S4   |                                     |
+| S5      | Connecting timeout     | S4   |                                     |
 | S5      | Disconnected           | S4   |                                     |
 | S5      | Too many retries       | S0   |                                     |
 | S5      | Connected              | S6   |                                     |
