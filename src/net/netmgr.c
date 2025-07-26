@@ -88,8 +88,8 @@ struct netmgr_entry {
 	struct netif *netif;
 	int priority;
 	uint8_t mac_addr[NETIF_MAC_ADDR_LEN];
-	ip_info_t ip_info;
-	ip_info_t static_ip;
+	lm_ip_info_t ip_info;
+	lm_ip_info_t static_ip;
 	netif_event_t event;
 
 	struct retry retry;
@@ -346,7 +346,7 @@ static void on_network_time_sync(struct timeval *tv, void *ctx)
 
 static bool is_static_ip_requested(struct netmgr_entry *entry)
 {
-	ip_info_t empty = { 0, };
+	lm_ip_info_t empty = { 0, };
 	return memcmp(&entry->static_ip, &empty, sizeof(empty)) != 0;
 }
 
@@ -734,7 +734,7 @@ static void process_netif_event(struct netmgr_entry *entry,
 		const netif_event_t event)
 {
 	const struct netif_api *api = (const struct netif_api *)entry->netif;
-	ip_info_t *ip_info = &entry->ip_info;
+	lm_ip_info_t *ip_info = &entry->ip_info;
 	uint32_t speed_kbps;
 	bool duplex_enabled;
 
@@ -932,7 +932,7 @@ int netmgr_register_event_cb(const netmgr_state_mask_t mask,
 
 int netmgr_register_iface(struct netif *netif, const int priority,
 		const uint8_t mac[NETIF_MAC_ADDR_LEN],
-		const ip_info_t *static_ip)
+		const lm_ip_info_t *static_ip)
 {
 	struct netmgr_entry *entry =
 		(struct netmgr_entry *)calloc(1, sizeof(*entry));

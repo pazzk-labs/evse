@@ -74,8 +74,8 @@ struct netif {
 	esp_netif_t *iface;
 	esp_eth_handle_t handle;
 	uint8_t mac_addr[NETIF_MAC_ADDR_LEN];
-	ip_info_t static_ip;
-	ip_info_t ip_info;
+	lm_ip_info_t static_ip;
+	lm_ip_info_t ip_info;
 	esp_eth_netif_glue_handle_t glue;
 };
 
@@ -135,7 +135,7 @@ static void set_dns_server(esp_netif_t *netif,
 
 static void set_static_ip_if_required(struct netif *netif)
 {
-	ip_info_t empty = { 0, };
+	lm_ip_info_t empty = { 0, };
 
 	if (memcmp(&netif->static_ip, &empty, sizeof(empty)) == 0) {
 		return;
@@ -240,13 +240,13 @@ static void on_ip_event(void *arg, esp_event_base_t event_base,
 	dispatch_event(netif, NETIF_EVENT_IP_ACQUIRED);
 }
 
-static int set_ip_info(struct netif *netif, const ip_info_t *ip_info)
+static int set_ip_info(struct netif *netif, const lm_ip_info_t *ip_info)
 {
 	memcpy(&netif->static_ip, ip_info, sizeof(*ip_info));
 	return 0;
 }
 
-static int get_ip_info(struct netif *netif, ip_info_t *ip_info)
+static int get_ip_info(struct netif *netif, lm_ip_info_t *ip_info)
 {
 	memcpy(ip_info, &netif->ip_info, sizeof(*ip_info));
 	return 0;

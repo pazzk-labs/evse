@@ -40,7 +40,7 @@ extern "C" {
 #include <stddef.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "net/ip.h"
+#include "libmcu/ip.h"
 
 #define NETIF_MAC_ADDR_LEN	6
 
@@ -74,8 +74,8 @@ struct netif_api {
 	int (*unregister_event_callback)(struct netif *netif,
 			const netif_event_t event_type,
 			const netif_event_callback_t cb);
-	int (*set_ip_info)(struct netif *netif, const ip_info_t *ip_info);
-	int (*get_ip_info)(struct netif *netif, ip_info_t *ip_info);
+	int (*set_ip_info)(struct netif *netif, const lm_ip_info_t *ip_info);
+	int (*get_ip_info)(struct netif *netif, lm_ip_info_t *ip_info);
 	int (*get_speed)(struct netif *netif, uint32_t *kbps);
 	int (*get_duplex)(struct netif *netif, bool *duplex_enabled);
 	int (*send_eth_frame)(struct netif *netif, const void *data,
