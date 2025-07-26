@@ -153,6 +153,11 @@ static void on_ocpp_event(ocpp_event_t event_type,
 	}
 }
 
+uint32_t csms_downtime(void)
+{
+	return server_downtime(csms);
+}
+
 bool csms_is_up(void)
 {
 	return server_connected(csms);
