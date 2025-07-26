@@ -64,8 +64,8 @@ struct netif {
 	struct ap_scan scan;
 
 	uint8_t mac_addr[NETIF_MAC_ADDR_LEN];
-	ip_info_t static_ip;
-	ip_info_t ip_info;
+	lm_ip_info_t static_ip;
+	lm_ip_info_t ip_info;
 };
 
 static void dispatch_event(struct netif *netif, netif_event_t event_type)
@@ -194,14 +194,14 @@ static int unregister_event_callback(struct netif *netif,
 	return 0;
 }
 
-static int set_ip_info(struct netif *netif, const ip_info_t *ip_info)
+static int set_ip_info(struct netif *netif, const lm_ip_info_t *ip_info)
 {
 	unused(netif);
 	unused(ip_info);
 	return -ENOTSUP;
 }
 
-static int get_ip_info(struct netif *netif, ip_info_t *ip_info)
+static int get_ip_info(struct netif *netif, lm_ip_info_t *ip_info)
 {
 	struct wifi_iface_info info;
 	int err = wifi_get_status(netif->iface, &info);

@@ -60,13 +60,13 @@ static int unregister_event_callback(struct netif *netif,
 		.withParameter("cb", cb)
 		.returnIntValue();
 }
-static int set_ip_info(struct netif *netif, const ip_info_t *ip_info) {
+static int set_ip_info(struct netif *netif, const lm_ip_info_t *ip_info) {
 	return mock().actualCall(__func__)
 		.withParameter("netif", netif)
 		.withParameter("ip_info", ip_info)
 		.returnIntValue();
 }
-static int get_ip_info(struct netif *netif, ip_info_t *ip_info) {
+static int get_ip_info(struct netif *netif, lm_ip_info_t *ip_info) {
 	return mock().actualCall(__func__)
 		.withParameter("netif", netif)
 		.withOutputParameter("ip_info", ip_info)
