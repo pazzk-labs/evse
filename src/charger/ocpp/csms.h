@@ -39,6 +39,10 @@ extern "C" {
 
 #include "ocpp/ocpp.h"
 
+#if !defined(CSMS_DOWNTIME_MAX_SEC)
+#define CSMS_REBOOT_TRIGGER_DOWNTIME_SEC	(60 * 60 * 24U) /* 1 day */
+#endif
+
 int csms_init(void *ctx);
 int csms_request(const ocpp_message_t msgtype, void *ctx, void *opt);
 int csms_request_defer(const ocpp_message_t msgtype, void *ctx, void *opt,
@@ -47,6 +51,7 @@ int csms_response(const ocpp_message_t msgtype,
 		const struct ocpp_message *req, void *ctx, void *opt);
 bool csms_is_up(void);
 int csms_reconnect(const uint32_t delay_sec);
+uint32_t csms_downtime(void);
 
 #if defined(__cplusplus)
 }

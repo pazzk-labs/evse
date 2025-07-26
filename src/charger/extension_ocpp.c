@@ -36,6 +36,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 #include "ocpp/csms.h"
 #include "updater.h"
@@ -274,6 +275,12 @@ static int ext_post_process(struct charger *self)
 			}
 		}
 		dispatch_event(self, NULL, OCPP_CHARGER_EVENT_REBOOT_REQUIRED);
+	}
+
+	if (csms_downtime() > CSMS_REBOOT_TRIGGER_DOWNTIME_SEC) {
+		error("CSMS is down for too long: %"PRIu32" seconds",
+				csms_downtime());
+		ocpp_charger_request_reboot(self, OCPP_CHARGER_REBOOT_REQUIRED);
 	}
 
 	return 0;

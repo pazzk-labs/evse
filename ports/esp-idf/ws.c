@@ -35,6 +35,7 @@
 
 #include <string.h>
 #include <errno.h>
+#include <time.h>
 
 #include "esp_websocket_client.h"
 #include "libmcu/retry.h"
@@ -67,6 +68,7 @@ struct ws_server {
 	struct apptmr *timer;
 	struct ringbuf *rxq;
 
+	time_t offline; /* the time when the server connection was lost */
 	uint32_t timestamp;
 	int error_count;
 	bool enabled;
@@ -182,9 +184,13 @@ static void on_ws_event(void *ctx,
 		break;
 	case WEBSOCKET_EVENT_CONNECTED:
 		apptmr_stop(ws->timer);
+		ws->offline = 0; /* reset offline time */
 		info("websocket event connected");
 		break;
 	case WEBSOCKET_EVENT_DISCONNECTED:
+		if (!ws->offline) { /* Prevents duplicate events from affecting offline time */
+			ws->offline = time(NULL);
+		}
 		info("websocket event disconnected");
 		break;
 	case WEBSOCKET_EVENT_FINISH: /* fall through */
@@ -273,6 +279,17 @@ static int disconnect_from_server(struct server *srv)
 	return -ENOTSUP;
 }
 
+static uint32_t downtime(const struct server *srv)
+{
+	const struct ws_server *ws = (const struct ws_server *)srv;
+
+	if (!ws->enabled || connected(srv)) {
+		return 0;
+	}
+
+	return (uint32_t)(time(NULL) - ws->offline);
+}
+
 static int enable(struct server *srv)
 {
 	struct ws_server *ws = (struct ws_server *)srv;
@@ -281,6 +298,7 @@ static int enable(struct server *srv)
 
 	if (err == ESP_OK) {
 		ws->enabled = true;
+		ws->offline = time(NULL);
 		return 0;
 	}
 
@@ -344,6 +362,7 @@ struct server *ws_create_server(const struct ws_param *param,
 			.send = send_data,
 			.recv = recv_data,
 			.connected = connected,
+			.downtime = downtime,
 		},
 	};
 
