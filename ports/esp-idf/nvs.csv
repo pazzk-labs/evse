@@ -1,5 +1,0 @@
-key,type,encoding,value
-secret,namespace,,secret
-dfu.image.key,file,binary,secrets/dfu_image.key
-device.id,file,binary,build/did.txt
-config,namespace,,config

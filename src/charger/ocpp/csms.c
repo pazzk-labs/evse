@@ -48,7 +48,6 @@
 #include "adapter.h"
 #include "handler.h"
 #include "config.h"
-#include "secret.h"
 #include "logger.h"
 
 #define RXQUEUE_SIZE			4096
@@ -93,31 +92,9 @@ static int initialize_server(void)
 	}
 
 	if (net_is_secure_protocol(net_get_protocol_from_url(param.url))) {
-		/* NOTE: The allocated dynamic memory is not freed because the
-		 * certificate is used throughout the device's lifecycle.
-		 * To minimize RAM usage, consider accessing the flash memory
-		 * directly. */
-		uint8_t *key = (uint8_t *)malloc(CONFIG_X509_MAXLEN);
-		uint8_t *cert = (uint8_t *)malloc(CONFIG_X509_MAXLEN);
-		uint8_t *ca = (uint8_t *)malloc(CONFIG_X509_MAXLEN);
-		int len;
-
-		if (key && (len = secret_read(SECRET_KEY_X509_KEY,
-				key, CONFIG_X509_MAXLEN)) > 0) {
-			param.tls.key_len = (size_t)len;
-			param.tls.key = key;
-		}
-		if (cert && config_get("x509.cert", cert,
-				CONFIG_X509_MAXLEN) == 0) {
-			param.tls.cert_len = strnlen((const char *)cert,
-					CONFIG_X509_MAXLEN);
-			param.tls.cert = cert;
-		}
-		if (ca && config_get("x509.ca", ca, CONFIG_X509_MAXLEN) == 0) {
-			param.tls.ca_len = strnlen((const char *)ca,
-					CONFIG_X509_MAXLEN);
-			param.tls.ca = ca;
-		}
+		/* Load X.509 certificate and private key from the storage.
+		 * The certificate is used to authenticate the device to the
+		 * CSMS server. */
 	}
 
 	info("CSMS URL: %s", param.url);
