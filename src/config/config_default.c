@@ -33,7 +33,6 @@
 #include "config_default.h"
 #include "config.h"
 #include <string.h>
-#include "secret.h"
 #include "logger.h"
 
 #if !defined(ARRAY_COUNT)
@@ -41,12 +40,6 @@
 #endif
 
 typedef void (*default_handler_t)(struct config *cfg);
-
-static void set_default_did(struct config *cfg)
-{
-	secret_read(SECRET_KEY_DEVICE_ID,
-			cfg->device_id, sizeof(cfg->device_id));
-}
 
 static void set_default_chg_mode(struct config *cfg)
 {
@@ -56,16 +49,6 @@ static void set_default_chg_mode(struct config *cfg)
 static void set_default_chg_c_cnt(struct config *cfg)
 {
 	cfg->charger.connector_count = 1;
-}
-
-static void set_default_chg_c1_plc_mac(struct config *cfg)
-{
-	cfg->charger.connector[0].plc_mac[0] = 0x02;
-	cfg->charger.connector[0].plc_mac[1] = 0x00;
-	cfg->charger.connector[0].plc_mac[2] = 0x00;
-	cfg->charger.connector[0].plc_mac[3] = 0xfe;
-	cfg->charger.connector[0].plc_mac[4] = 0xed;
-	cfg->charger.connector[0].plc_mac[5] = 0x01;
 }
 
 static void set_default_net_mac(struct config *cfg)
@@ -122,10 +105,8 @@ static const struct {
 	const char *key;
 	default_handler_t handler;
 } default_handlers[] = {
-	{ "device.id",       set_default_did },
 	{ "chg.mode",        set_default_chg_mode },
 	{ "chg.count",       set_default_chg_c_cnt },
-	{ "chg.c1.plc_mac",  set_default_chg_c1_plc_mac },
 	{ "net.mac",         set_default_net_mac },
 	{ "net.health",      set_default_net_healthcheck },
 	{ "net.server.ping", set_default_ping_interval },
